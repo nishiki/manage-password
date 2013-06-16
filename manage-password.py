@@ -175,6 +175,7 @@ class ManagePasswd:
 		print '# HELP'
 		print '# --------------------'
 		print 'Add a new item: -a'
+		print 'Update an item: -u ID'
 		print 'Remove an item: -r ID'
 		print 'Show a item: -d search [type]'
 		print 'Connect ssh: -s search'
