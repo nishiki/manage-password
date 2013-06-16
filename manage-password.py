@@ -70,7 +70,7 @@ class ManagePasswd:
 		passwd  = file_pwd.readline()
 		if not passwd:
 			passwd = getpass.getpass('Password GPG: ')
-			self.FILE_PWD.write(passwd)
+			file_pwd.write(passwd)
 
 		file_pwd.close()
 
@@ -116,6 +116,22 @@ class ManagePasswd:
 		file_csv.close()
 		
 		return result
+
+	# Search an id in some csv data
+	# @args: id -> the string to search
+	# @rtrn: the resultat of the search or false
+	def searchId(self, id):
+		result = list()
+
+		file_csv = StringIO.StringIO(self.data)
+		reader = csv.reader(file_csv, delimiter=';', quotechar='|')
+		for row in reader:
+			if row[self.ID] == id:
+				file_csv.close()
+				return row
+		
+		file_csv.close()
+		return False
 
 	# Connect to ssh and display the password
 	# @args: search -> 
@@ -186,7 +202,7 @@ class ManagePasswd:
 		writer.writerow([id, type, server, login, passwd, port, comment])
 		print 'Item has been added!'
 
-	# Remove a item item
+	# Remove an item
 	# @args: id -> the unique identifiant
 	def remove(self, id):
 		self.generateTmpFile()
@@ -200,6 +216,46 @@ class ManagePasswd:
 				print 'The item has been removed!'
 		file_csv.close()
 
+	# Update an item
+	# @args: id -> the item identifiant
+	def update(self, id):
+		result = self.searchId(id)
+		
+		print '# Add a new password'
+		print '# --------------------'
+		id      = result[self.ID]
+		server  = raw_input('Enter the server name or ip [' + result[self.SERVER] + ']: ')
+		type    = raw_input('Enter the type of connection [' + result[self.TYPE] + ']: ')
+		login   = raw_input('Enter the login connection [' + result[self.LOGIN] + ']: ')
+		passwd  = raw_input('Enter the the password: ')
+		port    = raw_input('Enter the connection port [' + result[self.PORT] + ']: ')
+		comment = raw_input('Enter a comment [' + result[self.COMMENT]+ ']: ')
+
+		if not server:
+			server = result[self.SERVER]
+		if not login:
+			login = result[self.LOGIN]
+		if not type:
+			type = result[self.TYPE]
+		if not passwd:
+			passwd = result[self.PASSWD]
+		if not port:
+			port = result[self.PORT]
+		if not comment:
+			comment = result[self.COMMENT]
+		
+		self.generateTmpFile()
+		writer = csv.writer(self.file_tmp, delimiter=';', quotechar='|')
+		file_csv = StringIO.StringIO(self.data)
+		reader = csv.reader(file_csv, delimiter=';', quotechar='|')
+		for row in reader:
+			if row[self.ID] != id:
+				writer.writerow(row)
+		writer.writerow([id, type, server, login, passwd, port, comment])
+		file_csv.close()
+		print 'Item has been updated!'
+
+	# Generate a temporary file
 	def generateTmpFile(self):
 		try:
 			self.file_tmp_name
@@ -236,6 +292,11 @@ if num_argv >= 3 and sys.argv[1] == '-d':
 # Remove an item
 elif num_argv == 3 and sys.argv[1] == '-r':
 	manage.remove(sys.argv[2]) 
+	manage.encrypt()
+
+# Update an item
+elif num_argv == 3 and sys.argv[1] == '-u':
+	manage.update(sys.argv[2]) 
 	manage.encrypt()
 
 # Connect to ssh
