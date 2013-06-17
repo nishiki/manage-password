@@ -137,40 +137,38 @@ class ManagePasswd:
 	# @args: search -> 
 	def ssh(self, search):
 		result = self.search(search, 'ssh')
-		num = len(result)
-		if num > 0:
-			for i in range(num): 
-				server = result[i][self.SERVER]
-				login  = result[i][self.LOGIN]
-				port   = result[i][self.PORT]
-				passwd = result[i][self.PASSWD]
+		for r in result: 
+			server = r[self.SERVER]
+			login  = r[self.LOGIN]
+			port   = r[self.PORT]
+			passwd = r[self.PASSWD]
 
-				if not port:
-					port = 22
+			if not port:
+				port = 22
 
-				if passwd:
-					os.system('sshpass -p ' + passwd + ' ssh ' + login + '@' + server + ' -p ' + str(port))
-				else:
-					os.system('ssh ' + login + '@' + server + ' -p ' + str(port))
-		else:
+			if passwd:
+				os.system('sshpass -p ' + passwd + ' ssh ' + login + '@' + server + ' -p ' + str(port))
+			else:
+				os.system('ssh ' + login + '@' + server + ' -p ' + str(port))
+
+		if len(result) == 0:
 			print 'No result!'
 
 
 	# Display the connections informations for a server
 	def display(self, search, type=''):
 		result = self.search(search, type)
-		num = len(result)
-		if num > 0:
-			for i in range(num): 
-				print '# --------------------'
-				print '# Id: '       + result[i][self.ID]
-				print '# Server: '   + result[i][self.SERVER]
-				print '# Type: '     + result[i][self.TYPE]
-				print '# Login: '    + result[i][self.LOGIN]
-				print '# Password: ' + result[i][self.PASSWD]
-				print '# Port: '     + result[i][self.PORT]
-				print '# Comment: '  + result[i][self.COMMENT]
-		else:
+		for r in result: 
+			print '# --------------------'
+			print '# Id: '       + r[self.ID]
+			print '# Server: '   + r[self.SERVER]
+			print '# Type: '     + r[self.TYPE]
+			print '# Login: '    + r[self.LOGIN]
+			print '# Password: ' + r[self.PASSWD]
+			print '# Port: '     + r[self.PORT]
+			print '# Comment: '  + r[self.COMMENT]
+
+		if len(result) == 0:
 			print 'No result!'
 
 
