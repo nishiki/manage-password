@@ -15,8 +15,8 @@ import tempfile
 import time
 import datetime
 
-FILE_GPG    = '/home/nishiki/.password-manager'
-KEY         = 'nishiki@yaegashi.fr'
+FILE_GPG    = '/home/adrien/.password-manager'
+KEY         = 'adrien.waksberg@believedigital.com'
 FILE_PWD    = '/tmp/.tmp_passwd'
 TIMEOUT_PWD = 300
 
@@ -144,6 +144,10 @@ class ManagePasswd:
 				login  = result[i][self.LOGIN]
 				port   = result[i][self.PORT]
 				passwd = result[i][self.PASSWD]
+
+				if not port:
+					port = 22
+
 				if passwd:
 					os.system('sshpass -p ' + passwd + ' ssh ' + login + '@' + server + ' -p ' + str(port))
 				else:
