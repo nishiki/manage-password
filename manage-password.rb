@@ -7,8 +7,8 @@ require 'rubygems'
 require 'gpgme'
 require 'csv'
 
-FILE_GPG    = '/home/nishiki/.password-manager.gpg'
-KEY         = 'nishiki@yaegashi.fr'
+FILE_GPG    = './pass.gpg'
+KEY         = 'a.waksberg@yaegashi.fr'
 FILE_PWD    = '/tmp/.password-manager.pwd'
 TIMEOUT_PWD = 300
 
@@ -98,7 +98,6 @@ class ManagePasswd
 			row = line.parse_csv
 			if line =~ /^.*#{search}.*$/
 				if type.nil? || type.eql?(row[TYPE])
-					puts "test"
 					result.push(row)
 				end
 			end
@@ -137,17 +136,17 @@ class ManagePasswd
 		puts "# --------------------"
 		row[ID] = Time.now.to_i.to_s(16)
 		print "Enter the server name or ip: "
-		row[SERVER] = $stdin.gets
+		row[SERVER] = $stdin.gets.chomp
 		print "Enter the type of connection (ssh, web, other): "
-		row[TYPE] = $stdin.gets
+		row[TYPE] = $stdin.gets.chomp
 		print "Enter the login connection: "
-		row[LOGIN] = $stdin.gets
+		row[LOGIN] = $stdin.gets.chomp
 		print "Enter the the password: "
-		row[PASSWORD] = $stdin.gets
+		row[PASSWORD] = $stdin.gets.chomp
 		print "Enter the connection port (optinal): "
-		row[PORT] = $stdin.gets
+		row[PORT] = $stdin.gets.chomp
 		print "Enter a comment (optinal): "
-		row[COMMENT] = $stdin.gets
+		row[COMMENT] = $stdin.gets.chomp
 		
 		@data << "#{row.join(',')}\n"
 	end
@@ -159,25 +158,32 @@ class ManagePasswd
 		@data.lines do |line|
 			row = line.parse_csv
 			if id.eql?(row[ID])
-				update_row = Array.new()
+				row_update = Array.new()
 				
 				puts "# Add a new password"
 				puts "# --------------------"
-				puts "Enter the server name or ip [#{row[SERVER]}]: "
-				server = $stdin.gets
-				puts = "Enter the type of connection [#{row[TYPE]}]: "
-				type = $stdin.gets
-				puts "Enter the login connection [#{row[LOGIN]}]: "
-				login = $stdin.gets
-				puts "Enter the the password: "
-				passwd = $stdin.gets
-				puts "Enter the connection port [#{row[PORT]}]: "
-				port = $stdin.gets
-				puts "Enter a comment [#{row[COMMENT]}]: "
-				comment = $stdin.gets
+				print "Enter the server name or ip [#{row[SERVER]}]: "
+				server = $stdin.gets.chomp
+				print "Enter the type of connection [#{row[TYPE]}]: "
+				type = $stdin.gets.chomp
+				print "Enter the login connection [#{row[LOGIN]}]: "
+				login = $stdin.gets.chomp
+				print "Enter the the password: "
+				passwd = $stdin.gets.chomp
+				print "Enter the connection port [#{row[PORT]}]: "
+				port = $stdin.gets.chomp
+				print "Enter a comment [#{row[COMMENT]}]: "
+				comment = $stdin.gets.chomp
 				
-				# TODO
-
+				row_update[ID] = row[ID]
+				server.empty?  ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
+				type.empty?    ? (row_update[TYPE]     = row[TYPE])     : (row_update[TYPE]     = type)
+				login.empty?   ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
+				passwd.empty?  ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
+				port.empty?    ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
+				comment.empty? ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
+				
+				data_tmp << "#{row_update.join(',')}\n"
 			else
 				data_tmp << line
 			end
@@ -251,7 +257,7 @@ if num_argv >= 2 && ARGV[0] == '-d'
 	if num_argv == 3
 		manage.display(ARGV[1], ARGV[2])
 	else
-		manage.display(ARGV[3])
+		manage.display(ARGV[1])
 	end
 
 # Remove an item
