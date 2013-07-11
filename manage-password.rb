@@ -98,6 +98,7 @@ class ManagePasswd
 			row = line.parse_csv
 			if line =~ /^.*#{search}.*$/
 				if type.nil? || type.eql?(row[TYPE])
+					puts "test"
 					result.push(row)
 				end
 			end
@@ -107,7 +108,7 @@ class ManagePasswd
 	end
 
 	# Display the connections informations for a server
-	def display(search, type='')
+	def display(search, type=nil)
 		result = self.search(search, type)
 
 		if result.length > 0 
@@ -136,19 +137,67 @@ class ManagePasswd
 		puts "# --------------------"
 		row[ID] = Time.now.to_i.to_s(16)
 		print "Enter the server name or ip: "
-		row[SERVER] = gets.chomp
+		row[SERVER] = $stdin.gets
 		print "Enter the type of connection (ssh, web, other): "
-		row[TYPE] = gets.chomp
+		row[TYPE] = $stdin.gets
 		print "Enter the login connection: "
-		row[LOGIN] = gets.chomp
+		row[LOGIN] = $stdin.gets
 		print "Enter the the password: "
-		row[PASSWORD] = gets.chomp
+		row[PASSWORD] = $stdin.gets
 		print "Enter the connection port (optinal): "
-		row[PORT] = gets.chomp
+		row[PORT] = $stdin.gets
 		print "Enter a comment (optinal): "
-		row[COMMENT] = gets.chomp
+		row[COMMENT] = $stdin.gets
 		
 		@data << "#{row.join(',')}\n"
+	end
+	
+	# Update an item
+	# @args: id -> the item's identifiant
+	def update(id)
+		data_tmp = ''
+		@data.lines do |line|
+			row = line.parse_csv
+			if id.eql?(row[ID])
+				update_row = Array.new()
+				
+				puts "# Add a new password"
+				puts "# --------------------"
+				puts "Enter the server name or ip [#{row[SERVER]}]: "
+				server = $stdin.gets
+				puts = "Enter the type of connection [#{row[TYPE]}]: "
+				type = $stdin.gets
+				puts "Enter the login connection [#{row[LOGIN]}]: "
+				login = $stdin.gets
+				puts "Enter the the password: "
+				passwd = $stdin.gets
+				puts "Enter the connection port [#{row[PORT]}]: "
+				port = $stdin.gets
+				puts "Enter a comment [#{row[COMMENT]}]: "
+				comment = $stdin.gets
+				
+				# TODO
+
+			else
+				data_tmp << line
+			end
+		end
+		@data = data_tmp
+	end
+	
+	# Remove an item 
+	# @args: id -> the item's identifiant
+	def remove(id)
+		data_tmp = ''
+		@data.lines do |line|
+			row = line.parse_csv
+			if id.eql?(row[ID])
+				puts "The item #{row[ID]} has been removed!"
+			else
+				data_tmp << line
+			end
+		end
+		@data = data_tmp
 	end
 	
 	# Connect to ssh && display the password
@@ -202,7 +251,7 @@ if num_argv >= 2 && ARGV[0] == '-d'
 	if num_argv == 3
 		manage.display(ARGV[1], ARGV[2])
 	else
-		manage.display(ARGV[1])
+		manage.display(ARGV[3])
 	end
 
 # Remove an item
