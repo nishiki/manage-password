@@ -2,11 +2,6 @@
 
 On Debian/Ubuntu:
 
-* apt-get install gpg python-gnupg sshpass
+* apt-get install ruby sshpass ruby-gpgme ruby-highline
 
 
-On MacOS X:
-
-* sudo easy_install pip
-* sudo pip install python-gnupg
-* Install gnupg-tool and sshpass

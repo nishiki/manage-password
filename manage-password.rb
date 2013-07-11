@@ -6,6 +6,7 @@
 require 'rubygems'
 require 'gpgme'
 require 'csv'
+require 'highline/import'
 
 FILE_GPG    = './pass.gpg'
 KEY         = 'a.waksberg@yaegashi.fr'
@@ -52,12 +53,11 @@ class ManagePasswd
 		begin
 			passwd = IO.read(@file_pwd)
 		rescue
-			print "Password GPG: "
-			passwd = $stdin.gets
+			passwd = ask("Password GPG: ") {|q| q.echo = false}
 			file_pwd = File.new(@file_pwd, 'w+')
+			File.chmod(0600, @file_pwd)
 			file_pwd << passwd
 			file_pwd.close
-			File.chmod(0600, @file_pwd)
 		end
 		
 		begin
@@ -135,20 +135,15 @@ class ManagePasswd
 		puts "# Add a new password"
 		puts "# --------------------"
 		row[ID] = Time.now.to_i.to_s(16)
-		print "Enter the server name or ip: "
-		row[SERVER] = $stdin.gets.chomp
-		print "Enter the type of connection (ssh, web, other): "
-		row[TYPE] = $stdin.gets.chomp
-		print "Enter the login connection: "
-		row[LOGIN] = $stdin.gets.chomp
-		print "Enter the the password: "
-		row[PASSWORD] = $stdin.gets.chomp
-		print "Enter the connection port (optinal): "
-		row[PORT] = $stdin.gets.chomp
-		print "Enter a comment (optinal): "
-		row[COMMENT] = $stdin.gets.chomp
+		row[SERVER]   = ask("Enter the server name or ip: ")
+		row[TYPE]     = ask("Enter the type of connection (ssh, web, other): ")
+		row[LOGIN]    = ask("Enter the login connection: ")
+		row[PASSWORD] = ask("Enter the the password: ")
+		row[PORT]     = ask("Enter the connection port (optinal): ")
+		row[COMMENT]  = ask("Enter a comment (optinal): ")
 		
 		@data << "#{row.join(',')}\n"
+		puts 'Item has been added!'
 	end
 	
 	# Update an item
@@ -162,18 +157,12 @@ class ManagePasswd
 				
 				puts "# Add a new password"
 				puts "# --------------------"
-				print "Enter the server name or ip [#{row[SERVER]}]: "
-				server = $stdin.gets.chomp
-				print "Enter the type of connection [#{row[TYPE]}]: "
-				type = $stdin.gets.chomp
-				print "Enter the login connection [#{row[LOGIN]}]: "
-				login = $stdin.gets.chomp
-				print "Enter the the password: "
-				passwd = $stdin.gets.chomp
-				print "Enter the connection port [#{row[PORT]}]: "
-				port = $stdin.gets.chomp
-				print "Enter a comment [#{row[COMMENT]}]: "
-				comment = $stdin.gets.chomp
+				server  = ask("Enter the server name or ip [#{row[SERVER]}]: ")
+				type    = ask("Enter the type of connection [#{row[TYPE]}]: ")
+				login   = ask("Enter the login connection [#{row[LOGIN]}]: ")
+				passwd  = ask("Enter the the password: ")
+				port    = ask("Enter the connection port [#{row[PORT]}]: ")
+				comment = ask("Enter a comment [#{row[COMMENT]}]: ")
 				
 				row_update[ID] = row[ID]
 				server.empty?  ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
@@ -189,6 +178,7 @@ class ManagePasswd
 			end
 		end
 		@data = data_tmp
+		puts 'Item has been updated!'
 	end
 	
 	# Remove an item 
