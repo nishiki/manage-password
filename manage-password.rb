@@ -26,10 +26,10 @@ class ManagePasswd
 	COMMENT  = 6
 
 	# Constructor
-	# @args: key ->
-	#        file_gpg ->
-	#        file_pwd ->
-	#        timeout_pwd ->
+	# @args: key -> the gpg key to encrypt
+	#        file_gpg -> the file who is encrypted
+	#        file_pwd -> the file who stock the password
+	#        timeout_pwd -> time to save the password 
 	def initialize(key, file_gpg, file_pwd, timeout_pwd=300)
 		@key = key
 		@file_gpg = file_gpg
@@ -109,6 +109,8 @@ class ManagePasswd
 	end
 
 	# Display the connections informations for a server
+	# @args: search -> a string to match
+	#        type -> search for a type item
 	def display(search, type=nil)
 		result = self.search(search, type)
 
@@ -199,7 +201,7 @@ class ManagePasswd
 	end
 	
 	# Connect to ssh && display the password
-	# @args: search -> 
+	# @args: search -> a string to match
 	def ssh(search)
 		result = self.search(search, 'ssh')
 
