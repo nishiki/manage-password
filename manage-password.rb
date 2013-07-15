@@ -98,8 +98,8 @@ class ManagePasswd
 		result = Array.new()
 		@data.lines do |line|
 			row = line.parse_csv
-			if line =~ /^.*#{search}.*$/
-				if type.nil? || type.eql?(row[TYPE])
+			if line =~ /^.*#{search}.*$/ || type.eql?('all')
+				if type.nil? || type.eql?(row[TYPE]) || type.eql?('all')
 					result.push(row)
 				end
 			end
@@ -246,8 +246,13 @@ options = {}
 OptionParser.new do |opts|
 	opts.banner = "Usage: manage-password.rb [options]"
 
-	opts.on("-d", "--display SEARCH", "Display items") do |search|
-		options[:display] = search
+	opts.on("-d", "--display [SEARCH]", "Display items") do |search|
+		search.nil? ? (options[:display]  = '')  : (options[:display] = search)
+	end
+
+	opts.on("-A", "--show-all", "Show all items") do |b|
+		options[:showall] = true
+		options[:display] = ""
 	end
 
 	opts.on("-u", "--update ID", "Update an items") do |id|
@@ -262,16 +267,30 @@ OptionParser.new do |opts|
 		options[:add] = true
 	end
 
+	opts.on("-t", "--type TYPE", "select an type") do |type|
+		options[:type] = type
+	end
+
 	opts.on("-h", "--help", "Show this message") do |b|
 		puts opts
+		exit 0
 	end
 end.parse!
 
 manage = ManagePasswd.new(KEY, FILE_GPG, FILE_PWD)
 
 # Display the item's informations
+puts options
 if not options[:display].nil?
+	puts "test"
+	if not options[:type].nil?
+		manage.display(options[:display], options[:type])
+	elsif not options[:showall].nil?
+	puts "test"
+		manage.display(options[:display], 'all')
+	else
 		manage.display(options[:display])
+	end
 
 # Remove an item
 elsif not options[:remove].nil?
