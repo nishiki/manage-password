@@ -4,8 +4,10 @@
 # info: a simple script who manage your passwords
 
 require 'rubygems'
+require 'optparse'
 require 'gpgme'
 require 'csv'
+require 'net/ssh'
 require 'highline/import'
 
 FILE_GPG    = './pass.gpg'
@@ -217,6 +219,14 @@ class ManagePasswd
 				else
 					system("sshpass -p #{passwd} ssh #{login}@#{server} -p #{port}")
 				end
+				#Net::SSH.start(server, login, :port => port, :password => passwd) do |ssh|
+				#	channel = ssh.open_channel do |ch|
+				#		puts ch.exec 'ls'
+				#		ch.on_data do |data|
+				#			$stdout.print data
+				#		end
+				#	end
+				#end
 			end
 
 			return true
@@ -225,51 +235,59 @@ class ManagePasswd
 			return false
 		end
 	end
-
-	# Display help
-	def help()
-		puts "# HELP"
-		puts "# --------------------"
-		puts "Add a new item: -a"
-		puts "Update an item: -u ID"
-		puts "Remove an item: -r ID"
-		puts "Show a item: -d search [type]"
-		puts "Connect ssh: -s search"
-	end
 		
 end
 
-manage = ManagePasswd.new(KEY, FILE_GPG, FILE_PWD)
-num_argv = ARGV.length
+## MAIN ##
 
-# Display the item's informations
-if num_argv >= 2 && ARGV[0] == '-d'
-	if num_argv == 3
-		manage.display(ARGV[1], ARGV[2])
-	else
-		manage.display(ARGV[1])
+options = {}
+OptionParser.new do |opts|
+	opts.banner = "Usage: manage-password.rb [options]"
+
+	opts.on("-d", "--display SEARCH", "Display items") do |search|
+		options[:display] = search
 	end
 
+	opts.on("-u", "--update ID", "Update an items") do |id|
+		options[:update] = id
+	end
+
+	opts.on("-r", "--remove ID", "Remove an items") do |id|
+		options[:remove] = id
+	end
+
+	opts.on("-a", "--add", "Add an items") do |b|
+		options[:add] = true
+	end
+
+	opts.on("-h", "--help", "Show this message") do |b|
+		puts opts
+	end
+end.parse!
+
+manage = ManagePasswd.new(KEY, FILE_GPG, FILE_PWD)
+
+# Display the item's informations
+if not options[:display].nil?
+		manage.display(options[:display])
+
 # Remove an item
-elsif num_argv == 2 && ARGV[0] == '-r'
-	manage.remove(ARGV[1]) 
+elsif not options[:remove].nil?
+	manage.remove(options[:remove]) 
 	manage.encrypt()
 
 # Update an item
-elsif num_argv == 2 && ARGV[0] == '-u'
-	manage.update(ARGV[1]) 
+elsif not options[:update].nil?
+	manage.update(options[:update]) 
 	manage.encrypt()
 
 # Connect to ssh
-elsif num_argv == 2 && ARGV[0] == '-s'
-	manage.ssh(ARGV[1])
+elsif not options[:ssh].nil?
+	manage.ssh(options[:ssh])
 
 # Add a new item
-elsif num_argv == 1 && ARGV[0] == '-a'
+elsif not options[:add].nil?
 	manage.add()
 	manage.encrypt()
 
-# Display help
-else
-	manage.help()
 end
