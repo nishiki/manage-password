@@ -6,11 +6,7 @@
 require 'rubygems'
 require 'optparse'
 require './manage-password.rb'
-
-FILE_GPG    = './pass.gpg'
-KEY         = 'a.waksberg@yaegashi.fr'
-FILE_PWD    = '/tmp/.password-manager.pwd'
-TIMEOUT_PWD = 300
+require './cli.rb'
 
 options = {}
 OptionParser.new do |opts|
@@ -47,7 +43,9 @@ OptionParser.new do |opts|
 	end
 end.parse!
 
-manage = ManagePasswd.new(KEY, FILE_GPG, FILE_PWD)
+cli = Cli.new
+
+manage = ManagePasswd.new(cli.key, cli.file_gpg, cli.file_pwd)
 
 # Display the item's informations
 if not options[:display].nil?
