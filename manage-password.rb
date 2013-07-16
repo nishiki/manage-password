@@ -4,7 +4,6 @@
 # info: a simple script who manage your passwords
 
 require 'rubygems'
-require 'optparse'
 require 'gpgme'
 require 'csv'
 require 'net/ssh'
@@ -238,75 +237,4 @@ class ManagePasswd
 		end
 	end
 		
-end
-
-## MAIN ##
-
-options = {}
-OptionParser.new do |opts|
-	opts.banner = "Usage: manage-password.rb [options]"
-
-	opts.on("-d", "--display [SEARCH]", "Display items") do |search|
-		search.nil? ? (options[:display]  = '')  : (options[:display] = search)
-	end
-
-	opts.on("-A", "--show-all", "Show all items") do |b|
-		options[:showall] = true
-		options[:display] = ""
-	end
-
-	opts.on("-u", "--update ID", "Update an items") do |id|
-		options[:update] = id
-	end
-
-	opts.on("-r", "--remove ID", "Remove an items") do |id|
-		options[:remove] = id
-	end
-
-	opts.on("-a", "--add", "Add an items") do |b|
-		options[:add] = true
-	end
-
-	opts.on("-t", "--type TYPE", "select an type") do |type|
-		options[:type] = type
-	end
-
-	opts.on("-h", "--help", "Show this message") do |b|
-		puts opts
-		exit 0
-	end
-end.parse!
-
-manage = ManagePasswd.new(KEY, FILE_GPG, FILE_PWD)
-
-# Display the item's informations
-if not options[:display].nil?
-	if not options[:type].nil?
-		manage.display(options[:display], options[:type])
-	elsif not options[:showall].nil?
-	puts "test"
-		manage.display(options[:display], 'all')
-	else
-		manage.display(options[:display])
-	end
-
-# Remove an item
-elsif not options[:remove].nil?
-	manage.remove(options[:remove]) 
-	manage.encrypt()
-
-# Update an item
-elsif not options[:update].nil?
-	manage.update(options[:update]) 
-	manage.encrypt()
-
-# Connect to ssh
-elsif not options[:ssh].nil?
-	manage.ssh(options[:ssh])
-
-# Add a new item
-elsif not options[:add].nil?
-	manage.add()
-	manage.encrypt()
-
 end
