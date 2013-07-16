@@ -280,7 +280,6 @@ end.parse!
 manage = ManagePasswd.new(KEY, FILE_GPG, FILE_PWD)
 
 # Display the item's informations
-puts options
 if not options[:display].nil?
 	puts "test"
 	if not options[:type].nil?
