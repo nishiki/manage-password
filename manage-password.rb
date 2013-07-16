@@ -9,11 +9,6 @@ require 'csv'
 require 'net/ssh'
 require 'highline/import'
 
-FILE_GPG    = './pass.gpg'
-KEY         = 'a.waksberg@yaegashi.fr'
-FILE_PWD    = '/tmp/.password-manager.pwd'
-TIMEOUT_PWD = 300
-
 class ManagePasswd
 	
 	ID       = 0
