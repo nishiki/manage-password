@@ -281,7 +281,6 @@ manage = ManagePasswd.new(KEY, FILE_GPG, FILE_PWD)
 
 # Display the item's informations
 if not options[:display].nil?
-	puts "test"
 	if not options[:type].nil?
 		manage.display(options[:display], options[:type])
 	elsif not options[:showall].nil?
