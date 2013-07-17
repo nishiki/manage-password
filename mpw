@@ -5,12 +5,11 @@
 
 require 'rubygems'
 require 'optparse'
-require './manage-password.rb'
 require './cli.rb'
 
 options = {}
 OptionParser.new do |opts|
-	opts.banner = "Usage: manage-password.rb [options]"
+	opts.banner = "Usage: mpw [options]"
 
 	opts.on("-d", "--display [SEARCH]", "Display items") do |search|
 		search.nil? ? (options[:display]  = '')  : (options[:display] = search)
@@ -33,8 +32,16 @@ OptionParser.new do |opts|
 		options[:add] = true
 	end
 
-	opts.on("-t", "--type TYPE", "select an type") do |type|
+	opts.on("-s", "--ssh SEARCH", "Connect to ssh") do |search|
+		options[:ssh] = search
+	end
+
+	opts.on("-p", "--protocol PROTOCOL", "Select a protocol") do |type|
 		options[:type] = type
+	end
+
+	opts.on("-f", "--force", "Force an action") do |b|
+		options[:force] = true
 	end
 
 	opts.on("-h", "--help", "Show this message") do |b|
@@ -43,38 +50,34 @@ OptionParser.new do |opts|
 	end
 end.parse!
 
-cli = Cli.new
+cli = Cli.new()
 
-manage = ManagePasswd.new(cli.key, cli.file_gpg, cli.file_pwd)
-
+puts options
 # Display the item's informations
 if not options[:display].nil?
 	if not options[:type].nil?
-		manage.display(options[:display], options[:type])
+		cli.display(options[:display], options[:type])
 	elsif not options[:showall].nil?
-		manage.display(options[:display], 'all')
+		cli.display(options[:display], 'all')
 	else
-		manage.display(options[:display])
+		cli.display(options[:display])
 	end
 
 # Remove an item
 elsif not options[:remove].nil?
-	manage.remove(options[:remove])
-	manage.encrypt()
+	cli.remove(options[:remove])
 
 # Update an item
 elsif not options[:update].nil?
-	manage.update(options[:update])
-	manage.encrypt()
+	cli.update(options[:update])
 
 # Connect to ssh
 elsif not options[:ssh].nil?
-	manage.ssh(options[:ssh])
+	cli.ssh(options[:ssh])
 
 # Add a new item
 elsif not options[:add].nil?
-	manage.add()
-	manage.encrypt()
+	cli.add()
 
 else
 	puts "For help add option -h or --help"

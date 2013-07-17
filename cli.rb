@@ -1,28 +1,24 @@
 #!/usr/bin/ruby
 # author: nishiki
 # mail: nishiki@yaegashi.fr
-# info: a simple script who manage your passwords
+# info: a simple script who m your passwords
 
 require 'rubygems'
 require 'highline/import'
-require 'yaml'
+require './MPW.rb'
 
 class Cli
 
-	attr_accessor :key
-	attr_accessor :file_gpg
-	attr_accessor :file_pwd
-	attr_accessor :timeout_pwd
-
 	def initialize()
-		@file_config = "#{Dir.home()}/.mpw.cfg"
-
-		if !File.exist?(@file_config) || !self.checkconfig()
+		@m = MPW.new()
+		
+		if not @m.checkconfig()
 			self.setup()
-			if not self.checkconfig()
-				puts "Error during the checkconfig post setup!"
-				exit 2
-			end
+		end
+
+		if not self.decrypt()
+			puts "ERROR: #{@m.error_msg}"
+			exit 2
 		end
 	end
 
@@ -32,50 +28,102 @@ class Cli
 		file_gpg    = ask("Enter the path to encrypt file [default=#{Dir.home()}/.mpw.gpg]: ")
 		file_pwd    = ask("Enter te path to password file [default=#{Dir.home()}/.mpw.pwd]: ")
 		timeout_pwd = ask("Enter the timeout (in seconde) to GPG password [default=300]: ")
-
-		if not key =~ /[a-zA-Z0-9.-_]*\@[a-zA-Z0-9]*\.[a-zA-Z]*/
-			puts "GPG key is invalid!"
-			exit 2
-		end
 		
-		if file_gpg.empty?
-			file_gpg = "#{Dir.home()}/.mpw.gpg"
-		end
-
-		if file_pwd.empty?
-			file_pwd = "#{Dir.home()}/.mpw.pwd"
-		end
-
-		timeout_pwd.empty? ? (timeout_pwd = 300) : (timeout_pwd = timeout_pwd.to_i)
-
-		config = {'config' => {'key'         => key,
-		                       'file_gpg'    => file_gpg,
-		                       'timeout_pwd' => timeout_pwd,
-		                       'file_pwd'    => file_pwd}}
-		
-		File.open(@file_config, 'w') do |file|
-			file << config.to_yaml
+		if setup(key, file_gpg, file_pwd, timeout_pwd)
+			puts "The config file has been created!"
+		else
+			puts "ERROR: #{@m.error_msg}"
 		end
 	end
 
-	# Check the config file
-	# @rtrn: true if the config file is correct
-	def checkconfig()
-		begin
-			config = YAML::load_file(@file_config)
-			@key         = config['config']['key']
-			@file_gpg    = config['config']['file_gpg']
-			@file_pwd    = config['config']['file_pwd']
-			@timeout_pwd = config['config']['timeout_pwd'].to_i
-
-			if @key.empty? || @file_gpg.empty? || @file_pwd.empty? 
-				return false
-			end
-
-		rescue
-			return false
+	def decrypt()
+		if not @m.checkFilePassword()
+			passwd = ask("Password GPG: ") {|q| q.echo = false}
+			return @m.decrypt(passwd)
+		else
+			return @m.decrypt()
 		end
+	end
 
-		return true
+	def display(search, protocol=nil)
+		result = @m.search(search, protocol)
+
+		if not result.empty?
+			result.each do |r|
+				puts "# --------------------"
+				puts "# Id: #{r[MPW::ID]}"
+				puts "# Server: #{r[MPW::SERVER]}"
+				puts "# Type: #{r[MPW::PROTOCOL]}"
+				puts "# Login: #{r[MPW::LOGIN]}"
+				puts "# Password: #{r[MPW::PASSWORD]}"
+				puts "# Port: #{r[MPW::PORT]}"
+				puts "# Comment: #{r[MPW::COMMENT]}"
+			end
+		else
+			puts "Nothing result!"	
+		end
+	end
+
+	def add()
+		row = Array.new()
+		puts "# Add a new item"
+		puts "# --------------------"
+		server   = ask("Enter the server name or ip: ")
+		protocol = ask("Enter the type of connection (ssh, web, other): ")
+		login    = ask("Enter the login connection: ")
+		passwd   = ask("Enter the the password: ")
+		port     = ask("Enter the connection port (optinal): ")
+		comment  = ask("Enter a comment (optinal): ")
+
+		@m.add(server, protocol, login, passwd, port, comment)
+
+		if @m.encrypt()
+			puts "Item has been added!"
+		else
+			puts "ERROR: #{@m.error_msg}"
+		end
+	end
+
+	def update(id)
+		row = @m.searchById(id)
+
+		if not row.empty?
+			puts "# Add a new password"
+			puts "# --------------------"
+			server   = ask("Enter the server name or ip [#{row[MPW::SERVER]}]: ")
+			protocol = ask("Enter the type of connection [#{row[MPW::PROTOCOL]}]: ")
+			login    = ask("Enter the login connection [#{row[MPW::LOGIN]}]: ")
+			passwd   = ask("Enter the the password: ")
+			port     = ask("Enter the connection port [#{row[MPW::PORT]}]: ")
+			comment  = ask("Enter a comment [#{row[MPW::COMMENT]}]: ")
+				
+			if @m.update(id, server, protocol, login, passwd, port, comment)
+				if @m.encrypt()
+					puts "Item has been updated!"
+				else
+					puts "ERROR: #{@m.error_msg}"
+				end
+			else
+				puts "Nothing item has been updated!"
+			end
+		else
+			puts "Nothing result!"
+		end
+	end
+
+	def remove(id)
+		if @m.remove(id)
+			if @m.encrypt()
+				puts "The item #{id} has been removed!"
+			else
+				puts "ERROR: #{@m.error_msg}"
+			end
+		else
+			puts "Nothing item has been removed!"
+		end
+	end
+
+	def ssh(search)
+		@m.ssh(search)
 	end
 end
