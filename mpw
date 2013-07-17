@@ -52,7 +52,6 @@ end.parse!
 
 cli = Cli.new()
 
-puts options
 # Display the item's informations
 if not options[:display].nil?
 	if not options[:type].nil?
@@ -65,7 +64,11 @@ if not options[:display].nil?
 
 # Remove an item
 elsif not options[:remove].nil?
-	cli.remove(options[:remove])
+	if not options[:force].nil?
+		cli.remove(options[:remove], options[:force])
+	else
+		cli.remove(options[:remove])
+	end
 
 # Update an item
 elsif not options[:update].nil?

@@ -111,15 +111,25 @@ class Cli
 		end
 	end
 
-	def remove(id)
-		if @m.remove(id)
-			if @m.encrypt()
-				puts "The item #{id} has been removed!"
-			else
-				puts "ERROR: #{@m.error_msg}"
+	def remove(id, force=false)
+
+		if not force
+			confirm = ask("Are you sur to remove the item: #{id} ? (y/N) ")
+			if confirm =~ /^(y|yes|YES|Yes|Y)$/
+				force = true
 			end
-		else
-			puts "Nothing item has been removed!"
+		end
+
+		if force
+			if @m.remove(id)
+				if @m.encrypt()
+					puts "The item #{id} has been removed!"
+				else
+					puts "ERROR: #{@m.error_msg}"
+				end
+			else
+				puts "Nothing item has been removed!"
+			end
 		end
 	end
 
