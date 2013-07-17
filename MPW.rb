@@ -101,11 +101,11 @@ class MPW
 		@data = ""
 
 		begin
-			if passwd.nil?
+			if passwd.nil? || passwd.empty?
 				passwd = IO.read(@file_pwd)
 			end
 		rescue
-			if not passwd.nil?
+			if !passwd.nil? && !passwd.empty?
 				file_pwd = File.new(@file_pwd, 'w')
 				File.chmod(0600, @file_pwd)
 				file_pwd << passwd
@@ -120,7 +120,7 @@ class MPW
 			end
 			return true
 		rescue
-			if not @file_pwd.nil?
+			if !@file_pwd.nil? && File.exist?(@file_pwd)
 				File.delete(@file_pwd)
 			end
 			
@@ -133,12 +133,14 @@ class MPW
 	# Check if a password it saved
 	# @rtrn: true if a password exist in the password file
 	def checkFilePassword()
-		if !@file_pwd.nil? && File.exist?(@file_pwd) && File.stat(@file_pwd).mtime.to_i + @timeout_pwd < Time.now.to_i
+		if File.exist?(@file_pwd) && File.stat(@file_pwd).mtime.to_i + @timeout_pwd < Time.now.to_i
 			File.delete(@file_pwd)
 			return false
+		elsif File.exist?(@file_pwd) 
+			return true
+		else
+			return false
 		end
-		
-		return true
 	end
 
 	# Encrypt a file
