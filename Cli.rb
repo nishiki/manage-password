@@ -31,7 +31,7 @@ class Cli
 		file_pwd    = ask("Enter te path to password file [default=#{Dir.home()}/.mpw.pwd]: ")
 		timeout_pwd = ask("Enter the timeout (in seconde) to GPG password [default=300]: ")
 		
-		if setup(key, file_gpg, file_pwd, timeout_pwd)
+		if @m.setup(key, file_gpg, file_pwd, timeout_pwd)
 			puts "The config file has been created!"
 		else
 			puts "ERROR: #{@m.error_msg}"
@@ -114,7 +114,6 @@ class Cli
 	end
 
 	def remove(id, force=false)
-
 		if not force
 			confirm = ask("Are you sur to remove the item: #{id} ? (y/N) ")
 			if confirm =~ /^(y|yes|YES|Yes|Y)$/

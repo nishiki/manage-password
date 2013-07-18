@@ -133,10 +133,10 @@ class MPW
 	# Check if a password it saved
 	# @rtrn: true if a password exist in the password file
 	def checkFilePassword()
-		if File.exist?(@file_pwd) && File.stat(@file_pwd).mtime.to_i + @timeout_pwd < Time.now.to_i
+		if !@file_pwd.nil? && File.exist?(@file_pwd) && File.stat(@file_pwd).mtime.to_i + @timeout_pwd < Time.now.to_i
 			File.delete(@file_pwd)
 			return false
-		elsif File.exist?(@file_pwd) 
+		elsif !@file_pwd.nil? && File.exist?(@file_pwd) 
 			return true
 		else
 			return false
