@@ -35,6 +35,10 @@ OptionParser.new do |opts|
 		options[:add] = true
 	end
 
+	opts.on("-S", "--setup", "Setup the config file") do |b|
+		options[:setup] = true
+	end
+
 	opts.on("-s", "--ssh SEARCH", "Connect to ssh") do |search|
 		options[:ssh] = search
 	end
@@ -56,7 +60,10 @@ end.parse!
 cli = Cli.new()
 
 # Display the item's informations
-if not options[:display].nil?
+if not options[:setup].nil?
+	cli.setup()
+
+elsif not options[:display].nil?
 	if not options[:type].nil?
 		cli.display(options[:display], options[:type])
 	elsif not options[:showall].nil?

@@ -26,6 +26,8 @@ class Cli
 
 	# Create a new config file
 	def setup()
+		puts "# Setup a new config file"
+		puts "# --------------------"
 		key         = ask("Enter the GPG key: ")
 		file_gpg    = ask("Enter the path to encrypt file [default=#{Dir.home()}/.mpw.gpg]: ")
 		file_pwd    = ask("Enter te path to password file [default=#{Dir.home()}/.mpw.pwd]: ")
