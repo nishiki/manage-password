@@ -5,7 +5,9 @@
 
 require 'rubygems'
 require 'highline/import'
-require './MPW.rb'
+require 'pathname'
+
+require "#{APP_ROOT}/MPW.rb"
 
 class Cli
 
