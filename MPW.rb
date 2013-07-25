@@ -278,9 +278,49 @@ class MPW
 
 		return removed
 	end
+
+	
+	# Export to csv
+	# @args: file -> a string to match
+	# @rtrn: true if export work
+	def export(file)
+		begin
+			File.open(file, 'w+') do |f|
+				f << @data
+			end
+			return true
+		rescue
+			@error_msg = "Can't export, impossible to write in #{file}!"
+			@error     = 8
+			return false
+		end
+	end
+
+	# Import to csv
+	# @args: search -> a string to match
+	# @rtrn: true if the import work
+	def import(file)
+		begin
+			data_new = IO.read(file)
+			data_new.lines do |line|
+				if not line =~ /(.*,){6}/
+					@error_msg = "Can't import, the file is bad format!"
+					@error     = 9
+					return false
+				end
+			end
+			@data << data_new
+
+			return true
+		rescue
+			@error_msg = "Can't import, impossible to read  #{file}!"
+			@error     = 10
+			return false
+		end
+	end
 	
 	# Connect to ssh && display the password
-	# @args: search -> a string to match
+	# @args: file -> a string to match
 	# @rtrn: true if ssh connection work
 	def ssh(search)
 		result = self.search(search, 'ssh')

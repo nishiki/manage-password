@@ -136,6 +136,28 @@ class Cli
 		end
 	end
 
+	def export(file)
+		if @m.export(file)
+			puts "The export in #{file} is succesfull!"
+		else
+			puts "ERROR: #{@m.error_msg}"
+		end
+
+	end
+
+	def import(file)
+		if @m.import(file)
+			if @m.encrypt()
+				puts "The import is succesfull!"
+			else
+				puts "ERROR: #{@m.error_msg}"
+			end
+		else
+			puts "ERROR: #{@m.error_msg}"
+		end
+			
+	end
+
 	def ssh(search)
 		@m.ssh(search)
 	end

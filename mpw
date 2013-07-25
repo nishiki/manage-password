@@ -47,6 +47,14 @@ OptionParser.new do |opts|
 		options[:type] = type
 	end
 
+	opts.on("-e", "--export FILE", "Export to csv file") do |file|
+		options[:export] = file
+	end
+
+	opts.on("-i", "--import FILE", "Import from csv file") do |file|
+		options[:import] = file
+	end
+
 	opts.on("-f", "--force", "Force an action") do |b|
 		options[:force] = true
 	end
@@ -91,6 +99,14 @@ elsif not options[:ssh].nil?
 # Add a new item
 elsif not options[:add].nil?
 	cli.add()
+
+# Export
+elsif not options[:export].nil?
+	cli.export(options[:export])
+
+# Add a new item
+elsif not options[:import].nil?
+	cli.import(options[:import])
 
 else
 	puts "For help add option -h or --help"
