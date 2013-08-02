@@ -103,14 +103,15 @@ class MPW
 		begin
 			if passwd.nil? || passwd.empty?
 				passwd = IO.read(@file_pwd)
-			end
-		rescue
-			if !passwd.nil? && !passwd.empty?
+
+			elsif !passwd.nil? && !passwd.empty?
 				file_pwd = File.new(@file_pwd, 'w')
 				File.chmod(0600, @file_pwd)
 				file_pwd << passwd
 				file_pwd.close
 			end
+		rescue
+			return false
 		end
 
 		begin
