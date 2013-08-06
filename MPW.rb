@@ -6,7 +6,6 @@
 require 'rubygems'
 require 'gpgme'
 require 'csv'
-require 'net/ssh'
 require 'yaml'
 
 class MPW
@@ -316,36 +315,6 @@ class MPW
 		rescue
 			@error_msg = "Can't import, impossible to read  #{file}!"
 			@error     = 10
-			return false
-		end
-	end
-	
-	# Connect to ssh && display the password
-	# @args: file -> a string to match
-	# @rtrn: true if ssh connection work
-	def ssh(search)
-		result = self.search(search, 'ssh')
-
-		if result.length > 0
-			result.each do |r|
-				server = r[SERVER]
-				login  = r[LOGIN]
-				port   = r[PORT]
-				passwd = r[PASSWORD]
-
-				if port.empty?
-					port = 22
-				end
-
-				if passwd.empty?
-					system("#{passwd} ssh #{login}@#{server} -p #{port}")
-				else
-					system("sshpass -p #{passwd} ssh #{login}@#{server} -p #{port}")
-				end
-			end
-
-			return true
-		else
 			return false
 		end
 	end

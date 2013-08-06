@@ -158,7 +158,4 @@ class Cli
 			
 	end
 
-	def ssh(search)
-		@m.ssh(search)
-	end
 end

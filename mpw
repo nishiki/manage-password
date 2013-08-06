@@ -39,10 +39,6 @@ OptionParser.new do |opts|
 		options[:setup] = true
 	end
 
-	opts.on("-s", "--ssh SEARCH", "Connect to ssh") do |search|
-		options[:ssh] = search
-	end
-
 	opts.on("-p", "--protocol PROTOCOL", "Select a protocol") do |type|
 		options[:type] = type
 	end
@@ -91,10 +87,6 @@ elsif not options[:remove].nil?
 # Update an item
 elsif not options[:update].nil?
 	cli.update(options[:update])
-
-# Connect to ssh
-elsif not options[:ssh].nil?
-	cli.ssh(options[:ssh])
 
 # Add a new item
 elsif not options[:add].nil?
