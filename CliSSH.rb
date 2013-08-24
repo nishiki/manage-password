@@ -3,27 +3,30 @@
 # mail: nishiki@yaegashi.fr
 # info: a simple script who manage your passwords
 
-require 'net/ssh'
 require "#{APP_ROOT}/Cli.rb"
 
 class CliSSH < Cli
+
+	attr_accessor :server, :port, :login
 
 	def ssh(search)
 		result = @m.search(search, 'ssh')
 
 		if result.length > 0
 			result.each do |r|
-				server = r[MPW::SERVER]
-				login  = r[MPW::LOGIN]
-				port   = r[MPW::PORT]
+				@server.nil? ? (server = r[MPW::SERVER]) : (server = @server)
+				@port.nil?   ? (port   = r[MPW::PORT])   : (port   = @port)
+				@login.nil?  ? (login  = r[MPW::LOGIN])  : (login  = @login)
+
 				passwd = r[MPW::PASSWORD]
 
 				if port.empty?
 					port = 22
 				end
 
+				puts "ssh #{login}@#{server} -p #{port}"
 				if passwd.empty?
-					system("#{passwd} ssh #{login}@#{server} -p #{port}")
+					system("ssh #{login}@#{server} -p #{port}")
 				else
 					system("sshpass -p #{passwd} ssh #{login}@#{server} -p #{port}")
 				end

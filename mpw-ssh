@@ -4,19 +4,42 @@
 # info: a simple script who manage your passwords
 
 require 'rubygems'
+require 'optparse'
 require 'pathname'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
 require "#{APP_ROOT}/CliSSH.rb"
 
-if ARGV.length != 1
-	puts "Usage: mpw-ssh search"
+cli    = CliSSH.new()
+search = ARGV[0]
+
+options = {}
+OptionParser.new do |opts|
+	opts.banner = "Usage: mpw-ssh SEARCH [options]"
+
+	opts.on("-l", "--login LOGIN", "Force a login") do |login|
+		cli.login = login
+	end
+
+	opts.on("-p", "--port PORT", "Force a port") do |port|
+		cli.port = port	
+	end
+
+	opts.on("-s", "--server SERVER", "Force a server") do |server|
+		cli.server = server
+	end
+
+	opts.on("-h", "--help", "Show this message") do |b|
+		puts opts
+		exit 0
+	end
+end.parse!
+
+if ARGV.length < 1
+	puts "Usage: mpw-ssh SEARCH [options]"
 	exit 2
 end
 
-search = ARGV[0]
-
-cli = CliSSH.new()
 cli.ssh(search)
 
 exit 0
