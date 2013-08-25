@@ -20,6 +20,8 @@ Remove an item:
 
 Connect to ssh:
 * mpw-ssh SEARCH
+* mpw-ssh SEARCH -l LOGIN -s SERVER -p PORT
+
 
 # Installation
 
@@ -28,7 +30,3 @@ You must generate a GPG Key with GPG or with Seahorse (GUI on linux).
 ## On Debian/Ubuntu:
 
 * apt-get install ruby ruby-gpgme ruby-highline
-
-For mpw-sshi (optional):
-
-* apt-get install sshpass ruby-net-ssh
