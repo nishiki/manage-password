@@ -9,6 +9,8 @@ class CliSSH < Cli
 
 	attr_accessor :server, :port, :login
 
+	# Connect to SSH
+	# args: search -> string to search
 	def ssh(search)
 		result = @m.search(search, 'ssh')
 
@@ -24,7 +26,7 @@ class CliSSH < Cli
 					port = 22
 				end
 
-				puts "ssh #{login}@#{server} -p #{port}"
+				puts "Connect to: ssh #{login}@#{server} -p #{port}"
 				if passwd.empty?
 					system("ssh #{login}@#{server} -p #{port}")
 				else

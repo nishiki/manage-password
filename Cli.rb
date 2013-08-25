@@ -11,6 +11,7 @@ require "#{APP_ROOT}/MPW.rb"
 
 class Cli
 
+	# Constructor
 	def initialize()
 		@m = MPW.new()
 		
@@ -40,6 +41,7 @@ class Cli
 		end
 	end
 
+	# Request the GPG password and decrypt the file
 	def decrypt()
 		if not @m.checkFilePassword()
 			passwd = ask("Password GPG: ") {|q| q.echo = false}
@@ -49,6 +51,9 @@ class Cli
 		end
 	end
 
+	# Display the query's result
+	# @args: search -> the string to search
+	#        protocol -> search from a particular protocol
 	def display(search, protocol=nil)
 		result = @m.search(search, protocol)
 
@@ -68,6 +73,7 @@ class Cli
 		end
 	end
 
+	# Form to add a new item
 	def add()
 		row = Array.new()
 		puts "# Add a new item"
@@ -88,6 +94,8 @@ class Cli
 		end
 	end
 
+	# Update an item
+	# @args: id -> the item's id
 	def update(id)
 		row = @m.searchById(id)
 
@@ -115,6 +123,9 @@ class Cli
 		end
 	end
 
+	# Remove an item
+	# @args: id -> the item's id
+	#        force -> no resquest a validation
 	def remove(id, force=false)
 		if not force
 			confirm = ask("Are you sur to remove the item: #{id} ? (y/N) ")
@@ -136,6 +147,8 @@ class Cli
 		end
 	end
 
+	# Export the items in a CSV file
+	# @args: file -> the destination file
 	def export(file)
 		if @m.export(file)
 			puts "The export in #{file} is succesfull!"
@@ -145,6 +158,8 @@ class Cli
 
 	end
 
+	# Import items from a CSV file
+	# @args: file -> the import file
 	def import(file)
 		if @m.import(file)
 			if @m.encrypt()

@@ -95,7 +95,7 @@ class MPW
 
 	# Decrypt a gpg file
 	# @args: password -> the GPG key password
-	# @rtrn: true if data is decrypted
+	# @rtrn: true if data has been decrypted
 	def decrypt(passwd=nil)
 		@data = ""
 
@@ -144,6 +144,7 @@ class MPW
 	end
 
 	# Encrypt a file
+	# @rtrn: true if the file has been encrypted
 	def encrypt()
 		begin
 			crypto = GPGME::Crypto.new(:armor => true)
