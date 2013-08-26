@@ -139,6 +139,18 @@ class Cli
 	#        force -> no resquest a validation
 	def remove(id, force=false)
 		if not force
+			result = @m.searchById(id)		
+
+			puts "# --------------------"
+			puts "# Id: #{id}"
+			puts "# Name: #{result[MPW::NAME]}"
+			puts "# Group: #{result[MPW::GROUP]}"
+			puts "# Server: #{result[MPW::SERVER]}"
+			puts "# Type: #{result[MPW::PROTOCOL]}"
+			puts "# Login: #{result[MPW::LOGIN]}"
+			puts "# Port: #{result[MPW::PORT]}"
+			puts "# Comment: #{result[MPW::COMMENT]}"
+
 			confirm = ask("Are you sur to remove the item: #{id} ? (y/N) ")
 			if confirm =~ /^(y|yes|YES|Yes|Y)$/
 				force = true
