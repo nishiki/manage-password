@@ -10,22 +10,21 @@ require 'yaml'
 
 class MPW
 	
-	ID       = 0
-	PROTOCOL = 1
-	SERVER   = 2
-	LOGIN    = 3
-	PASSWORD = 4
-	PORT     = 5
-	COMMENT  = 6
+	NAME     = 0
+	GROUP    = 1
+	PROTOCOL = 2
+	SERVER   = 3
+	LOGIN    = 4
+	PASSWORD = 5
+	PORT     = 6
+	COMMENT  = 7
 
-	attr_accessor :error
 	attr_accessor :error_msg
 
 	# Constructor
 	def initialize()
 		@file_config = "#{Dir.home()}/.mpw.cfg"
 		@error_mgs   = nil
-		@error       = 0
 	end
 
 	# Create a new config file
@@ -38,7 +37,6 @@ class MPW
 
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 			@error_msg = "The key string isn't in good format!"
-			@error     = 1
 			return false
 		end
 		
@@ -63,7 +61,6 @@ class MPW
 			end
 		rescue
 			@error_msg = "Can't write the config file!"
-			@error     = 2
 			return false
 		end
 
@@ -86,7 +83,6 @@ class MPW
 
 		rescue
 			@error_msg = "Checkconfig failed!"
-			@error     = 3
 			return false
 		end
 
@@ -125,7 +121,6 @@ class MPW
 			end
 			
 			@error_msg = "Can't decrypt file!"
-			@error     = 4
 			return false
 		end
 	end
@@ -155,7 +150,6 @@ class MPW
 			return true
 		rescue
 			@error_msg = "Can't encrypt the GPG file!"
-			@error     = 5
 			return false
 		end
 	end
@@ -182,27 +176,42 @@ class MPW
 	# @args: id -> the id item
 	# @rtrn: a row with the resultat of the search
 	def searchById(id)
+		i = 0
 		@data.lines do |line|
 			row = line.parse_csv
-			if !id.nil? && id.eql?(row[ID])
+			if !id.nil? && id.eql?(i.to_s)
 				return row
 			end
+			i += 1
 		end
 
 		return Array.new()
 	end
 
 	# Add a new item
-	# @args: server -> the ip or server
+	# @args: name -> the item name
+	#        group -> the item group
+	#        server -> the ip or server
 	#        protocol -> the protocol
 	#        login -> the login
 	#        passwd -> the password
 	#        port -> the port
 	#        comment -> a comment
-	def add(server, protocol=nil, login=nil, passwd=nil, port=nil, comment=nil)
+	# @rtrn: true if it works
+	def add(name, group=nil, server=nil, protocol=nil, login=nil, passwd=nil, port=nil, comment=nil)
 		row = Array.new()
+		
+		if name.nil? || name.empty?
+			@error_msg = "You must define a name!"
+			return false
+		end
 
-		row[ID]       = Time.now.to_i.to_s(16)
+		if group.nil? || group.empty
+			group 'No Group'
+		end
+
+		row[NAME]     = name
+		row[GROUP]    = group
 		row[SERVER]   = server
 		row[PROTOCOL] = protocol
 		row[LOGIN]    = login
@@ -211,27 +220,33 @@ class MPW
 		row[COMMENT]  = comment
 
 		@data << "#{row.join(',')}\n"
+
+		return true
 	end
 	
 	# Update an item
 	# @args: id -> the item's identifiant
-	#        server -> the ip or server
+	#        name -> the item name
+	#        group ->  the item group
+	#        server -> the ip or hostname
 	#        protocol -> the protocol
 	#        login -> the login
 	#        passwd -> the password
 	#        port -> the port
 	#        comment -> a comment
 	# @rtrn: true if the item has been updated
-	def update(id, server=nil, protocol=nil, login=nil, passwd=nil, port=nil, comment=nil)
+	def update(id, name=nil, group=nil, server=nil, protocol=nil, login=nil, passwd=nil, port=nil, comment=nil)
 		updated  = false
 		data_tmp = ''
 
+		i = 0
 		@data.lines do |line|
-			row = line.parse_csv
-			if id.eql?(row[ID])
+			if id.eql?(i.to_s)
+				row = line.parse_csv
 				row_update = Array.new()
 
-				row_update[ID] = row[ID]
+				name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
+				group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
 				server.empty?   ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
 				protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL]) : (row_update[PROTOCOL] = protocol)
 				login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
@@ -244,12 +259,13 @@ class MPW
 			else
 				data_tmp << line
 			end
+
+			i += 1
 		end
 		@data = data_tmp
 
 		if not updated
 			@error_msg = "Can't update the item: #{id}!"
-			@error     = 6
 		end
 
 		return updated
@@ -262,19 +278,19 @@ class MPW
 		removed  = false
 		data_tmp = ""
 
+		i = 0
 		@data.lines do |line|
-			row = line.parse_csv
-			if id.eql?(row[ID])
+			if id.eql?(i.to_s)
 				removed = true
 			else
 				data_tmp << line
 			end
+			i += 1
 		end
 		@data = data_tmp
 
 		if not removed
 			@error_msg = "Can't remove the item: #{id}!"
-			@error     = 7
 		end
 
 		return removed
@@ -292,7 +308,6 @@ class MPW
 			return true
 		rescue
 			@error_msg = "Can't export, impossible to write in #{file}!"
-			@error     = 8
 			return false
 		end
 	end
@@ -306,7 +321,6 @@ class MPW
 			data_new.lines do |line|
 				if not line =~ /(.*,){6}/
 					@error_msg = "Can't import, the file is bad format!"
-					@error     = 9
 					return false
 				end
 			end
@@ -315,7 +329,6 @@ class MPW
 			return true
 		rescue
 			@error_msg = "Can't import, impossible to read  #{file}!"
-			@error     = 10
 			return false
 		end
 	end

@@ -58,15 +58,20 @@ class Cli
 		result = @m.search(search, protocol)
 
 		if not result.empty?
+			i = 0
 			result.each do |r|
 				puts "# --------------------"
-				puts "# Id: #{r[MPW::ID]}"
+				puts "# Id: #{i}"
+				puts "# Name: #{r[MPW::NAME]}"
+				puts "# Group: #{r[MPW::GROUP]}"
 				puts "# Server: #{r[MPW::SERVER]}"
 				puts "# Type: #{r[MPW::PROTOCOL]}"
 				puts "# Login: #{r[MPW::LOGIN]}"
 				puts "# Password: #{r[MPW::PASSWORD]}"
 				puts "# Port: #{r[MPW::PORT]}"
 				puts "# Comment: #{r[MPW::COMMENT]}"
+
+				i += 1
 			end
 		else
 			puts "Nothing result!"	
@@ -78,17 +83,21 @@ class Cli
 		row = Array.new()
 		puts "# Add a new item"
 		puts "# --------------------"
-		server   = ask("Enter the server name or ip: ")
+		name     = ask("Enter the name: ")
+		group    = ask("Enter the group [default=No Group]: ")
+		server   = ask("Enter the hostname or ip: ")
 		protocol = ask("Enter the type of connection (ssh, web, other): ")
 		login    = ask("Enter the login connection: ")
 		passwd   = ask("Enter the the password: ")
 		port     = ask("Enter the connection port (optinal): ")
 		comment  = ask("Enter a comment (optinal): ")
 
-		@m.add(server, protocol, login, passwd, port, comment)
-
-		if @m.encrypt()
-			puts "Item has been added!"
+		if @m.add(name, group, server, protocol, login, passwd, port, comment)
+			if @m.encrypt()
+				puts "Item has been added!"
+			else
+				puts "ERROR: #{@m.error_msg}"
+			end
 		else
 			puts "ERROR: #{@m.error_msg}"
 		end
@@ -100,16 +109,18 @@ class Cli
 		row = @m.searchById(id)
 
 		if not row.empty?
-			puts "# Add a new password"
+			puts "# Update an item"
 			puts "# --------------------"
-			server   = ask("Enter the server name or ip [#{row[MPW::SERVER]}]: ")
+			name     = ask("Enter the name [#{row[MPW::NAME]}]: ")
+			group    = ask("Enter the group [#{row[MPW::GROUP]}]: ")
+			server   = ask("Enter the hostname or ip [#{row[MPW::SERVER]}]: ")
 			protocol = ask("Enter the type of connection [#{row[MPW::PROTOCOL]}]: ")
 			login    = ask("Enter the login connection [#{row[MPW::LOGIN]}]: ")
 			passwd   = ask("Enter the the password: ")
 			port     = ask("Enter the connection port [#{row[MPW::PORT]}]: ")
 			comment  = ask("Enter a comment [#{row[MPW::COMMENT]}]: ")
 				
-			if @m.update(id, server, protocol, login, passwd, port, comment)
+			if @m.update(id, name, group, server, protocol, login, passwd, port, comment)
 				if @m.encrypt()
 					puts "Item has been updated!"
 				else
