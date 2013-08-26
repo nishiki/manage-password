@@ -313,7 +313,7 @@ class MPW
 	end
 
 	# Import to csv
-	# @args: search -> a string to match
+	# @args: file -> path to file import
 	# @rtrn: true if the import work
 	def import(file)
 		begin
@@ -327,6 +327,30 @@ class MPW
 			@data << data_new
 
 			return true
+		rescue
+			@error_msg = "Can't import, impossible to read  #{file}!"
+			return false
+		end
+	end
+
+	# Return 
+	# @args: file -> path to file import
+	# @rtrn: an array with the items to import, if there is an error return false
+	def importPreview(file)
+		begin
+			result = Array.new()
+
+			data = IO.read(file)
+			data.lines do |line|
+				if not line =~ /(.*,){6}/
+					@error_msg = "Can't import, the file is bad format!"
+					return false
+				else
+					result.push(line.parse_csv)
+				end
+			end
+
+			return result
 		rescue
 			@error_msg = "Can't import, impossible to read  #{file}!"
 			return false

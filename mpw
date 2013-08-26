@@ -98,8 +98,11 @@ elsif not options[:export].nil?
 
 # Add a new item
 elsif not options[:import].nil?
-	cli.import(options[:import])
-
+	if not options[:force].nil?
+		cli.import(options[:import], options[:force])
+	else
+		cli.import(options[:import])
+	end
 else
 	puts "For help add option -h or --help"
 

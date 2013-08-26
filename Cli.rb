@@ -151,7 +151,7 @@ class Cli
 			puts "# Port: #{result[MPW::PORT]}"
 			puts "# Comment: #{result[MPW::COMMENT]}"
 
-			confirm = ask("Are you sur to remove the item: #{id} ? (y/N) ")
+			confirm = ask("Are you sure to remove the item: #{id} ? (y/N) ")
 			if confirm =~ /^(y|yes|YES|Yes|Y)$/
 				force = true
 			end
@@ -183,17 +183,44 @@ class Cli
 
 	# Import items from a CSV file
 	# @args: file -> the import file
-	def import(file)
-		if @m.import(file)
-			if @m.encrypt()
+	#        force -> no resquest a validation
+	def import(file, force=false)
+		result = @m.importPreview(file)
+
+		if not force
+			if result.is_a?(Array) && !result.empty?
+				i = 0
+				result.each do |r|
+					puts "# --------------------"
+					puts "# Id: #{i}"
+					puts "# Name: #{r[MPW::NAME]}"
+					puts "# Group: #{r[MPW::GROUP]}"
+					puts "# Server: #{r[MPW::SERVER]}"
+					puts "# Type: #{r[MPW::PROTOCOL]}"
+					puts "# Login: #{r[MPW::LOGIN]}"
+					puts "# Password: #{r[MPW::PASSWORD]}"
+					puts "# Port: #{r[MPW::PORT]}"
+					puts "# Comment: #{r[MPW::COMMENT]}"
+
+					i += 1
+				end
+
+				confirm = ask("Are you sure to import this file: #{file} ? (y/N) ")
+				if confirm =~ /^(y|yes|YES|Yes|Y)$/
+					force = true
+				end
+			else
+				puts "No data to import!"	
+			end
+		end
+
+		if force
+			if @m.import(file) && @m.encrypt()
 				puts "The import is succesfull!"
 			else
 				puts "ERROR: #{@m.error_msg}"
 			end
-		else
-			puts "ERROR: #{@m.error_msg}"
 		end
-			
 	end
 
 end
