@@ -324,7 +324,7 @@ class MPW
 					return false
 				end
 			end
-			@data << data_new
+			@data << data_new.force_encoding("ASCII-8BIT")
 
 			return true
 		rescue
