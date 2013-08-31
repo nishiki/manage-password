@@ -225,10 +225,10 @@ class MPW
 			id = 0
 		end
 
-		row[ID]   = id
-		row[PORT] = port
-		row[NAME] = name.force_encoding('ASCII-8BIT')
-		group.nil?    ? (row[GROUP]    = nil) : (row[SERVER]   = server.force_encoding('ASCII-8BIT'))
+		row[ID]    = id
+		row[PORT]  = port
+		row[NAME]  = name.force_encoding('ASCII-8BIT')
+		row[GROUP] = group.force_encoding('ASCII-8BIT')
 		server.nil?   ? (row[SERVER]   = nil) : (row[SERVER]   = server.force_encoding('ASCII-8BIT'))
 		protocol.nil? ? (row[PROTOCOL] = nil) : (row[PROTOCOL] = protocol.force_encoding('ASCII-8BIT'))
 		login.nil?    ? (row[LOGIN]    = nil) : (row[LOGIN]    = login.force_encoding('ASCII-8BIT'))
