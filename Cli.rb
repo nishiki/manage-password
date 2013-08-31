@@ -58,10 +58,9 @@ class Cli
 		result = @m.search(search, protocol)
 
 		if not result.empty?
-			i = 0
 			result.each do |r|
 				puts "# --------------------"
-				puts "# Id: #{i}"
+				puts "# Id: #{r[MPW::ID]}"
 				puts "# Name: #{r[MPW::NAME]}"
 				puts "# Group: #{r[MPW::GROUP]}"
 				puts "# Server: #{r[MPW::SERVER]}"
@@ -70,8 +69,6 @@ class Cli
 				puts "# Password: #{r[MPW::PASSWORD]}"
 				puts "# Port: #{r[MPW::PORT]}"
 				puts "# Comment: #{r[MPW::COMMENT]}"
-
-				i += 1
 			end
 		else
 			puts "Nothing result!"	
@@ -142,7 +139,7 @@ class Cli
 			result = @m.searchById(id)		
 
 			puts "# --------------------"
-			puts "# Id: #{id}"
+			puts "# Id: #{result[MPW::ID]}"
 			puts "# Name: #{result[MPW::NAME]}"
 			puts "# Group: #{result[MPW::GROUP]}"
 			puts "# Server: #{result[MPW::SERVER]}"

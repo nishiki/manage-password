@@ -10,14 +10,15 @@ require 'yaml'
 
 class MPW
 	
-	NAME     = 0
-	GROUP    = 1
-	PROTOCOL = 2
-	SERVER   = 3
-	LOGIN    = 4
-	PASSWORD = 5
-	PORT     = 6
-	COMMENT  = 7
+	ID       = 0
+	NAME     = 1
+	GROUP    = 2
+	PROTOCOL = 3
+	SERVER   = 4
+	LOGIN    = 5
+	PASSWORD = 6
+	PORT     = 7
+	COMMENT  = 8
 
 	attr_accessor :error_msg
 
@@ -93,7 +94,7 @@ class MPW
 	# @args: password -> the GPG key password
 	# @rtrn: true if data has been decrypted
 	def decrypt(passwd=nil)
-		@data = ""
+		@data = Array.new
 
 		begin
 			if passwd.nil? || passwd.empty?
@@ -112,7 +113,13 @@ class MPW
 		begin
 			if File.exist?(@file_gpg)
 				crypto = GPGME::Crypto.new(:armor => true)
-				@data = crypto.decrypt(IO.read(@file_gpg), :password => passwd).read
+				data_decrypt = crypto.decrypt(IO.read(@file_gpg), :password => passwd).read
+
+				id = 0
+				data_decrypt.lines do |line|
+					@data[id] = line.parse_csv.unshift(id)
+					id += 1;
+				end
 			end
 			return true
 		rescue
@@ -144,7 +151,14 @@ class MPW
 		begin
 			crypto = GPGME::Crypto.new(:armor => true)
 			file_gpg = File.open(@file_gpg, 'w+')
-			crypto.encrypt(@data, :recipients => @key, :output => file_gpg)
+
+			data_to_encrypt = ''
+			@data.each do |row|
+				row.shift
+				data_to_encrypt << "#{row.join(',')}\n"
+			end
+
+			crypto.encrypt(data_to_encrypt, :recipients => @key, :output => file_gpg)
 			file_gpg.close
 
 			return true
@@ -160,9 +174,8 @@ class MPW
 	# @rtrn: a list with the resultat of the search
 	def search(search, protocol=nil)
 		result = Array.new()
-		@data.lines do |line|
-			row = line.parse_csv
-			if line =~ /^.*#{search}.*$/ || protocol.eql?('all')
+		@data.each do |row|
+			if row[NAME] =~ /^.*#{search}.*$/  || row[SERVER] =~ /^.*#{search}.*$/ || row[COMMENT] =~ /^.*#{search}.*$/  || protocol.eql?('all')
 				if protocol.nil? || protocol.eql?(row[PROTOCOL]) || protocol.eql?('all')
 					result.push(row)
 				end
@@ -176,16 +189,11 @@ class MPW
 	# @args: id -> the id item
 	# @rtrn: a row with the resultat of the search
 	def searchById(id)
-		i = 0
-		@data.lines do |line|
-			row = line.parse_csv
-			if !id.nil? && id.eql?(i.to_s)
-				return row
-			end
-			i += 1
+		if not @data[id.to_i].nil?
+			return @data[id.to_i]
+		else
+			return Array.new
 		end
-
-		return Array.new()
 	end
 
 	# Add a new item
@@ -206,20 +214,28 @@ class MPW
 			return false
 		end
 
-		if group.nil? || group.empty
-			group 'No Group'
+		if group.nil? || group.empty?
+			group = 'No Group'
 		end
 
-		row[NAME]     = name
-		row[GROUP]    = group
-		row[SERVER]   = server
-		row[PROTOCOL] = protocol
-		row[LOGIN]    = login
-		row[PASSWORD] = passwd
-		row[PORT]     = port
-		row[COMMENT]  = comment
+		if not @data.last.nil?
+			id = @data.last
+			id = id[ID].to_i + 1
+		else
+			id = 0
+		end
 
-		@data << "#{row.join(',')}\n"
+		row[ID]   = id
+		row[PORT] = port
+		row[NAME] = name.force_encoding('ASCII-8BIT')
+		group.nil?    ? (row[GROUP]    = nil) : (row[SERVER]   = server.force_encoding('ASCII-8BIT'))
+		server.nil?   ? (row[SERVER]   = nil) : (row[SERVER]   = server.force_encoding('ASCII-8BIT'))
+		protocol.nil? ? (row[PROTOCOL] = nil) : (row[PROTOCOL] = protocol.force_encoding('ASCII-8BIT'))
+		login.nil?    ? (row[LOGIN]    = nil) : (row[LOGIN]    = login.force_encoding('ASCII-8BIT'))
+		passwd.nil?   ? (row[PASSWORD] = nil) : (row[PASSWORD] = passwd.force_encoding('ASCII-8BIT'))
+		comment.nil?  ? (row[COMMENT]  = nil) : (row[COMMENT]  = comment.force_encoding('ASCII-8BIT'))
+
+		@data[id] = row
 
 		return true
 	end
@@ -236,74 +252,51 @@ class MPW
 	#        comment -> a comment
 	# @rtrn: true if the item has been updated
 	def update(id, name=nil, group=nil, server=nil, protocol=nil, login=nil, passwd=nil, port=nil, comment=nil)
-		updated  = false
-		data_tmp = ''
+		id = id.to_i
 
-		i = 0
-		@data.lines do |line|
-			if id.eql?(i.to_s)
-				row = line.parse_csv
-				row_update = Array.new()
+		if not @data[id].nil?
+			row = @data[id]
+			row_update = Array.new()
 
-				name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
-				group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
-				server.empty?   ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
-				protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL]) : (row_update[PROTOCOL] = protocol)
-				login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
-				passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
-				port.empty?     ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
-				comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
+			name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
+			group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
+			server.empty?   ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
+			protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL]) : (row_update[PROTOCOL] = protocol)
+			login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
+			passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
+			port.empty?     ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
+			comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
 				
-				data_tmp << "#{row_update.join(',')}\n"
-				updated = true
-			else
-				data_tmp << line
-			end
+			@data[id] = row_update
 
-			i += 1
+			return true
+		else
+			@error_msg = "Can't update the item, the item #{id} doesn't exist!"
+			return false
 		end
-		@data = data_tmp
-
-		if not updated
-			@error_msg = "Can't update the item: #{id}!"
-		end
-
-		return updated
 	end
 	
 	# Remove an item 
 	# @args: id -> the item's identifiant
 	# @rtrn: true if the item has been deleted
 	def remove(id)
-		removed  = false
-		data_tmp = ""
-
-		i = 0
-		@data.lines do |line|
-			if id.eql?(i.to_s)
-				removed = true
-			else
-				data_tmp << line
-			end
-			i += 1
+		if not @data.delete_at(id.to_i).nil?
+			return true
+		else
+			return false
 		end
-		@data = data_tmp
-
-		if not removed
-			@error_msg = "Can't remove the item: #{id}!"
-		end
-
-		return removed
 	end
 
-	
 	# Export to csv
 	# @args: file -> a string to match
 	# @rtrn: true if export work
 	def export(file)
 		begin
-			File.open(file, 'w+') do |f|
-				f << @data
+			File.open(file, 'w+') do |file|
+				@data.each do |row|
+					row.delete_at(ID)
+					file << "#{row.join(',')}\n"
+				end
 			end
 			return true
 		rescue
@@ -322,9 +315,13 @@ class MPW
 				if not line =~ /(.*,){6}/
 					@error_msg = "Can't import, the file is bad format!"
 					return false
+				else
+					row = line.parse_csv.unshift(0)
+					if not add(row[NAME], row[GROUP], row[SERVER], row[PROTOCOL], row[LOGIN], row[PASSWORD], row[PORT], row[COMMENT])
+						return false
+					end
 				end
 			end
-			@data << data_new.force_encoding("ASCII-8BIT")
 
 			return true
 		rescue
