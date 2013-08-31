@@ -336,6 +336,7 @@ class MPW
 	def importPreview(file)
 		begin
 			result = Array.new()
+			id = 0
 
 			data = IO.read(file)
 			data.lines do |line|
@@ -343,8 +344,10 @@ class MPW
 					@error_msg = "Can't import, the file is bad format!"
 					return false
 				else
-					result.push(line.parse_csv)
+					result.push(line.parse_csv.unshift(id))
 				end
+
+				id += 1
 			end
 
 			return result

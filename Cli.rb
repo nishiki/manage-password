@@ -186,10 +186,9 @@ class Cli
 
 		if not force
 			if result.is_a?(Array) && !result.empty?
-				i = 0
 				result.each do |r|
 					puts "# --------------------"
-					puts "# Id: #{i}"
+					puts "# Id: #{r[MPW::ID]}"
 					puts "# Name: #{r[MPW::NAME]}"
 					puts "# Group: #{r[MPW::GROUP]}"
 					puts "# Server: #{r[MPW::SERVER]}"
@@ -198,8 +197,6 @@ class Cli
 					puts "# Password: #{r[MPW::PASSWORD]}"
 					puts "# Port: #{r[MPW::PORT]}"
 					puts "# Comment: #{r[MPW::COMMENT]}"
-
-					i += 1
 				end
 
 				confirm = ask("Are you sure to import this file: #{file} ? (y/N) ")
