@@ -79,6 +79,7 @@ class MPW
 			@timeout_pwd = config['config']['timeout_pwd'].to_i
 
 			if @key.empty? || @file_gpg.empty? || @file_pwd.empty? 
+				@error_msg = "Checkconfig failed!"
 				return false
 			end
 
@@ -107,6 +108,7 @@ class MPW
 				file_pwd.close
 			end
 		rescue
+			@error_msg = "Can't decrypt file!"
 			return false
 		end
 
@@ -121,6 +123,7 @@ class MPW
 					id += 1;
 				end
 			end
+
 			return true
 		rescue
 			if !@file_pwd.nil? && File.exist?(@file_pwd)
@@ -299,6 +302,7 @@ class MPW
 					file << "#{row.join(',')}\n"
 				end
 			end
+
 			return true
 		rescue
 			@error_msg = "Can't export, impossible to write in #{file}!"
