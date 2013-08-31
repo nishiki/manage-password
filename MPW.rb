@@ -283,6 +283,7 @@ class MPW
 		if not @data.delete_at(id.to_i).nil?
 			return true
 		else
+			@error_msg = "Can't delete the item, the item #{id} doesn't exist!"
 			return false
 		end
 	end
