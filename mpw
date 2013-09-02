@@ -11,6 +11,9 @@ APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
 require "#{APP_ROOT}/Cli.rb"
 
 options = {}
+options[:force]  = false
+options[:format] = false
+
 OptionParser.new do |opts|
 	opts.banner = "Usage: mpw [options]"
 
@@ -19,7 +22,7 @@ OptionParser.new do |opts|
 	end
 
 	opts.on("-A", "--show-all", "Show all items") do |b|
-		options[:showall] = true
+		options[:type]    = 'all'
 		options[:display] = ""
 	end
 
@@ -55,11 +58,16 @@ OptionParser.new do |opts|
 		options[:force] = true
 	end
 
+	opts.on("-F", "--format", "Change the display format by an alternatif") do |b|
+		options[:format] = true
+	end
+
 	opts.on("-h", "--help", "Show this message") do |b|
 		puts opts
 		exit 0
 	end
 end.parse!
+
 
 cli = Cli.new()
 
@@ -68,21 +76,11 @@ if not options[:setup].nil?
 	cli.setup()
 
 elsif not options[:display].nil?
-	if not options[:type].nil?
-		cli.display(options[:display], options[:type])
-	elsif not options[:showall].nil?
-		cli.display(options[:display], 'all')
-	else
-		cli.display(options[:display])
-	end
+	cli.display(options[:display], options[:type], options[:format])
 
 # Remove an item
 elsif not options[:remove].nil?
-	if not options[:force].nil?
-		cli.remove(options[:remove], options[:force])
-	else
-		cli.remove(options[:remove])
-	end
+	cli.remove(options[:remove], options[:force])
 
 # Update an item
 elsif not options[:update].nil?
@@ -98,11 +96,7 @@ elsif not options[:export].nil?
 
 # Add a new item
 elsif not options[:import].nil?
-	if not options[:force].nil?
-		cli.import(options[:import], options[:force])
-	else
-		cli.import(options[:import])
-	end
+	cli.import(options[:import], options[:force])
 else
 	puts "For help add option -h or --help"
 

@@ -54,19 +54,23 @@ class Cli
 	# Display the query's result
 	# @args: search -> the string to search
 	#        protocol -> search from a particular protocol
-	def display(search, protocol=nil)
+	def display(search, protocol=nil, format=nil)
 		result = @m.search(search, protocol)
 
 		if not result.empty?
 			result.each do |r|
-				displayFormat(r)
+				if format.nil? || !format
+					displayFormat(r)
+				else
+					displayFormatAlt(r)
+				end
 			end
 		else
 			puts "Nothing result!"	
 		end
 	end
 
-	# Display an item 
+	# Display an item in the default format
 	# @args: item -> an array with the item information
 	def displayFormat(item)
 		puts "# --------------------"
@@ -74,11 +78,27 @@ class Cli
 		puts "# Name: #{item[MPW::NAME]}"
 		puts "# Group: #{item[MPW::GROUP]}"
 		puts "# Server: #{item[MPW::SERVER]}"
-		puts "# Type: #{item[MPW::PROTOCOL]}"
+		puts "# Protocol: #{item[MPW::PROTOCOL]}"
 		puts "# Login: #{item[MPW::LOGIN]}"
 		puts "# Password: #{item[MPW::PASSWORD]}"
 		puts "# Port: #{item[MPW::PORT]}"
 		puts "# Comment: #{item[MPW::COMMENT]}"
+	end
+
+	# Display an item in the alternative format
+	# @args: item -> an array with the item information
+	def displayFormatAlt(item)
+		item[MPW::PORT].nil? ? (port = '') : (port = ":#{item[MPW::PORT]}")
+
+		if item[MPW::PASSWORD].nil? || item[MPW::PASSWORD].empty?
+			if item[MPW::LOGIN].index('@').eql?(nil) 
+				puts "# #{item[MPW::ID]} #{item[MPW::PROTOCOL]}://#{item[MPW::LOGIN]}@#{item[MPW::SERVER]}#{port}"
+			else
+				puts "# #{item[MPW::ID]} #{item[MPW::PROTOCOL]}://{#{item[MPW::LOGIN]}}@#{item[MPW::SERVER]}#{port}"
+			end
+		else
+			puts "# #{item[MPW::ID]} #{item[MPW::PROTOCOL]}://{#{item[MPW::LOGIN]}:#{item[MPW::PASSWORD]}}@#{item[MPW::SERVER]}#{port}"
+		end
 	end
 
 	# Form to add a new item
@@ -89,7 +109,7 @@ class Cli
 		name     = ask("Enter the name: ")
 		group    = ask("Enter the group [default=No Group]: ")
 		server   = ask("Enter the hostname or ip: ")
-		protocol = ask("Enter the type of connection (ssh, web, other): ")
+		protocol = ask("Enter the protocol of the connection (ssh, http, other): ")
 		login    = ask("Enter the login connection: ")
 		passwd   = ask("Enter the the password: ")
 		port     = ask("Enter the connection port (optinal): ")
@@ -117,7 +137,7 @@ class Cli
 			name     = ask("Enter the name [#{row[MPW::NAME]}]: ")
 			group    = ask("Enter the group [#{row[MPW::GROUP]}]: ")
 			server   = ask("Enter the hostname or ip [#{row[MPW::SERVER]}]: ")
-			protocol = ask("Enter the type of connection [#{row[MPW::PROTOCOL]}]: ")
+			protocol = ask("Enter the protocol of the connection [#{row[MPW::PROTOCOL]}]: ")
 			login    = ask("Enter the login connection [#{row[MPW::LOGIN]}]: ")
 			passwd   = ask("Enter the the password: ")
 			port     = ask("Enter the connection port [#{row[MPW::PORT]}]: ")
