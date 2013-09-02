@@ -59,20 +59,26 @@ class Cli
 
 		if not result.empty?
 			result.each do |r|
-				puts "# --------------------"
-				puts "# Id: #{r[MPW::ID]}"
-				puts "# Name: #{r[MPW::NAME]}"
-				puts "# Group: #{r[MPW::GROUP]}"
-				puts "# Server: #{r[MPW::SERVER]}"
-				puts "# Type: #{r[MPW::PROTOCOL]}"
-				puts "# Login: #{r[MPW::LOGIN]}"
-				puts "# Password: #{r[MPW::PASSWORD]}"
-				puts "# Port: #{r[MPW::PORT]}"
-				puts "# Comment: #{r[MPW::COMMENT]}"
+				displayFormat(r)
 			end
 		else
 			puts "Nothing result!"	
 		end
+	end
+
+	# Display an item 
+	# @args: item -> an array with the item information
+	def displayFormat(item)
+		puts "# --------------------"
+		puts "# Id: #{item[MPW::ID]}"
+		puts "# Name: #{item[MPW::NAME]}"
+		puts "# Group: #{item[MPW::GROUP]}"
+		puts "# Server: #{item[MPW::SERVER]}"
+		puts "# Type: #{item[MPW::PROTOCOL]}"
+		puts "# Login: #{item[MPW::LOGIN]}"
+		puts "# Password: #{item[MPW::PASSWORD]}"
+		puts "# Port: #{item[MPW::PORT]}"
+		puts "# Comment: #{item[MPW::COMMENT]}"
 	end
 
 	# Form to add a new item
@@ -138,15 +144,7 @@ class Cli
 		if not force
 			result = @m.searchById(id)		
 
-			puts "# --------------------"
-			puts "# Id: #{result[MPW::ID]}"
-			puts "# Name: #{result[MPW::NAME]}"
-			puts "# Group: #{result[MPW::GROUP]}"
-			puts "# Server: #{result[MPW::SERVER]}"
-			puts "# Type: #{result[MPW::PROTOCOL]}"
-			puts "# Login: #{result[MPW::LOGIN]}"
-			puts "# Port: #{result[MPW::PORT]}"
-			puts "# Comment: #{result[MPW::COMMENT]}"
+			displayFormat(result)
 
 			confirm = ask("Are you sure to remove the item: #{id} ? (y/N) ")
 			if confirm =~ /^(y|yes|YES|Yes|Y)$/
@@ -187,16 +185,7 @@ class Cli
 		if not force
 			if result.is_a?(Array) && !result.empty?
 				result.each do |r|
-					puts "# --------------------"
-					puts "# Id: #{r[MPW::ID]}"
-					puts "# Name: #{r[MPW::NAME]}"
-					puts "# Group: #{r[MPW::GROUP]}"
-					puts "# Server: #{r[MPW::SERVER]}"
-					puts "# Type: #{r[MPW::PROTOCOL]}"
-					puts "# Login: #{r[MPW::LOGIN]}"
-					puts "# Password: #{r[MPW::PASSWORD]}"
-					puts "# Port: #{r[MPW::PORT]}"
-					puts "# Comment: #{r[MPW::COMMENT]}"
+					displayFormat(r)
 				end
 
 				confirm = ask("Are you sure to import this file: #{file} ? (y/N) ")
