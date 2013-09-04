@@ -7,7 +7,7 @@ require 'rubygems'
 require 'highline/import'
 require 'pathname'
 
-require "#{APP_ROOT}/MPW.rb"
+require "#{APP_ROOT}/lib/MPW.rb"
 
 class Cli
 
@@ -91,7 +91,7 @@ class Cli
 		item[MPW::PORT].nil? ? (port = '') : (port = ":#{item[MPW::PORT]}")
 
 		if item[MPW::PASSWORD].nil? || item[MPW::PASSWORD].empty?
-			if item[MPW::LOGIN].index('@').eql?(nil) 
+			if item[MPW::LOGIN].include('@')
 				puts "# #{item[MPW::ID]} #{item[MPW::PROTOCOL]}://#{item[MPW::LOGIN]}@#{item[MPW::SERVER]}#{port}"
 			else
 				puts "# #{item[MPW::ID]} #{item[MPW::PROTOCOL]}://{#{item[MPW::LOGIN]}}@#{item[MPW::SERVER]}#{port}"

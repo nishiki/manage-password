@@ -8,7 +8,7 @@ require 'optparse'
 require 'pathname'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
-require "#{APP_ROOT}/CliSSH.rb"
+require "#{APP_ROOT}/lib/CliSSH.rb"
 
 cli    = CliSSH.new()
 search = ARGV[0]

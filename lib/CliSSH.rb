@@ -3,7 +3,7 @@
 # mail: nishiki@yaegashi.fr
 # info: a simple script who manage your passwords
 
-require "#{APP_ROOT}/Cli.rb"
+require "#{APP_ROOT}/lib/Cli.rb"
 
 class CliSSH < Cli
 
