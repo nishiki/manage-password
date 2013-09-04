@@ -60,8 +60,8 @@ class MPW
 			File.open(@file_config, 'w') do |file|
 				file << config.to_yaml
 			end
-		rescue
-			@error_msg = "Can't write the config file!"
+		rescue Exception => e 
+			@error_msg = "Can't write the config file!\n#{e}"
 			return false
 		end
 
@@ -83,8 +83,8 @@ class MPW
 				return false
 			end
 
-		rescue
-			@error_msg = "Checkconfig failed!"
+		rescue Exception => e 
+			@error_msg = "Checkconfig failed!\n#{e}"
 			return false
 		end
 
@@ -125,12 +125,12 @@ class MPW
 			end
 
 			return true
-		rescue
+		rescue Exception => e 
 			if !@file_pwd.nil? && File.exist?(@file_pwd)
 				File.delete(@file_pwd)
 			end
 			
-			@error_msg = "Can't decrypt file!"
+			@error_msg = "Can't decrypt file!\n#{e}"
 			return false
 		end
 	end
@@ -165,8 +165,8 @@ class MPW
 			file_gpg.close
 
 			return true
-		rescue
-			@error_msg = "Can't encrypt the GPG file!"
+		rescue Exception => e 
+			@error_msg = "Can't encrypt the GPG file!\n#{e}"
 			return false
 		end
 	end
@@ -304,8 +304,8 @@ class MPW
 			end
 
 			return true
-		rescue
-			@error_msg = "Can't export, impossible to write in #{file}!"
+		rescue Exception => e 
+			@error_msg = "Can't export, impossible to write in #{file}!\n#{e}"
 			return false
 		end
 	end
@@ -329,8 +329,8 @@ class MPW
 			end
 
 			return true
-		rescue
-			@error_msg = "Can't import, impossible to read  #{file}!"
+		rescue Exception => e 
+			@error_msg = "Can't import, impossible to read  #{file}!\n#{e}"
 			return false
 		end
 	end
@@ -356,8 +356,8 @@ class MPW
 			end
 
 			return result
-		rescue
-			@error_msg = "Can't import, impossible to read  #{file}!"
+		rescue Exception => e 
+			@error_msg = "Can't import, impossible to read  #{file}!\n#{e}"
 			return false
 		end
 	end
