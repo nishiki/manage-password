@@ -173,7 +173,7 @@ class MPW
 	
 	# Search in some csv data
 	# @args: search -> the string to search
-	#        type -> the connection type (ssh, web, other)
+	#        protocol -> the connection protocol (ssh, web, other)
 	# @rtrn: a list with the resultat of the search
 	def search(search, protocol=nil)
 		result = Array.new()
@@ -220,6 +220,10 @@ class MPW
 		if group.nil? || group.empty?
 			group = 'No Group'
 		end
+		
+		if port.to_i <= 0
+			port = nil
+		end
 
 		if not @data.last.nil?
 			id = @data.last
@@ -258,6 +262,20 @@ class MPW
 		id = id.to_i
 
 		if not @data[id].nil?
+
+			if name.nil? || name.empty?
+				@error_msg = "You must define a name!"
+				return false
+			end
+
+			if group.nil? || group.empty?
+				group = 'No Group'
+			end
+			
+			if port.to_i <= 0
+				port = nil
+			end
+
 			row = @data[id]
 			row_update = Array.new()
 
