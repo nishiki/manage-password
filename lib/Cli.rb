@@ -164,11 +164,15 @@ class Cli
 		if not force
 			result = @m.searchById(id)		
 
-			displayFormat(result)
+			if result.length > 0
+				displayFormat(result)
 
-			confirm = ask("Are you sure to remove the item: #{id} ? (y/N) ")
-			if confirm =~ /^(y|yes|YES|Yes|Y)$/
-				force = true
+				confirm = ask("Are you sure to remove the item: #{id} ? (y/N) ")
+				if confirm =~ /^(y|yes|YES|Yes|Y)$/
+					force = true
+				end
+			else
+				puts "Nothing result!"
 			end
 		end
 
