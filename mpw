@@ -97,9 +97,10 @@ elsif not options[:export].nil?
 # Add a new item
 elsif not options[:import].nil?
 	cli.import(options[:import], options[:force])
-else
-	puts "For help add option -h or --help"
 
+# Interactive mode
+else
+	cli.interactive
 end
 
 exit 0

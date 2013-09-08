@@ -226,4 +226,54 @@ class Cli
 		end
 	end
 
+	# Interactive mode
+	def interactive()
+		while true
+			command = ask("<mpw> ").split(' ')
+
+			case command[0]
+			when 'display', 'show', 'd', 's'
+				if !command[1].nil? && !command[1].empty?
+					display(command[1], command[2])
+				end
+			when 'add', 'a'
+				cli.add()
+			when 'update', 'u'
+				if !command[1].nil? && !command[1].empty?
+					update(command[1])
+				end
+			when 'remove', 'delete', 'r', 'd'
+				if !command[1].nil? && !command[1].empty?
+					remove(command[1])
+				end
+			when 'help', 'h', '?'
+				puts '# Help'
+				puts '# --------------------'
+				puts '# Display an item:'
+				puts '#	display SEARCH'
+				puts '#	show SEARCH'
+				puts '#	s SEARCH'
+				puts '#	d SEARCH'
+				puts '# Add an new item:'
+				puts '#	add'
+				puts '#	a'
+				puts '# Update an item:'
+				puts '#	update ID'
+				puts '#	u ID'
+				puts '# Remove an item:'
+				puts '#	remove ID'
+				puts '#	delete ID'
+				puts '#	r ID'
+				puts '#	d ID'
+				puts '# Quit the program:'
+				puts '#	quit'
+				puts '#	exit'
+				puts '#	q'
+			when 'quit', 'exit', 'q'
+				break
+			end
+
+		end
+
+	end
 end
