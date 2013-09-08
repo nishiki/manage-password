@@ -21,6 +21,7 @@ class MPW
 	COMMENT  = 8
 
 	attr_accessor :error_msg
+	attr_accessor :timeout_pwd
 
 	# Constructor
 	def initialize()
@@ -34,7 +35,7 @@ class MPW
 	#        file_pwd -> the file who stock the password
 	#        timeout_pwd -> time to save the password 
 	# @rtrn: true if le config file is create
-	def setup(key, file_gpg, file_pwd, timeout_pwd)
+	def setup(key, file_gpg, timeout_pwd)
 
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 			@error_msg = "The key string isn't in good format!"
@@ -45,16 +46,11 @@ class MPW
 			file_gpg = "#{Dir.home()}/.mpw.gpg"
 		end
 
-		if file_pwd.empty?
-			file_pwd = "#{Dir.home()}/.mpw.pwd"
-		end
-
-		timeout_pwd.empty? ? (timeout_pwd = 300) : (timeout_pwd = timeout_pwd.to_i)
+		timeout_pwd.empty? ? (timeout_pwd = 60) : (timeout_pwd = timeout_pwd.to_i)
 
 		config = {'config' => {'key'         => key,
 		                       'file_gpg'    => file_gpg,
-		                       'timeout_pwd' => timeout_pwd,
-		                       'file_pwd'    => file_pwd}}
+		                       'timeout_pwd' => timeout_pwd}}
 
 		begin
 			File.open(@file_config, 'w') do |file|
@@ -75,10 +71,9 @@ class MPW
 			config = YAML::load_file(@file_config)
 			@key         = config['config']['key']
 			@file_gpg    = config['config']['file_gpg']
-			@file_pwd    = config['config']['file_pwd']
 			@timeout_pwd = config['config']['timeout_pwd'].to_i
 
-			if @key.empty? || @file_gpg.empty? || @file_pwd.empty? 
+			if @key.empty? || @file_gpg.empty? 
 				@error_msg = "Checkconfig failed!"
 				return false
 			end
@@ -96,21 +91,6 @@ class MPW
 	# @rtrn: true if data has been decrypted
 	def decrypt(passwd=nil)
 		@data = Array.new
-
-		begin
-			if passwd.nil? || passwd.empty?
-				passwd = IO.read(@file_pwd)
-
-			elsif !passwd.nil? && !passwd.empty?
-				file_pwd = File.new(@file_pwd, 'w')
-				File.chmod(0600, @file_pwd)
-				file_pwd << passwd
-				file_pwd.close
-			end
-		rescue Exception => e 
-			@error_msg = "Can't decrypt file!\n#{e}"
-			return false
-		end
 
 		begin
 			if File.exist?(@file_gpg)
@@ -131,19 +111,6 @@ class MPW
 			end
 			
 			@error_msg = "Can't decrypt file!\n#{e}"
-			return false
-		end
-	end
-
-	# Check if a password it saved
-	# @rtrn: true if a password exist in the password file
-	def checkFilePassword()
-		if !@file_pwd.nil? && File.exist?(@file_pwd) && File.stat(@file_pwd).mtime.to_i + @timeout_pwd < Time.now.to_i
-			File.delete(@file_pwd)
-			return false
-		elsif !@file_pwd.nil? && File.exist?(@file_pwd) 
-			return true
-		else
 			return false
 		end
 	end

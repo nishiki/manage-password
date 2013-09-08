@@ -31,10 +31,9 @@ class Cli
 		puts "# --------------------"
 		key         = ask("Enter the GPG key: ")
 		file_gpg    = ask("Enter the path to encrypt file [default=#{Dir.home()}/.mpw.gpg]: ")
-		file_pwd    = ask("Enter te path to password file [default=#{Dir.home()}/.mpw.pwd]: ")
-		timeout_pwd = ask("Enter the timeout (in seconde) to GPG password [default=300]: ")
+		timeout_pwd = ask("Enter the timeout (in seconde) to GPG password [default=60]: ")
 		
-		if @m.setup(key, file_gpg, file_pwd, timeout_pwd)
+		if @m.setup(key, file_gpg, timeout_pwd)
 			puts "The config file has been created!"
 		else
 			puts "ERROR: #{@m.error_msg}"
@@ -43,12 +42,8 @@ class Cli
 
 	# Request the GPG password and decrypt the file
 	def decrypt()
-		if not @m.checkFilePassword()
-			passwd = ask("Password GPG: ") {|q| q.echo = false}
-			return @m.decrypt(passwd)
-		else
-			return @m.decrypt()
-		end
+		@passwd = ask("Password GPG: ") {|q| q.echo = false}
+		return @m.decrypt(@passwd)
 	end
 
 	# Display the query's result
@@ -60,9 +55,9 @@ class Cli
 		if not result.empty?
 			result.each do |r|
 				if format.nil? || !format
-					displayFormat(r)
+					self.displayFormat(r)
 				else
-					displayFormatAlt(r)
+					self.displayFormatAlt(r)
 				end
 			end
 		else
@@ -165,7 +160,7 @@ class Cli
 			result = @m.searchById(id)		
 
 			if result.length > 0
-				displayFormat(result)
+				self.displayFormat(result)
 
 				confirm = ask("Are you sure to remove the item: #{id} ? (y/N) ")
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
@@ -209,7 +204,7 @@ class Cli
 		if not force
 			if result.is_a?(Array) && !result.empty?
 				result.each do |r|
-					displayFormat(r)
+					self.displayFormat(r)
 				end
 
 				confirm = ask("Are you sure to import this file: #{file} ? (y/N) ")
@@ -232,23 +227,38 @@ class Cli
 
 	# Interactive mode
 	def interactive()
+		last_access = Time.now.to_i
+
 		while true
+			if @m.timeout_pwd < Time.now.to_i - last_access
+				passwd_confirm = ask("Password GPG: ") {|q| q.echo = false}
+
+				if @passwd.eql?(passwd_confirm)
+					last_access = Time.now.to_i
+				else
+					puts 'Bad password!'
+					next
+				end
+			else
+				last_access = Time.now.to_i
+			end
+
 			command = ask("<mpw> ").split(' ')
 
 			case command[0]
 			when 'display', 'show', 'd', 's'
 				if !command[1].nil? && !command[1].empty?
-					display(command[1], command[2])
+					self.display(command[1], command[2])
 				end
 			when 'add', 'a'
-				cli.add()
+				add()
 			when 'update', 'u'
 				if !command[1].nil? && !command[1].empty?
-					update(command[1])
+					self.update(command[1])
 				end
 			when 'remove', 'delete', 'r', 'd'
 				if !command[1].nil? && !command[1].empty?
-					remove(command[1])
+					self.remove(command[1])
 				end
 			when 'help', 'h', '?'
 				puts '# Help'
