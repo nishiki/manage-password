@@ -13,6 +13,7 @@ require "#{APP_ROOT}/lib/Cli.rb"
 options = {}
 options[:force]  = false
 options[:format] = false
+options[:group]  = nil
 
 OptionParser.new do |opts|
 	opts.banner = "Usage: mpw [options]"
@@ -32,6 +33,10 @@ OptionParser.new do |opts|
 
 	opts.on("-r", "--remove ID", "Remove an items") do |id|
 		options[:remove] = id
+	end
+
+	opts.on("-g", "--group GROUP", "Select a group") do |group|
+		options[:group] = group
 	end
 
 	opts.on("-a", "--add", "Add an items") do |b|
@@ -76,7 +81,7 @@ if not options[:setup].nil?
 	cli.setup()
 
 elsif not options[:display].nil?
-	cli.display(options[:display], options[:type], options[:format])
+	cli.display(options[:display], options[:group], options[:type], options[:format])
 
 # Remove an item
 elsif not options[:remove].nil?

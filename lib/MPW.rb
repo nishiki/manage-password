@@ -142,11 +142,11 @@ class MPW
 	# @args: search -> the string to search
 	#        protocol -> the connection protocol (ssh, web, other)
 	# @rtrn: a list with the resultat of the search
-	def search(search, protocol=nil)
+	def search(search, group=nil, protocol=nil)
 		result = Array.new()
 		@data.each do |row|
-			if row[NAME] =~ /^.*#{search}.*$/  || row[SERVER] =~ /^.*#{search}.*$/ || row[COMMENT] =~ /^.*#{search}.*$/  || protocol.eql?('all')
-				if protocol.nil? || protocol.eql?(row[PROTOCOL]) || protocol.eql?('all')
+			if row[NAME] =~ /^.*#{search}.*$/  || row[SERVER] =~ /^.*#{search}.*$/ || row[COMMENT] =~ /^.*#{search}.*$/ 
+				if (protocol.nil? || protocol.eql?(row[PROTOCOL])) && (group.nil? || group.eql?(row[GROUP]))
 					result.push(row)
 				end
 			end
@@ -284,7 +284,7 @@ class MPW
 			File.open(file, 'w+') do |file|
 				@data.each do |row|
 					row.delete_at(ID)
-					file << "#{row.join(',')}\n"
+					file << "#{row.join(';')}\n"
 				end
 			end
 

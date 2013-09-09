@@ -102,7 +102,7 @@ class Cli
 		puts "# Add a new item"
 		puts "# --------------------"
 		name     = ask("Enter the name: ")
-		group    = ask("Enter the group [default=No Group]: ")
+		group    = ask("Enter the group [default=NoGroup]: ")
 		server   = ask("Enter the hostname or ip: ")
 		protocol = ask("Enter the protocol of the connection (ssh, http, other): ")
 		login    = ask("Enter the login connection: ")
@@ -227,6 +227,7 @@ class Cli
 
 	# Interactive mode
 	def interactive()
+		group       = nil
 		last_access = Time.now.to_i
 
 		while true
@@ -248,7 +249,7 @@ class Cli
 			case command[0]
 			when 'display', 'show', 'd', 's'
 				if !command[1].nil? && !command[1].empty?
-					self.display(command[1], command[2])
+					self.display(command[1], group, command[2])
 				end
 			when 'add', 'a'
 				add()
@@ -259,6 +260,12 @@ class Cli
 			when 'remove', 'delete', 'r', 'd'
 				if !command[1].nil? && !command[1].empty?
 					self.remove(command[1])
+				end
+			when 'group', 'g'
+				if !command[1].nil? && !command[1].empty?
+					group = command[1]
+				else
+					group = nil
 				end
 			when 'help', 'h', '?'
 				puts '# Help'
@@ -285,6 +292,10 @@ class Cli
 				puts '#	q'
 			when 'quit', 'exit', 'q'
 				break
+			else
+				if !command[0].nil? || !command[0].empty?
+					puts 'Unknow command!'
+				end
 			end
 
 		end
