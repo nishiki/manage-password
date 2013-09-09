@@ -293,7 +293,7 @@ class Cli
 			when 'quit', 'exit', 'q'
 				break
 			else
-				if !command[0].nil? || !command[0].empty?
+				if !command[0].nil? && !command[0].empty?
 					puts 'Unknow command!'
 				end
 			end
