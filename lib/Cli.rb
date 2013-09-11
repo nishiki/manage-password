@@ -49,8 +49,8 @@ class Cli
 	# Display the query's result
 	# @args: search -> the string to search
 	#        protocol -> search from a particular protocol
-	def display(search, protocol=nil, format=nil)
-		result = @m.search(search, protocol)
+	def display(search, protocol=nil, group=nil, format=nil)
+		result = @m.search(search, group, protocol)
 
 		if not result.empty?
 			result.each do |r|
