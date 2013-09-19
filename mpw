@@ -23,7 +23,7 @@ OptionParser.new do |opts|
 	end
 
 	opts.on("-A", "--show-all", "Show all items") do |b|
-		options[:type]    = 'all'
+		options[:type]    = nil
 		options[:display] = ""
 	end
 
