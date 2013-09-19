@@ -99,7 +99,7 @@ class MPW
 
 				id = 0
 				data_decrypt.lines do |line|
-					@data[id] = line.parse_csv({:col_sep => ';'}).unshift(id)
+					@data[id] = line.parse_csv.unshift(id)
 					id += 1;
 				end
 			end
@@ -125,7 +125,7 @@ class MPW
 			data_to_encrypt = ''
 			@data.each do |row|
 				row.shift
-				data_to_encrypt << "#{row.join(';')}\n"
+				data_to_encrypt << row.to_csv
 			end
 
 			crypto.encrypt(data_to_encrypt, :recipients => @key, :output => file_gpg)
@@ -284,7 +284,7 @@ class MPW
 			File.open(file, 'w+') do |file|
 				@data.each do |row|
 					row.delete_at(ID)
-					file << "#{row.join(';')}\n"
+					file << row.to_csv
 				end
 			end
 
@@ -302,11 +302,11 @@ class MPW
 		begin
 			data_new = IO.read(file)
 			data_new.lines do |line|
-				if not line =~ /(.*;){6}/
+				if not line =~ /(.*,){6}/
 					@error_msg = "Can't import, the file is bad format!"
 					return false
 				else
-					row = line.parse_csv({:col_sep => ';'}).unshift(0)
+					row = line.parse_csv.unshift(0)
 					if not add(row[NAME], row[GROUP], row[SERVER], row[PROTOCOL], row[LOGIN], row[PASSWORD], row[PORT], row[COMMENT])
 						return false
 					end
@@ -330,11 +330,11 @@ class MPW
 
 			data = IO.read(file)
 			data.lines do |line|
-				if not line =~ /(.*;){6}/
+				if not line =~ /(.*,){6}/
 					@error_msg = "Can't import, the file is bad format!"
 					return false
 				else
-					result.push(line.parse_csv({:col_sep => ';'}).unshift(id))
+					result.push(line.parse_csv.unshift(id))
 				end
 
 				id += 1
