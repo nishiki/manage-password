@@ -240,8 +240,8 @@ class MPW
 			login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
 			passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
 			port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
-			comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
-				
+			comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
+			
 			@data[id] = row_update
 
 			return true
