@@ -22,7 +22,7 @@ class CliSSH < Cli
 
 				passwd = r[MPW::PASSWORD]
 
-				if port.empty?
+				if port.nil? || port.empty?
 					port = 22
 				end
 
@@ -30,7 +30,7 @@ class CliSSH < Cli
 				if passwd.empty?
 					system("ssh #{login}@#{server} -p #{port}")
 				else
-					system("sshpass -p #{passwd} ssh #{login}@#{server} -p #{port}")
+					system("sshpass -p '#{passwd}' ssh #{login}@#{server} -p #{port}")
 				end
 			end
 
