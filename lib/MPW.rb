@@ -183,10 +183,6 @@ class MPW
 			@error_msg = "You must define a name!"
 			return false
 		end
-
-		if group.nil? || group.empty?
-			group = 'No Group'
-		end
 		
 		if port.to_i <= 0
 			port = nil
@@ -202,12 +198,12 @@ class MPW
 		row[ID]    = id
 		row[PORT]  = port
 		row[NAME]  = name.force_encoding('ASCII-8BIT')
-		row[GROUP] = group.force_encoding('ASCII-8BIT')
-		server.nil?   ? (row[SERVER]   = nil) : (row[SERVER]   = server.force_encoding('ASCII-8BIT'))
-		protocol.nil? ? (row[PROTOCOL] = nil) : (row[PROTOCOL] = protocol.force_encoding('ASCII-8BIT'))
-		login.nil?    ? (row[LOGIN]    = nil) : (row[LOGIN]    = login.force_encoding('ASCII-8BIT'))
-		passwd.nil?   ? (row[PASSWORD] = nil) : (row[PASSWORD] = passwd.force_encoding('ASCII-8BIT'))
-		comment.nil?  ? (row[COMMENT]  = nil) : (row[COMMENT]  = comment.force_encoding('ASCII-8BIT'))
+		group.nil?    || group.empty?    ? (row[GROUP]    = nil) : (row[GROUP]    = group.force_encoding('ASCII-8BIT'))
+		server.nil?   || server.empty?   ? (row[SERVER]   = nil) : (row[SERVER]   = server.force_encoding('ASCII-8BIT'))
+		protocol.nil? || protocol.empty? ? (row[PROTOCOL] = nil) : (row[PROTOCOL] = protocol.force_encoding('ASCII-8BIT'))
+		login.nil?    || login.empty?    ? (row[LOGIN]    = nil) : (row[LOGIN]    = login.force_encoding('ASCII-8BIT'))
+		passwd.nil?   || passwd.empty?   ? (row[PASSWORD] = nil) : (row[PASSWORD] = passwd.force_encoding('ASCII-8BIT'))
+		comment.nil?  || comment.empty?  ? (row[COMMENT]  = nil) : (row[COMMENT]  = comment.force_encoding('ASCII-8BIT'))
 
 		@data[id] = row
 
@@ -230,15 +226,6 @@ class MPW
 
 		if not @data[id].nil?
 
-			if name.nil? || name.empty?
-				@error_msg = "You must define a name!"
-				return false
-			end
-
-			if group.nil? || group.empty?
-				group = 'No Group'
-			end
-			
 			if port.to_i <= 0
 				port = nil
 			end
@@ -246,14 +233,14 @@ class MPW
 			row = @data[id]
 			row_update = Array.new()
 
-			name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
-			group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
-			server.empty?   ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
-			protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL]) : (row_update[PROTOCOL] = protocol)
-			login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
-			passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
-			port.empty?     ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
-			comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
+			name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
+			group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
+			server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
+			protocol.nil? || protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL]) : (row_update[PROTOCOL] = protocol)
+			login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
+			passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
+			port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
+			comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
 				
 			@data[id] = row_update
 

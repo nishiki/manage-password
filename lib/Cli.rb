@@ -145,7 +145,7 @@ class Cli
 					puts "ERROR: #{@m.error_msg}"
 				end
 			else
-				puts "Nothing item has been updated!"
+				puts "ERROR: #{@m.error_msg}"
 			end
 		else
 			puts "Nothing result!"
