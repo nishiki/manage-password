@@ -144,8 +144,19 @@ class MPW
 	# @rtrn: a list with the resultat of the search
 	def search(search, group=nil, protocol=nil)
 		result = Array.new()
+
+		if !search.nil?
+			search = search.downcase
+		end
+		search = search.force_encoding('ASCII-8BIT')
+
 		@data.each do |row|
-			if row[NAME] =~ /^.*#{search}.*$/  || row[SERVER] =~ /^.*#{search}.*$/ || row[COMMENT] =~ /^.*#{search}.*$/ 
+			name    = row[NAME].downcase
+			server  = row[SERVER].downcase
+
+			row[COMMENT].nil? ? (comment = nil) : (comment = row[COMMENT].downcase)
+
+			if name =~ /^.*#{search}.*$/  || server =~ /^.*#{search}.*$/ || comment =~ /^.*#{search}.*$/ 
 				if (protocol.nil? || protocol.eql?(row[PROTOCOL])) && (group.nil? || group.eql?(row[GROUP]))
 					result.push(row)
 				end
