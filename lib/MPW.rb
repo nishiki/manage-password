@@ -26,7 +26,7 @@ class MPW
 	# Constructor
 	def initialize()
 		@file_config = "#{Dir.home()}/.mpw.cfg"
-		@error_mgs   = nil
+		@error_msg   = nil
 	end
 
 	# Create a new config file
