@@ -6,6 +6,7 @@
 require 'rubygems'
 require 'highline/import'
 require 'pathname'
+require 'readline'
 
 require "#{APP_ROOT}/lib/MPW.rb"
 
@@ -230,7 +231,8 @@ class Cli
 		group       = nil
 		last_access = Time.now.to_i
 
-		while true
+		while buf = Readline.readline("<mpw> ", true)
+
 			if @m.timeout_pwd < Time.now.to_i - last_access
 				passwd_confirm = ask("Password GPG: ") {|q| q.echo = false}
 
@@ -244,7 +246,7 @@ class Cli
 				last_access = Time.now.to_i
 			end
 
-			command = ask("<mpw> ").split(' ')
+			command = buf.split(' ')
 
 			case command[0]
 			when 'display', 'show', 'd', 's'
@@ -291,6 +293,7 @@ class Cli
 				puts '#	exit'
 				puts '#	q'
 			when 'quit', 'exit', 'q'
+				puts 'Goodbye!'
 				break
 			else
 				if !command[0].nil? && !command[0].empty?
