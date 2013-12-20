@@ -1,6 +1,6 @@
 # Manage your passwords!
 
-MPW is a little software, who stock your passwords in an encrypt file (with GPG).
+MPW is a little software which stores your passwords in an GPG encrypted file.
 
 # Usage
 
