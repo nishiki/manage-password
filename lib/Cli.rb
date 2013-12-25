@@ -7,43 +7,52 @@ require 'rubygems'
 require 'highline/import'
 require 'pathname'
 require 'readline'
+require 'i18n'
 
 require "#{APP_ROOT}/lib/MPW.rb"
 
 class Cli
 
 	# Constructor
-	def initialize()
+	def initialize(lang)
 		@m = MPW.new()
 		
 		if not @m.checkconfig()
-			self.setup()
+			self.setup(lang)
 		end
 
 		if not self.decrypt()
-			puts "ERROR: #{@m.error_msg}"
+			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 			exit 2
 		end
 	end
 
 	# Create a new config file
-	def setup()
-		puts "# Setup a new config file"
+	# @args: lang -> the software language
+	def setup(lang)
+		puts "# #{I18n.t('cli.form.setup.title')}"
 		puts "# --------------------"
-		key         = ask("Enter the GPG key: ")
-		file_gpg    = ask("Enter the path to encrypt file [default=#{Dir.home()}/.mpw.gpg]: ")
-		timeout_pwd = ask("Enter the timeout (in seconde) to GPG password [default=60]: ")
+		language    = ask(I18n.t('cli.form.setup.lang', :lang => lang))
+		key         = ask(I18n.t('cli.form.setup.gpg_key'))
+		file_gpg    = ask(I18n.t('cli.form.setup.gpg_file', :home => Dir.home()))
+		timeout_pwd = ask(I18n.t('cli.form.setup.timeout'))
 		
-		if @m.setup(key, file_gpg, timeout_pwd)
-			puts "The config file has been created!"
+		if !File.exist?("#{APP_ROOT}/i18n/#{language}.yml")
+			language= 'en_US'
+		end
+		I18n.load_path = Dir["#{APP_ROOT}/i18n/#{language}.yml"]
+		I18n.locale = language.to_sym
+
+		if @m.setup(key, language, file_gpg, timeout_pwd)
+			puts I18n.t('cli.form.setup.valid')
 		else
-			puts "ERROR: #{@m.error_msg}"
+			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 		end
 	end
 
 	# Request the GPG password and decrypt the file
 	def decrypt()
-		@passwd = ask("Password GPG: ") {|q| q.echo = false}
+		@passwd = ask(I18n.t('cli.display.gpg_password')) {|q| q.echo = false}
 		return @m.decrypt(@passwd)
 	end
 
@@ -62,7 +71,7 @@ class Cli
 				end
 			end
 		else
-			puts "Nothing result!"	
+			puts I18n.t('cli.display.nothing')
 		end
 	end
 
@@ -71,14 +80,14 @@ class Cli
 	def displayFormat(item)
 		puts "# --------------------"
 		puts "# Id: #{item[MPW::ID]}"
-		puts "# Name: #{item[MPW::NAME]}"
-		puts "# Group: #{item[MPW::GROUP]}"
-		puts "# Server: #{item[MPW::SERVER]}"
-		puts "# Protocol: #{item[MPW::PROTOCOL]}"
-		puts "# Login: #{item[MPW::LOGIN]}"
-		puts "# Password: #{item[MPW::PASSWORD]}"
-		puts "# Port: #{item[MPW::PORT]}"
-		puts "# Comment: #{item[MPW::COMMENT]}"
+		puts "# #{I18n.t('cli.display.name')}: #{item[MPW::NAME]}"
+		puts "# #{I18n.t('cli.display.group')}: #{item[MPW::GROUP]}"
+		puts "# #{I18n.t('cli.display.server')}: #{item[MPW::SERVER]}"
+		puts "# #{I18n.t('cli.display.protocol')}: #{item[MPW::PROTOCOL]}"
+		puts "# #{I18n.t('cli.display.login')}: #{item[MPW::LOGIN]}"
+		puts "# #{I18n.t('cli.display.password')}: #{item[MPW::PASSWORD]}"
+		puts "# #{I18n.t('cli.display.port')}: #{item[MPW::PORT]}"
+		puts "# #{I18n.t('cli.display.comment')}: #{item[MPW::COMMENT]}"
 	end
 
 	# Display an item in the alternative format
@@ -100,25 +109,25 @@ class Cli
 	# Form to add a new item
 	def add()
 		row = Array.new()
-		puts "# Add a new item"
+		puts "# #{I18n.t('cli.form.add.title')}"
 		puts "# --------------------"
-		name     = ask("Enter the name: ")
-		group    = ask("Enter the group [default=NoGroup]: ")
-		server   = ask("Enter the hostname or ip: ")
-		protocol = ask("Enter the protocol of the connection (ssh, http, other): ")
-		login    = ask("Enter the login connection: ")
-		passwd   = ask("Enter the the password: ")
-		port     = ask("Enter the connection port (optinal): ")
-		comment  = ask("Enter a comment (optinal): ")
+		name     = ask(I18n.t('cli.form.add.name'))
+		group    = ask(I18n.t('cli.form.add.group'))
+		server   = ask(I18n.t('cli.form.add.server'))
+		protocol = ask(I18n.t('cli.form.add.protocol'))
+		login    = ask(I18n.t('cli.form.add.login'))
+		passwd   = ask(I18n.t('cli.form.add.password'))
+		port     = ask(I18n.t('cli.form.add.port'))
+		comment  = ask(I18n.t('cli.form.add.comment'))
 
 		if @m.add(name, group, server, protocol, login, passwd, port, comment)
 			if @m.encrypt()
-				puts "Item has been added!"
+				puts I18n.t('cli.form.add.valid')
 			else
-				puts "ERROR: #{@m.error_msg}"
+				puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 			end
 		else
-			puts "ERROR: #{@m.error_msg}"
+			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 		end
 	end
 
@@ -128,28 +137,28 @@ class Cli
 		row = @m.searchById(id)
 
 		if not row.empty?
-			puts "# Update an item"
+			puts "# #{I18n.t('cli.form.update.title')}"
 			puts "# --------------------"
-			name     = ask("Enter the name [#{row[MPW::NAME]}]: ")
-			group    = ask("Enter the group [#{row[MPW::GROUP]}]: ")
-			server   = ask("Enter the hostname or ip [#{row[MPW::SERVER]}]: ")
-			protocol = ask("Enter the protocol of the connection [#{row[MPW::PROTOCOL]}]: ")
-			login    = ask("Enter the login connection [#{row[MPW::LOGIN]}]: ")
-			passwd   = ask("Enter the the password: ")
-			port     = ask("Enter the connection port [#{row[MPW::PORT]}]: ")
-			comment  = ask("Enter a comment [#{row[MPW::COMMENT]}]: ")
+			name     = ask(I18n.t('cli.form.update.name'    , :name => row[MPW::NAME]))
+			group    = ask(I18n.t('cli.form.update.group'   , :group => row[MPW::GROUP]))
+			server   = ask(I18n.t('cli.form.update.server'  , :server => row[MPW::SERVER]))
+			protocol = ask(I18n.t('cli.form.update.protocol', :protocol => row[MPW::PROTOCOL]))
+			login    = ask(I18n.t('cli.form.update.login'   , :login => row[MPW::LOGIN]))
+			passwd   = ask(I18n.t('cli.form.update.password'))
+			port     = ask(I18n.t('cli.form.update.port'    , :port => row[MPW::PORT]))
+			comment  = ask(I18n.t('cli.form.update.comment' , :comment => row[MPW::COMMENT]))
 				
 			if @m.update(id, name, group, server, protocol, login, passwd, port, comment)
 				if @m.encrypt()
-					puts "Item has been updated!"
+					puts I18n.t('cli.form.update.valid')
 				else
-					puts "ERROR: #{@m.error_msg}"
+					puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 				end
 			else
-				puts "ERROR: #{@m.error_msg}"
+				puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 			end
 		else
-			puts "Nothing result!"
+			puts I18n.t('cli.display.nothing')
 		end
 	end
 
@@ -163,24 +172,24 @@ class Cli
 			if result.length > 0
 				self.displayFormat(result)
 
-				confirm = ask("Are you sure to remove the item: #{id} ? (y/N) ")
+				confirm = ask("#{I18n.t('cli.form.delete.ask', :id => id)} (y/N) ")
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
 					force = true
 				end
 			else
-				puts "Nothing result!"
+				puts I18n.t('cli.display.nothing')
 			end
 		end
 
 		if force
 			if @m.remove(id)
 				if @m.encrypt()
-					puts "The item #{id} has been removed!"
+					puts I18n.t('cli.form.delete.valid', :id => id)
 				else
-					puts "ERROR: #{@m.error_msg}"
+					puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 				end
 			else
-				puts "Nothing item has been removed!"
+				puts I18n.t('cli.form.delete.not_valid')
 			end
 		end
 	end
@@ -191,7 +200,7 @@ class Cli
 		if @m.export(file)
 			puts "The export in #{file} is succesfull!"
 		else
-			puts "ERROR: #{@m.error_msg}"
+			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 		end
 
 	end
@@ -208,20 +217,20 @@ class Cli
 					self.displayFormat(r)
 				end
 
-				confirm = ask("Are you sure to import this file: #{file} ? (y/N) ")
+				confirm = ask("#{I18n.t('cli.form.import.ask', :file => file)} (y/N) ")
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
 					force = true
 				end
 			else
-				puts "No data to import!"	
+				puts I18n.t('cli.form.import.not_valid')
 			end
 		end
 
 		if force
 			if @m.import(file) && @m.encrypt()
-				puts "The import is succesfull!"
+				puts I18n.t('cli.form.import.valid')
 			else
-				puts "ERROR: #{@m.error_msg}"
+				puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 			end
 		end
 	end
@@ -231,15 +240,15 @@ class Cli
 		group       = nil
 		last_access = Time.now.to_i
 
-		while buf = Readline.readline("<mpw> ", true)
+		while buf = Readline.readline('<mpw> ', true)
 
 			if @m.timeout_pwd < Time.now.to_i - last_access
-				passwd_confirm = ask("Password GPG: ") {|q| q.echo = false}
+				passwd_confirm = ask(I18n.t('cli.interactive.ask_password')) {|q| q.echo = false}
 
 				if @passwd.eql?(passwd_confirm)
 					last_access = Time.now.to_i
 				else
-					puts 'Bad password!'
+					puts I18n.t('cli.interactive.bad_password')
 					next
 				end
 			else
@@ -293,11 +302,11 @@ class Cli
 				puts '#	exit'
 				puts '#	q'
 			when 'quit', 'exit', 'q'
-				puts 'Goodbye!'
+				puts I18n.t('cli.interactive.goodbye')
 				break
 			else
 				if !command[0].nil? && !command[0].empty?
-					puts 'Unknow command!'
+					puts I18n.t('cli.interactive.unknown_command')
 				end
 			end
 

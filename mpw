@@ -6,9 +6,20 @@
 require 'rubygems'
 require 'optparse'
 require 'pathname'
+require 'locale'
+require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
 require "#{APP_ROOT}/lib/Cli.rb"
+
+
+lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s
+
+if !File.exist?("#{APP_ROOT}/i18n/#{lang}.yml")
+	lang = 'en_US'
+end
+I18n.load_path = Dir["#{APP_ROOT}/i18n/#{lang}.yml"]
+I18n.locale = lang.to_sym
 
 options = {}
 options[:force]  = false
@@ -74,7 +85,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-cli = Cli.new()
+cli = Cli.new(lang)
 
 # Display the item's informations
 if not options[:setup].nil?

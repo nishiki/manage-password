@@ -1,0 +1,82 @@
+---
+en_US:
+  error:
+    add:
+      name_empty: "You must define a name!"
+    config:
+      write: "Can't write the config file!"
+      check: "Checkconfig failed!"
+      key_bad_format: "The key string isn't in good format!"
+    delete:
+      id_no_exist: "Can't delete the item, the item %{id} doesn't exist!"
+    export:
+      write: "Can't export, impossible to write in %{file}!"
+    gpg_file: 
+      decrypt: "Can't decrypt file!"
+      encrypt: "Can't encrypt the GPG file!"
+    import:
+      bad_format: "Can't import, the file is bad format!"
+      read: "Can't import, impossible to read %{file}!"
+    update:
+      id_no_exist: "Can't update the item, the item %{id} doesn't exist!"
+  cli:
+    form:
+      add:
+        title: "Add a new item"
+        name: "Enter the name: "
+        group: "Enter the group [default=NoGroup]: "
+        server: "Enter the hostname or ip: "
+        protocol: "Enter the protocol of the connection (ssh, http, other): "
+        login: "Enter the login connection: "
+        password: "Enter the the password: "
+        port: "Enter the connection port (optinal): "
+        comment: "Enter a comment (optinal): "
+        valid: "Item has been added!"
+      delete:
+        ask: "Are you sure to remove the item: %{id} ?"
+        valid: "The item %{id} has been removed!"
+        not_valid: "The item %{id} hasn't been removed, because it doesn't exist!"
+      import:
+        ask: "Are you sure to import this file: %{file} ?"
+        valid: "The import is succesfull!"
+        not_valid: "No data to import!"
+      setup:
+        title: "Setup a new config file"
+        lang: "Choose your language (en, fr, ...): "
+        gpg_key: "Enter the GPG key: " 
+        gpg_file: "Enter the path to encrypt file [default=%{home}/.mpw.gpg]: "
+        timeout: "Enter the timeout (in seconde) to GPG password [default=60]: "
+        valid: "The config file has been created!"
+      update:
+        title: "Update an item"
+        name: "Enter the name [%{name}]: "
+        group: "Enter the group [%{group}]: "
+        server: "Enter the hostname or ip [%{server}]: "
+        protocol: "Enter the protocol of the connection [%{protocol}]: "
+        login: "Enter the login connection [%{login}]: "
+        password: "Enter the the password: "
+        port: "Enter the connection port [%{port}]: "
+        comment: "Enter a comment [%{comment}]: "
+        valid: "Item has been updated!" 
+    interactive:
+      ask_password: "Password GPG: "
+      bad_password: "Bad password!"
+      goodbye: "Goodbye!"
+      unknown_command: "Unknown command!"
+    display:
+      comment: "Comment"
+      error: "ERROR"
+      gpg_password: "Password GPG: "
+      group: "Group"
+      login: "Login"
+      name: "Name"
+      nothing: "Nothing result!"
+      password: "Password"
+      port: "Port"
+      protocol: "Protocol"
+      server: "Server"
+  formats:
+    default: ! '%Y-%m-%d'
+    long: ! '%B %d, %Y'
+    short: ! '%b %d'
+    custom: ! '%A, %M %B, %Y @ %l:%M%P'

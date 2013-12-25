@@ -1,0 +1,82 @@
+---
+fr_FR:
+  error:
+    add:
+      name_empty: "Vous devez définir un nom!"
+    config:
+      write: "Impossible d'écrire le fichier de configuration!"
+      check: "Le fichier de configuration est invalide!"
+      key_bad_format: "La clé GPG est invalide!"
+    delete:
+      id_no_exist: "Impossible de supprimer l'élément %{id}, car il n'existe pas!"
+    export:
+      write: "Impossible d'exporter les données dans le fichier %{file}!"
+    gpg_file: 
+      decrypt: "Impossible de déchiffrer le fichier GPG!"
+      encrypt: "Impossible de chiffrer le fichier GPG!"
+    import:
+      bad_format: "Impossible d'importer le fichier car son format est incorrect!"
+      read: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
+    update:
+      id_no_exist: "Impossible de mettre à jour l'élément %{id}, car il n'existe pas!"
+  cli:
+    form:
+      add:
+        title: "Ajout d'un nouvel élément"
+        name: "Entrez le nom: "
+        group: "Entrez le groupe [défaut=NoGroup]: "
+        server: "Entrez the hostname or ip: "
+        protocol: "Entrez le protocole de connexion (ssh, http, other): "
+        login: "Entrez l'identifiant de connexion: "
+        password: "Entrez le mot de passe: "
+        port: "Entrez le port de connexion (optionnel): "
+        comment: "Entrez un commentaire (optionnel): "
+        valid: "L'élément a bien été ajouté!"
+      delete:
+        ask: "Êtes vous sûre de vouloir supprimer l'élément %{id} ?"
+        valid: "L'élément %{id} a bien été supprimé!"
+        not_valid: "L'élément %{id} n'a pu être supprimé, car il n'existe pas!"
+      import:
+        ask: "Êtes vous sûre de vouloir importer le fichier %{file} ?"
+        valid: "L'import est un succès!"
+        not_valid: "Aucune donnée à importer!"
+      setup:
+        title: "Création d'un nouveau fichier de configuration"
+        lang: "Choisissez votre langue (en_US, fr_FR, ...) [défaut=%{lang}]: "
+        gpg_key: "Entrez la clé GPG: " 
+        gpg_file: "Entrez le chemin du fichier qui sera chiffré [défaut=%{home}/.mpw.gpg]: "
+        timeout: "Entrez le temps (en seconde) du mot de passe GPG [défaut=60]: "
+        valid: "Le fichier de configuration a bien été créé!"
+      update:
+        title: "Mis à jour d'un élément"
+        name: "Entrez le nom [%{name}]: "
+        group: "Entrez le groupe [%{group}]: "
+        server: "Entrez le nom de domaine ou l'ip du serveur [%{server}]: "
+        protocol: "Entrez le protocole de connexion [%{protocol}]: "
+        login: "Entrez votre identifiant de connexion [%{login}]: "
+        password: "Entrez le mot de passe: "
+        port: "Entrez un port de connexion [%{port}]: "
+        comment: "Entrez un commentaire [%{comment}]: "
+        valid: "L'élément a bien été mis à jour!" 
+    interactive:
+      ask_password: "Mot de passe GPG: "
+      bad_password: "Mauvais mot de passe!"
+      goodbye: "Au revoir!"
+      unknown_command: "Commande inconnue!"
+    display:
+      comment: "Commentaire"
+      error: "ERREUR"
+      gpg_password: "Mot de passe GPG: "
+      group: "Groupe"
+      login: "Identifiant"
+      name: "Nom"
+      nothing: "Aucun résultat!"
+      password: "Mot de passe"
+      port: "Port"
+      protocol: "Protocol"
+      server: "Serveur"
+  formats:
+    default: ! '%Y-%m-%d'
+    long: ! '%B %d, %Y'
+    short: ! '%b %d'
+    custom: ! '%A, %M %B, %Y @ %l:%M%P'

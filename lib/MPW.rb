@@ -7,6 +7,7 @@ require 'rubygems'
 require 'gpgme'
 require 'csv'
 require 'yaml'
+require 'i18n'
 
 class MPW
 	
@@ -31,14 +32,15 @@ class MPW
 
 	# Create a new config file
 	# @args: key -> the gpg key to encrypt
+	#        lang -> the software language
 	#        file_gpg -> the file who is encrypted
 	#        file_pwd -> the file who stock the password
 	#        timeout_pwd -> time to save the password 
 	# @rtrn: true if le config file is create
-	def setup(key, file_gpg, timeout_pwd)
+	def setup(key, lang, file_gpg, timeout_pwd)
 
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
-			@error_msg = "The key string isn't in good format!"
+			@error_msg = I18n.t('error.config.key_bad_format')
 			return false
 		end
 		
@@ -49,6 +51,7 @@ class MPW
 		timeout_pwd.empty? ? (timeout_pwd = 60) : (timeout_pwd = timeout_pwd.to_i)
 
 		config = {'config' => {'key'         => key,
+		                       'lang'        => lang,
 		                       'file_gpg'    => file_gpg,
 		                       'timeout_pwd' => timeout_pwd}}
 
@@ -57,7 +60,7 @@ class MPW
 				file << config.to_yaml
 			end
 		rescue Exception => e 
-			@error_msg = "Can't write the config file!\n#{e}"
+			@error_msg = "#{I18n.t('error.config.write')}\n#{e}"
 			return false
 		end
 
@@ -70,16 +73,25 @@ class MPW
 		begin
 			config = YAML::load_file(@file_config)
 			@key         = config['config']['key']
+			@lang        = config['config']['lang']
 			@file_gpg    = config['config']['file_gpg']
 			@timeout_pwd = config['config']['timeout_pwd'].to_i
 
 			if @key.empty? || @file_gpg.empty? 
-				@error_msg = "Checkconfig failed!"
+				@error_msg = I18n.t('error.config.check')
 				return false
+			end
+	
+			if !@lang.nil? && !@lang.empty?
+				if !File.exist?("#{APP_ROOT}/i18n/#{@lang}.yml")
+					language= 'en_US'
+				end
+				I18n.load_path = Dir["#{APP_ROOT}/i18n/#{@lang}.yml"]
+				I18n.locale = @lang.to_sym
 			end
 
 		rescue Exception => e 
-			@error_msg = "Checkconfig failed!\n#{e}"
+			@error_msg = "#{I18n.t('error.config.check')}\n#{e}"
 			return false
 		end
 
@@ -110,7 +122,7 @@ class MPW
 				File.delete(@file_pwd)
 			end
 			
-			@error_msg = "Can't decrypt file!\n#{e}"
+			@error_msg = "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
 			return false
 		end
 	end
@@ -133,7 +145,7 @@ class MPW
 
 			return true
 		rescue Exception => e 
-			@error_msg = "Can't encrypt the GPG file!\n#{e}"
+			@error_msg = "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
 			return false
 		end
 	end
@@ -191,7 +203,7 @@ class MPW
 		row = Array.new()
 		
 		if name.nil? || name.empty?
-			@error_msg = "You must define a name!"
+			@error_msg = I18n.t('error.add.name_empty')
 			return false
 		end
 		
@@ -257,7 +269,7 @@ class MPW
 
 			return true
 		else
-			@error_msg = "Can't update the item, the item #{id} doesn't exist!"
+			@error_msg = I18n.t('error.update.id_no_exist', :id => id)
 			return false
 		end
 	end
@@ -269,7 +281,7 @@ class MPW
 		if not @data.delete_at(id.to_i).nil?
 			return true
 		else
-			@error_msg = "Can't delete the item, the item #{id} doesn't exist!"
+			@error_msg = I18n.t('error.delete.id_no_exist', :id => id)
 			return false
 		end
 	end
@@ -288,7 +300,7 @@ class MPW
 
 			return true
 		rescue Exception => e 
-			@error_msg = "Can't export, impossible to write in #{file}!\n#{e}"
+			@error_msg = "#{I18n.t('error.export.write', :file => file)}\n#{e}"
 			return false
 		end
 	end
@@ -301,7 +313,7 @@ class MPW
 			data_new = IO.read(file)
 			data_new.lines do |line|
 				if not line =~ /(.*,){6}/
-					@error_msg = "Can't import, the file is bad format!"
+					@error_msg = I18n.t('error.import.bad_format')
 					return false
 				else
 					row = line.parse_csv.unshift(0)
@@ -313,7 +325,7 @@ class MPW
 
 			return true
 		rescue Exception => e 
-			@error_msg = "Can't import, impossible to read  #{file}!\n#{e}"
+			@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
 			return false
 		end
 	end
@@ -329,7 +341,7 @@ class MPW
 			data = IO.read(file)
 			data.lines do |line|
 				if not line =~ /(.*,){6}/
-					@error_msg = "Can't import, the file is bad format!"
+					@error_msg = I18n.t('error.import.bad_format')
 					return false
 				else
 					result.push(line.parse_csv.unshift(id))
@@ -340,7 +352,7 @@ class MPW
 
 			return result
 		rescue Exception => e 
-			@error_msg = "Can't import, impossible to read  #{file}!\n#{e}"
+			@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
 			return false
 		end
 	end
