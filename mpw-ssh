@@ -25,28 +25,28 @@ search = ARGV[0]
 
 options = {}
 OptionParser.new do |opts|
-	opts.banner = "Usage: mpw-ssh SEARCH [options]"
+	opts.banner = "#{I18n.t('ssh.option.usage')}: mpw-ssh SEARCH [options]"
 
-	opts.on("-l", "--login LOGIN", "Force a login") do |login|
+	opts.on("-l", "--login LOGIN", I18n.t('ssh.option.login')) do |login|
 		cli.login = login
 	end
 
-	opts.on("-p", "--port PORT", "Force a port") do |port|
-		cli.port = port	
-	end
-
-	opts.on("-s", "--server SERVER", "Force a server") do |server|
+	opts.on("-s", "--server SERVER", I18n.t('ssh.option.server')) do |server|
 		cli.server = server
 	end
 
-	opts.on("-h", "--help", "Show this message") do |b|
+	opts.on("-p", "--port PORT", I18n.t('ssh.option.port')) do |port|
+		cli.port = port	
+	end
+
+	opts.on("-h", "--help", I18n.t('ssh.option.help')) do |b|
 		puts opts
 		exit 0
 	end
 end.parse!
 
 if ARGV.length < 1
-	puts "Usage: mpw-ssh SEARCH [options]"
+	puts "#{I18n.t('ssh.option.usage')}: mpw-ssh SEARCH [options]"
 	exit 2
 end
 

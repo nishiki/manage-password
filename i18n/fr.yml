@@ -91,8 +91,15 @@ fr:
       protocol: "Protocol"
       server: "Serveur"
   ssh:
-    connect: "Connexion à:"
-    nothing: "Aucun résultat!"
+    option:
+      usage: "Utilisation"
+      login: "Change l'identifiant de connexion"
+      server: "Change le nom de domaine ou l'ip du serveur"
+      port: "Change le port de connexion"
+      help: "Affiche ce message d'aide"
+    display:
+      connect: "Connexion à:"
+      nothing: "Aucun résultat!"
   formats:
     default: ! '%Y-%m-%d'
     long: ! '%B %d, %Y'
