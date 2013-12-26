@@ -8,15 +8,15 @@ en_US:
       check: "Checkconfig failed!"
       key_bad_format: "The key string isn't in good format!"
     delete:
-      id_no_exist: "Can't delete the item, the item %{id} doesn't exist!"
+      id_no_exist: "Can't delete the item %{id}, it doesn't exist!"
     export:
-      write: "Can't export, impossible to write in %{file}!"
+      write: "Can't export, unable to write in %{file}!"
     gpg_file: 
       decrypt: "Can't decrypt file!"
       encrypt: "Can't encrypt the GPG file!"
     import:
-      bad_format: "Can't import, the file is bad format!"
-      read: "Can't import, impossible to read %{file}!"
+      bad_format: "Can't import, the file is badly formated!"
+      read: "Can't import, unable to read %{file}!"
     update:
       id_no_exist: "Can't update the item, the item %{id} doesn't exist!"
   cli:
