@@ -1,5 +1,5 @@
 ---
-en_US:
+en:
   error:
     add:
       name_empty: "You must define a name!"

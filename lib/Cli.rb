@@ -38,7 +38,7 @@ class Cli
 		timeout_pwd = ask(I18n.t('cli.form.setup.timeout'))
 		
 		if !File.exist?("#{APP_ROOT}/i18n/#{language}.yml")
-			language= 'en_US'
+			language= 'en'
 		end
 		I18n.load_path = Dir["#{APP_ROOT}/i18n/#{language}.yml"]
 		I18n.locale = language.to_sym
