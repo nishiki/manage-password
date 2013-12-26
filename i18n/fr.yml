@@ -20,6 +20,21 @@ fr:
     update:
       id_no_exist: "Impossible de mettre à jour l'élément %{id}, car il n'existe pas!"
   cli:
+    option:
+      usage: "Utilisation"
+      show: "Recherche et affiche les éléments"
+      show_all: "Affiche tous les éléments"
+      update: "Met à jour un élément"
+      remove: "Supprime un élément"
+      group: "Recherche les éléments appartenant au groupe spécifié"
+      add: "Ajoute un élément"
+      setup: "Création d'un nouveau fichier de configuration" 
+      protocol: "Sélectionne les éléments ayant le protocole spécifié"
+      export: "Exporte tous les éléments dans un fichier au format CSV"
+      import: "Importe des éléments depuis un fichier au format CSV"
+      force: "Force une action, l'action ne demandera pas de confirmation"
+      format: "Change le format d'affichage des éléments par un alternatif"
+      help: "Affiche ce message d'aide"
     form:
       add:
         title: "Ajout d'un nouvel élément"

@@ -27,58 +27,58 @@ options[:format] = false
 options[:group]  = nil
 
 OptionParser.new do |opts|
-	opts.banner = "Usage: mpw [options]"
+	opts.banner = "#{I18n.t('cli.option.usage')}: mpw [options]"
 
-	opts.on("-d", "--display [SEARCH]", "Display items") do |search|
+	opts.on('-d', '--display [SEARCH]', I18n.t('cli.option.show')) do |search|
 		search.nil? ? (options[:display]  = '')  : (options[:display] = search)
 	end
 
-	opts.on("-A", "--show-all", "Show all items") do |b|
+	opts.on('-A', '--show-all', I18n.t('cli.option.show_all')) do |b|
 		options[:type]    = nil
-		options[:display] = ""
+		options[:display] = ''
 	end
 
-	opts.on("-u", "--update ID", "Update an items") do |id|
+	opts.on('-u', '--update ID', I18n.t('cli.option.update')) do |id|
 		options[:update] = id
 	end
 
-	opts.on("-r", "--remove ID", "Remove an items") do |id|
+	opts.on('-r', '--remove ID', I18n.t('cli.option.remove')) do |id|
 		options[:remove] = id
 	end
 
-	opts.on("-g", "--group GROUP", "Select a group") do |group|
+	opts.on('-g', '--group GROUP', I18n.t('cli.option.group')) do |group|
 		options[:group] = group
 	end
 
-	opts.on("-a", "--add", "Add an items") do |b|
+	opts.on('-a', '--add', I18n.t('cli.option.add')) do |b|
 		options[:add] = true
 	end
 
-	opts.on("-S", "--setup", "Setup the config file") do |b|
+	opts.on('-S', '--setup', I18n.t('cli.option.setup')) do |b|
 		options[:setup] = true
 	end
 
-	opts.on("-p", "--protocol PROTOCOL", "Select a protocol") do |type|
+	opts.on('-p', '--protocol PROTOCOL', I18n.t('cli.option.protocol')) do |type|
 		options[:type] = type
 	end
 
-	opts.on("-e", "--export FILE", "Export to csv file") do |file|
+	opts.on('-e', '--export FILE', I18n.t('cli.option.export')) do |file|
 		options[:export] = file
 	end
 
-	opts.on("-i", "--import FILE", "Import from csv file") do |file|
+	opts.on('-i', '--import FILE', I18n.t('cli.option.import')) do |file|
 		options[:import] = file
 	end
 
-	opts.on("-f", "--force", "Force an action") do |b|
+	opts.on('-f', '--force', I18n.t('cli.option.force')) do |b|
 		options[:force] = true
 	end
 
-	opts.on("-F", "--format", "Change the display format by an alternatif") do |b|
+	opts.on('-F', '--format', I18n.t('cli.option.format')) do |b|
 		options[:format] = true
 	end
 
-	opts.on("-h", "--help", "Show this message") do |b|
+	opts.on('-h', '--help', I18n.t('cli.option.help')) do |b|
 		puts opts
 		exit 0
 	end

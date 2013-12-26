@@ -20,6 +20,21 @@ en:
     update:
       id_no_exist: "Can't update the item, the item %{id} doesn't exist!"
   cli:
+    option:
+      usage: "Usage"
+      show: "Search and show the items"
+      show_all: "Show all items"
+      update: "Update an item"
+      remove: "Delete an item"
+      group: "Search the items with specified group"
+      add: "Add an item"
+      setup: "Create a new configuration file" 
+      protocol: "Select the items with the specified protocol"
+      export: "Export all items in a CSV file"
+      import: "Import item since a CSV file"
+      force: "Force an action"
+      format: "Change the display items format by an alternative format"
+      help: "Show this help message"
     form:
       add:
         title: "Add a new item"
