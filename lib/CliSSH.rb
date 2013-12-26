@@ -26,7 +26,7 @@ class CliSSH < Cli
 					port = 22
 				end
 
-				puts "Connect to: ssh #{login}@#{server} -p #{port}"
+				puts "#{I18n.t('ssh.connect')} ssh #{login}@#{server} -p #{port}"
 				if passwd.empty?
 					system("ssh #{login}@#{server} -p #{port}")
 				else
@@ -35,7 +35,7 @@ class CliSSH < Cli
 			end
 
 		else
-			puts "Nothing result!"
+			puts I18n.t('ssh.nothing')
 		end
 	end
 end

@@ -75,6 +75,9 @@ fr:
       port: "Port"
       protocol: "Protocol"
       server: "Serveur"
+  ssh:
+    connect: "Connexion à:"
+    nothing: "Aucun résultat!"
   formats:
     default: ! '%Y-%m-%d'
     long: ! '%B %d, %Y'
