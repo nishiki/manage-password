@@ -33,11 +33,11 @@ en:
         comment: "Enter a comment (optinal): "
         valid: "Item has been added!"
       delete:
-        ask: "Are you sure to remove the item: %{id} ?"
+        ask: "Are you sure you want to remove the item %{id} ?"
         valid: "The item %{id} has been removed!"
         not_valid: "The item %{id} hasn't been removed, because it doesn't exist!"
       import:
-        ask: "Are you sure to import this file: %{file} ?"
+        ask: "Are you sure you want to import this file %{file} ?"
         valid: "The import is succesfull!"
         not_valid: "No data to import!"
       setup:
