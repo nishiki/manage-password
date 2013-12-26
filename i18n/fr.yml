@@ -42,7 +42,7 @@ fr:
         not_valid: "Aucune donnée à importer!"
       setup:
         title: "Création d'un nouveau fichier de configuration"
-        lang: "Choisissez votre langue (en_US, fr_FR, ...) [défaut=%{lang}]: "
+        lang: "Choisissez votre langue (en, fr, ...) [défaut=%{lang}]: "
         gpg_key: "Entrez la clé GPG: " 
         gpg_file: "Entrez le chemin du fichier qui sera chiffré [défaut=%{home}/.mpw.gpg]: "
         timeout: "Entrez le temps (en seconde) du mot de passe GPG [défaut=60]: "
