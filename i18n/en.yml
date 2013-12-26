@@ -78,6 +78,15 @@ en:
       bad_password: "Bad password!"
       goodbye: "Goodbye!"
       unknown_command: "Unknown command!"
+      option:
+        title: "Help"
+        show: "Search and show the results"
+        group: "Change the group for the search"
+        add: "Add an item"
+        update: "Update an item"
+        remove: "Remove an item"
+        help: "Show this message"
+        quit: "Quit the software"
     display:
       comment: "Comment"
       error: "ERROR"

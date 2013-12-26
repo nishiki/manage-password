@@ -78,6 +78,15 @@ fr:
       bad_password: "Mauvais mot de passe!"
       goodbye: "Au revoir!"
       unknown_command: "Commande inconnue!"
+      option:
+        title: "Aide"
+        show: "Cherche et affiche les résulats"
+        group: "Change de groupe pour la recherche"
+        add: "Ajout un élément"
+        update: "Met à jour un élément"
+        remove: "Supprime un élément"
+        help: "Affiche ce message d'aide"
+        quit: "Quitte le programme"
     display:
       comment: "Commentaire"
       error: "ERREUR"

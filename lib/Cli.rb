@@ -279,28 +279,15 @@ class Cli
 					group = nil
 				end
 			when 'help', 'h', '?'
-				puts '# Help'
+				puts "# #{I18n.t('cli.interactive.option.title')}"
 				puts '# --------------------'
-				puts '# Display an item:'
-				puts '#	display SEARCH'
-				puts '#	show SEARCH'
-				puts '#	s SEARCH'
-				puts '#	d SEARCH'
-				puts '# Add an new item:'
-				puts '#	add'
-				puts '#	a'
-				puts '# Update an item:'
-				puts '#	update ID'
-				puts '#	u ID'
-				puts '# Remove an item:'
-				puts '#	remove ID'
-				puts '#	delete ID'
-				puts '#	r ID'
-				puts '#	d ID'
-				puts '# Quit the program:'
-				puts '#	quit'
-				puts '#	exit'
-				puts '#	q'
+				puts "# display, show, d, s SEARCH    #{I18n.t('cli.interactive.option.show')}"
+				puts "# group, g                      #{I18n.t('cli.interactive.option.group')}"
+				puts "# add, a                        #{I18n.t('cli.interactive.option.add')}"
+				puts "# update, u ID                  #{I18n.t('cli.interactive.option.update')}"
+				puts "# remove, delete, r, d ID       #{I18n.t('cli.interactive.option.remove')}"
+				puts "# help, h, ?                    #{I18n.t('cli.interactive.option.help')}"
+				puts "# quit, exit, q                 #{I18n.t('cli.interactive.option.quit')}"
 			when 'quit', 'exit', 'q'
 				puts I18n.t('cli.interactive.goodbye')
 				break
