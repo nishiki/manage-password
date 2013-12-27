@@ -20,6 +20,8 @@ end
 I18n.load_path = Dir["#{APP_ROOT}/i18n/#{lang}.yml"]
 I18n.locale = lang.to_sym
 
+cli    = CliSSH.new(lang)
+
 options = {}
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('ssh.option.usage')}: mpw-ssh SEARCH [options]"
@@ -43,7 +45,6 @@ OptionParser.new do |opts|
 end.parse!
 
 search = ARGV[0]
-cli    = CliSSH.new(lang)
 
 if ARGV.length < 1
 	puts "#{I18n.t('ssh.option.usage')}: mpw-ssh SEARCH [options]"
