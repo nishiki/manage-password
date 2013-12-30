@@ -29,7 +29,7 @@ class MPW
 		@error_msg  = nil
 		@file_config = "#{Dir.home()}/.mpw.cfg"
 
-		if !file_config.nil? && !file_config.empty? && File.exist?(file_config)
+		if !file_config.nil? && !file_config.empty?
 			@file_config = file_config
 		end
 	end
@@ -85,12 +85,11 @@ class MPW
 				@error_msg = I18n.t('error.config.check')
 				return false
 			end
-	
+				
 			if !@lang.nil? && !@lang.empty?
 				if !File.exist?("#{APP_ROOT}/i18n/#{@lang}.yml")
-					language= 'en_US'
+					@lang = 'en'
 				end
-				I18n.load_path = Dir["#{APP_ROOT}/i18n/#{@lang}.yml"]
 				I18n.locale = @lang.to_sym
 			end
 

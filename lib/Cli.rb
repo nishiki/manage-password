@@ -40,7 +40,6 @@ class Cli
 		if !File.exist?("#{APP_ROOT}/i18n/#{language}.yml")
 			language= 'en'
 		end
-		I18n.load_path = Dir["#{APP_ROOT}/i18n/#{language}.yml"]
 		I18n.locale = language.to_sym
 
 		if @m.setup(key, language, file_gpg, timeout_pwd)
