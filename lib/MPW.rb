@@ -25,9 +25,13 @@ class MPW
 	attr_accessor :timeout_pwd
 
 	# Constructor
-	def initialize()
+	def initialize(file_config=nil)
+		@error_msg  = nil
 		@file_config = "#{Dir.home()}/.mpw.cfg"
-		@error_msg   = nil
+
+		if !file_config.nil? && !file_config.empty? && File.exist?(file_config)
+			@file_config = file_config
+		end
 	end
 
 	# Create a new config file

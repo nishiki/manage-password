@@ -28,6 +28,7 @@ fr:
       remove: "Supprime un élément"
       group: "Recherche les éléments appartenant au groupe spécifié"
       add: "Ajoute un élément"
+      config: "Spécifie le fichier de configuration à utiliser"
       setup: "Création d'un nouveau fichier de configuration" 
       protocol: "Sélectionne les éléments ayant le protocole spécifié"
       export: "Exporte tous les éléments dans un fichier au format CSV"

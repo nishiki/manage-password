@@ -14,8 +14,8 @@ require "#{APP_ROOT}/lib/MPW.rb"
 class Cli
 
 	# Constructor
-	def initialize(lang)
-		@m = MPW.new()
+	def initialize(lang, config_file=nil)
+		@m = MPW.new(config_file)
 		
 		if not @m.checkconfig()
 			self.setup(lang)

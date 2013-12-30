@@ -25,6 +25,7 @@ options = {}
 options[:force]  = false
 options[:format] = false
 options[:group]  = nil
+options[:config] = nil
 
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('cli.option.usage')}: mpw [options]"
@@ -52,6 +53,10 @@ OptionParser.new do |opts|
 
 	opts.on('-a', '--add', I18n.t('cli.option.add')) do |b|
 		options[:add] = true
+	end
+
+	opts.on('-c', '--config CONFIG', I18n.t('cli.option.config')) do |config|
+		options[:config] = config
 	end
 
 	opts.on('-S', '--setup', I18n.t('cli.option.setup')) do |b|
@@ -85,7 +90,7 @@ OptionParser.new do |opts|
 end.parse!
 
 
-cli = Cli.new(lang)
+cli = Cli.new(lang, options[:config])
 
 # Display the item's informations
 if not options[:setup].nil?

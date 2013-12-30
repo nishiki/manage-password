@@ -28,6 +28,7 @@ en:
       remove: "Delete an item"
       group: "Search the items with specified group"
       add: "Add an item"
+      config: "Specify the configuration file to use"
       setup: "Create a new configuration file" 
       protocol: "Select the items with the specified protocol"
       export: "Export all items in a CSV file"
