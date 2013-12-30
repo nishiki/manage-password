@@ -136,8 +136,7 @@ class MPW
 
 			data_to_encrypt = ''
 			@data.each do |row|
-				row.shift
-				data_to_encrypt << row.to_csv
+				data_to_encrypt << row.drop(1).to_csv
 			end
 
 			crypto.encrypt(data_to_encrypt, :recipients => @key, :output => file_gpg)
@@ -163,9 +162,8 @@ class MPW
 		search = search.force_encoding('ASCII-8BIT')
 
 		@data.each do |row|
-			name    = row[NAME].downcase
-			server  = row[SERVER].downcase
-
+			row[NAME].nil?    ? (name    = nil) : (name    = row[NAME].downcase)
+			row[SERVER].nil?  ? (server  = nil) : (server  = row[SERVER].downcase)
 			row[COMMENT].nil? ? (comment = nil) : (comment = row[COMMENT].downcase)
 
 			if name =~ /^.*#{search}.*$/  || server =~ /^.*#{search}.*$/ || comment =~ /^.*#{search}.*$/ 
