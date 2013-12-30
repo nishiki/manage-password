@@ -25,6 +25,7 @@ class MPW
 	attr_accessor :timeout_pwd
 
 	# Constructor
+	# @args: file_config -> the specify config file
 	def initialize(file_config=nil)
 		@error_msg  = nil
 		@file_config = "#{Dir.home()}/.mpw.cfg"
@@ -86,12 +87,7 @@ class MPW
 				return false
 			end
 				
-			if !@lang.nil? && !@lang.empty?
-				if !File.exist?("#{APP_ROOT}/i18n/#{@lang}.yml")
-					@lang = 'en'
-				end
-				I18n.locale = @lang.to_sym
-			end
+			I18n.locale = @lang.to_sym
 
 		rescue Exception => e 
 			@error_msg = "#{I18n.t('error.config.check')}\n#{e}"
