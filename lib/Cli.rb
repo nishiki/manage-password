@@ -30,12 +30,12 @@ class Cli
 	# Create a new config file
 	# @args: lang -> the software language
 	def setup(lang)
-		puts "# #{I18n.t('cli.form.setup.title')}"
-		puts "# --------------------"
-		language    = ask(I18n.t('cli.form.setup.lang', :lang => lang))
-		key         = ask(I18n.t('cli.form.setup.gpg_key'))
-		file_gpg    = ask(I18n.t('cli.form.setup.gpg_file', :home => Dir.home()))
-		timeout_pwd = ask(I18n.t('cli.form.setup.timeout'))
+		puts I18n.t('cli.form.setup.title')
+		puts '--------------------'
+		language    = ask(I18n.t('cli.form.setup.lang', :lang => lang)).to_s
+		key         = ask(I18n.t('cli.form.setup.gpg_key')).to_s
+		file_gpg    = ask(I18n.t('cli.form.setup.gpg_file', :home => Dir.home())).to_s
+		timeout_pwd = ask(I18n.t('cli.form.setup.timeout')).to_s
 		
 		if !File.exist?("#{APP_ROOT}/i18n/#{language}.yml")
 			language= 'en'
@@ -78,16 +78,16 @@ class Cli
 	# Display an item in the default format
 	# @args: item -> an array with the item information
 	def displayFormat(item)
-		puts "# --------------------"
-		puts "# Id: #{item[MPW::ID]}"
-		puts "# #{I18n.t('cli.display.name')}: #{item[MPW::NAME]}"
-		puts "# #{I18n.t('cli.display.group')}: #{item[MPW::GROUP]}"
-		puts "# #{I18n.t('cli.display.server')}: #{item[MPW::SERVER]}"
-		puts "# #{I18n.t('cli.display.protocol')}: #{item[MPW::PROTOCOL]}"
-		puts "# #{I18n.t('cli.display.login')}: #{item[MPW::LOGIN]}"
-		puts "# #{I18n.t('cli.display.password')}: #{item[MPW::PASSWORD]}"
-		puts "# #{I18n.t('cli.display.port')}: #{item[MPW::PORT]}"
-		puts "# #{I18n.t('cli.display.comment')}: #{item[MPW::COMMENT]}"
+		puts '--------------------'
+		puts "Id: #{item[MPW::ID]}"
+		puts "#{I18n.t('cli.display.name')}: #{item[MPW::NAME]}"
+		puts "#{I18n.t('cli.display.group')}: #{item[MPW::GROUP]}"
+		puts "#{I18n.t('cli.display.server')}: #{item[MPW::SERVER]}"
+		puts "#{I18n.t('cli.display.protocol')}: #{item[MPW::PROTOCOL]}"
+		puts "#{I18n.t('cli.display.login')}: #{item[MPW::LOGIN]}"
+		puts "#{I18n.t('cli.display.password')}: #{item[MPW::PASSWORD]}"
+		puts "#{I18n.t('cli.display.port')}: #{item[MPW::PORT]}"
+		puts "#{I18n.t('cli.display.comment')}: #{item[MPW::COMMENT]}"
 	end
 
 	# Display an item in the alternative format
@@ -109,16 +109,16 @@ class Cli
 	# Form to add a new item
 	def add()
 		row = Array.new()
-		puts "# #{I18n.t('cli.form.add.title')}"
-		puts "# --------------------"
-		name     = ask(I18n.t('cli.form.add.name'))
-		group    = ask(I18n.t('cli.form.add.group'))
-		server   = ask(I18n.t('cli.form.add.server'))
-		protocol = ask(I18n.t('cli.form.add.protocol'))
-		login    = ask(I18n.t('cli.form.add.login'))
-		passwd   = ask(I18n.t('cli.form.add.password'))
-		port     = ask(I18n.t('cli.form.add.port'))
-		comment  = ask(I18n.t('cli.form.add.comment'))
+		puts I18n.t('cli.form.add.title')
+		puts '--------------------'
+		name     = ask(I18n.t('cli.form.add.name')).to_s
+		group    = ask(I18n.t('cli.form.add.group')).to_s
+		server   = ask(I18n.t('cli.form.add.server')).to_s
+		protocol = ask(I18n.t('cli.form.add.protocol')).to_s
+		login    = ask(I18n.t('cli.form.add.login')).to_s
+		passwd   = ask(I18n.t('cli.form.add.password')).to_s
+		port     = ask(I18n.t('cli.form.add.port')).to_s
+		comment  = ask(I18n.t('cli.form.add.comment')).to_s
 
 		if @m.add(name, group, server, protocol, login, passwd, port, comment)
 			if @m.encrypt()
@@ -137,16 +137,16 @@ class Cli
 		row = @m.searchById(id)
 
 		if not row.empty?
-			puts "# #{I18n.t('cli.form.update.title')}"
-			puts "# --------------------"
-			name     = ask(I18n.t('cli.form.update.name'    , :name => row[MPW::NAME]))
-			group    = ask(I18n.t('cli.form.update.group'   , :group => row[MPW::GROUP]))
-			server   = ask(I18n.t('cli.form.update.server'  , :server => row[MPW::SERVER]))
-			protocol = ask(I18n.t('cli.form.update.protocol', :protocol => row[MPW::PROTOCOL]))
-			login    = ask(I18n.t('cli.form.update.login'   , :login => row[MPW::LOGIN]))
-			passwd   = ask(I18n.t('cli.form.update.password'))
-			port     = ask(I18n.t('cli.form.update.port'    , :port => row[MPW::PORT]))
-			comment  = ask(I18n.t('cli.form.update.comment' , :comment => row[MPW::COMMENT]))
+			puts I18n.t('cli.form.update.title')
+			puts '--------------------'
+			name     = ask(I18n.t('cli.form.update.name'    , :name => row[MPW::NAME])).to_s
+			group    = ask(I18n.t('cli.form.update.group'   , :group => row[MPW::GROUP])).to_s
+			server   = ask(I18n.t('cli.form.update.server'  , :server => row[MPW::SERVER])).to_s
+			protocol = ask(I18n.t('cli.form.update.protocol', :protocol => row[MPW::PROTOCOL])).to_s
+			login    = ask(I18n.t('cli.form.update.login'   , :login => row[MPW::LOGIN])).to_s
+			passwd   = ask(I18n.t('cli.form.update.password')).to_s
+			port     = ask(I18n.t('cli.form.update.port'    , :port => row[MPW::PORT])).to_s
+			comment  = ask(I18n.t('cli.form.update.comment' , :comment => row[MPW::COMMENT])).to_s
 				
 			if @m.update(id, name, group, server, protocol, login, passwd, port, comment)
 				if @m.encrypt()
@@ -172,7 +172,7 @@ class Cli
 			if result.length > 0
 				self.displayFormat(result)
 
-				confirm = ask("#{I18n.t('cli.form.delete.ask', :id => id)} (y/N) ")
+				confirm = ask("#{I18n.t('cli.form.delete.ask', :id => id)} (y/N) ").to_s
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
 					force = true
 				end
@@ -217,7 +217,7 @@ class Cli
 					self.displayFormat(r)
 				end
 
-				confirm = ask("#{I18n.t('cli.form.import.ask', :file => file)} (y/N) ")
+				confirm = ask("#{I18n.t('cli.form.import.ask', :file => file)} (y/N) ").to_s
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
 					force = true
 				end
@@ -279,15 +279,15 @@ class Cli
 					group = nil
 				end
 			when 'help', 'h', '?'
-				puts "# #{I18n.t('cli.interactive.option.title')}"
-				puts '# --------------------'
-				puts "# display, show, d, s SEARCH    #{I18n.t('cli.interactive.option.show')}"
-				puts "# group, g                      #{I18n.t('cli.interactive.option.group')}"
-				puts "# add, a                        #{I18n.t('cli.interactive.option.add')}"
-				puts "# update, u ID                  #{I18n.t('cli.interactive.option.update')}"
-				puts "# remove, delete, r, d ID       #{I18n.t('cli.interactive.option.remove')}"
-				puts "# help, h, ?                    #{I18n.t('cli.interactive.option.help')}"
-				puts "# quit, exit, q                 #{I18n.t('cli.interactive.option.quit')}"
+				puts I18n.t('cli.interactive.option.title')
+				puts '--------------------'
+				puts "display, show, d, s SEARCH    #{I18n.t('cli.interactive.option.show')}"
+				puts "group, g                      #{I18n.t('cli.interactive.option.group')}"
+				puts "add, a                        #{I18n.t('cli.interactive.option.add')}"
+				puts "update, u ID                  #{I18n.t('cli.interactive.option.update')}"
+				puts "remove, delete, r, d ID       #{I18n.t('cli.interactive.option.remove')}"
+				puts "help, h, ?                    #{I18n.t('cli.interactive.option.help')}"
+				puts "quit, exit, q                 #{I18n.t('cli.interactive.option.quit')}"
 			when 'quit', 'exit', 'q'
 				puts I18n.t('cli.interactive.goodbye')
 				break
