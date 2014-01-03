@@ -49,6 +49,10 @@ class Cli
 		else
 			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
 		end
+
+		if not @m.checkconfig()
+			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+		end
 	end
 
 	# Request the GPG password and decrypt the file
