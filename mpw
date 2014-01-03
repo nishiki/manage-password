@@ -12,10 +12,10 @@ require 'i18n'
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
 require "#{APP_ROOT}/lib/Cli.rb"
 
-
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+I18n.enforce_available_locales = false
 I18n.load_path = Dir["#{APP_ROOT}/i18n/*.yml"]
 I18n.default_locale = :en
 I18n.locale = lang.to_sym
