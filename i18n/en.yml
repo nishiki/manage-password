@@ -40,13 +40,13 @@ en:
       add:
         title: "Add a new item"
         name: "Enter the name: "
-        group: "Enter the group [default=NoGroup]: "
+        group: "Enter the group (optional): "
         server: "Enter the hostname or ip: "
         protocol: "Enter the protocol of the connection (ssh, http, other): "
         login: "Enter the login connection: "
         password: "Enter the the password: "
-        port: "Enter the connection port (optinal): "
-        comment: "Enter a comment (optinal): "
+        port: "Enter the connection port (optional): "
+        comment: "Enter a comment (optional): "
         valid: "Item has been added!"
       delete:
         ask: "Are you sure you want to remove the item %{id} ?"
