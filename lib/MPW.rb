@@ -353,5 +353,17 @@ class MPW
 			return false
 		end
 	end
+
+	# Generate a random password
+	# @args: length -> the length password
+	# @rtrn: a random string
+	def self.generatePassword(length=8)
+		if length.to_i <= 0
+			length = 8
+		end
+
+		return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(length.to_i).join
+		#return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]-%w(0 1 I O l i o)).sample(length).join
+	end
 		
 end

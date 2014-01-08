@@ -11,6 +11,7 @@ require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
 require "#{APP_ROOT}/lib/Cli.rb"
+require "#{APP_ROOT}/lib/MPW.rb"
 
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
@@ -32,7 +33,7 @@ OptionParser.new do |opts|
 		search.nil? ? (options[:display]  = '')  : (options[:display] = search)
 	end
 
-	opts.on('-A', '--show-all', I18n.t('cli.option.show_all')) do |b|
+	opts.on('-A', '--show-all', I18n.t('cli.option.show_all')) do
 		options[:type]    = nil
 		options[:display] = ''
 	end
@@ -49,7 +50,7 @@ OptionParser.new do |opts|
 		options[:group] = group
 	end
 
-	opts.on('-a', '--add', I18n.t('cli.option.add')) do |b|
+	opts.on('-a', '--add', I18n.t('cli.option.add')) do
 		options[:add] = true
 	end
 
@@ -57,7 +58,7 @@ OptionParser.new do |opts|
 		options[:config] = config
 	end
 
-	opts.on('-S', '--setup', I18n.t('cli.option.setup')) do |b|
+	opts.on('-S', '--setup', I18n.t('cli.option.setup')) do
 		options[:setup] = true
 	end
 
@@ -73,15 +74,20 @@ OptionParser.new do |opts|
 		options[:import] = file
 	end
 
-	opts.on('-f', '--force', I18n.t('cli.option.force')) do |b|
+	opts.on('-f', '--force', I18n.t('cli.option.force')) do
 		options[:force] = true
 	end
 
-	opts.on('-F', '--format', I18n.t('cli.option.format')) do |b|
+	opts.on('-F', '--format', I18n.t('cli.option.format')) do
 		options[:format] = true
 	end
 
-	opts.on('-h', '--help', I18n.t('cli.option.help')) do |b|
+	opts.on('-G', '--generate-password [LENGTH]', I18n.t('cli.option.generate_password')) do |length|
+		puts MPW::generatePassword(length)
+		exit 0
+	end
+
+	opts.on('-h', '--help', I18n.t('cli.option.help')) do
 		puts opts
 		exit 0
 	end
