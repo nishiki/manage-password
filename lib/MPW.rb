@@ -360,18 +360,9 @@ class MPW
 	def self.generatePassword(length=8)
 		if length.to_i <= 0
 			length = 8
-		else
-			length = length.to_i
 		end
 
-		result = ''
-		while length > 62 do
-			result << ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(62).join
-			length -= 62
-		end
-		result << ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(length).join
-
-		return result
+		return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(length.to_i).join
 		#return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]-%w(0 1 I O l i o)).sample(length).join
 	end
 		

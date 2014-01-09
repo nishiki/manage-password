@@ -35,7 +35,7 @@ en:
       import: "Import item since a CSV file"
       force: "Force an action"
       format: "Change the display items format by an alternative format"
-      generate_password: "Generate a random password (default 8 characters)"
+      generate_password: "Generate a random password (default 8 characters, max 63 characters)"
       help: "Show this help message"
     form:
       add:
