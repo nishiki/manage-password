@@ -35,7 +35,7 @@ fr:
       import: "Importe des éléments depuis un fichier au format CSV"
       force: "Force une action, l'action ne demandera pas de confirmation"
       format: "Change le format d'affichage des éléments par un alternatif"
-      generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères, max 63 caractères)"
+      generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères)"
       help: "Affiche ce message d'aide"
     form:
       add:
