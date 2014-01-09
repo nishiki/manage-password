@@ -1,0 +1,51 @@
+#!/usr/bin/ruby
+# author: nishiki
+# mail: nishiki@yaegashi.fr
+# info: a simple script who manage your passwords
+
+require 'rubygems'
+require 'optparse'
+require 'pathname'
+
+APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
+require "#{APP_ROOT}/lib/Server.rb"
+
+options = {}
+OptionParser.new do |opts|
+	opts.banner = "Usage: mpw-server -c CONFIG [options]"
+
+	opts.on("-c", "--config CONFIG", "Specifie the configuration file") do |config|
+		options[:config] = config
+	end
+
+	opts.on("-t", "--check-config", "Check your configuration") do |b|
+		options[:checkconfig] = b
+	end
+
+	opts.on("-s", "--setup", "Force a server") do |b|
+		options[:setup] = b
+	end
+
+	opts.on("-h", "--help", "Show this message") do |b|
+		puts opts
+		exit 0
+	end
+end.parse!
+
+if options[:config].nil? || options[:config].empty?
+	puts 'Usage: mpw-server -c CONFIG [options]'
+	exit 3
+end
+
+server = Server.new
+
+if options[:checkconfig]
+	server.checkconfig(options[:config])
+elsif options[:setup]
+	server.setup(options[:config])
+else
+	server.checkconfig(options[:config])
+	server.start()
+end
+
+exit 0
