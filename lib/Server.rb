@@ -15,7 +15,6 @@ class Server
 	# Constructor
 	def initialize()
 		YAML::ENGINE.yamler='syck'
-		@error_msg = nil
 	end
 
 	# Start the server
@@ -243,13 +242,20 @@ class Server
 			@data_dir = config['config']['data_dir']
 			@timeout  = config['config']['timeout'].to_i
 
-			if @host.empty? || @port.empty? 
-				@error_msg = "Checkconfig failed!"
+			if @host.empty? || @port.empty? || @data_dir.empty? 
+				puts I18n.t('server.checkconfig.fail')
+				puts I18n.t('server.checkconfig.empty')
+				return false
+			end
+
+			if !Dir.exist?(@data_dir)
+				puts I18n.t('server.checkconfig.fail')
+				puts I18n.t('server.checkconfig.datadir')
 				return false
 			end
 
 		rescue Exception => e 
-			@error_msg = "Checkconfig failed!\n#{e}"
+			puts "#{I18n.t('server.checkconfig.fail')}\n#{e}"
 			return false
 		end
 

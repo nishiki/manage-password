@@ -118,6 +118,10 @@ en:
       checkconfig: "Check the configuration"
       setup: "Setup a new configuration file"
       help: "Show this message help"
+    checkconfig:
+      fail: "Checkconfig failed:!"
+      empty: "ERROR: an importe option is missing!"
+      datadir: "ERROR: le data directory doesn't exist!"
     form:
       setup:
         title: "Serveur configuration" 
