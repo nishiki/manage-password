@@ -4,7 +4,6 @@ require 'socket'
 require 'json'
 require 'highline/import'
 require 'digest'
-require 'base64'
 
 require "#{APP_ROOT}/lib/MPW.rb"
 
