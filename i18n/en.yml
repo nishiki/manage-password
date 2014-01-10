@@ -111,6 +111,21 @@ en:
     display:
       connect: "Connection to:"
       nothing: "Nothing result!"
+  server:
+    option:
+      usage: "Usage"
+      config: "Specifie the configuration file"
+      checkconfig: "Check the configuration"
+      setup: "Setup a new configuration file"
+      help: "Show this message help"
+    form:
+      setup:
+        title: "Serveur configuration" 
+	host: "IP listen: "
+	port: "Port listen: "
+	data_dir: "Data directory: "
+	timeout: "Timeout to second: "
+	not_valid: "ERROR: Impossible to write the configuration file!"
   formats:
     default: ! '%Y-%m-%d'
     long: ! '%B %d, %Y'

@@ -260,7 +260,6 @@ class Server
 	# @args: file_config -> the configuration file
 	# @rtrn: true if le config file is create
 	def setup(file_config)
-
 		puts I18n.t('server.form.setup.title')
 		puts '--------------------'
 		host     = ask(I18n.t('server.form.setup.host')).to_s
@@ -278,7 +277,7 @@ class Server
 				file << config.to_yaml
 			end
 		rescue Exception => e 
-			@error_msg = "Can't write the config file!\n#{e}"
+			puts "#{I18n.t('server.formsetup.not_valid')}\n#{e}"
 			return false
 		end
 
