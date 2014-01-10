@@ -154,7 +154,48 @@ class Server
 	# @args: msg -> message puts by the client
 	# @rtrn: json message
 	def deleteFile(msg)
-		client.puts 'delete a file'
+		gpg_key = msg['gpg_key'].sub('@', '_')
+
+		if msg['suffix'].nil? || msg['suffix'].empty?
+			file_gpg = "#{@data_dir}/#{gpg_key}.yml"
+		else
+			file_gpg = "#{@data_dir}/#{gpg_key}-#{msg['suffix']}.yml"
+		end
+
+		if !File.exist?(file_gpg)
+			send_msg = {:action  => 'delete',
+			            :gpg_key => msg['gpg_key'],
+			            :msg     => 'delete_fail',
+			            :error   => 'file_not_exist'}
+
+			return send_msg.to_json
+		end
+
+		gpg_data  = YAML::load_file(file_gpg)
+		salt      = gpg_data['gpg']['salt']
+		hash      = gpg_data['gpg']['hash']
+
+		if self.isAuthorized?(msg['password'], salt, hash)
+			begin
+				File.unlink(file_gpg)
+
+				send_msg = {:action  => 'delete',
+				            :gpg_key => msg['gpg_key'],
+				            :msg    => 'delete_done'}
+			rescue Exception => e
+				send_msg = {:action  => 'delete',
+				            :gpg_key => msg['gpg_key'],
+				            :msg     => 'delete_fail',
+				            :error   => e}
+			end
+		else
+			send_msg = {:action  => 'delete',
+			            :gpg_key => msg['gpg_key'],
+			            :msg     => 'delete_fail',
+			            :error   => 'not_autorized'}
+		end
+		
+		return send_msg.to_json
 	end
 
 	# Check is the hash equal the password with the salt
@@ -163,10 +204,6 @@ class Server
 	#        hash -> the hash of the password with the salt
 	# @rtrn: true is is good, else false
 	def isAuthorized?(password, salt, hash)
-		puts hash
-		puts YAML::dump(hash)
-		puts YAML::dump(Digest::SHA256.hexdigest(salt + password))
-		puts Digest::SHA256.hexdigest(salt + password)
 		if hash == Digest::SHA256.hexdigest(salt + password)
 			return true
 		else
