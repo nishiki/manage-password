@@ -93,7 +93,6 @@ class Server
 	# @args: msg -> message puts by the client
 	# @rtrn: json message
 	def updateFile(msg)
-	begin
 		gpg_key = msg['gpg_key'].sub('@', '_')
 		data    = msg['data']
 
@@ -149,9 +148,6 @@ class Server
 		end
 		
 		return send_msg.to_json
-	rescue Exception => e
-		puts e
-		end
 	end
 
 	# Remove a gpg file
