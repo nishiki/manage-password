@@ -97,12 +97,6 @@ class MPWConfig
 			return false
 		end
 
-		begin
-			@sync = TCPSocket.new(@sync_host, @sync_port)
-		rescue
-			@sync = false
-		end
-
 		return true
 	end
 	
