@@ -125,11 +125,11 @@ fr:
     form:
       setup:
         title: "Configuration du serveur" 
-	host: "IP d'écoute: "
-	port: "Port d'écoute: "
-	data_dir: "Répertoire des données: "
-	timeout: "Timeout en seconde: "
-	not_valid: "ERREUR: Impossible d'écire le fichier de configuration!"
+        host: "IP d'écoute: "
+        port: "Port d'écoute: "
+        data_dir: "Répertoire des données: "
+        timeout: "Timeout en seconde: "
+        not_valid: "ERREUR: Impossible d'écire le fichier de configuration!"
   formats:
     default: ! '%Y-%m-%d'
     long: ! '%B %d, %Y'
