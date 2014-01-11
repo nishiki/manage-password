@@ -6,7 +6,6 @@
 require 'rubygems'
 require 'gpgme'
 require 'csv'
-require 'yaml'
 require 'i18n'
 
 class MPW
@@ -22,79 +21,12 @@ class MPW
 	COMMENT  = 8
 
 	attr_accessor :error_msg
-	attr_accessor :timeout_pwd
-
+	
 	# Constructor
-	# @args: file_config -> the specify config file
-	def initialize(file_config=nil)
-		@error_msg  = nil
-		@file_config = "#{Dir.home()}/.mpw.cfg"
-
-		if !file_config.nil? && !file_config.empty?
-			@file_config = file_config
-		end
-	end
-
-	# Create a new config file
-	# @args: key -> the gpg key to encrypt
-	#        lang -> the software language
-	#        file_gpg -> the file who is encrypted
-	#        file_pwd -> the file who stock the password
-	#        timeout_pwd -> time to save the password 
-	# @rtrn: true if le config file is create
-	def setup(key, lang, file_gpg, timeout_pwd)
-
-		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
-			@error_msg = I18n.t('error.config.key_bad_format')
-			return false
-		end
-		
-		if file_gpg.empty?
-			file_gpg = "#{Dir.home()}/.mpw.gpg"
-		end
-
-		timeout_pwd.empty? ? (timeout_pwd = 60) : (timeout_pwd = timeout_pwd.to_i)
-
-		config = {'config' => {'key'         => key,
-		                       'lang'        => lang,
-		                       'file_gpg'    => file_gpg,
-		                       'timeout_pwd' => timeout_pwd}}
-
-		begin
-			File.open(@file_config, 'w') do |file|
-				file << config.to_yaml
-			end
-		rescue Exception => e 
-			@error_msg = "#{I18n.t('error.config.write')}\n#{e}"
-			return false
-		end
-
-		return true
-	end
-
-	# Check the config file
-	# @rtrn: true if the config file is correct
-	def checkconfig()
-		begin
-			config = YAML::load_file(@file_config)
-			@key         = config['config']['key']
-			@lang        = config['config']['lang']
-			@file_gpg    = config['config']['file_gpg']
-			@timeout_pwd = config['config']['timeout_pwd'].to_i
-
-			if @key.empty? || @file_gpg.empty? 
-				@error_msg = I18n.t('error.config.check')
-				return false
-			end
-				
-			I18n.locale = @lang.to_sym
-
-		rescue Exception => e 
-			@error_msg = "#{I18n.t('error.config.check')}\n#{e}"
-			return false
-		end
-
-		return true
+	def initialize(file_gpg, key=nil)
+		@error_msg = nil
+		@file_gpg  = file_gpg
+		@key       = key
 	end
 
 	# Decrypt a gpg file
@@ -117,10 +49,6 @@ class MPW
 
 			return true
 		rescue Exception => e 
-			if !@file_pwd.nil? && File.exist?(@file_pwd)
-				File.delete(@file_pwd)
-			end
-			
 			@error_msg = "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
 			return false
 		end
@@ -327,7 +255,7 @@ class MPW
 		end
 	end
 
-	# Return 
+	# Return a preview import 
 	# @args: file -> path to file import
 	# @rtrn: an array with the items to import, if there is an error return false
 	def importPreview(file)
@@ -372,7 +300,6 @@ class MPW
 		result << ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(length).join
 
 		return result
-		#return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]-%w(0 1 I O l i o)).sample(length).join
 	end
-		
+	
 end

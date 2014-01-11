@@ -10,6 +10,7 @@ require 'readline'
 require 'i18n'
 
 require "#{APP_ROOT}/lib/MPW.rb"
+require "#{APP_ROOT}/lib/MPWConfig.rb"
 
 class Cli
 
@@ -17,14 +18,15 @@ class Cli
 	# @args: lang -> the operating system language
 	#        config_file -> a specify config file
 	def initialize(lang, config_file=nil)
-		@m = MPW.new(config_file)
+		@config = MPWConfig.new(config_file)
 		
-		if not @m.checkconfig()
+		if not @config.checkconfig()
 			self.setup(lang)
 		end
 
+		@mpw = MPW.new(@config.file_gpg, @config.key)
 		if not self.decrypt()
-			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+			puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 			exit 2
 		end
 	end
@@ -44,28 +46,28 @@ class Cli
 		end
 		I18n.locale = language.to_sym
 
-		if @m.setup(key, language, file_gpg, timeout_pwd)
+		if @config.setup(key, language, file_gpg, timeout_pwd)
 			puts I18n.t('cli.form.setup.valid')
 		else
-			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+			puts "#{I18n.t('cli.display.error')}: #{@config.error_msg}"
 		end
 
-		if not @m.checkconfig()
-			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+		if not @config.checkconfig()
+			puts "#{I18n.t('cli.display.error')}: #{@config.error_msg}"
 		end
 	end
 
 	# Request the GPG password and decrypt the file
 	def decrypt()
 		@passwd = ask(I18n.t('cli.display.gpg_password')) {|q| q.echo = false}
-		return @m.decrypt(@passwd)
+		return @mpw.decrypt(@passwd)
 	end
 
 	# Display the query's result
 	# @args: search -> the string to search
 	#        protocol -> search from a particular protocol
 	def display(search, protocol=nil, group=nil, format=nil)
-		result = @m.search(search, group, protocol)
+		result = @mpw.search(search, group, protocol)
 
 		if not result.empty?
 			result.each do |r|
@@ -125,21 +127,21 @@ class Cli
 		port     = ask(I18n.t('cli.form.add.port')).to_s
 		comment  = ask(I18n.t('cli.form.add.comment')).to_s
 
-		if @m.add(name, group, server, protocol, login, passwd, port, comment)
-			if @m.encrypt()
+		if @mpw.add(name, group, server, protocol, login, passwd, port, comment)
+			if @mpw.encrypt()
 				puts I18n.t('cli.form.add.valid')
 			else
-				puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+				puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 			end
 		else
-			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+			puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 		end
 	end
 
 	# Update an item
 	# @args: id -> the item's id
 	def update(id)
-		row = @m.searchById(id)
+		row = @mpw.searchById(id)
 
 		if not row.empty?
 			puts I18n.t('cli.form.update.title')
@@ -153,14 +155,14 @@ class Cli
 			port     = ask(I18n.t('cli.form.update.port'    , :port => row[MPW::PORT])).to_s
 			comment  = ask(I18n.t('cli.form.update.comment' , :comment => row[MPW::COMMENT])).to_s
 				
-			if @m.update(id, name, group, server, protocol, login, passwd, port, comment)
-				if @m.encrypt()
+			if @mpw.update(id, name, group, server, protocol, login, passwd, port, comment)
+				if @mpw.encrypt()
 					puts I18n.t('cli.form.update.valid')
 				else
-					puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+					puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 				end
 			else
-				puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+				puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 			end
 		else
 			puts I18n.t('cli.display.nothing')
@@ -172,7 +174,7 @@ class Cli
 	#        force -> no resquest a validation
 	def remove(id, force=false)
 		if not force
-			result = @m.searchById(id)		
+			result = @mpw.searchById(id)
 
 			if result.length > 0
 				self.displayFormat(result)
@@ -187,11 +189,11 @@ class Cli
 		end
 
 		if force
-			if @m.remove(id)
-				if @m.encrypt()
+			if @mpw.remove(id)
+				if @mpw.encrypt()
 					puts I18n.t('cli.form.delete.valid', :id => id)
 				else
-					puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+					puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 				end
 			else
 				puts I18n.t('cli.form.delete.not_valid')
@@ -202,10 +204,10 @@ class Cli
 	# Export the items in a CSV file
 	# @args: file -> the destination file
 	def export(file)
-		if @m.export(file)
+		if @mpw.export(file)
 			puts "The export in #{file} is succesfull!"
 		else
-			puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+			puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 		end
 
 	end
@@ -214,7 +216,7 @@ class Cli
 	# @args: file -> the import file
 	#        force -> no resquest a validation
 	def import(file, force=false)
-		result = @m.importPreview(file)
+		result = @mpw.importPreview(file)
 
 		if not force
 			if result.is_a?(Array) && !result.empty?
@@ -232,10 +234,10 @@ class Cli
 		end
 
 		if force
-			if @m.import(file) && @m.encrypt()
+			if @mpw.import(file) && @mpw.encrypt()
 				puts I18n.t('cli.form.import.valid')
 			else
-				puts "#{I18n.t('cli.display.error')}: #{@m.error_msg}"
+				puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 			end
 		end
 	end
@@ -247,7 +249,7 @@ class Cli
 
 		while buf = Readline.readline('<mpw> ', true)
 
-			if @m.timeout_pwd < Time.now.to_i - last_access
+			if @config.timeout_pwd < Time.now.to_i - last_access
 				passwd_confirm = ask(I18n.t('cli.interactive.ask_password')) {|q| q.echo = false}
 
 				if @passwd.eql?(passwd_confirm)
