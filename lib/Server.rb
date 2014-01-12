@@ -126,7 +126,7 @@ class Server
 				last_update = Time.now.to_i
 				config = {'gpg' => {'salt'        => salt,
 				                    'hash'        => hash,
-				                    'last_update' => last_update
+				                    'last_update' => last_update,
 				                    'data'        => data}}
 
 				File.open(file_gpg, 'w') do |file|
@@ -135,7 +135,7 @@ class Server
 
 				send_msg = {:action      => 'update',
 				            :gpg_key     => msg['gpg_key'],
-				            :last_update => last_update
+				            :last_update => last_update,
 				            :msg         => 'done'}
 			rescue Exception => e
 				send_msg = {:action  => 'update',
