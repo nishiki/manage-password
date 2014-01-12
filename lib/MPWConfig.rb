@@ -19,11 +19,12 @@ class MPWConfig
 	attr_accessor :sync_port
 	attr_accessor :sync_pwd
 	attr_accessor :sync_sufix
+	attr_accessor :sync_last_update
 
 	# Constructor
 	# @args: file_config -> the specify config file
 	def initialize(file_config=nil)
-		@error_msg  = nil
+		@error_msg   = nil
 		@file_config = "#{Dir.home()}/.mpw.cfg"
 
 		if !file_config.nil? && !file_config.empty?
@@ -57,7 +58,8 @@ class MPWConfig
 		                       'sync_host'   => host,
 		                       'sync_port'   => port,
 		                       'sync_pwd'    => password,
-		                       'sync_suffix' => suffix}}
+		                       'sync_suffix' => suffix,
+		                       'last_update' => 0 }}
 
 		begin
 			File.open(@file_config, 'w') do |file|
@@ -76,14 +78,15 @@ class MPWConfig
 	def checkconfig()
 		begin
 			config = YAML::load_file(@file_config)
-			@key         = config['config']['key']
-			@lang        = config['config']['lang']
-			@file_gpg    = config['config']['file_gpg']
-			@timeout_pwd = config['config']['timeout_pwd'].to_i
-			@sync_host   = config['config']['sync_host']
-			@sync_port   = config['config']['sync_port']
-			@sync_pwd    = config['config']['sync_pwd']
-			@sync_sufix  = config['config']['sync_suffix']
+			@key               = config['config']['key']
+			@lang              = config['config']['lang']
+			@file_gpg          = config['config']['file_gpg']
+			@timeout_pwd       = config['config']['timeout_pwd'].to_i
+			@sync_host         = config['config']['sync_host']
+			@sync_port         = config['config']['sync_port']
+			@sync_pwd          = config['config']['sync_pwd']
+			@sync_sufix        = config['config']['sync_suffix']
+			@sync_last_update  = config['config']['sync_last_update'].to_i
 
 			if @key.empty? || @file_gpg.empty? 
 				@error_msg = I18n.t('error.config.check')
