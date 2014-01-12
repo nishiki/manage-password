@@ -61,26 +61,28 @@ class Server
 		end
 
 		if File.exist?(file_gpg)
-			gpg_data  = YAML::load_file(file_gpg)
-			salt      = gpg_data['gpg']['salt']
-			hash      = gpg_data['gpg']['hash']
-			data      = gpg_data['gpg']['data']
+			gpg_data    = YAML::load_file(file_gpg)
+			salt        = gpg_data['gpg']['salt']
+			hash        = gpg_data['gpg']['hash']
+			data        = gpg_data['gpg']['data']
+			last_update = gpg_data['gpg']['last_update']
 
 			if self.isAuthorized?(msg['password'], salt, hash)
 				send_msg = {:action  => 'get',
 				            :gpg_key => msg['gpg_key'],
-				            :msg     => 'get_done',
+				            :last_update => last_update,
+				            :msg     => 'done',
 				            :data    => data}
 			else
 				send_msg = {:action  => 'get',
 				            :gpg_key => msg['gpg_key'],
-				            :msg     => 'get_fail',
+				            :msg     => 'fail',
 				            :error   => 'not_authorized'}
 			end
 		else
 			send_msg = {:action  => 'get',
 			            :gpg_key => msg['gpg_key'],
-			            :msg     => 'get_fail',
+			            :msg     => 'fail',
 			            :error   => 'file_not_exist'}
 		end
 
@@ -97,7 +99,7 @@ class Server
 		if data.nil? || data.empty?
 			send_msg = {:action  => 'update',
 			            :gpg_key => msg['gpg_key'],
-			            :msg     => 'update_fail',
+			            :msg     => 'fail',
 			            :error   => 'no_data'}
 			
 			return send_msg.to_json
@@ -121,27 +123,30 @@ class Server
 
 		if self.isAuthorized?(msg['password'], salt, hash)
 			begin
-				config = {'gpg' => {'salt' => salt,
-				                    'hash' => hash,
-				                    'data' => data}}
+				last_update = Time.now.to_i
+				config = {'gpg' => {'salt'        => salt,
+				                    'hash'        => hash,
+				                    'last_update' => last_update
+				                    'data'        => data}}
 
 				File.open(file_gpg, 'w') do |file|
 					file << config.to_yaml
 				end
 
-				send_msg = {:action  => 'update',
-				            :gpg_key => msg['gpg_key'],
-				            :msg    => 'update_done'}
+				send_msg = {:action      => 'update',
+				            :gpg_key     => msg['gpg_key'],
+				            :last_update => last_update
+				            :msg         => 'done'}
 			rescue Exception => e
 				send_msg = {:action  => 'update',
 				            :gpg_key => msg['gpg_key'],
-				            :msg     => 'update_fail',
-				            :error   => e}
+				            :msg     => 'fail',
+				            :error   => 'server_error'}
 			end
 		else
 			send_msg = {:action  => 'update',
 			            :gpg_key => msg['gpg_key'],
-			            :msg     => 'update_fail',
+			            :msg     => 'fail',
 			            :error   => 'not_autorized'}
 		end
 		
