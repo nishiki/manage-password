@@ -19,6 +19,7 @@ class MPW
 	PASSWORD = 6
 	PORT     = 7
 	COMMENT  = 8
+	DATE     = 9
 
 	attr_accessor :error_msg
 	
@@ -40,10 +41,8 @@ class MPW
 				crypto = GPGME::Crypto.new(:armor => true)
 				data_decrypt = crypto.decrypt(IO.read(@file_gpg), :password => passwd).read
 
-				id = 0
 				data_decrypt.lines do |line|
-					@data[id] = line.parse_csv.unshift(id)
-					id += 1;
+					@data.push(line.parse_csv)
 				end
 			end
 
@@ -63,7 +62,7 @@ class MPW
 
 			data_to_encrypt = ''
 			@data.each do |row|
-				data_to_encrypt << row.drop(1).to_csv
+				data_to_encrypt << row.to_csv
 			end
 
 			crypto.encrypt(data_to_encrypt, :recipients => @key, :output => file_gpg)
@@ -107,11 +106,13 @@ class MPW
 	# @args: id -> the id item
 	# @rtrn: a row with the resultat of the search
 	def searchById(id)
-		if not @data[id.to_i].nil?
-			return @data[id.to_i]
-		else
-			return Array.new
+		@data.each do |row|
+			if @data[ID] == id
+				return row
+			end
 		end
+
+		return Array.new()
 	end
 
 	# Add a new item
@@ -136,16 +137,10 @@ class MPW
 			port = nil
 		end
 
-		if not @data.last.nil?
-			id = @data.last
-			id = id[ID].to_i + 1
-		else
-			id = 0
-		end
-
-		row[ID]    = id
+		row[ID]    = MPW.generatePassword(16)
 		row[PORT]  = port
 		row[NAME]  = name.force_encoding('ASCII-8BIT')
+		row[DATE]  = Time.now.to_i
 		group.nil?    || group.empty?    ? (row[GROUP]    = nil) : (row[GROUP]    = group.force_encoding('ASCII-8BIT'))
 		server.nil?   || server.empty?   ? (row[SERVER]   = nil) : (row[SERVER]   = server.force_encoding('ASCII-8BIT'))
 		protocol.nil? || protocol.empty? ? (row[PROTOCOL] = nil) : (row[PROTOCOL] = protocol.force_encoding('ASCII-8BIT'))
@@ -153,7 +148,7 @@ class MPW
 		passwd.nil?   || passwd.empty?   ? (row[PASSWORD] = nil) : (row[PASSWORD] = passwd.force_encoding('ASCII-8BIT'))
 		comment.nil?  || comment.empty?  ? (row[COMMENT]  = nil) : (row[COMMENT]  = comment.force_encoding('ASCII-8BIT'))
 
-		@data[id] = row
+		@data.push(row)
 
 		return true
 	end
@@ -170,45 +165,54 @@ class MPW
 	#        comment -> a comment
 	# @rtrn: true if the item has been updated
 	def update(id, name=nil, group=nil, server=nil, protocol=nil, login=nil, passwd=nil, port=nil, comment=nil)
-		id = id.to_i
+		i = 0
 
-		if not @data[id].nil?
+		@data.each do |row|
+			if not row[ID] == id
 
-			if port.to_i <= 0
-				port = nil
+				if port.to_i <= 0
+					port = nil
+				end
+
+				row_update = Array.new()
+				row[DATE]  = Time.now.to_i
+
+				name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
+				group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
+				server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
+				protocol.nil? || protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL]) : (row_update[PROTOCOL] = protocol)
+				login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
+				passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
+				port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
+				comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
+				
+				@data[i] = row_update
+
+				return true
 			end
 
-			row = @data[id]
-			row_update = Array.new()
-
-			name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
-			group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
-			server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
-			protocol.nil? || protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL]) : (row_update[PROTOCOL] = protocol)
-			login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
-			passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
-			port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
-			comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
-			
-			@data[id] = row_update
-
-			return true
-		else
-			@error_msg = I18n.t('error.update.id_no_exist', :id => id)
-			return false
+			i += 1
 		end
+
+		@error_msg = I18n.t('error.update.id_no_exist', :id => id)
+		return false
 	end
 	
 	# Remove an item 
 	# @args: id -> the item's identifiant
 	# @rtrn: true if the item has been deleted
 	def remove(id)
-		if not @data.delete_at(id.to_i).nil?
-			return true
-		else
-			@error_msg = I18n.t('error.delete.id_no_exist', :id => id)
-			return false
+		i = 0
+		@data.each do |row|
+			if row[ID] == id
+				@data.delete(i)
+				return true
+			end
+			i += 1
 		end
+
+		@error_msg = I18n.t('error.delete.id_no_exist', :id => id)
+		return false
 	end
 
 	# Export to csv
@@ -218,7 +222,7 @@ class MPW
 		begin
 			File.open(file, 'w+') do |file|
 				@data.each do |row|
-					row.delete_at(ID)
+					row.delete_at(ID).delete_at(DATE)
 					file << row.to_csv
 				end
 			end
