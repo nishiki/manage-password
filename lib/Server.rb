@@ -38,7 +38,6 @@ class Server
 						client.puts self.getFile(msg)
 					when 'update'
 						client.puts self.updateFile(msg)
-						puts 'update'
 					when 'delete'
 						client.puts self.deleteFile(msg)
 					when 'close'
