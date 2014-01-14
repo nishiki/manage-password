@@ -79,7 +79,7 @@ class MPW
 	# @args: search -> the string to search
 	#        protocol -> the connection protocol (ssh, web, other)
 	# @rtrn: a list with the resultat of the search
-	def search(search, group=nil, protocol=nil)
+	def search(search='', group=nil, protocol=nil)
 		result = Array.new()
 
 		if !search.nil?
@@ -107,7 +107,7 @@ class MPW
 	# @rtrn: a row with the resultat of the search
 	def searchById(id)
 		@data.each do |row|
-			if @data[ID] == id
+			if row[ID] == id
 				return row
 			end
 		end
@@ -168,14 +168,15 @@ class MPW
 		i = 0
 
 		@data.each do |row|
-			if not row[ID] == id
+			if row[ID] == id
 
 				if port.to_i <= 0
 					port = nil
 				end
 
-				row_update = Array.new()
-				row[DATE]  = Time.now.to_i
+				row_update        = Array.new()
+				row_update[ID]    = row[ID]
+				row_update[DATE]  = Time.now.to_i
 
 				name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
 				group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
@@ -205,7 +206,7 @@ class MPW
 		i = 0
 		@data.each do |row|
 			if row[ID] == id
-				@data.delete(i)
+				@data.delete_at(i)
 				return true
 			end
 			i += 1
@@ -284,6 +285,51 @@ class MPW
 			@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
 			return false
 		end
+	end
+
+	# Sync remote data and local data
+	# @args: data_remote -> array with the data remote
+	#        last_update -> last update
+	# @rtrn: false if data_remote is nil
+	def sync(data_remote, last_update)
+		if !data_remote.instance_of?(Array)
+			return false
+		end
+
+		@data.each do |l|
+			j = 0
+			update = false
+
+			# Update item
+			data_remote.each do |r|
+				if l[ID] == r[ID]
+					if l[DATE].to_i < r[DATE].to_i
+						self.update(l[ID], r[NAME], r[GROUP], r[SERVER], r[PROTOCOL], r[LOGIN], r[PASSWORD], r[PORT], r[COMMENT])
+					end
+					update = true
+					data_remote.delete_at(j)
+					break
+				end
+				j += 1
+			end
+
+			# Delete an old item
+			if !update && l[DATE].to_i < last_update
+				self.remove(l[ID])
+			end
+		end
+
+		# Add item
+		data_remote.each do |r|
+			if r[DATE].to_i > last_update
+				puts 'add'
+				@data.push(r)
+			end
+		end
+
+		self.encrypt()
+
+		return true
 	end
 
 	# Generate a random password

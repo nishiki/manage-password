@@ -21,29 +21,33 @@ class Server
 		server = TCPServer.open(@host, @port)
 		loop do
 			Thread.start(server.accept) do |client|
-				msg = self.getClientMessage(client)
+				while true do
+					msg = self.getClientMessage(client)
 
-				if !msg
-					next
-				end
-				
-				if msg['gpg_key'].nil? || msg['gpg_key'].empty? || msg['password'].nil? || msg['password'].empty?
-					self.closeConnection(client)
-					next
-				end
+					if !msg
+						next
+					end
+					
+					if msg['gpg_key'].nil? || msg['gpg_key'].empty? || msg['password'].nil? || msg['password'].empty?
+						self.closeConnection(client)
+						next
+					end
 
-				case msg['action']
-				when 'get'
-					client.puts self.getFile(msg)
-				when 'update'
-					client.puts self.updateFile(msg)
-				when 'delete'
-					client.puts self.deleteFile(msg)
-				else
-					client.puts 'Unknown command'
+					case msg['action']
+					when 'get'
+						client.puts self.getFile(msg)
+					when 'update'
+						client.puts self.updateFile(msg)
+						puts 'update'
+					when 'delete'
+						client.puts self.deleteFile(msg)
+					when 'close'
+						self.closeConnection(client)
+					else
+						client.puts 'Unknown command'
+						self.closeConnection(client)
+					end
 				end
-				
-				self.closeConnection(client)
 			end
 		end
 	end
@@ -68,11 +72,11 @@ class Server
 			last_update = gpg_data['gpg']['last_update']
 
 			if self.isAuthorized?(msg['password'], salt, hash)
-				send_msg = {:action  => 'get',
-				            :gpg_key => msg['gpg_key'],
+				send_msg = {:action      => 'get',
+				            :gpg_key     => msg['gpg_key'],
 				            :last_update => last_update,
-				            :msg     => 'done',
-				            :data    => data}
+				            :msg         => 'done',
+				            :data        => data}
 			else
 				send_msg = {:action  => 'get',
 				            :gpg_key => msg['gpg_key'],
@@ -80,10 +84,12 @@ class Server
 				            :error   => 'not_authorized'}
 			end
 		else
-			send_msg = {:action  => 'get',
-			            :gpg_key => msg['gpg_key'],
-			            :msg     => 'fail',
-			            :error   => 'file_not_exist'}
+			send_msg = {:action      => 'get',
+			            :gpg_key     => msg['gpg_key'],
+			            :last_update => 0,
+			            :data        => '',
+			            :msg         => 'fail',
+			            :error       => 'file_not_exist'}
 		end
 
 		return send_msg.to_json
@@ -129,7 +135,7 @@ class Server
 				                    'last_update' => last_update,
 				                    'data'        => data}}
 
-				File.open(file_gpg, 'w') do |file|
+				File.open(file_gpg, 'w+') do |file|
 					file << config.to_yaml
 				end
 
@@ -242,11 +248,11 @@ class Server
 		begin
 			config    = YAML::load_file(file_config)
 			@host     = config['config']['host']
-			@port     = config['config']['port']
+			@port     = config['config']['port'].to_i
 			@data_dir = config['config']['data_dir']
 			@timeout  = config['config']['timeout'].to_i
 
-			if @host.empty? || @port.empty? || @data_dir.empty? 
+			if @host.empty? || @port <= 0 || @data_dir.empty? 
 				puts I18n.t('server.checkconfig.fail')
 				puts I18n.t('server.checkconfig.empty')
 				return false

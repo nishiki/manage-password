@@ -15,11 +15,12 @@ class MPWConfig
 	attr_accessor :lang
 	attr_accessor :file_gpg
 	attr_accessor :timeout_pwd
+	attr_accessor :last_update
 	attr_accessor :sync_host
 	attr_accessor :sync_port
 	attr_accessor :sync_pwd
-	attr_accessor :sync_sufix
-	attr_accessor :sync_last_update
+	attr_accessor :sync_suffix
+	attr_accessor :last_update
 
 	# Constructor
 	# @args: file_config -> the specify config file
@@ -78,15 +79,15 @@ class MPWConfig
 	def checkconfig()
 		begin
 			config = YAML::load_file(@file_config)
-			@key               = config['config']['key']
-			@lang              = config['config']['lang']
-			@file_gpg          = config['config']['file_gpg']
-			@timeout_pwd       = config['config']['timeout_pwd'].to_i
-			@sync_host         = config['config']['sync_host']
-			@sync_port         = config['config']['sync_port']
-			@sync_pwd          = config['config']['sync_pwd']
-			@sync_sufix        = config['config']['sync_suffix']
-			@sync_last_update  = config['config']['sync_last_update'].to_i
+			@key         = config['config']['key']
+			@lang        = config['config']['lang']
+			@file_gpg    = config['config']['file_gpg']
+			@timeout_pwd = config['config']['timeout_pwd'].to_i
+			@sync_host   = config['config']['sync_host']
+			@sync_port   = config['config']['sync_port']
+			@sync_pwd    = config['config']['sync_pwd']
+			@sync_sufix  = config['config']['sync_suffix']
+			@last_update = config['config']['last_update'].to_i
 
 			if @key.empty? || @file_gpg.empty? 
 				@error_msg = I18n.t('error.config.check')
@@ -97,6 +98,29 @@ class MPWConfig
 
 		rescue Exception => e 
 			@error_msg = "#{I18n.t('error.config.check')}\n#{e}"
+			return false
+		end
+
+		return true
+	end
+
+	def setLastUpdate()
+		config = {'config' => {'key'         => @key,
+		                       'lang'        => @lang,
+		                       'file_gpg'    => @file_gpg,
+		                       'timeout_pwd' => @timeout_pwd,
+		                       'sync_host'   => @sync_host,
+		                       'sync_port'   => @sync_port,
+		                       'sync_pwd'    => @sync_pwd,
+		                       'sync_suffix' => @sync_uffix,
+		                       'last_update' => Time.now.to_i }}
+
+		begin
+			File.open(@file_config, 'w') do |file|
+				file << config.to_yaml
+			end
+		rescue Exception => e 
+			@error_msg = "#{I18n.t('error.config.write')}\n#{e}"
 			return false
 		end
 

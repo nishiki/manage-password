@@ -8,9 +8,11 @@ require 'highline/import'
 require 'pathname'
 require 'readline'
 require 'i18n'
+require 'yaml'
 
 require "#{APP_ROOT}/lib/MPW.rb"
 require "#{APP_ROOT}/lib/MPWConfig.rb"
+require "#{APP_ROOT}/lib/Sync.rb"
 
 class Cli
 
@@ -28,6 +30,23 @@ class Cli
 		if not self.decrypt()
 			puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 			exit 2
+		end
+
+		@sync = Sync.new()
+		if @config.sync_host.nil? || @config.sync_port.nil?
+			@sync.disable()
+		elsif !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
+			puts "#{I18n.t('cli.sync.not_connect')}:\n#{@sync.error_msg}"
+		else
+			begin
+				@mpw.sync(@sync.get(@passwd), @config.last_update)
+				@sync.update(File.open(@config.file_gpg).read)
+				@config.setLastUpdate()
+			rescue Exception => e
+				puts "#{I18n.t('cli.sync.error')}:\n#{e}"
+			else
+				@sync.close()
+			end
 		end
 	end
 
