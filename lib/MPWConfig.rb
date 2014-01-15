@@ -86,7 +86,7 @@ class MPWConfig
 			@sync_host   = config['config']['sync_host']
 			@sync_port   = config['config']['sync_port']
 			@sync_pwd    = config['config']['sync_pwd']
-			@sync_sufix  = config['config']['sync_suffix']
+			@sync_suffix  = config['config']['sync_suffix']
 			@last_update = config['config']['last_update'].to_i
 
 			if @key.empty? || @file_gpg.empty? 
