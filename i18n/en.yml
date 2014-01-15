@@ -17,6 +17,10 @@ en:
       read: "Can't import, unable to read %{file}!"
     update:
       name_empty: "You must define a name!"
+    sync: 
+      no_data: "Nothing data!"
+      not_authorized: "You haven't the access to remote file!"
+      unknown: "An unknown error is occured!" 
   cli:
     option:
       usage: "Usage"

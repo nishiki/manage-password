@@ -17,6 +17,10 @@ fr:
       read: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
     update:
       name_empty: "Vous devez définir un nom!"
+    sync: 
+      no_data: "Aucune data!"
+      not_authorized: "Vous n'avez pas les autorisations d'accès au fichier distant!"
+      unknown: "Une erreur inconnue est survenue!" 
   cli:
     option:
       usage: "Utilisation"
