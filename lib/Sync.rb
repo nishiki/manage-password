@@ -39,6 +39,10 @@ class Sync
 	end
 
 	def get(gpg_password)
+		if !@sync
+			return nil
+		end
+
 		send_msg = {:action      => 'get',
 		            :gpg_key     => @gpg_key,
 		            :password    => @password,
@@ -72,6 +76,10 @@ class Sync
 	end
 
 	def update(data)
+		if !@sync
+			return true
+		end
+
 		send_msg = {:action      => 'update',
 		            :gpg_key     => @gpg_key,
 		            :password    => @password,
@@ -99,6 +107,10 @@ class Sync
 	end
 
 	def close()
+		if !@sync
+			return
+		end
+
 		send_msg = {:action => 'close'}
 		@socket.puts send_msg.to_json
 	end
