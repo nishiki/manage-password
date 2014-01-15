@@ -22,29 +22,29 @@ class Server
 		loop do
 			Thread.start(server.accept) do |client|
 				while true do
-					msg = self.getClientMessage(client)
+					msg = getClientMessage(client)
 
 					if !msg
 						next
 					end
 					
 					if msg['gpg_key'].nil? || msg['gpg_key'].empty? || msg['password'].nil? || msg['password'].empty?
-						self.closeConnection(client)
+						closeConnection(client)
 						next
 					end
 
 					case msg['action']
 					when 'get'
-						client.puts self.getFile(msg)
+						client.puts getFile(msg)
 					when 'update'
-						client.puts self.updateFile(msg)
+						client.puts updateFile(msg)
 					when 'delete'
-						client.puts self.deleteFile(msg)
+						client.puts deleteFile(msg)
 					when 'close'
-						self.closeConnection(client)
+						closeConnection(client)
 					else
 						client.puts 'Unknown command'
-						self.closeConnection(client)
+						closeConnection(client)
 					end
 				end
 			end
@@ -68,12 +68,10 @@ class Server
 			salt        = gpg_data['gpg']['salt']
 			hash        = gpg_data['gpg']['hash']
 			data        = gpg_data['gpg']['data']
-			last_update = gpg_data['gpg']['last_update']
 
-			if self.isAuthorized?(msg['password'], salt, hash)
+			if isAuthorized?(msg['password'], salt, hash)
 				send_msg = {:action      => 'get',
 				            :gpg_key     => msg['gpg_key'],
-				            :last_update => last_update,
 				            :msg         => 'done',
 				            :data        => data}
 			else
@@ -85,7 +83,6 @@ class Server
 		else
 			send_msg = {:action      => 'get',
 			            :gpg_key     => msg['gpg_key'],
-			            :last_update => 0,
 			            :data        => '',
 			            :msg         => 'fail',
 			            :error       => 'file_not_exist'}
@@ -126,12 +123,10 @@ class Server
 			hash = Digest::SHA256.hexdigest(salt + msg['password'])
 		end
 
-		if self.isAuthorized?(msg['password'], salt, hash)
+		if isAuthorized?(msg['password'], salt, hash)
 			begin
-				last_update = Time.now.to_i
 				config = {'gpg' => {'salt'        => salt,
 				                    'hash'        => hash,
-				                    'last_update' => last_update,
 				                    'data'        => data}}
 
 				File.open(file_gpg, 'w+') do |file|
@@ -140,7 +135,6 @@ class Server
 
 				send_msg = {:action      => 'update',
 				            :gpg_key     => msg['gpg_key'],
-				            :last_update => last_update,
 				            :msg         => 'done'}
 			rescue Exception => e
 				send_msg = {:action  => 'update',
@@ -183,7 +177,7 @@ class Server
 		salt      = gpg_data['gpg']['salt']
 		hash      = gpg_data['gpg']['hash']
 
-		if self.isAuthorized?(msg['password'], salt, hash)
+		if isAuthorized?(msg['password'], salt, hash)
 			begin
 				File.unlink(file_gpg)
 
@@ -227,8 +221,7 @@ class Server
 			msg = client.gets
 			return JSON.parse(msg)
 		rescue
-			client.puts "Communication it's bad"
-			self.closeConnection(client)
+			closeConnection(client)
 			return false
 		end
 	end
