@@ -1,8 +1,6 @@
 ---
 fr:
   error:
-    add:
-      name_empty: "Vous devez définir un nom!"
     config:
       write: "Impossible d'écrire le fichier de configuration!"
       check: "Le fichier de configuration est invalide!"
@@ -18,7 +16,7 @@ fr:
       bad_format: "Impossible d'importer le fichier car son format est incorrect!"
       read: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
     update:
-      id_no_exist: "Impossible de mettre à jour l'élément %{id}, car il n'existe pas!"
+      name_empty: "Vous devez définir un nom!"
   cli:
     option:
       usage: "Utilisation"

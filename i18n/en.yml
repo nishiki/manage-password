@@ -1,8 +1,6 @@
 ---
 en:
   error:
-    add:
-      name_empty: "You must define a name!"
     config:
       write: "Can't write the config file!"
       check: "Checkconfig failed!"
@@ -18,7 +16,7 @@ en:
       bad_format: "Can't import, the file is badly formated!"
       read: "Can't import, unable to read %{file}!"
     update:
-      id_no_exist: "Can't update the item, the item %{id} doesn't exist!"
+      name_empty: "You must define a name!"
   cli:
     option:
       usage: "Usage"
