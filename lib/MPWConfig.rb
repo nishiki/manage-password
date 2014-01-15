@@ -112,7 +112,7 @@ class MPWConfig
 		                       'sync_host'   => @sync_host,
 		                       'sync_port'   => @sync_port,
 		                       'sync_pwd'    => @sync_pwd,
-		                       'sync_suffix' => @sync_uffix,
+		                       'sync_suffix' => @sync_suffix,
 		                       'last_update' => Time.now.to_i }}
 
 		begin
