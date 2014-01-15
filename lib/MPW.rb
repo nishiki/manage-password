@@ -115,44 +115,6 @@ class MPW
 		return Array.new()
 	end
 
-	# Add a new item
-	# @args: name -> the item name
-	#        group -> the item group
-	#        server -> the ip or server
-	#        protocol -> the protocol
-	#        login -> the login
-	#        passwd -> the password
-	#        port -> the port
-	#        comment -> a comment
-	# @rtrn: true if it works
-	def add(name, group=nil, server=nil, protocol=nil, login=nil, passwd=nil, port=nil, comment=nil)
-		row = Array.new()
-		
-		if name.nil? || name.empty?
-			@error_msg = I18n.t('error.add.name_empty')
-			return false
-		end
-		
-		if port.to_i <= 0
-			port = nil
-		end
-
-		row[ID]    = MPW.generatePassword(16)
-		row[PORT]  = port
-		row[NAME]  = name.force_encoding('ASCII-8BIT')
-		row[DATE]  = Time.now.to_i
-		group.nil?    || group.empty?    ? (row[GROUP]    = nil) : (row[GROUP]    = group.force_encoding('ASCII-8BIT'))
-		server.nil?   || server.empty?   ? (row[SERVER]   = nil) : (row[SERVER]   = server.force_encoding('ASCII-8BIT'))
-		protocol.nil? || protocol.empty? ? (row[PROTOCOL] = nil) : (row[PROTOCOL] = protocol.force_encoding('ASCII-8BIT'))
-		login.nil?    || login.empty?    ? (row[LOGIN]    = nil) : (row[LOGIN]    = login.force_encoding('ASCII-8BIT'))
-		passwd.nil?   || passwd.empty?   ? (row[PASSWORD] = nil) : (row[PASSWORD] = passwd.force_encoding('ASCII-8BIT'))
-		comment.nil?  || comment.empty?  ? (row[COMMENT]  = nil) : (row[COMMENT]  = comment.force_encoding('ASCII-8BIT'))
-
-		@data.push(row)
-
-		return true
-	end
-	
 	# Update an item
 	# @args: id -> the item's identifiant
 	#        name -> the item name
@@ -164,39 +126,49 @@ class MPW
 	#        port -> the port
 	#        comment -> a comment
 	# @rtrn: true if the item has been updated
-	def update(id, name=nil, group=nil, server=nil, protocol=nil, login=nil, passwd=nil, port=nil, comment=nil)
-		i = 0
+	def update(name, group, server, protocol, login, passwd, port, comment, id=nil)
+		row    = Array.new()
+		update = false
 
-		@data.each do |row|
-			if row[ID] == id
-
-				if port.to_i <= 0
-					port = nil
-				end
-
-				row_update        = Array.new()
-				row_update[ID]    = row[ID]
-				row_update[DATE]  = Time.now.to_i
-
-				name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])     : (row_update[NAME]     = name)
-				group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])    : (row_update[GROUP]    = group)
-				server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])   : (row_update[SERVER]   = server)
-				protocol.nil? || protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL]) : (row_update[PROTOCOL] = protocol)
-				login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])    : (row_update[LOGIN]    = login)
-				passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD]) : (row_update[PASSWORD] = passwd)
-				port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])     : (row_update[PORT]     = port)
-				comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])  : (row_update[COMMENT]  = comment)
-				
-				@data[i] = row_update
-
-				return true
+		i  = 0
+		@data.each do |r|
+			if r[ID] == id
+				row    = r
+				update = true
+				break
 			end
-
 			i += 1
 		end
 
-		@error_msg = I18n.t('error.update.id_no_exist', :id => id)
-		return false
+		if port.to_i <= 0
+			port = nil
+		end
+
+		row_update       = Array.new()
+		row_update[DATE] = Time.now.to_i
+
+		id.nil?	      || id.empty?       ? (row_update[ID]       = MPW.generatePassword(16)) : (row_update[ID]       = row[ID])
+		name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])                : (row_update[NAME]     = name)
+		group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])               : (row_update[GROUP]    = group)
+		server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])              : (row_update[SERVER]   = server)
+		protocol.nil? || protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL])            : (row_update[PROTOCOL] = protocol)
+		login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])               : (row_update[LOGIN]    = login)
+		passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD])            : (row_update[PASSWORD] = passwd)
+		port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])                : (row_update[PORT]     = port)
+		comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])             : (row_update[COMMENT]  = comment)
+		
+		if row_update[NAME].nil? || row_update[NAME].empty?
+			@error_msg = I18n.t('error.update.name_empty')
+			return false
+		end
+
+		if update
+			@data[i] = row_update
+		else
+			@data.push(row_update)
+		end
+
+		return true
 	end
 	
 	# Remove an item 
@@ -247,7 +219,7 @@ class MPW
 					return false
 				else
 					row = line.parse_csv.unshift(0)
-					if not add(row[NAME], row[GROUP], row[SERVER], row[PROTOCOL], row[LOGIN], row[PASSWORD], row[PORT], row[COMMENT])
+					if not update(row[NAME], row[GROUP], row[SERVER], row[PROTOCOL], row[LOGIN], row[PASSWORD], row[PORT], row[COMMENT])
 						return false
 					end
 				end
@@ -304,7 +276,7 @@ class MPW
 			data_remote.each do |r|
 				if l[ID] == r[ID]
 					if l[DATE].to_i < r[DATE].to_i
-						self.update(l[ID], r[NAME], r[GROUP], r[SERVER], r[PROTOCOL], r[LOGIN], r[PASSWORD], r[PORT], r[COMMENT])
+						update(r[NAME], r[GROUP], r[SERVER], r[PROTOCOL], r[LOGIN], r[PASSWORD], r[PORT], r[COMMENT], l[ID])
 					end
 					update = true
 					data_remote.delete_at(j)
@@ -315,19 +287,18 @@ class MPW
 
 			# Delete an old item
 			if !update && l[DATE].to_i < last_update
-				self.remove(l[ID])
+				remove(l[ID])
 			end
 		end
 
 		# Add item
 		data_remote.each do |r|
 			if r[DATE].to_i > last_update
-				puts 'add'
-				@data.push(r)
+				update(r[NAME], r[GROUP], r[SERVER], r[PROTOCOL], r[LOGIN], r[PASSWORD], r[PORT], r[COMMENT], r[ID])
 			end
 		end
 
-		self.encrypt()
+		encrypt()
 
 		return true
 	end

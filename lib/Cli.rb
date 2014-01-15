@@ -23,11 +23,11 @@ class Cli
 		@config = MPWConfig.new(config_file)
 		
 		if not @config.checkconfig()
-			self.setup(lang)
+			setup(lang)
 		end
 
 		@mpw = MPW.new(@config.file_gpg, @config.key)
-		if not self.decrypt()
+		if not decrypt()
 			puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
 			exit 2
 		end
@@ -91,9 +91,9 @@ class Cli
 		if not result.empty?
 			result.each do |r|
 				if format.nil? || !format
-					self.displayFormat(r)
+					displayFormat(r)
 				else
-					self.displayFormatAlt(r)
+					displayFormatAlt(r)
 				end
 			end
 		else
@@ -146,7 +146,7 @@ class Cli
 		port     = ask(I18n.t('cli.form.add.port')).to_s
 		comment  = ask(I18n.t('cli.form.add.comment')).to_s
 
-		if @mpw.add(name, group, server, protocol, login, passwd, port, comment)
+		if @mpw.update(name, group, server, protocol, login, passwd, port, comment)
 			if @mpw.encrypt()
 				puts I18n.t('cli.form.add.valid')
 			else
@@ -174,7 +174,7 @@ class Cli
 			port     = ask(I18n.t('cli.form.update.port'    , :port => row[MPW::PORT])).to_s
 			comment  = ask(I18n.t('cli.form.update.comment' , :comment => row[MPW::COMMENT])).to_s
 				
-			if @mpw.update(id, name, group, server, protocol, login, passwd, port, comment)
+			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
 				if @mpw.encrypt()
 					puts I18n.t('cli.form.update.valid')
 				else
@@ -196,7 +196,7 @@ class Cli
 			result = @mpw.searchById(id)
 
 			if result.length > 0
-				self.displayFormat(result)
+				displayFormat(result)
 
 				confirm = ask("#{I18n.t('cli.form.delete.ask', :id => id)} (y/N) ").to_s
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
@@ -240,7 +240,7 @@ class Cli
 		if not force
 			if result.is_a?(Array) && !result.empty?
 				result.each do |r|
-					self.displayFormat(r)
+					displayFormat(r)
 				end
 
 				confirm = ask("#{I18n.t('cli.form.import.ask', :file => file)} (y/N) ").to_s
@@ -286,17 +286,17 @@ class Cli
 			case command[0]
 			when 'display', 'show', 'd', 's'
 				if !command[1].nil? && !command[1].empty?
-					self.display(command[1], group, command[2])
+					display(command[1], group, command[2])
 				end
 			when 'add', 'a'
 				add()
 			when 'update', 'u'
 				if !command[1].nil? && !command[1].empty?
-					self.update(command[1])
+					update(command[1])
 				end
 			when 'remove', 'delete', 'r', 'd'
 				if !command[1].nil? && !command[1].empty?
-					self.remove(command[1])
+					remove(command[1])
 				end
 			when 'group', 'g'
 				if !command[1].nil? && !command[1].empty?
