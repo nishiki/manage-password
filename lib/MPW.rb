@@ -39,7 +39,6 @@ class MPW
 	# @args: key -> the gpg key to encrypt
 	#        lang -> the software language
 	#        file_gpg -> the file who is encrypted
-	#        file_pwd -> the file who stock the password
 	#        timeout_pwd -> time to save the password 
 	# @rtrn: true if le config file is create
 	def setup(key, lang, file_gpg, timeout_pwd)
@@ -117,10 +116,6 @@ class MPW
 
 			return true
 		rescue Exception => e 
-			if !@file_pwd.nil? && File.exist?(@file_pwd)
-				File.delete(@file_pwd)
-			end
-			
 			@error_msg = "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
 			return false
 		end
