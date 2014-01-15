@@ -104,6 +104,8 @@ en:
       port: "Port"
       protocol: "Protocol"
       server: "Server"
+    sync:
+      not_connect: "The server connection fail!"	
   ssh:
     option:
       usage: "Usage"
