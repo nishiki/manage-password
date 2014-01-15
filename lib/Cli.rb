@@ -19,12 +19,8 @@ class Cli
 	# Constructor
 	# @args: lang -> the operating system language
 	#        config_file -> a specify config file
-	def initialize(lang, config_file=nil)
-		@config = MPWConfig.new(config_file)
-		
-		if not @config.checkconfig()
-			setup(lang)
-		end
+	def initialize(lang, config)
+		@config = config
 
 		@mpw = MPW.new(@config.file_gpg, @config.key)
 		if not decrypt()
@@ -37,16 +33,23 @@ class Cli
 			@sync.disable()
 		elsif !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
 			puts "#{I18n.t('cli.sync.not_connect')}:\n#{@sync.error_msg}"
-		else
-			begin
-				@mpw.sync(@sync.get(@passwd), @config.last_update)
-				@sync.update(File.open(@config.file_gpg).read)
-				@config.setLastUpdate()
-			rescue Exception => e
-				puts "#{I18n.t('cli.sync.error')}:\n#{e}"
-			else
-				@sync.close()
-			end
+		end
+	end
+
+	# Destructor
+	def finalize()
+		@sync.close()
+	end
+
+	# Sync the data with the server
+	def sync()
+		begin
+			@mpw.sync(@sync.get(@passwd), @config.last_update)
+			@sync.update(File.open(@config.file_gpg).read)
+			@config.setLastUpdate()
+			puts @sync.error_msg
+		rescue Exception => e
+			puts "#{I18n.t('cli.sync.error')}:\n#{e}"
 		end
 	end
 

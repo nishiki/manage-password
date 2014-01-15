@@ -93,13 +93,17 @@ OptionParser.new do |opts|
 	end
 end.parse!
 
+config      = MPWConfig.new(options[:config])
+check_error = config.checkconfig()
 
-cli = Cli.new(lang, options[:config])
+cli = Cli.new(lang, config)
+cli.sync()
+	
+# Setup a new config 
+if !check_error || !options[:setup].nil?
+	cli.setup(lang)
 
 # Display the item's informations
-if not options[:setup].nil?
-	cli.setup()
-
 elsif not options[:display].nil?
 	cli.display(options[:display], options[:group], options[:type], options[:format])
 
@@ -125,7 +129,16 @@ elsif not options[:import].nil?
 
 # Interactive mode
 else
-	cli.interactive
+	begin
+		cli.interactive()
+	rescue SystemExit, Interrupt
+		cli.sync()
+		cli = nil
+		return 1
+	end
 end
+
+cli.sync()
+cli = nil
 
 exit 0
