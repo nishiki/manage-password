@@ -1,8 +1,6 @@
 ---
 en:
   error:
-    add:
-      name_empty: "You must define a name!"
     config:
       write: "Can't write the config file!"
       check: "Checkconfig failed!"
@@ -18,7 +16,12 @@ en:
       bad_format: "Can't import, the file is badly formated!"
       read: "Can't import, unable to read %{file}!"
     update:
-      id_no_exist: "Can't update the item, the item %{id} doesn't exist!"
+      name_empty: "You must define a name!"
+    sync: 
+      connection: "Connection fail!"
+      no_data: "Nothing data!"
+      not_authorized: "You haven't the access to remote file!"
+      unknown: "An unknown error is occured!" 
   cli:
     option:
       usage: "Usage"
@@ -101,6 +104,8 @@ en:
       port: "Port"
       protocol: "Protocol"
       server: "Server"
+    sync:
+      not_connect: "The server connection fail!"	
   ssh:
     option:
       usage: "Usage"
@@ -111,6 +116,25 @@ en:
     display:
       connect: "Connection to:"
       nothing: "Nothing result!"
+  server:
+    option:
+      usage: "Usage"
+      config: "Specifie the configuration file"
+      checkconfig: "Check the configuration"
+      setup: "Setup a new configuration file"
+      help: "Show this message help"
+    checkconfig:
+      fail: "Checkconfig failed:!"
+      empty: "ERROR: an importe option is missing!"
+      datadir: "ERROR: le data directory doesn't exist!"
+    form:
+      setup:
+        title: "Serveur configuration" 
+        host: "IP listen: "
+        port: "Port listen: "
+        data_dir: "Data directory: "
+        timeout: "Timeout to second: "
+        not_valid: "ERROR: Impossible to write the configuration file!"
   formats:
     default: ! '%Y-%m-%d'
     long: ! '%B %d, %Y'
