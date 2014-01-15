@@ -47,7 +47,6 @@ class Cli
 			@mpw.sync(@sync.get(@passwd), @config.last_update)
 			@sync.update(File.open(@config.file_gpg).read)
 			@config.setLastUpdate()
-			puts @sync.error_msg
 		rescue Exception => e
 			puts "#{I18n.t('cli.sync.error')}:\n#{e}"
 		end

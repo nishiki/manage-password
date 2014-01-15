@@ -63,7 +63,6 @@ class Sync
 		@socket.puts send_msg.to_json
 		msg = JSON.parse(@socket.gets)
 
-		puts msg
 		case msg['error']
 		when nil, 'file_not_exist'
 			tmp_file = "/tmp/mpw-#{MPW.generatePassword()}.gpg"
