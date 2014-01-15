@@ -18,6 +18,7 @@ fr:
     update:
       name_empty: "Vous devez définir un nom!"
     sync: 
+      connection: "La connexion n'a pu être établie"
       no_data: "Aucune data!"
       not_authorized: "Vous n'avez pas les autorisations d'accès au fichier distant!"
       unknown: "Une erreur inconnue est survenue!" 

@@ -18,6 +18,7 @@ en:
     update:
       name_empty: "You must define a name!"
     sync: 
+      connection: "Connection fail!"
       no_data: "Nothing data!"
       not_authorized: "You haven't the access to remote file!"
       unknown: "An unknown error is occured!" 
