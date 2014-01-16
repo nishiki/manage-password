@@ -147,7 +147,7 @@ class MPW
 		row_update       = Array.new()
 		row_update[DATE] = Time.now.to_i
 
-		id.nil?	      || id.empty?       ? (row_update[ID]       = MPW.generatePassword(16)) : (row_update[ID]       = row[ID])
+		id.nil?	      || id.empty?       ? (row_update[ID]       = MPW.generatePassword(16)) : (row_update[ID]       = id)
 		name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])                : (row_update[NAME]     = name)
 		group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])               : (row_update[GROUP]    = group)
 		server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])              : (row_update[SERVER]   = server)
@@ -298,9 +298,7 @@ class MPW
 			end
 		end
 
-		encrypt()
-
-		return true
+		return encrypt()
 	end
 
 	# Generate a random password
