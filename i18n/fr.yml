@@ -18,8 +18,9 @@ fr:
     update:
       name_empty: "Vous devez définir un nom!"
     sync: 
-      connection: "La connexion n'a pu être établie"
-      no_data: "Aucune data!"
+      connection: "La connexion n'a pu être établie!"
+      communication: "Un problème de communication avec le serveur est apparu!"
+      no_data: "Aucune donnée!"
       not_authorized: "Vous n'avez pas les autorisations d'accès au fichier distant!"
       unknown: "Une erreur inconnue est survenue!" 
   cli:
@@ -117,6 +118,11 @@ fr:
       connect: "Connexion à:"
       nothing: "Aucun résultat!"
   server:
+    error:
+      client:
+        unknown: "Une erreur inconnue est apparue!"
+        no_authorized: "Vous n'avez pas les accès au fichier distant!"
+        no_data: "Aucune donnée n'a été transmise!"
     option:
       usage: "Utilisation"
       config: "Spécifie le fichier de configuration"

@@ -55,16 +55,18 @@ class Sync
 			return nil
 		end
 
-		send_msg = {:action      => 'get',
-		            :gpg_key     => @gpg_key,
-		            :password    => @password,
-		            :suffix      => @suffix}
+		send_msg = {:action   => 'get',
+		            :gpg_key  => @gpg_key,
+		            :password => @password,
+		            :suffix   => @suffix}
 		
 		@socket.puts send_msg.to_json
 		msg = JSON.parse(@socket.gets)
 
-		case msg['error']
-		when nil, 'file_not_exist'
+		if !msg['error']
+			@error_msg = I18n.t('error.sync.communication')
+			return nil
+		elsif msg['error'].nil?
 			tmp_file = "/tmp/mpw-#{MPW.generatePassword()}.gpg"
 			File.open(tmp_file, 'w') do |file|
 				file << msg['data']
@@ -76,15 +78,12 @@ class Sync
 			end
 
 			File.unlink(tmp_file)
-			
 			return @mpw.search()
-		when 'not_authorized'
-			@error_msg = "#{I18n.t('error.sync.not_authorized')}\n#{e}"
 		else
-			@error_msg = "#{I18n.t('error.sync.unknown')}\n#{e}"
+			@error_msg = I18n.t(msg['error'])
+			return nil
 		end
 
-		return nil
 	end
 
 	# Update the remote data
@@ -95,29 +94,27 @@ class Sync
 			return true
 		end
 
-		send_msg = {:action      => 'update',
-		            :gpg_key     => @gpg_key,
-		            :password    => @password,
-		            :suffix      => @suffix,
-		            :data        => data}
+		send_msg = {:action   => 'update',
+		            :gpg_key  => @gpg_key,
+		            :password => @password,
+		            :suffix   => @suffix,
+		            :data     => data}
 		
 		@socket.puts send_msg.to_json
 		msg = JSON.parse(@socket.gets)
 
-		case msg['error']
-		when nil
+		if !msg['error']
+			@error_msg = I18n.t('error.sync.communication')
+			return false
+		elsif msg['error'].nil?
 			return true
-		when 'not_authorized'
-			@error_msg = "#{I18n.t('error.sync.not_authorized')}\n#{e}"
-		when 'no_data'
-			@error_msg = "#{I18n.t('error.sync.no_data')}\n#{e}"
 		else
-			@error_msg = "#{I18n.t('error.sync.unknown')}\n#{e}"
+			@error_msg = I18n.t(msg['error'])
+			return false
 		end
-
-		return false
 	end
 
+	# TODO
 	def delete()
 	end
 

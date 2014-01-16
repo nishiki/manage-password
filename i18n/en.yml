@@ -19,6 +19,7 @@ en:
       name_empty: "You must define a name!"
     sync: 
       connection: "Connection fail!"
+      communication: "A communication problem with the server is appeared!"
       no_data: "Nothing data!"
       not_authorized: "You haven't the access to remote file!"
       unknown: "An unknown error is occured!" 
@@ -117,6 +118,11 @@ en:
       connect: "Connection to:"
       nothing: "Nothing result!"
   server:
+    error:
+      client:
+        unknown: "An unknown error is appeared!"
+        no_authorized: "You haven't access to remote file!"
+        no_data: "Nothing data has been sent!"
     option:
       usage: "Usage"
       config: "Specifie the configuration file"

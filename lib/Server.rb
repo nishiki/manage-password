@@ -43,7 +43,10 @@ class Server
 					when 'close'
 						closeConnection(client)
 					else
-						client.puts 'Unknown command'
+						send_msg = {:action      => 'unknown',
+						            :gpg_key     => msg['gpg_key'],
+						            :error       => 'server.error.client.unknown'}
+						client.puts send_msg 
 						closeConnection(client)
 					end
 				end
@@ -72,20 +75,18 @@ class Server
 			if isAuthorized?(msg['password'], salt, hash)
 				send_msg = {:action      => 'get',
 				            :gpg_key     => msg['gpg_key'],
-				            :msg         => 'done',
-				            :data        => data}
+				            :data        => data,
+				            :error       => nil}
 			else
 				send_msg = {:action  => 'get',
 				            :gpg_key => msg['gpg_key'],
-				            :msg     => 'fail',
-				            :error   => 'not_authorized'}
+				            :error   => 'server.error.client.no_authorized'}
 			end
 		else
-			send_msg = {:action      => 'get',
-			            :gpg_key     => msg['gpg_key'],
-			            :data        => '',
-			            :msg         => 'fail',
-			            :error       => 'file_not_exist'}
+			send_msg = {:action  => 'get',
+			            :gpg_key => msg['gpg_key'],
+			            :data    => '',
+			            :error   => nil}
 		end
 
 		return send_msg.to_json
@@ -101,8 +102,7 @@ class Server
 		if data.nil? || data.empty?
 			send_msg = {:action  => 'update',
 			            :gpg_key => msg['gpg_key'],
-			            :msg     => 'fail',
-			            :error   => 'no_data'}
+			            :error   => 'server.error.client.no_data'}
 			
 			return send_msg.to_json
 		end
@@ -133,20 +133,18 @@ class Server
 					file << config.to_yaml
 				end
 
-				send_msg = {:action      => 'update',
-				            :gpg_key     => msg['gpg_key'],
-				            :msg         => 'done'}
+				send_msg = {:action  => 'update',
+				            :gpg_key => msg['gpg_key'],
+				            :error   => nil}
 			rescue Exception => e
 				send_msg = {:action  => 'update',
 				            :gpg_key => msg['gpg_key'],
-				            :msg     => 'fail',
-				            :error   => 'server_error'}
+				            :error   => 'server.error.client.unknown'}
 			end
 		else
 			send_msg = {:action  => 'update',
 			            :gpg_key => msg['gpg_key'],
-			            :msg     => 'fail',
-			            :error   => 'not_autorized'}
+			            :error   => 'server.error.client.no_authorized'}
 		end
 		
 		return send_msg.to_json
@@ -167,8 +165,7 @@ class Server
 		if !File.exist?(file_gpg)
 			send_msg = {:action  => 'delete',
 			            :gpg_key => msg['gpg_key'],
-			            :msg     => 'delete_fail',
-			            :error   => 'file_not_exist'}
+			            :error   => nil}
 
 			return send_msg.to_json
 		end
@@ -183,18 +180,16 @@ class Server
 
 				send_msg = {:action  => 'delete',
 				            :gpg_key => msg['gpg_key'],
-				            :msg    => 'delete_done'}
+				            :error   => nil}
 			rescue Exception => e
 				send_msg = {:action  => 'delete',
 				            :gpg_key => msg['gpg_key'],
-				            :msg     => 'delete_fail',
-				            :error   => e}
+				            :error   => 'server.error.client.unknown'}
 			end
 		else
 			send_msg = {:action  => 'delete',
 			            :gpg_key => msg['gpg_key'],
-			            :msg     => 'delete_fail',
-			            :error   => 'not_autorized'}
+			            :error   => 'server.error.client.no_authorized'}
 		end
 		
 		return send_msg.to_json
@@ -285,7 +280,7 @@ class Server
 				file << config.to_yaml
 			end
 		rescue Exception => e 
-			puts "#{I18n.t('server.formsetup.not_valid')}\n#{e}"
+			puts "#{I18n.t('server.form.setup.not_valid')}\n#{e}"
 			return false
 		end
 
