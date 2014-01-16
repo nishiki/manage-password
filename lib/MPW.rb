@@ -157,6 +157,14 @@ class MPW
 		port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])                : (row_update[PORT]     = port)
 		comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])             : (row_update[COMMENT]  = comment)
 		
+		row_update[NAME].nil?     ? (row_update[NAME]     = row_update[NAME])     : (row_update[NAME]     = row_update[NAME].force_encoding('ASCII-8BIT'))
+		row_update[GROUP].nil?    ? (row_update[GROUP]    = row_update[GROUP])    : (row_update[GROUP]    = row_update[GROUP].force_encoding('ASCII-8BIT'))
+		row_update[SERVER].nil?   ? (row_update[SERVER]   = row_update[SERVER])   : (row_update[SERVER]   = row_update[SERVER].force_encoding('ASCII-8BIT'))
+		row_update[PROTOCOL].nil? ? (row_update[PROTOCOL] = row_update[PROTOCOL]) : (row_update[PROTOCOL] = row_update[PROTOCOL].force_encoding('ASCII-8BIT'))
+		row_update[LOGIN].nil?    ? (row_update[LOGIN]    = row_update[LOGIN])    : (row_update[LOGIN]    = row_update[LOGIN].force_encoding('ASCII-8BIT'))
+		row_update[PASSWORD].nil? ? (row_update[PASSWORD] = row_update[PASSWORD]) : (row_update[PASSWORD] = row_update[PASSWORD].force_encoding('ASCII-8BIT'))
+		row_update[COMMENT].nil?  ? (row_update[COMMENT]  = row_update[COMMENT])  : (row_update[COMMENT]  = row_update[COMMENT].force_encoding('ASCII-8BIT'))
+
 		if row_update[NAME].nil? || row_update[NAME].empty?
 			@error_msg = I18n.t('error.update.name_empty')
 			return false
