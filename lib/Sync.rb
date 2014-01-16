@@ -63,7 +63,7 @@ class Sync
 		@socket.puts send_msg.to_json
 		msg = JSON.parse(@socket.gets)
 
-		if !msg['error']
+		if !defined?(msg['error'])
 			@error_msg = I18n.t('error.sync.communication')
 			return nil
 		elsif msg['error'].nil?
@@ -74,6 +74,7 @@ class Sync
 			
 			@mpw = MPW.new(tmp_file)
 			if !@mpw.decrypt(gpg_password)
+				puts @mpw.error_msg
 				return nil
 			end
 
@@ -103,7 +104,7 @@ class Sync
 		@socket.puts send_msg.to_json
 		msg = JSON.parse(@socket.gets)
 
-		if !msg['error']
+		if !defined?(msg['error'])
 			@error_msg = I18n.t('error.sync.communication')
 			return false
 		elsif msg['error'].nil?
