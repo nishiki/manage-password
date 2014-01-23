@@ -34,6 +34,8 @@ class Cli
 		elsif !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
 			puts "#{I18n.t('cli.sync.not_connect')}:\n#{@sync.error_msg}"
 		end
+
+		sync()
 	end
 
 	# Destructor
@@ -44,9 +46,17 @@ class Cli
 	# Sync the data with the server
 	def sync()
 		begin
-			@mpw.sync(@sync.get(@passwd), @config.last_update)
-			@sync.update(File.open(@config.file_gpg).read)
-			@config.setLastUpdate()
+			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
+				puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
+			end
+
+			if !@sync.update(File.open(@config.file_gpg).read)
+				puts "#{I18n.t('cli.display.error')}: #{@sync.error_msg}"
+			end
+
+			if !@config.setLastUpdate()
+				puts "#{I18n.t('cli.display.error')}: #{@config.error_msg}"
+			end
 		rescue Exception => e
 			puts "#{I18n.t('cli.sync.error')}:\n#{e}"
 		end
@@ -150,6 +160,7 @@ class Cli
 
 		if @mpw.update(name, group, server, protocol, login, passwd, port, comment)
 			if @mpw.encrypt()
+				sync()
 				puts I18n.t('cli.form.add.valid')
 			else
 				puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
@@ -178,6 +189,7 @@ class Cli
 				
 			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
 				if @mpw.encrypt()
+					sync()
 					puts I18n.t('cli.form.update.valid')
 				else
 					puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
@@ -212,6 +224,7 @@ class Cli
 		if force
 			if @mpw.remove(id)
 				if @mpw.encrypt()
+					sync()
 					puts I18n.t('cli.form.delete.valid', :id => id)
 				else
 					puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
@@ -256,6 +269,7 @@ class Cli
 
 		if force
 			if @mpw.import(file) && @mpw.encrypt()
+				sync()
 				puts I18n.t('cli.form.import.valid')
 			else
 				puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"

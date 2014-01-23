@@ -55,8 +55,6 @@ cli.port    = options[:port]
 
 search     = ARGV[0]
 
-cli.sync()
-
 # Setup a new config 
 if !check_error 
 	cli.setup(lang)
@@ -64,9 +62,10 @@ if !check_error
 elsif ARGV.length < 1
 	puts "#{I18n.t('ssh.option.usage')}: mpw-ssh SEARCH [options]"
 	exit 2
+else
+	cli.ssh(search)
 end
 
-cli.ssh(search)
 cli = nil
 
 exit 0
