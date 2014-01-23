@@ -39,20 +39,30 @@ OptionParser.new do |opts|
 		options[:config] = config
 	end
 
-	opts.on("-h", "--help", I18n.t('ssh.option.help')) do |b|
+	opts.on("-h", "--help", I18n.t('ssh.option.help')) do
 		puts opts
 		exit 0
 	end
 end.parse!
 
-cli        = CliSSH.new(lang, options[:config])
-cli.login  = options[:login]
-cli.server = options[:server]
-cli.port   = options[:port]
+config      = MPWConfig.new(options[:config])
+check_error = config.checkconfig()
+
+cli         = CliSSH.new(lang, config)
+cli.login   = options[:login]
+cli.server  = options[:server]
+cli.port    = options[:port]
 
 search     = ARGV[0]
 
-if ARGV.length < 1
+cli.sync()
+
+# Setup a new config 
+if !check_error 
+	cli.setup(lang)
+
+# Connect ssh
+elsif ARGV.length < 1
 	puts "#{I18n.t('ssh.option.usage')}: mpw-ssh SEARCH [options]"
 	exit 2
 end

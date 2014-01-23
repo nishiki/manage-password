@@ -12,7 +12,7 @@ class CliSSH < Cli
 	# Connect to SSH
 	# args: search -> string to search
 	def ssh(search)
-		result = @m.search(search, nil, 'ssh')
+		result = @mpw.search(search, nil, 'ssh')
 
 		if result.length > 0
 			result.each do |r|
