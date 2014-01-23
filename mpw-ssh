@@ -61,12 +61,12 @@ cli.sync()
 if !check_error 
 	cli.setup(lang)
 
-# Connect ssh
 elsif ARGV.length < 1
 	puts "#{I18n.t('ssh.option.usage')}: mpw-ssh SEARCH [options]"
 	exit 2
 end
 
 cli.ssh(search)
+cli = nil
 
 exit 0
