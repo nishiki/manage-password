@@ -21,21 +21,6 @@ class Cli
 	#        config_file -> a specify config file
 	def initialize(lang, config)
 		@config = config
-
-		@mpw = MPW.new(@config.file_gpg, @config.key)
-		if not decrypt()
-			puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
-			exit 2
-		end
-
-		@sync = Sync.new()
-		if @config.sync_host.nil? || @config.sync_port.nil?
-			@sync.disable()
-		elsif !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
-			puts "#{I18n.t('cli.sync.not_connect')}:\n#{@sync.error_msg}"
-		end
-
-		sync()
 	end
 
 	# Destructor
@@ -45,6 +30,16 @@ class Cli
 
 	# Sync the data with the server
 	def sync()
+		if !defined?(@sync)
+			@sync = Sync.new()
+
+			if @config.sync_host.nil? || @config.sync_port.nil?
+				@sync.disable()
+			elsif !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
+				puts "#{I18n.t('cli.sync.not_connect')}:\n#{@sync.error_msg}"
+			end
+		end
+		
 		begin
 			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
 				puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
@@ -71,13 +66,22 @@ class Cli
 		key         = ask(I18n.t('cli.form.setup.gpg_key')).to_s
 		file_gpg    = ask(I18n.t('cli.form.setup.gpg_file', :home => Dir.home())).to_s
 		timeout_pwd = ask(I18n.t('cli.form.setup.timeout')).to_s
+		sync_host   = ask(I18n.t('cli.form.setup.sync_host')).to_s
+		sync_port   = ask(I18n.t('cli.form.setup.sync_port')).to_s
+		sync_pwd    = ask(I18n.t('cli.form.setup.sync_pwd')).to_s
+		sync_suffix = ask(I18n.t('cli.form.setup.sync_suffix')).to_s
 		
 		if !File.exist?("#{APP_ROOT}/i18n/#{language}.yml")
 			language= 'en'
 		end
 		I18n.locale = language.to_sym
 
-		if @config.setup(key, language, file_gpg, timeout_pwd)
+		sync_host.empty?   ? (sync_host = nil)   : (sync_host   = sync_host)
+		sync_port.empty?   ? (sync_port = nil)   : (sync_port   = sync_port.to_i)
+		sync_pwd.empty?    ? (sync_pwd = nil)    : (sync_pwd    = sync_pwd)
+		sync_suffix.empty? ? (sync_suffix = nil) : (sync_suffix = sync_suffix)
+
+		if @config.setup(key, language, file_gpg, timeout_pwd, sync_host, sync_port, sync_pwd, sync_suffix)
 			puts I18n.t('cli.form.setup.valid')
 		else
 			puts "#{I18n.t('cli.display.error')}: #{@config.error_msg}"
@@ -85,13 +89,21 @@ class Cli
 
 		if not @config.checkconfig()
 			puts "#{I18n.t('cli.display.error')}: #{@config.error_msg}"
+			exit 2
 		end
 	end
 
 	# Request the GPG password and decrypt the file
 	def decrypt()
+		if !defined?(@mpw)
+			@mpw = MPW.new(@config.file_gpg, @config.key)
+		end
+
 		@passwd = ask(I18n.t('cli.display.gpg_password')) {|q| q.echo = false}
-		return @mpw.decrypt(@passwd)
+		if !@mpw.decrypt(@passwd)
+			puts "#{I18n.t('cli.display.error')}: #{@mpw.error_msg}"
+			exit 2
+		end
 	end
 
 	# Display the query's result

@@ -37,9 +37,13 @@ class MPWConfig
 	# @args: key -> the gpg key to encrypt
 	#        lang -> the software language
 	#        file_gpg -> the file who is encrypted
-	#        timeout_pwd -> time to save the password 
+	#        timeout_pwd -> time to save the password
+	#        sync_host -> the server host for synchronization
+	#        sync_port -> the server port for synchronization
+	#        sync_pwd -> the password for synchronization
+	#        sync_suffix -> the suffix file (optionnal) 
 	# @rtrn: true if le config file is create
-	def setup(key, lang, file_gpg, timeout_pwd)
+	def setup(key, lang, file_gpg, timeout_pwd, sync_host=nil, sync_port=nil, sync_pwd=nil, sync_suffix=nil)
 
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 			@error_msg = I18n.t('error.config.key_bad_format')
@@ -56,10 +60,10 @@ class MPWConfig
 		                       'lang'        => lang,
 		                       'file_gpg'    => file_gpg,
 		                       'timeout_pwd' => timeout_pwd,
-		                       'sync_host'   => host,
-		                       'sync_port'   => port,
-		                       'sync_pwd'    => password,
-		                       'sync_suffix' => suffix,
+		                       'sync_host'   => sync_host,
+		                       'sync_port'   => sync_port,
+		                       'sync_pwd'    => sync_pwd,
+		                       'sync_suffix' => sync_suffix,
 		                       'last_update' => 0 }}
 
 		begin
@@ -86,7 +90,7 @@ class MPWConfig
 			@sync_host   = config['config']['sync_host']
 			@sync_port   = config['config']['sync_port']
 			@sync_pwd    = config['config']['sync_pwd']
-			@sync_suffix  = config['config']['sync_suffix']
+			@sync_suffix = config['config']['sync_suffix']
 			@last_update = config['config']['last_update'].to_i
 
 			if @key.empty? || @file_gpg.empty? 
@@ -104,6 +108,8 @@ class MPWConfig
 		return true
 	end
 
+	# Set the last update when there is a sync
+	# @rtrn: true is the file has been updated
 	def setLastUpdate()
 		config = {'config' => {'key'         => @key,
 		                       'lang'        => @lang,

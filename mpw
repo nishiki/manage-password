@@ -101,9 +101,13 @@ cli = Cli.new(lang, config)
 # Setup a new config 
 if !check_error || !options[:setup].nil?
 	cli.setup(lang)
+end
+
+cli.decrypt()
+cli.sync()
 
 # Display the item's informations
-elsif not options[:display].nil?
+if not options[:display].nil?
 	cli.display(options[:display], options[:group], options[:type], options[:format])
 
 # Remove an item
