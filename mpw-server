@@ -15,34 +15,34 @@ require "#{APP_ROOT}/lib/Server.rb"
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-I18n.load_path = Dir["#{APP_ROOT}/i18n/*.yml"]
+I18n.load_path = Dir["#{APP_ROOT}/i18n/server/*.yml"]
 I18n.default_locale = :en
 I18n.locale = lang.to_sym
 
 options = {}
 OptionParser.new do |opts|
-	opts.banner = "#{I18n.t('server.option.usage')}: mpw-server -c CONFIG [options]"
+	opts.banner = "#{I18n.t('option.usage')}: mpw-server -c CONFIG [options]"
 
-	opts.on("-c", "--config CONFIG", I18n.t('server.option.config')) do |config|
+	opts.on("-c", "--config CONFIG", I18n.t('option.config')) do |config|
 		options[:config] = config
 	end
 
-	opts.on("-t", "--checkconfig", I18n.t('server.option.checkconfig')) do |b|
+	opts.on("-t", "--checkconfig", I18n.t('option.checkconfig')) do |b|
 		options[:checkconfig] = b
 	end
 
-	opts.on("-s", "--setup", I18n.t('server.option.setup')) do |b|
+	opts.on("-s", "--setup", I18n.t('option.setup')) do |b|
 		options[:setup] = b
 	end
 
-	opts.on("-h", "--help", I18n.t('server.option.help')) do |b|
+	opts.on("-h", "--help", I18n.t('option.help')) do |b|
 		puts opts
 		exit 0
 	end
 end.parse!
 
 if options[:config].nil? || options[:config].empty?
-	puts "#{I18n.t('server.option.usage')}: mpw-server -c CONFIG [options]"
+	puts "#{I18n.t('option.usage')}: mpw-server -c CONFIG [options]"
 	exit 2
 end
 

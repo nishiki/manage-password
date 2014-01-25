@@ -1,0 +1,25 @@
+---
+en:
+  option:
+    usage: "Usage"
+    config: "Specifie the configuration file"
+    checkconfig: "Check the configuration"
+    setup: "Setup a new configuration file"
+    help: "Show this message help"
+  checkconfig:
+    fail: "Checkconfig failed:!"
+    empty: "ERROR: an importe option is missing!"
+    datadir: "ERROR: le data directory doesn't exist!"
+  form:
+    setup:
+      title: "Serveur configuration" 
+      host: "IP listen: "
+      port: "Port listen: "
+      data_dir: "Data directory: "
+      timeout: "Timeout to second: "
+      not_valid: "ERROR: Impossible to write the configuration file!"
+  formats:
+    default: ! '%Y-%m-%d'
+    long: ! '%B %d, %Y'
+    short: ! '%b %d'
+    custom: ! '%A, %M %B, %Y @ %l:%M%P'

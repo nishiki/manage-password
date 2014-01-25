@@ -1,0 +1,25 @@
+---
+fr:
+  option:
+    usage: "Utilisation"
+    config: "Spécifie le fichier de configuration"
+    checkconfig: "Vérifie le fichier de configuration"
+    setup: "Permet de générer un nouveau fichier de configuration"
+    help: "Affiche ce message d'aide"
+  checkconfig:
+    fail: "Le fichier de configuration est invalide!"
+    empty: "ERREUR: Une option importante est manquante!"
+    datadir: "ERREUR: Le répertoire des données n'existe pas!"
+  form:
+    setup:
+      title: "Configuration du serveur" 
+      host: "IP d'écoute: "
+      port: "Port d'écoute: "
+      data_dir: "Répertoire des données: "
+      timeout: "Timeout en seconde: "
+      not_valid: "ERREUR: Impossible d'écire le fichier de configuration!"
+  formats:
+    default: ! '%Y-%m-%d'
+    long: ! '%B %d, %Y'
+    short: ! '%b %d'
+    custom: ! '%A, %M %B, %Y @ %l:%M%P'

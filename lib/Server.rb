@@ -261,37 +261,33 @@ class Server
 			@timeout  = config['config']['timeout'].to_i
 
 			if @host.empty? || @port <= 0 || @data_dir.empty? 
-				puts I18n.t('server.checkconfig.fail')
-				puts I18n.t('server.checkconfig.empty')
+				puts I18n.t('checkconfig.fail')
+				puts I18n.t('checkconfig.empty')
 				return false
 			end
 
 			if !Dir.exist?(@data_dir)
-				puts I18n.t('server.checkconfig.fail')
-				puts I18n.t('server.checkconfig.datadir')
+				puts I18n.t('checkconfig.fail')
+				puts I18n.t('checkconfig.datadir')
 				return false
 			end
 
 			if @log_file.nil? || @log_file.empty?
-				puts I18n.t('server.checkconfig.fail')
-				puts I18n.t('server.checkconfig.log_file_empty')
+				puts I18n.t('checkconfig.fail')
+				puts I18n.t('checkconfig.log_file_empty')
 				return false
-			#elsif !File.writable?(@log_file)
-			#	puts I18n.t('server.checkconfig.fail')
-			#	puts I18n.t('server.checkconfig.log_file_ro')
-			#	return false
 			else
 				begin
 					@log = Logger.new(@log_file)
 				rescue
-					puts I18n.t('server.checkconfig.fail')
-					puts I18n.t('server.checkconfig.log_file_create')
+					puts I18n.t('checkconfig.fail')
+					puts I18n.t('checkconfig.log_file_create')
 					return false
 				end
 			end
 
 		rescue Exception => e 
-			puts "#{I18n.t('server.checkconfig.fail')}\n#{e}"
+			puts "#{I18n.t('checkconfig.fail')}\n#{e}"
 			return false
 		end
 
@@ -302,13 +298,13 @@ class Server
 	# @args: file_config -> the configuration file
 	# @rtrn: true if le config file is create
 	def setup(file_config)
-		puts I18n.t('server.form.setup.title')
+		puts I18n.t('form.setup.title')
 		puts '--------------------'
-		host     = ask(I18n.t('server.form.setup.host')).to_s
-		port     = ask(I18n.t('server.form.setup.port')).to_s
-		data_dir = ask(I18n.t('server.form.setup.data_dir')).to_s
-		log_file = ask(I18n.t('server.form.setup.log_file')).to_s
-		timeout  = ask(I18n.t('server.form.setup.timeout')).to_s
+		host     = ask(I18n.t('form.setup.host')).to_s
+		port     = ask(I18n.t('form.setup.port')).to_s
+		data_dir = ask(I18n.t('form.setup.data_dir')).to_s
+		log_file = ask(I18n.t('form.setup.log_file')).to_s
+		timeout  = ask(I18n.t('form.setup.timeout')).to_s
 
 		config = {'config' => {'host'     => host,
 		                       'port'     => port,
@@ -321,7 +317,7 @@ class Server
 				file << config.to_yaml
 			end
 		rescue Exception => e 
-			puts "#{I18n.t('server.form.setup.not_valid')}\n#{e}"
+			puts "#{I18n.t('form.setup.not_valid')}\n#{e}"
 			return false
 		end
 
