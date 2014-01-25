@@ -4,11 +4,17 @@ require 'socket'
 require 'json'
 require 'highline/import'
 require 'digest'
+require 'logger'
 
 require "#{APP_ROOT}/lib/MPW.rb"
 
 class Server
 	
+	INFO    = 0
+	WARNING = 1
+	ERROR   = 2
+	DEBUG   = 3
+
 	attr_accessor :error_msg
 
 	# Constructor
@@ -18,9 +24,18 @@ class Server
 
 	# Start the server
 	def start()
-		server = TCPServer.open(@host, @port)
+		begin
+			server = TCPServer.open(@host, @port)
+			@log.info("The server is started on #{@host}:#{@port}")
+		rescue Exception => e
+			@log.error("Impossible to start the server: #{e}")
+			exit 2
+		end
+
 		loop do
 			Thread.start(server.accept) do |client|
+				@log.info("#{client.peeraddr[3]} is connected")
+
 				while true do
 					msg = getClientMessage(client)
 
@@ -35,14 +50,19 @@ class Server
 
 					case msg['action']
 					when 'get'
+						@log.debug("#{client.peeraddr[3]} GET gpg_key=#{msg['gpg_key']} suffix=#{msg['suffix']}")
 						client.puts getFile(msg)
 					when 'update'
+						@log.debug("#{client.peeraddr[3]} UPDATE gpg_key=#{msg['gpg_key']} suffix=#{msg['suffix']}")
 						client.puts updateFile(msg)
 					when 'delete'
+						@log.debug("#{client.peeraddr[3]} DELETE gpg_key=#{msg['gpg_key']} suffix=#{msg['suffix']}")
 						client.puts deleteFile(msg)
 					when 'close'
+						@log.info("#{client.peeraddr[3]} is disconnected")
 						closeConnection(client)
 					else
+						@log.warning("#{client.peeraddr[3]} is disconnected for unkwnow command")
 						send_msg = {:action      => 'unknown',
 						            :gpg_key     => msg['gpg_key'],
 						            :error       => 'server.error.client.unknown'}
@@ -237,6 +257,7 @@ class Server
 			@host     = config['config']['host']
 			@port     = config['config']['port'].to_i
 			@data_dir = config['config']['data_dir']
+			@log_file = config['config']['log_file']
 			@timeout  = config['config']['timeout'].to_i
 
 			if @host.empty? || @port <= 0 || @data_dir.empty? 
@@ -249,6 +270,24 @@ class Server
 				puts I18n.t('server.checkconfig.fail')
 				puts I18n.t('server.checkconfig.datadir')
 				return false
+			end
+
+			if @log_file.nil? || @log_file.empty?
+				puts I18n.t('server.checkconfig.fail')
+				puts I18n.t('server.checkconfig.log_file_empty')
+				return false
+			#elsif !File.writable?(@log_file)
+			#	puts I18n.t('server.checkconfig.fail')
+			#	puts I18n.t('server.checkconfig.log_file_ro')
+			#	return false
+			else
+				begin
+					@log = Logger.new(@log_file)
+				rescue
+					puts I18n.t('server.checkconfig.fail')
+					puts I18n.t('server.checkconfig.log_file_create')
+					return false
+				end
 			end
 
 		rescue Exception => e 
@@ -268,11 +307,13 @@ class Server
 		host     = ask(I18n.t('server.form.setup.host')).to_s
 		port     = ask(I18n.t('server.form.setup.port')).to_s
 		data_dir = ask(I18n.t('server.form.setup.data_dir')).to_s
+		log_file = ask(I18n.t('server.form.setup.log_file')).to_s
 		timeout  = ask(I18n.t('server.form.setup.timeout')).to_s
 
 		config = {'config' => {'host'     => host,
 		                       'port'     => port,
 		                       'data_dir' => data_dir,
+		                       'log_file' => log_file,
 		                       'timeout'  => timeout}}
 
 		begin
@@ -286,5 +327,4 @@ class Server
 
 		return true
 	end
-
 end

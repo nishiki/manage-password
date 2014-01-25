@@ -53,8 +53,9 @@ if options[:checkconfig]
 elsif options[:setup]
 	server.setup(options[:config])
 else
-	server.checkconfig(options[:config])
-	server.start()
+	if server.checkconfig(options[:config])
+		server.start()
+	end
 end
 
 exit 0
