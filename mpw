@@ -16,7 +16,7 @@ require "#{APP_ROOT}/lib/MPW.rb"
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-I18n.load_path = Dir["#{APP_ROOT}/i18n/*.yml"]
+I18n.load_path = Dir["#{APP_ROOT}/i18n/cli/*.yml"]
 I18n.default_locale = :en
 I18n.locale = lang.to_sym
 
@@ -27,67 +27,67 @@ options[:group]  = nil
 options[:config] = nil
 
 OptionParser.new do |opts|
-	opts.banner = "#{I18n.t('cli.option.usage')}: mpw [options]"
+	opts.banner = "#{I18n.t('option.usage')}: mpw [options]"
 
-	opts.on('-d', '--display [SEARCH]', I18n.t('cli.option.show')) do |search|
+	opts.on('-d', '--display [SEARCH]', I18n.t('option.show')) do |search|
 		search.nil? ? (options[:display]  = '')  : (options[:display] = search)
 	end
 
-	opts.on('-A', '--show-all', I18n.t('cli.option.show_all')) do
+	opts.on('-A', '--show-all', I18n.t('option.show_all')) do
 		options[:type]    = nil
 		options[:display] = ''
 	end
 
-	opts.on('-u', '--update ID', I18n.t('cli.option.update')) do |id|
+	opts.on('-u', '--update ID', I18n.t('option.update')) do |id|
 		options[:update] = id
 	end
 
-	opts.on('-r', '--remove ID', I18n.t('cli.option.remove')) do |id|
+	opts.on('-r', '--remove ID', I18n.t('option.remove')) do |id|
 		options[:remove] = id
 	end
 
-	opts.on('-g', '--group GROUP', I18n.t('cli.option.group')) do |group|
+	opts.on('-g', '--group GROUP', I18n.t('option.group')) do |group|
 		options[:group] = group
 	end
 
-	opts.on('-a', '--add', I18n.t('cli.option.add')) do
+	opts.on('-a', '--add', I18n.t('option.add')) do
 		options[:add] = true
 	end
 
-	opts.on('-c', '--config CONFIG', I18n.t('cli.option.config')) do |config|
+	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
 		options[:config] = config
 	end
 
-	opts.on('-S', '--setup', I18n.t('cli.option.setup')) do
+	opts.on('-S', '--setup', I18n.t('option.setup')) do
 		options[:setup] = true
 	end
 
-	opts.on('-p', '--protocol PROTOCOL', I18n.t('cli.option.protocol')) do |type|
+	opts.on('-p', '--protocol PROTOCOL', I18n.t('option.protocol')) do |type|
 		options[:type] = type
 	end
 
-	opts.on('-e', '--export FILE', I18n.t('cli.option.export')) do |file|
+	opts.on('-e', '--export FILE', I18n.t('option.export')) do |file|
 		options[:export] = file
 	end
 
-	opts.on('-i', '--import FILE', I18n.t('cli.option.import')) do |file|
+	opts.on('-i', '--import FILE', I18n.t('option.import')) do |file|
 		options[:import] = file
 	end
 
-	opts.on('-f', '--force', I18n.t('cli.option.force')) do
+	opts.on('-f', '--force', I18n.t('option.force')) do
 		options[:force] = true
 	end
 
-	opts.on('-F', '--format', I18n.t('cli.option.format')) do
+	opts.on('-F', '--format', I18n.t('option.format')) do
 		options[:format] = true
 	end
 
-	opts.on('-G', '--generate-password [LENGTH]', I18n.t('cli.option.generate_password')) do |length|
+	opts.on('-G', '--generate-password [LENGTH]', I18n.t('option.generate_password')) do |length|
 		puts MPW::generatePassword(length)
 		exit 0
 	end
 
-	opts.on('-h', '--help', I18n.t('cli.option.help')) do
+	opts.on('-h', '--help', I18n.t('option.help')) do
 		puts opts
 		exit 0
 	end

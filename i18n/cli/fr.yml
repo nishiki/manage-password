@@ -1,0 +1,121 @@
+---
+fr:
+  error:
+    config:
+      write: "Impossible d'écrire le fichier de configuration!"
+      check: "Le fichier de configuration est invalide!"
+      key_bad_format: "La clé GPG est invalide!"
+    delete:
+      id_no_exist: "Impossible de supprimer l'élément %{id}, car il n'existe pas!"
+    export:
+      write: "Impossible d'exporter les données dans le fichier %{file}!"
+    gpg_file: 
+      decrypt: "Impossible de déchiffrer le fichier GPG!"
+      encrypt: "Impossible de chiffrer le fichier GPG!"
+    import:
+      bad_format: "Impossible d'importer le fichier car son format est incorrect!"
+      read: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
+    update:
+      name_empty: "Vous devez définir un nom!"
+    sync: 
+      connection: "La connexion n'a pu être établie!"
+      communication: "Un problème de communication avec le serveur est apparu!"
+      no_data: "Aucune donnée!"
+      not_authorized: "Vous n'avez pas les autorisations d'accès au fichier distant!"
+      unknown: "Une erreur inconnue est survenue!" 
+  option:
+    usage: "Utilisation"
+    show: "Recherche et affiche les éléments"
+    show_all: "Affiche tous les éléments"
+    update: "Met à jour un élément"
+    remove: "Supprime un élément"
+    group: "Recherche les éléments appartenant au groupe spécifié"
+    add: "Ajoute un élément"
+    config: "Spécifie le fichier de configuration à utiliser"
+    setup: "Création d'un nouveau fichier de configuration" 
+    protocol: "Sélectionne les éléments ayant le protocole spécifié"
+    export: "Exporte tous les éléments dans un fichier au format CSV"
+    import: "Importe des éléments depuis un fichier au format CSV"
+    force: "Force une action, l'action ne demandera pas de confirmation"
+    format: "Change le format d'affichage des éléments par un alternatif"
+    generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères)"
+    help: "Affiche ce message d'aide"
+  form:
+    add:
+      title: "Ajout d'un nouvel élément"
+      name: "Entrez le nom: "
+      group: "Entrez le groupe (optionnel): "
+      server: "Entrez the hostname or ip: "
+      protocol: "Entrez le protocole de connexion (ssh, http, other): "
+      login: "Entrez l'identifiant de connexion: "
+      password: "Entrez le mot de passe: "
+      port: "Entrez le port de connexion (optionnel): "
+      comment: "Entrez un commentaire (optionnel): "
+      valid: "L'élément a bien été ajouté!"
+    delete:
+      ask: "Êtes vous sûre de vouloir supprimer l'élément %{id} ?"
+      valid: "L'élément %{id} a bien été supprimé!"
+      not_valid: "L'élément %{id} n'a pu être supprimé, car il n'existe pas!"
+    import:
+      ask: "Êtes vous sûre de vouloir importer le fichier %{file} ?"
+      valid: "L'import est un succès!"
+      not_valid: "Aucune donnée à importer!"
+    setup:
+      title: "Création d'un nouveau fichier de configuration"
+      lang: "Choisissez votre langue (en, fr, ...) [défaut=%{lang}]: "
+      gpg_key: "Entrez la clé GPG: " 
+      gpg_file: "Entrez le chemin du fichier qui sera chiffré [défaut=%{home}/.mpw.gpg]: "
+      timeout: "Entrez le temps (en seconde) du mot de passe GPG [défaut=60]: "
+      valid: "Le fichier de configuration a bien été créé!"
+    update:
+      title: "Mis à jour d'un élément"
+      name: "Entrez le nom [%{name}]: "
+      group: "Entrez le groupe [%{group}]: "
+      server: "Entrez le nom de domaine ou l'ip du serveur [%{server}]: "
+      protocol: "Entrez le protocole de connexion [%{protocol}]: "
+      login: "Entrez votre identifiant de connexion [%{login}]: "
+      password: "Entrez le mot de passe: "
+      port: "Entrez un port de connexion [%{port}]: "
+      comment: "Entrez un commentaire [%{comment}]: "
+      valid: "L'élément a bien été mis à jour!" 
+  interactive:
+    ask_password: "Mot de passe GPG: "
+    bad_password: "Mauvais mot de passe!"
+    goodbye: "Au revoir!"
+    unknown_command: "Commande inconnue!"
+    option:
+      title: "Aide"
+      show: "Cherche et affiche les résulats"
+      group: "Change de groupe pour la recherche"
+      add: "Ajout un élément"
+      update: "Met à jour un élément"
+      remove: "Supprime un élément"
+      help: "Affiche ce message d'aide"
+      quit: "Quitte le programme"
+  display:
+    comment: "Commentaire"
+    error: "ERREUR"
+    gpg_password: "Mot de passe GPG: "
+    group: "Groupe"
+    login: "Identifiant"
+    name: "Nom"
+    nothing: "Aucun résultat!"
+    password: "Mot de passe"
+    port: "Port"
+    protocol: "Protocol"
+    server: "Serveur"
+  ssh:
+    option:
+      usage: "Utilisation"
+      login: "Change l'identifiant de connexion"
+      server: "Change le nom de domaine ou l'ip du serveur"
+      port: "Change le port de connexion"
+      help: "Affiche ce message d'aide"
+    display:
+      connect: "Connexion à:"
+      nothing: "Aucun résultat!"
+  formats:
+    default: ! '%Y-%m-%d'
+    long: ! '%B %d, %Y'
+    short: ! '%b %d'
+    custom: ! '%A, %M %B, %Y @ %l:%M%P'
