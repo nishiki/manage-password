@@ -105,7 +105,7 @@ class MPW
 	# Search in some csv data
 	# @args: id -> the id item
 	# @rtrn: a row with the resultat of the search
-	def searchById(id)
+	def search_by_id(id)
 		@data.each do |row|
 			if row[ID] == id
 				return row
@@ -243,7 +243,7 @@ class MPW
 	# Return a preview import 
 	# @args: file -> path to file import
 	# @rtrn: an array with the items to import, if there is an error return false
-	def importPreview(file)
+	def import_preview(file)
 		begin
 			result = Array.new()
 			id = 0

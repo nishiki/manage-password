@@ -140,6 +140,6 @@ else
 	end
 end
 
-cli = nil
+cli.sync_close()
 
 exit 0

@@ -9,11 +9,6 @@ require 'logger'
 require "#{APP_ROOT}/lib/MPW.rb"
 
 class Server
-	
-	INFO    = 0
-	WARNING = 1
-	ERROR   = 2
-	DEBUG   = 3
 
 	attr_accessor :error_msg
 
@@ -37,37 +32,37 @@ class Server
 				@log.info("#{client.peeraddr[3]} is connected")
 
 				while true do
-					msg = getClientMessage(client)
+					msg = get_client_msg(client)
 
 					if !msg
 						next
 					end
 					
 					if msg['gpg_key'].nil? || msg['gpg_key'].empty? || msg['password'].nil? || msg['password'].empty?
-						closeConnection(client)
+						close_connection(client)
 						next
 					end
 
 					case msg['action']
 					when 'get'
 						@log.debug("#{client.peeraddr[3]} GET gpg_key=#{msg['gpg_key']} suffix=#{msg['suffix']}")
-						client.puts getFile(msg)
+						client.puts get_file(msg)
 					when 'update'
 						@log.debug("#{client.peeraddr[3]} UPDATE gpg_key=#{msg['gpg_key']} suffix=#{msg['suffix']}")
-						client.puts updateFile(msg)
+						client.puts update_file(msg)
 					when 'delete'
 						@log.debug("#{client.peeraddr[3]} DELETE gpg_key=#{msg['gpg_key']} suffix=#{msg['suffix']}")
-						client.puts deleteFile(msg)
+						client.puts delete_file(msg)
 					when 'close'
 						@log.info("#{client.peeraddr[3]} is disconnected")
-						closeConnection(client)
+						close_connection(client)
 					else
 						@log.warning("#{client.peeraddr[3]} is disconnected for unkwnow command")
 						send_msg = {:action      => 'unknown',
 						            :gpg_key     => msg['gpg_key'],
 						            :error       => 'server.error.client.unknown'}
 						client.puts send_msg 
-						closeConnection(client)
+						close_connection(client)
 					end
 				end
 			end
@@ -77,7 +72,7 @@ class Server
 	# Get a gpg file
 	# @args: msg -> message puts by the client
 	# @rtrn: json message
-	def getFile(msg)
+	def get_file(msg)
 		gpg_key = msg['gpg_key'].sub('@', '_')
 
 		if msg['suffix'].nil? || msg['suffix'].empty?
@@ -92,7 +87,7 @@ class Server
 			hash        = gpg_data['gpg']['hash']
 			data        = gpg_data['gpg']['data']
 
-			if isAuthorized?(msg['password'], salt, hash)
+			if is_authorized?(msg['password'], salt, hash)
 				send_msg = {:action      => 'get',
 				            :gpg_key     => msg['gpg_key'],
 				            :data        => data,
@@ -115,7 +110,7 @@ class Server
 	# Update a file
 	# @args: msg -> message puts by the client
 	# @rtrn: json message
-	def updateFile(msg)
+	def update_file(msg)
 		gpg_key = msg['gpg_key'].sub('@', '_')
 		data    = msg['data']
 
@@ -143,7 +138,7 @@ class Server
 			hash = Digest::SHA256.hexdigest(salt + msg['password'])
 		end
 
-		if isAuthorized?(msg['password'], salt, hash)
+		if is_authorized?(msg['password'], salt, hash)
 			begin
 				config = {'gpg' => {'salt'        => salt,
 				                    'hash'        => hash,
@@ -173,7 +168,7 @@ class Server
 	# Remove a gpg file
 	# @args: msg -> message puts by the client
 	# @rtrn: json message
-	def deleteFile(msg)
+	def delete_file(msg)
 		gpg_key = msg['gpg_key'].sub('@', '_')
 
 		if msg['suffix'].nil? || msg['suffix'].empty?
@@ -194,7 +189,7 @@ class Server
 		salt      = gpg_data['gpg']['salt']
 		hash      = gpg_data['gpg']['hash']
 
-		if isAuthorized?(msg['password'], salt, hash)
+		if is_authorized?(msg['password'], salt, hash)
 			begin
 				File.unlink(file_gpg)
 
@@ -220,7 +215,7 @@ class Server
 	#        salt -> the salt
 	#        hash -> the hash of the password with the salt
 	# @rtrn: true is is good, else false
-	def isAuthorized?(password, salt, hash)
+	def is_authorized?(password, salt, hash)
 		if hash == Digest::SHA256.hexdigest(salt + password)
 			return true
 		else
@@ -231,7 +226,7 @@ class Server
 	# Get message to client
 	# @args: client -> client connection
 	# @rtrn: array of the json string, or false if isn't json message
-	def getClientMessage(client)
+	def get_client_msg(client)
 		begin
 			msg = client.gets
 			return JSON.parse(msg)
@@ -243,7 +238,7 @@ class Server
 
 	# Close the client connection
 	# @args: client -> client connection
-	def closeConnection(client)
+	def close_connection(client)
 			client.puts "Closing the connection. Bye!"
 			client.close
 	end

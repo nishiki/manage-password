@@ -110,7 +110,7 @@ class MPWConfig
 
 	# Set the last update when there is a sync
 	# @rtrn: true is the file has been updated
-	def setLastUpdate()
+	def set_last_update()
 		config = {'config' => {'key'         => @key,
 		                       'lang'        => @lang,
 		                       'file_gpg'    => @file_gpg,

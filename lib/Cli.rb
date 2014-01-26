@@ -23,8 +23,8 @@ class Cli
 		@config = config
 	end
 
-	# Destructor
-	def finalize()
+	# Close sync
+	def sync_close()
 		@sync.close()
 	end
 
@@ -47,7 +47,7 @@ class Cli
 					puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
 				elsif !@sync.update(File.open(@config.file_gpg).read)
 					puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
-				elsif !@config.setLastUpdate()
+				elsif !@config.set_last_update()
 					puts "#{I18n.t('display.error')}: #{@config.error_msg}"
 				else
 					return true
@@ -188,7 +188,7 @@ class Cli
 	# Update an item
 	# @args: id -> the item's id
 	def update(id)
-		row = @mpw.searchById(id)
+		row = @mpw.search_by_id(id)
 
 		if not row.empty?
 			puts I18n.t('form.update.title')
@@ -222,7 +222,7 @@ class Cli
 	#        force -> no resquest a validation
 	def remove(id, force=false)
 		if not force
-			result = @mpw.searchById(id)
+			result = @mpw.search_by_id(id)
 
 			if result.length > 0
 				displayFormat(result)
@@ -265,7 +265,7 @@ class Cli
 	# @args: file -> the import file
 	#        force -> no resquest a validation
 	def import(file, force=false)
-		result = @mpw.importPreview(file)
+		result = @mpw.import_preview(file)
 
 		if not force
 			if result.is_a?(Array) && !result.empty?
