@@ -66,6 +66,10 @@ en:
       gpg_key: "Enter the GPG key: " 
       gpg_file: "Enter the path to encrypt file [default=%{home}/.mpw.gpg]: "
       timeout: "Enter the timeout (in seconde) to GPG password [default=60]: "
+      sync_host: "Synchronization server: "
+      sync_port: "Port of the synchronization server: "
+      sync_pwd: "Password for the synchronization: "
+      sync_suffix: "Suffix for the synchronization (optionnal): "
       valid: "The config file has been created!"
     update:
       title: "Update an item"

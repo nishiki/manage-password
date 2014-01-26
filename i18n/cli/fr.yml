@@ -66,6 +66,10 @@ fr:
       gpg_key: "Entrez la clé GPG: " 
       gpg_file: "Entrez le chemin du fichier qui sera chiffré [défaut=%{home}/.mpw.gpg]: "
       timeout: "Entrez le temps (en seconde) du mot de passe GPG [défaut=60]: "
+      sync_host: "Serveur de synchronisation: "
+      sync_port: "Port du serveur de synchronisation: "
+      sync_pwd: "Mot de passe pour la synchronisation: "
+      sync_suffix: "Suffix pour la synchronisation (optionnel): "
       valid: "Le fichier de configuration a bien été créé!"
     update:
       title: "Mis à jour d'un élément"

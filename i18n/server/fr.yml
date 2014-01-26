@@ -16,6 +16,7 @@ fr:
       host: "IP d'écoute: "
       port: "Port d'écoute: "
       data_dir: "Répertoire des données: "
+      log_file: "Chemin du ficier de log: "
       timeout: "Timeout en seconde: "
       not_valid: "ERREUR: Impossible d'écire le fichier de configuration!"
   formats:
