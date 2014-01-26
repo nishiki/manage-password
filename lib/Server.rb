@@ -38,7 +38,13 @@ class Server
 						next
 					end
 					
+					if !msg['action'].nil? && msg['action'] == 'close'
+						@log.info("#{client.peeraddr[3]} is disconnected")
+						close_connection(client)
+					end
+
 					if msg['gpg_key'].nil? || msg['gpg_key'].empty? || msg['password'].nil? || msg['password'].empty?
+						@log.warning("#{client.peeraddr[3]} is disconnected because no password or no gpg_key")
 						close_connection(client)
 						next
 					end
@@ -53,11 +59,8 @@ class Server
 					when 'delete'
 						@log.debug("#{client.peeraddr[3]} DELETE gpg_key=#{msg['gpg_key']} suffix=#{msg['suffix']}")
 						client.puts delete_file(msg)
-					when 'close'
-						@log.info("#{client.peeraddr[3]} is disconnected")
-						close_connection(client)
 					else
-						@log.warning("#{client.peeraddr[3]} is disconnected for unkwnow command")
+						@log.warning("#{client.peeraddr[3]} is disconnected because unkwnow command")
 						send_msg = {:action      => 'unknown',
 						            :gpg_key     => msg['gpg_key'],
 						            :error       => 'server.error.client.unknown'}
