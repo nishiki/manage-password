@@ -13,15 +13,12 @@ require "#{APP_ROOT}/lib/MPW.rb"
 class Sync
 
 	attr_accessor :error_msg
+	attr_accessor :enable
 
 	# Constructor
 	def initialize()
 		@error_msg = nil
-	end
-
-	# Disable the sync
-	def disable()
-		@sync = false
+		@enable    = false
 	end
 
 	# Connect to server
@@ -37,21 +34,21 @@ class Sync
 		@suffix   = suffix
 
 		begin
-			@socket= TCPSocket.new(host, port)
-			@sync = true
+			@socket = TCPSocket.new(host, port)
+			@enable = true
 		rescue Exception => e
 			@error_msg = "#{I18n.t('error.sync.connection')}\n#{e}"
-			@sync = false
+			@enable    = false
 		end
 
-		return @sync
+		return @enable
 	end
 
 	# Get data on server
 	# @args: gpg_password -> the gpg password
 	# @rtrn: nil if nothing data or error
 	def get(gpg_password)
-		if !@sync
+		if !@enable
 			return nil
 		end
 
@@ -91,7 +88,7 @@ class Sync
 	# @args: data -> the data to send on server
 	# @rtrn: false if there is a problem
 	def update(data)
-		if !@sync
+		if !@enable
 			return true
 		end
 
@@ -121,7 +118,7 @@ class Sync
 
 	# Close the connection
 	def close()
-		if !@sync
+		if !@enable
 			return
 		end
 

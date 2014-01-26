@@ -29,32 +29,35 @@ class Cli
 	end
 
 	# Sync the data with the server
+	# @rtnr: true if the synchro is finish
 	def sync()
 		if !defined?(@sync)
 			@sync = Sync.new()
 
-			if @config.sync_host.nil? || @config.sync_port.nil?
-				@sync.disable()
-			elsif !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
-				puts "#{I18n.t('sync.not_connect')}:\n#{@sync.error_msg}"
+			if !@config.sync_host.nil? && !@config.sync_port.nil?
+				if !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
+					puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
+				end
 			end
 		end
 		
 		begin
-			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
-				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
-			end
-
-			if !@sync.update(File.open(@config.file_gpg).read)
-				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
-			end
-
-			if !@config.setLastUpdate()
-				puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+			if @sync.enable
+				if !@mpw.sync(@sync.get(@passwd), @config.last_update)
+					puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+				elsif !@sync.update(File.open(@config.file_gpg).read)
+					puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
+				elsif !@config.setLastUpdate()
+					puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+				else
+					return true
+				end
 			end
 		rescue Exception => e
-			puts "#{I18n.t('sync.error')}:\n#{e}"
+			puts "#{I18n.t('display.error')}: #{I18n.t('sync.error')}\n#{e}"
 		end
+
+		return false
 	end
 
 	# Create a new config file
