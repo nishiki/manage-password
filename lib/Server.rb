@@ -6,8 +6,6 @@ require 'highline/import'
 require 'digest'
 require 'logger'
 
-require "#{APP_ROOT}/lib/MPW.rb"
-
 class Server
 
 	attr_accessor :error_msg
@@ -137,7 +135,7 @@ class Server
 			hash      = gpg_data['gpg']['hash']
 
 		else
-			salt = MPW.generatePassword(4)
+			salt = salt()
 			hash = Digest::SHA256.hexdigest(salt + msg['password'])
 		end
 
@@ -321,4 +319,18 @@ class Server
 
 		return true
 	end
+
+	# Generate a random salt
+	# @args: length -> the length salt
+	# @rtrn: a random string
+	def salt(length=4)
+		if length.to_i <= 0 || length.to_i > 16
+			length = 4
+		else
+			length = length.to_i
+		end
+
+		return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(length).join
+	end
+	
 end
