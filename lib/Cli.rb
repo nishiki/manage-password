@@ -54,7 +54,7 @@ class Cli
 				end
 			end
 		rescue Exception => e
-			puts "#{I18n.t('display.error')}: #{I18n.t('sync.error')}\n#{e}"
+			puts "#{I18n.t('display.error')}: #{e}"
 		end
 
 		return false

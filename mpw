@@ -83,7 +83,7 @@ OptionParser.new do |opts|
 	end
 
 	opts.on('-G', '--generate-password [LENGTH]', I18n.t('option.generate_password')) do |length|
-		puts MPW::generatePassword(length)
+		puts MPW::password(length)
 		exit 0
 	end
 

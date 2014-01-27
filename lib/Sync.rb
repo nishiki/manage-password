@@ -64,7 +64,7 @@ class Sync
 			@error_msg = I18n.t('error.sync.communication')
 			return nil
 		elsif msg['error'].nil?
-			tmp_file = "/tmp/mpw-#{MPW.generatePassword()}.gpg"
+			tmp_file = "/tmp/mpw-#{MPW.password()}.gpg"
 			File.open(tmp_file, 'w') do |file|
 				file << msg['data']
 			end

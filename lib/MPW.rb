@@ -147,15 +147,15 @@ class MPW
 		row_update       = Array.new()
 		row_update[DATE] = Time.now.to_i
 
-		id.nil?	      || id.empty?       ? (row_update[ID]       = MPW.generatePassword(16)) : (row_update[ID]       = id)
-		name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])                : (row_update[NAME]     = name)
-		group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])               : (row_update[GROUP]    = group)
-		server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])              : (row_update[SERVER]   = server)
-		protocol.nil? || protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL])            : (row_update[PROTOCOL] = protocol)
-		login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])               : (row_update[LOGIN]    = login)
-		passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD])            : (row_update[PASSWORD] = passwd)
-		port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])                : (row_update[PORT]     = port)
-		comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])             : (row_update[COMMENT]  = comment)
+		id.nil?	      || id.empty?       ? (row_update[ID]       = MPW.password(16)) : (row_update[ID]       = id)
+		name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])        : (row_update[NAME]     = name)
+		group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])       : (row_update[GROUP]    = group)
+		server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])      : (row_update[SERVER]   = server)
+		protocol.nil? || protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL])    : (row_update[PROTOCOL] = protocol)
+		login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])       : (row_update[LOGIN]    = login)
+		passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD])    : (row_update[PASSWORD] = passwd)
+		port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])        : (row_update[PORT]     = port)
+		comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])     : (row_update[COMMENT]  = comment)
 		
 		row_update[NAME].nil?     ? (row_update[NAME]     = row_update[NAME])     : (row_update[NAME]     = row_update[NAME].force_encoding('ASCII-8BIT'))
 		row_update[GROUP].nil?    ? (row_update[GROUP]    = row_update[GROUP])    : (row_update[GROUP]    = row_update[GROUP].force_encoding('ASCII-8BIT'))
@@ -312,7 +312,7 @@ class MPW
 	# Generate a random password
 	# @args: length -> the length password
 	# @rtrn: a random string
-	def self.generatePassword(length=8)
+	def self.password(length=8)
 		if length.to_i <= 0
 			length = 8
 		else
@@ -328,5 +328,4 @@ class MPW
 
 		return result
 	end
-	
 end
