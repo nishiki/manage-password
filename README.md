@@ -1,6 +1,7 @@
 # Manage your passwords!
 
 MPW is a little software which stores your passwords in an GPG encrypted file.
+MPW can sync your password with a MPW Server.
 
 # Installation
 
