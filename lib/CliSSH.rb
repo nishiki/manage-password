@@ -16,9 +16,9 @@ class CliSSH < Cli
 
 		if result.length > 0
 			result.each do |r|
-				@server.nil? ? (server = r[MPW::SERVER]) : (server = @server)
-				@port.nil?   ? (port   = r[MPW::PORT])   : (port   = @port)
-				@login.nil?  ? (login  = r[MPW::LOGIN])  : (login  = @login)
+				server = @server.nil? ? r[MPW::SERVER] : @server
+				port   = @port.nil?   ? r[MPW::PORT]   : @port
+				login  = @login.nil?  ? r[MPW::LOGIN]  : @login
 
 				passwd = r[MPW::PASSWORD]
 

@@ -79,10 +79,10 @@ class Cli
 		end
 		I18n.locale = language.to_sym
 
-		sync_host.empty?   ? (sync_host = nil)   : (sync_host   = sync_host)
-		sync_port.empty?   ? (sync_port = nil)   : (sync_port   = sync_port.to_i)
-		sync_pwd.empty?    ? (sync_pwd = nil)    : (sync_pwd    = sync_pwd)
-		sync_suffix.empty? ? (sync_suffix = nil) : (sync_suffix = sync_suffix)
+		sync_host   = sync_host.empty?   ? nil : sync_host
+		sync_port   = sync_port.empty?   ? nil : sync_port.to_i
+		sync_pwd    = sync_pwd.empty?    ? nil : sync_pwd
+		sync_suffix = sync_suffix.empty? ? nil : sync_suffix
 
 		if @config.setup(key, language, file_gpg, timeout_pwd, sync_host, sync_port, sync_pwd, sync_suffix)
 			puts I18n.t('form.setup.valid')
@@ -146,7 +146,7 @@ class Cli
 	# Display an item in the alternative format
 	# @args: item -> an array with the item information
 	def displayFormatAlt(item)
-		item[MPW::PORT].nil? ? (port = '') : (port = ":#{item[MPW::PORT]}")
+		port = item[MPW::PORT].nil? ? '' : ":#{item[MPW::PORT]}"
 
 		if item[MPW::PASSWORD].nil? || item[MPW::PASSWORD].empty?
 			if item[MPW::LOGIN].include('@')

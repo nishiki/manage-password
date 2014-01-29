@@ -54,7 +54,7 @@ class MPWConfig
 			file_gpg = "#{Dir.home()}/.mpw.gpg"
 		end
 
-		timeout_pwd.empty? ? (timeout_pwd = 60) : (timeout_pwd = timeout_pwd.to_i)
+		timeout_pwd = timeout_pwd.empty? ? 60 : timeout_pwd.to_i
 
 		config = {'config' => {'key'         => key,
 		                       'lang'        => lang,
