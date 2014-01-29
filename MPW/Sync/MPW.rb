@@ -18,7 +18,7 @@ module MPW
 			attr_accessor :enable
 		
 			# Constructor
-			def initialize()
+			def initialize
 				@error_msg = nil
 				@enable    = false
 			end
@@ -113,7 +113,7 @@ module MPW
 			end
 		
 			# Close the connection
-			def close()
+			def close
 				if !@enable
 					return
 				end
