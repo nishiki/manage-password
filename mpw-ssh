@@ -10,7 +10,8 @@ require 'locale'
 require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
-require "#{APP_ROOT}/lib/CliSSH.rb"
+require "#{APP_ROOT}/MPW/UI/CliSSH"
+require "#{APP_ROOT}/MPW/Config"
 
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
@@ -45,7 +46,7 @@ OptionParser.new do |opts|
 	end
 end.parse!
 
-config      = MPWConfig.new(options[:config])
+config      = MPW::Config.new(options[:config])
 check_error = config.checkconfig()
 
 cli         = CliSSH.new(lang, config)

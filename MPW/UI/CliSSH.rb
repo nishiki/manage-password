@@ -3,7 +3,7 @@
 # mail: nishiki@yaegashi.fr
 # info: a simple script who manage your passwords
 
-require "#{APP_ROOT}/lib/Cli.rb"
+require "#{APP_ROOT}/MPW/UI/Cli"
 
 class CliSSH < Cli
 
@@ -16,11 +16,11 @@ class CliSSH < Cli
 
 		if result.length > 0
 			result.each do |r|
-				server = @server.nil? ? r[MPW::SERVER] : @server
-				port   = @port.nil?   ? r[MPW::PORT]   : @port
-				login  = @login.nil?  ? r[MPW::LOGIN]  : @login
+				server = @server.nil? ? r[MPW::MPW::SERVER] : @server
+				port   = @port.nil?   ? r[MPW::MPW::PORT]   : @port
+				login  = @login.nil?  ? r[MPW::MPW::LOGIN]  : @login
 
-				passwd = r[MPW::PASSWORD]
+				passwd = r[MPW::MPW::PASSWORD]
 
 				if port.nil? || port.empty?
 					port = 22

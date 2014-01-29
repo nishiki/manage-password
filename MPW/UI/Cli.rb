@@ -10,9 +10,8 @@ require 'readline'
 require 'i18n'
 require 'yaml'
 
-require "#{APP_ROOT}/lib/MPW.rb"
-require "#{APP_ROOT}/lib/MPWConfig.rb"
-require "#{APP_ROOT}/lib/Sync.rb"
+require "#{APP_ROOT}/MPW/MPW"
+require "#{APP_ROOT}/MPW/Sync/MPW"
 
 class Cli
 
@@ -32,7 +31,7 @@ class Cli
 	# @rtnr: true if the synchro is finish
 	def sync()
 		if !defined?(@sync)
-			@sync = Sync.new()
+			@sync = MPW::Sync::MPW.new
 
 			if !@config.sync_host.nil? && !@config.sync_port.nil?
 				if !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
@@ -99,7 +98,7 @@ class Cli
 	# Request the GPG password and decrypt the file
 	def decrypt()
 		if !defined?(@mpw)
-			@mpw = MPW.new(@config.file_gpg, @config.key)
+			@mpw = MPW::MPW.new(@config.file_gpg, @config.key)
 		end
 
 		@passwd = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
@@ -132,30 +131,30 @@ class Cli
 	# @args: item -> an array with the item information
 	def displayFormat(item)
 		puts '--------------------'
-		puts "Id: #{item[MPW::ID]}"
-		puts "#{I18n.t('display.name')}: #{item[MPW::NAME]}"
-		puts "#{I18n.t('display.group')}: #{item[MPW::GROUP]}"
-		puts "#{I18n.t('display.server')}: #{item[MPW::SERVER]}"
-		puts "#{I18n.t('display.protocol')}: #{item[MPW::PROTOCOL]}"
-		puts "#{I18n.t('display.login')}: #{item[MPW::LOGIN]}"
-		puts "#{I18n.t('display.password')}: #{item[MPW::PASSWORD]}"
-		puts "#{I18n.t('display.port')}: #{item[MPW::PORT]}"
-		puts "#{I18n.t('display.comment')}: #{item[MPW::COMMENT]}"
+		puts "Id: #{item[MPW::MPW::ID]}"
+		puts "#{I18n.t('display.name')}: #{item[MPW::MPW::NAME]}"
+		puts "#{I18n.t('display.group')}: #{item[MPW::MPW::GROUP]}"
+		puts "#{I18n.t('display.server')}: #{item[MPW::MPW::SERVER]}"
+		puts "#{I18n.t('display.protocol')}: #{item[MPW::MPW::PROTOCOL]}"
+		puts "#{I18n.t('display.login')}: #{item[MPW::MPW::LOGIN]}"
+		puts "#{I18n.t('display.password')}: #{item[MPW::MPW::PASSWORD]}"
+		puts "#{I18n.t('display.port')}: #{item[MPW::MPW::PORT]}"
+		puts "#{I18n.t('display.comment')}: #{item[MPW::MPW::COMMENT]}"
 	end
 
 	# Display an item in the alternative format
 	# @args: item -> an array with the item information
 	def displayFormatAlt(item)
-		port = item[MPW::PORT].nil? ? '' : ":#{item[MPW::PORT]}"
+		port = item[MPW::MPW::PORT].nil? ? '' : ":#{item[MPW::MPW::PORT]}"
 
-		if item[MPW::PASSWORD].nil? || item[MPW::PASSWORD].empty?
-			if item[MPW::LOGIN].include('@')
-				puts "# #{item[MPW::ID]} #{item[MPW::PROTOCOL]}://#{item[MPW::LOGIN]}@#{item[MPW::SERVER]}#{port}"
+		if item[MPW::MPW::PASSWORD].nil? || item[MPW::MPW::PASSWORD].empty?
+			if item[MPW::MPW::LOGIN].include('@')
+				puts "# #{item[MPW::MPW::ID]} #{item[MPW::MPW::PROTOCOL]}://#{item[MPW::MPW::LOGIN]}@#{item[MPW::MPW::SERVER]}#{port}"
 			else
-				puts "# #{item[MPW::ID]} #{item[MPW::PROTOCOL]}://{#{item[MPW::LOGIN]}}@#{item[MPW::SERVER]}#{port}"
+				puts "# #{item[MPW::MPW::ID]} #{item[MPW::MPW::PROTOCOL]}://{#{item[MPW::MPW::LOGIN]}}@#{item[MPW::MPW::SERVER]}#{port}"
 			end
 		else
-			puts "# #{item[MPW::ID]} #{item[MPW::PROTOCOL]}://{#{item[MPW::LOGIN]}:#{item[MPW::PASSWORD]}}@#{item[MPW::SERVER]}#{port}"
+			puts "# #{item[MPW::MPW::ID]} #{item[MPW::MPW::PROTOCOL]}://{#{item[MPW::MPW::LOGIN]}:#{item[MPW::MPW::PASSWORD]}}@#{item[MPW::MPW::SERVER]}#{port}"
 		end
 	end
 
@@ -193,14 +192,14 @@ class Cli
 		if not row.empty?
 			puts I18n.t('form.update.title')
 			puts '--------------------'
-			name     = ask(I18n.t('form.update.name'    , :name => row[MPW::NAME])).to_s
-			group    = ask(I18n.t('form.update.group'   , :group => row[MPW::GROUP])).to_s
-			server   = ask(I18n.t('form.update.server'  , :server => row[MPW::SERVER])).to_s
-			protocol = ask(I18n.t('form.update.protocol', :protocol => row[MPW::PROTOCOL])).to_s
-			login    = ask(I18n.t('form.update.login'   , :login => row[MPW::LOGIN])).to_s
+			name     = ask(I18n.t('form.update.name'    , :name => row[MPW::MPW::NAME])).to_s
+			group    = ask(I18n.t('form.update.group'   , :group => row[MPW::MPW::GROUP])).to_s
+			server   = ask(I18n.t('form.update.server'  , :server => row[MPW::MPW::SERVER])).to_s
+			protocol = ask(I18n.t('form.update.protocol', :protocol => row[MPW::MPW::PROTOCOL])).to_s
+			login    = ask(I18n.t('form.update.login'   , :login => row[MPW::MPW::LOGIN])).to_s
 			passwd   = ask(I18n.t('form.update.password')).to_s
-			port     = ask(I18n.t('form.update.port'    , :port => row[MPW::PORT])).to_s
-			comment  = ask(I18n.t('form.update.comment' , :comment => row[MPW::COMMENT])).to_s
+			port     = ask(I18n.t('form.update.port'    , :port => row[MPW::MPW::PORT])).to_s
+			comment  = ask(I18n.t('form.update.comment' , :comment => row[MPW::MPW::COMMENT])).to_s
 				
 			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
 				if @mpw.encrypt()
