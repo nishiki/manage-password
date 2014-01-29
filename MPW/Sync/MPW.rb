@@ -35,14 +35,12 @@ module MPW
 				@password = password
 				@suffix   = suffix
 		
-				begin
-					@socket = TCPSocket.new(host, port)
-					@enable = true
-				rescue Exception => e
-					@error_msg = "#{I18n.t('error.sync.connection')}\n#{e}"
-					@enable    = false
-				end
-		
+				@socket = TCPSocket.new(host, port)
+				@enable = true
+			rescue Exception => e
+				@error_msg = "#{I18n.t('error.sync.connection')}\n#{e}"
+				@enable    = false
+			else
 				return @enable
 			end
 		
