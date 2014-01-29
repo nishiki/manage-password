@@ -88,9 +88,9 @@ class MPW
 		search = search.force_encoding('ASCII-8BIT')
 
 		@data.each do |row|
-			row[NAME].nil?    ? (name    = nil) : (name    = row[NAME].downcase)
-			row[SERVER].nil?  ? (server  = nil) : (server  = row[SERVER].downcase)
-			row[COMMENT].nil? ? (comment = nil) : (comment = row[COMMENT].downcase)
+			name    = row[NAME].nil?    ? nil : row[NAME].downcase
+			server  = row[SERVER].nil?  ? nil : row[SERVER].downcase
+			comment = row[COMMENT].nil? ? nil : row[COMMENT].downcase
 
 			if name =~ /^.*#{search}.*$/  || server =~ /^.*#{search}.*$/ || comment =~ /^.*#{search}.*$/ 
 				if (protocol.nil? || protocol.eql?(row[PROTOCOL])) && (group.nil? || group.eql?(row[GROUP]))
@@ -147,23 +147,23 @@ class MPW
 		row_update       = Array.new()
 		row_update[DATE] = Time.now.to_i
 
-		id.nil?	      || id.empty?       ? (row_update[ID]       = MPW.password(16)) : (row_update[ID]       = id)
-		name.nil?     || name.empty?     ? (row_update[NAME]     = row[NAME])        : (row_update[NAME]     = name)
-		group.nil?    || group.empty?    ? (row_update[GROUP]    = row[GROUP])       : (row_update[GROUP]    = group)
-		server.nil?   || server.empty?   ? (row_update[SERVER]   = row[SERVER])      : (row_update[SERVER]   = server)
-		protocol.nil? || protocol.empty? ? (row_update[PROTOCOL] = row[PROTOCOL])    : (row_update[PROTOCOL] = protocol)
-		login.nil?    || login.empty?    ? (row_update[LOGIN]    = row[LOGIN])       : (row_update[LOGIN]    = login)
-		passwd.nil?   || passwd.empty?   ? (row_update[PASSWORD] = row[PASSWORD])    : (row_update[PASSWORD] = passwd)
-		port.nil?     || port.empty?     ? (row_update[PORT]     = row[PORT])        : (row_update[PORT]     = port)
-		comment.nil?  || comment.empty?  ? (row_update[COMMENT]  = row[COMMENT])     : (row_update[COMMENT]  = comment)
+		row_update[ID]       = id.nil?       || id.empty?       ? MPW.password(16) : id
+		row_update[NAME]     = name.nil?     || name.empty?     ? row[NAME]        : name
+		row_update[GROUP]    = group.nil?    || group.empty?    ? row[GROUP]       : group
+		row_update[SERVER]   = server.nil?   || server.empty?   ? row[SERVER]      : server
+		row_update[PROTOCOL] = protocol.nil? || protocol.empty? ? row[PROTOCOL]    : protocol
+		row_update[LOGIN]    = login.nil?    || login.empty?    ? row[LOGIN]       : login
+		row_update[PASSWORD] = passwd.nil?   || passwd.empty?   ? row[PASSWORD]    : passwd
+		row_update[PORT]     = port.nil?     || port.empty?     ? row[PORT]        : port
+		row_update[COMMENT]  = comment.nil?  || comment.empty?  ? row[COMMENT]     : comment
 		
-		row_update[NAME].nil?     ? (row_update[NAME]     = row_update[NAME])     : (row_update[NAME]     = row_update[NAME].force_encoding('ASCII-8BIT'))
-		row_update[GROUP].nil?    ? (row_update[GROUP]    = row_update[GROUP])    : (row_update[GROUP]    = row_update[GROUP].force_encoding('ASCII-8BIT'))
-		row_update[SERVER].nil?   ? (row_update[SERVER]   = row_update[SERVER])   : (row_update[SERVER]   = row_update[SERVER].force_encoding('ASCII-8BIT'))
-		row_update[PROTOCOL].nil? ? (row_update[PROTOCOL] = row_update[PROTOCOL]) : (row_update[PROTOCOL] = row_update[PROTOCOL].force_encoding('ASCII-8BIT'))
-		row_update[LOGIN].nil?    ? (row_update[LOGIN]    = row_update[LOGIN])    : (row_update[LOGIN]    = row_update[LOGIN].force_encoding('ASCII-8BIT'))
-		row_update[PASSWORD].nil? ? (row_update[PASSWORD] = row_update[PASSWORD]) : (row_update[PASSWORD] = row_update[PASSWORD].force_encoding('ASCII-8BIT'))
-		row_update[COMMENT].nil?  ? (row_update[COMMENT]  = row_update[COMMENT])  : (row_update[COMMENT]  = row_update[COMMENT].force_encoding('ASCII-8BIT'))
+		row_update[] = row_update[NAME].nil?     ? nil : row_update[NAME].force_encoding('ASCII-8BIT')
+		row_update[] = row_update[GROUP].nil?    ? nil : row_update[GROUP].force_encoding('ASCII-8BIT')
+		row_update[] = row_update[SERVER].nil?   ? nil : row_update[SERVER].force_encoding('ASCII-8BIT')
+		row_update[] = row_update[PROTOCOL].nil? ? nil : row_update[PROTOCOL].force_encoding('ASCII-8BIT')
+		row_update[] = row_update[LOGIN].nil?    ? nil : row_update[LOGIN].force_encoding('ASCII-8BIT')
+		row_update[] = row_update[PASSWORD].nil? ? nil : row_update[PASSWORD].force_encoding('ASCII-8BIT')
+		row_update[] = row_update[COMMENT].nil?  ? nil : row_update[COMMENT].force_encoding('ASCII-8BIT')
 
 		if row_update[NAME].nil? || row_update[NAME].empty?
 			@error_msg = I18n.t('error.update.name_empty')
