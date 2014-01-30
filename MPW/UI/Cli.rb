@@ -23,39 +23,44 @@ class Cli
 	end
 
 	# Close sync
-	def sync_close()
-		@sync.close()
+	def sync_close
+		@sync.close
 	end
 
 	# Sync the data with the server
 	# @rtnr: true if the synchro is finish
-	def sync()
+	def sync
 		if !defined?(@sync)
-			@sync = MPW::Sync::MPW.new
-
-			if !@config.sync_host.nil? && !@config.sync_port.nil?
-				if !@sync.connect(@config.sync_host, @config.sync_port, @config.key, @config.sync_pwd, @config.sync_suffix)
-					puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
-				end
+			case @config.sync_type
+			when 'mpw'
+				@sync = MPW::Sync::MPWSync.new
+			when 'sftp', 'scp', 'ssh'
+				@sync = MPW::Sync::SSH.new
+			else
+				return false
 			end
 		end
 		
-		begin
-			if @sync.enable
-				if !@mpw.sync(@sync.get(@passwd), @config.last_update)
-					puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
-				elsif !@sync.update(File.open(@config.file_gpg).read)
-					puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
-				elsif !@config.set_last_update()
-					puts "#{I18n.t('display.error')}: #{@config.error_msg}"
-				else
-					return true
-				end
+		if !@config.sync_host.nil? && !@config.sync_port.nil?
+			if !@sync.connect(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
+				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
 			end
-		rescue Exception => e
-			puts "#{I18n.t('display.error')}: #{e}"
 		end
 
+		if @sync.enable
+			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
+				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
+			elsif !@sync.update(File.open(@config.file_gpg).read)
+				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
+			elsif !@config.set_last_update
+				puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+			else
+				return true
+			end
+		end
+	rescue Exception => e
+		puts "#{I18n.t('display.error')}: #{e}"
+	else
 		return false
 	end
 
@@ -96,7 +101,7 @@ class Cli
 	end
 
 	# Request the GPG password and decrypt the file
-	def decrypt()
+	def decrypt
 		if !defined?(@mpw)
 			@mpw = MPW::MPW.new(@config.file_gpg, @config.key)
 		end

@@ -41,7 +41,6 @@ module MPW
 				@error_msg = "#{I18n.t('error.sync.connection')}\n#{e}"
 				@enable    = false
 			else
-		
 				return @enable
 			end
 		
@@ -53,7 +52,7 @@ module MPW
 					return nil
 				end
 				
-				tmp_file = "/tmp/mpw-#{MPW.password()}.gpg"
+				tmp_file = tmpfile
 				Net::SCP.start(@host, @user, :password => @password, :port => @port) do |ssh|
 					ssh.scp.download(@path, tmp_file)
 				end
@@ -62,15 +61,14 @@ module MPW
 					file << msg['data']
 				end
 					
-				@mpw = MPW.new(tmp_file)
-				if !@mpw.decrypt(gpg_password)
-					puts @mpw.error_msg
+				mpw = MPW.new(tmp_file)
+				if !mpw.decrypt(gpg_password)
+					@error_msg = mpw.error_msg
 					return nil
 				end
 		
 				File.unlink(tmp_file)
-
-				return @mpw.search()
+				return mpw.search
 			rescue Exception => e
 				@error_msg = "#{I18n.t('error.sync.download')}\n#{e}"
 				return nil
@@ -84,7 +82,7 @@ module MPW
 					return true
 				end
 		
-				tmp_file = "/tmp/mpw-#{MPW.password()}.gpg"
+				tmp_file = tmpfile
 				Net::SCP.start(@host, @user, :password => @password, :port => @port) do |ssh|
 					ssh.scp.upload(tmp_file, @path)
 				end
@@ -100,6 +98,16 @@ module MPW
 			# Close the connection
 			def close
 			end
+
+			# Generate a random string
+			# @rtrn: a random string
+			def tmpfile
+				result = ''
+				result << ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(6).join
+		
+				return "/tmp/mpw-#{result}"
+			end
+	
 		end
 
 	end

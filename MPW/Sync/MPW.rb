@@ -12,7 +12,7 @@ module MPW
 		require 'socket'
 		require 'json'
 		
-		class MPW
+		class MPWSync
 		
 			attr_accessor :error_msg
 			attr_accessor :enable
@@ -30,12 +30,12 @@ module MPW
 			#        password -> the remote password
 			#        suffix -> the suffix file
 			# @rtrn: false if the connection fail
-			def connect(host, port, gpg_key, password, suffix=nil)
-				@gpg_key  = gpg_key
+			def connect(host, user, password, path, port=nil)
+				@gpg_key  = user
 				@password = password
-				@suffix   = suffix
+				@suffix   = path
 		
-				@socket = TCPSocket.new(host, port)
+				@socket = TCPSocket.new(host, port.to_i)
 				@enable = true
 			rescue Exception => e
 				@error_msg = "#{I18n.t('error.sync.connection')}\n#{e}"
@@ -64,24 +64,23 @@ module MPW
 					@error_msg = I18n.t('error.sync.communication')
 					return nil
 				elsif msg['error'].nil?
-					tmp_file = "/tmp/mpw-#{MPW.password()}.gpg"
+					tmp_file = tmpfile
 					File.open(tmp_file, 'w') do |file|
 						file << msg['data']
 					end
 					
-					@mpw = MPW.new(tmp_file)
-					if !@mpw.decrypt(gpg_password)
-						puts @mpw.error_msg
+					mpw = MPW.new(tmp_file)
+					if !mpw.decrypt(gpg_password)
+						@error_msg = mpw.error_msg
 						return nil
 					end
-		
+					
 					File.unlink(tmp_file)
-					return @mpw.search()
+					return mpw.search
 				else
 					@error_msg = I18n.t(msg['error'])
 					return nil
 				end
-		
 			end
 		
 			# Update the remote data
@@ -121,6 +120,16 @@ module MPW
 				send_msg = {:action => 'close'}
 				@socket.puts send_msg.to_json
 			end
+
+			# Generate a random string
+			# @rtrn: a random string
+			def tmpfile
+				result = ''
+				result << ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(6).join
+		
+				return "/tmp/mpw-#{result}"
+			end
+	
 		end
 
 	end

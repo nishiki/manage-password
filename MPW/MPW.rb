@@ -36,45 +36,41 @@ module MPW
 		# @args: password -> the GPG key password
 		# @rtrn: true if data has been decrypted
 		def decrypt(passwd=nil)
-			@data = Array.new
+			@data = []
 	
-			begin
-				if File.exist?(@file_gpg)
-					crypto = GPGME::Crypto.new(:armor => true)
-					data_decrypt = crypto.decrypt(IO.read(@file_gpg), :password => passwd).read
+			if File.exist?(@file_gpg)
+				crypto = GPGME::Crypto.new(:armor => true)
+				data_decrypt = crypto.decrypt(IO.read(@file_gpg), :password => passwd).read
 	
-					data_decrypt.lines do |line|
-						@data.push(line.parse_csv)
-					end
+				data_decrypt.lines do |line|
+					@data.push(line.parse_csv)
 				end
-	
-				return true
-			rescue Exception => e 
-				@error_msg = "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
-				return false
 			end
+	
+			return true
+		rescue Exception => e 
+			@error_msg = "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
+			return false
 		end
 	
 		# Encrypt a file
 		# @rtrn: true if the file has been encrypted
-		def encrypt()
-			begin
-				crypto = GPGME::Crypto.new(:armor => true)
-				file_gpg = File.open(@file_gpg, 'w+')
+		def encrypt
+			crypto = GPGME::Crypto.new(:armor => true)
+			file_gpg = File.open(@file_gpg, 'w+')
 	
-				data_to_encrypt = ''
-				@data.each do |row|
-					data_to_encrypt << row.to_csv
-				end
-	
-				crypto.encrypt(data_to_encrypt, :recipients => @key, :output => file_gpg)
-				file_gpg.close
-	
-				return true
-			rescue Exception => e 
-				@error_msg = "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
-				return false
+			data_to_encrypt = ''
+			@data.each do |row|
+				data_to_encrypt << row.to_csv
 			end
+	
+			crypto.encrypt(data_to_encrypt, :recipients => @key, :output => file_gpg)
+			file_gpg.close
+	
+			return true
+		rescue Exception => e 
+			@error_msg = "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
+			return false
 		end
 		
 		# Search in some csv data
@@ -159,13 +155,13 @@ module MPW
 			row_update[PORT]     = port.nil?     || port.empty?     ? row[PORT]        : port
 			row_update[COMMENT]  = comment.nil?  || comment.empty?  ? row[COMMENT]     : comment
 			
-			row_update[] = row_update[NAME].nil?     ? nil : row_update[NAME].force_encoding('ASCII-8BIT')
-			row_update[] = row_update[GROUP].nil?    ? nil : row_update[GROUP].force_encoding('ASCII-8BIT')
-			row_update[] = row_update[SERVER].nil?   ? nil : row_update[SERVER].force_encoding('ASCII-8BIT')
-			row_update[] = row_update[PROTOCOL].nil? ? nil : row_update[PROTOCOL].force_encoding('ASCII-8BIT')
-			row_update[] = row_update[LOGIN].nil?    ? nil : row_update[LOGIN].force_encoding('ASCII-8BIT')
-			row_update[] = row_update[PASSWORD].nil? ? nil : row_update[PASSWORD].force_encoding('ASCII-8BIT')
-			row_update[] = row_update[COMMENT].nil?  ? nil : row_update[COMMENT].force_encoding('ASCII-8BIT')
+			row_update[NAME]     = row_update[NAME].nil?     ? nil : row_update[NAME].force_encoding('ASCII-8BIT')
+			row_update[GROUP]    = row_update[GROUP].nil?    ? nil : row_update[GROUP].force_encoding('ASCII-8BIT')
+			row_update[SERVER]   = row_update[SERVER].nil?   ? nil : row_update[SERVER].force_encoding('ASCII-8BIT')
+			row_update[PROTOCOL] = row_update[PROTOCOL].nil? ? nil : row_update[PROTOCOL].force_encoding('ASCII-8BIT')
+			row_update[LOGIN]    = row_update[LOGIN].nil?    ? nil : row_update[LOGIN].force_encoding('ASCII-8BIT')
+			row_update[PASSWORD] = row_update[PASSWORD].nil? ? nil : row_update[PASSWORD].force_encoding('ASCII-8BIT')
+			row_update[COMMENT]  = row_update[COMMENT].nil?  ? nil : row_update[COMMENT].force_encoding('ASCII-8BIT')
 	
 			if row_update[NAME].nil? || row_update[NAME].empty?
 				@error_msg = I18n.t('error.update.name_empty')
@@ -202,71 +198,65 @@ module MPW
 		# @args: file -> a string to match
 		# @rtrn: true if export work
 		def export(file)
-			begin
-				File.open(file, 'w+') do |file|
-					@data.each do |row|
-						row.delete_at(ID).delete_at(DATE)
-						file << row.to_csv
-					end
+			File.open(file, 'w+') do |file|
+				@data.each do |row|
+					row.delete_at(ID).delete_at(DATE)
+					file << row.to_csv
 				end
-	
-				return true
-			rescue Exception => e 
-				@error_msg = "#{I18n.t('error.export.write', :file => file)}\n#{e}"
-				return false
 			end
+	
+			return true
+		rescue Exception => e 
+			@error_msg = "#{I18n.t('error.export.write', :file => file)}\n#{e}"
+			return false
 		end
 	
 		# Import to csv
 		# @args: file -> path to file import
 		# @rtrn: true if the import work
 		def import(file)
-			begin
-				data_new = IO.read(file)
-				data_new.lines do |line|
-					if not line =~ /(.*,){6}/
-						@error_msg = I18n.t('error.import.bad_format')
+			data_new = IO.read(file)
+			data_new.lines do |line|
+				if not line =~ /(.*,){6}/
+					@error_msg = I18n.t('error.import.bad_format')
+					return false
+				else
+					row = line.parse_csv.unshift(0)
+					if not update(row[NAME], row[GROUP], row[SERVER], row[PROTOCOL], row[LOGIN], row[PASSWORD], row[PORT], row[COMMENT])
 						return false
-					else
-						row = line.parse_csv.unshift(0)
-						if not update(row[NAME], row[GROUP], row[SERVER], row[PROTOCOL], row[LOGIN], row[PASSWORD], row[PORT], row[COMMENT])
-							return false
-						end
 					end
 				end
-	
-				return true
-			rescue Exception => e 
-				@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
-				return false
 			end
+	
+			return true
+		rescue Exception => e 
+			@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
+			return false
 		end
 	
 		# Return a preview import 
 		# @args: file -> path to file import
 		# @rtrn: an array with the items to import, if there is an error return false
 		def import_preview(file)
-			begin
-				result = Array.new()
-				id = 0
-	
-				data = IO.read(file)
-				data.lines do |line|
-					if not line =~ /(.*,){6}/
-						@error_msg = I18n.t('error.import.bad_format')
-						return false
-					else
-						result.push(line.parse_csv.unshift(id))
-					end
-	
-					id += 1
+			result = Array.new()
+			id = 0
+
+			data = IO.read(file)
+			data.lines do |line|
+				if not line =~ /(.*,){6}/
+					@error_msg = I18n.t('error.import.bad_format')
+					return false
+				else
+					result.push(line.parse_csv.unshift(id))
 				end
-	
-				return result
-			rescue Exception => e 
-				@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
-				return false
+
+				id += 1
 			end
+
+			return result
+		rescue Exception => e 
+			@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
+			return false
 		end
 	
 		# Sync remote data and local data
@@ -308,7 +298,7 @@ module MPW
 				end
 			end
 	
-			return encrypt()
+			return encrypt
 		end
 	
 		# Generate a random password
