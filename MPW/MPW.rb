@@ -78,7 +78,7 @@ module MPW
 		#        protocol -> the connection protocol (ssh, web, other)
 		# @rtrn: a list with the resultat of the search
 		def search(search='', group=nil, protocol=nil)
-			result = Array.new()
+			result = []
 	
 			if !search.nil?
 				search = search.downcase
@@ -110,7 +110,7 @@ module MPW
 				end
 			end
 	
-			return Array.new()
+			return []
 		end
 	
 		# Update an item
@@ -125,7 +125,7 @@ module MPW
 		#        comment -> a comment
 		# @rtrn: true if the item has been updated
 		def update(name, group, server, protocol, login, passwd, port, comment, id=nil)
-			row    = Array.new()
+			row    = []
 			update = false
 	
 			i  = 0
@@ -142,7 +142,7 @@ module MPW
 				port = nil
 			end
 	
-			row_update       = Array.new()
+			row_update       = []
 			row_update[DATE] = Time.now.to_i
 	
 			row_update[ID]       = id.nil?       || id.empty?       ? MPW.password(16) : id
@@ -238,7 +238,7 @@ module MPW
 		# @args: file -> path to file import
 		# @rtrn: an array with the items to import, if there is an error return false
 		def import_preview(file)
-			result = Array.new()
+			result = []
 			id = 0
 
 			data = IO.read(file)

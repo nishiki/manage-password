@@ -165,7 +165,7 @@ class Cli
 
 	# Form to add a new item
 	def add()
-		row = Array.new()
+		row = []
 		puts I18n.t('form.add.title')
 		puts '--------------------'
 		name     = ask(I18n.t('form.add.name')).to_s
