@@ -135,11 +135,13 @@ else
 	begin
 		cli.interactive()
 	rescue SystemExit, Interrupt
+		cli.sync_close()
 		cli = nil
 		return 1
 	end
 end
 
 cli.sync_close()
+cli = nil
 
 exit 0

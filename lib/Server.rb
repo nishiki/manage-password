@@ -17,13 +17,8 @@ class Server
 
 	# Start the server
 	def start()
-		begin
-			server = TCPServer.open(@host, @port)
-			@log.info("The server is started on #{@host}:#{@port}")
-		rescue Exception => e
-			@log.error("Impossible to start the server: #{e}")
-			exit 2
-		end
+		server = TCPServer.open(@host, @port)
+		@log.info("The server is started on #{@host}:#{@port}")
 
 		loop do
 			Thread.start(server.accept) do |client|
@@ -68,6 +63,10 @@ class Server
 				end
 			end
 		end
+
+	rescue Exception => e
+		@log.error("Impossible to start the server: #{e}")
+		exit 2
 	end
 
 	# Get a gpg file
@@ -228,13 +227,11 @@ class Server
 	# @args: client -> client connection
 	# @rtrn: array of the json string, or false if isn't json message
 	def get_client_msg(client)
-		begin
-			msg = client.gets
-			return JSON.parse(msg)
-		rescue
-			closeConnection(client)
-			return false
-		end
+		msg = client.gets
+		return JSON.parse(msg)
+	rescue
+		closeConnection(client)
+		return false
 	end
 
 	# Close the client connection
@@ -248,46 +245,43 @@ class Server
 	# @args: file_config -> the configuration file
 	# @rtrn: true if the config file is correct
 	def checkconfig(file_config)
-		begin
-			config    = YAML::load_file(file_config)
-			@host     = config['config']['host']
-			@port     = config['config']['port'].to_i
-			@data_dir = config['config']['data_dir']
-			@log_file = config['config']['log_file']
-			@timeout  = config['config']['timeout'].to_i
+		config    = YAML::load_file(file_config)
+		@host     = config['config']['host']
+		@port     = config['config']['port'].to_i
+		@data_dir = config['config']['data_dir']
+		@log_file = config['config']['log_file']
+		@timeout  = config['config']['timeout'].to_i
 
-			if @host.empty? || @port <= 0 || @data_dir.empty? 
-				puts I18n.t('checkconfig.fail')
-				puts I18n.t('checkconfig.empty')
-				return false
-			end
-
-			if !Dir.exist?(@data_dir)
-				puts I18n.t('checkconfig.fail')
-				puts I18n.t('checkconfig.datadir')
-				return false
-			end
-
-			if @log_file.nil? || @log_file.empty?
-				puts I18n.t('checkconfig.fail')
-				puts I18n.t('checkconfig.log_file_empty')
-				return false
-			else
-				begin
-					@log = Logger.new(@log_file)
-				rescue
-					puts I18n.t('checkconfig.fail')
-					puts I18n.t('checkconfig.log_file_create')
-					return false
-				end
-			end
-
-		rescue Exception => e 
-			puts "#{I18n.t('checkconfig.fail')}\n#{e}"
+		if @host.empty? || @port <= 0 || @data_dir.empty? 
+			puts I18n.t('checkconfig.fail')
+			puts I18n.t('checkconfig.empty')
 			return false
 		end
 
+		if !Dir.exist?(@data_dir)
+			puts I18n.t('checkconfig.fail')
+			puts I18n.t('checkconfig.datadir')
+			return false
+		end
+
+		if @log_file.nil? || @log_file.empty?
+			puts I18n.t('checkconfig.fail')
+			puts I18n.t('checkconfig.log_file_empty')
+			return false
+		else
+			begin
+				@log = Logger.new(@log_file)
+			rescue
+				puts I18n.t('checkconfig.fail')
+				puts I18n.t('checkconfig.log_file_create')
+				return false
+			end
+		end
+
 		return true
+	rescue Exception => e 
+		puts "#{I18n.t('checkconfig.fail')}\n#{e}"
+		return false
 	end
 
 	# Create a new config file
@@ -308,16 +302,14 @@ class Server
 		                       'log_file' => log_file,
 		                       'timeout'  => timeout}}
 
-		begin
-			File.open(file_config, 'w') do |file|
-				file << config.to_yaml
-			end
-		rescue Exception => e 
-			puts "#{I18n.t('form.setup.not_valid')}\n#{e}"
-			return false
+		File.open(file_config, 'w') do |file|
+			file << config.to_yaml
 		end
-
+			
 		return true
+	rescue Exception => e 
+		puts "#{I18n.t('form.setup.not_valid')}\n#{e}"
+		return false
 	end
 
 	# Generate a random salt
