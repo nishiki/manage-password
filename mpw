@@ -13,12 +13,24 @@ APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
 require "#{APP_ROOT}/MPW/UI/Cli"
 require "#{APP_ROOT}/MPW/Config"
 
+# --------------------------------------------------------- #
+# Set local
+# --------------------------------------------------------- #
+
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
+
+if defined? I18n.enforce_available_locales
+	I18n.enforce_available_locales = true
+end
 
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
 I18n.load_path = Dir["#{APP_ROOT}/i18n/cli/*.yml"]
 I18n.default_locale = :en
 I18n.locale = lang.to_sym
+
+# --------------------------------------------------------- #
+# Options
+# --------------------------------------------------------- #
 
 options = {}
 options[:force]  = false
@@ -92,6 +104,10 @@ OptionParser.new do |opts|
 		exit 0
 	end
 end.parse!
+
+# --------------------------------------------------------- #
+# Main
+# --------------------------------------------------------- #
 
 config      = MPW::Config.new(options[:config])
 check_error = config.checkconfig()

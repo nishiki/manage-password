@@ -12,12 +12,24 @@ require 'i18n'
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
 require "#{APP_ROOT}/lib/Server.rb"
 
+# --------------------------------------------------------- #
+# Set local
+# --------------------------------------------------------- #
+
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
+
+if defined? I18n.enforce_available_locales
+	I18n.enforce_available_locales = true
+end
 
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
 I18n.load_path = Dir["#{APP_ROOT}/i18n/server/*.yml"]
 I18n.default_locale = :en
 I18n.locale = lang.to_sym
+
+# --------------------------------------------------------- #
+# Options
+# --------------------------------------------------------- #
 
 options = {}
 OptionParser.new do |opts|
@@ -41,6 +53,10 @@ OptionParser.new do |opts|
 	end
 end.parse!
 
+# --------------------------------------------------------- #
+# Main
+# --------------------------------------------------------- #
+
 if options[:config].nil? || options[:config].empty?
 	puts "#{I18n.t('option.usage')}: mpw-server -c CONFIG [options]"
 	exit 2
@@ -54,8 +70,9 @@ elsif options[:setup]
 	server.setup(options[:config])
 else
 	if server.checkconfig(options[:config])
-		server.start()
+		server.start
 	end
 end
 
+server = nil
 exit 0
