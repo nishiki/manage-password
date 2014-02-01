@@ -12,6 +12,7 @@ require 'yaml'
 
 require "#{APP_ROOT}/MPW/MPW"
 require "#{APP_ROOT}/MPW/Sync/MPW"
+require "#{APP_ROOT}/MPW/Sync/SSH"
 
 class Cli
 
@@ -50,7 +51,9 @@ class Cli
 		if @sync.enable
 			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
 				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
-			elsif !@sync.update(File.open(@config.file_gpg).read)
+			end
+
+			if !@sync.update(File.open(@config.file_gpg).read)
 				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
 			elsif !@config.set_last_update
 				puts "#{I18n.t('display.error')}: #{@config.error_msg}"
@@ -60,6 +63,9 @@ class Cli
 		end
 	rescue Exception => e
 		puts "#{I18n.t('display.error')}: #{e}"
+		puts @sync.error_msg
+		puts @config.error_msg
+		puts @mpw.error_msg
 	else
 		return false
 	end
@@ -73,19 +79,23 @@ class Cli
 		key         = ask(I18n.t('form.setup.gpg_key')).to_s
 		file_gpg    = ask(I18n.t('form.setup.gpg_file', :home => Dir.home())).to_s
 		timeout_pwd = ask(I18n.t('form.setup.timeout')).to_s
+		sync_type   = ask(I18n.t('form.setup.sync_type')).to_s
 		sync_host   = ask(I18n.t('form.setup.sync_host')).to_s
 		sync_port   = ask(I18n.t('form.setup.sync_port')).to_s
+		sync_user   = ask(I18n.t('form.setup.sync_user')).to_s
 		sync_pwd    = ask(I18n.t('form.setup.sync_pwd')).to_s
 		sync_path   = ask(I18n.t('form.setup.sync_path')).to_s
 		
 		I18n.locale = language.to_sym
 
+		sync_type = sync_type.empty? ? nil : sync_type
 		sync_host = sync_host.empty? ? nil : sync_host
 		sync_port = sync_port.empty? ? nil : sync_port.to_i
+		sync_user = sync_user.empty? ? nil : sync_user
 		sync_pwd  = sync_pwd.empty?  ? nil : sync_pwd
 		sync_path = sync_path.empty? ? nil : sync_path
 
-		if @config.setup(key, language, file_gpg, timeout_pwd, sync_host, sync_port, sync_pwd, sync_path)
+		if @config.setup(key, language, file_gpg, timeout_pwd, sync_type, sync_host, sync_port, sync_user, sync_pwd, sync_path)
 			puts I18n.t('form.setup.valid')
 		else
 			puts "#{I18n.t('display.error')}: #{@config.error_msg}"

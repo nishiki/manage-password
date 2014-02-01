@@ -9,8 +9,10 @@ module MPW
 
 		require 'rubygems'
 		require 'i18n'
+		require 'net/ssh'
+		require 'net/scp'
 		
-		class MPW
+		class SSH
 		
 			attr_accessor :error_msg
 			attr_accessor :enable
@@ -33,11 +35,12 @@ module MPW
 				@user     = user
 				@password = password
 				@path     = path
-				@port     = port.nil? || port.empty? ? 22 : port.to_i
+				@port     = port.instance_of?(Integer) ? 22 : port
 					
 				Net::SSH.start(@host, @user, :password => @password, :port => @port) do
+					@enable = true
 				end
-			rescue
+			rescue Exception => e
 				@error_msg = "#{I18n.t('error.sync.connection')}\n#{e}"
 				@enable    = false
 			else
@@ -53,14 +56,10 @@ module MPW
 				end
 				
 				tmp_file = tmpfile
-				Net::SCP.start(@host, @user, :password => @password, :port => @port) do |ssh|
-					ssh.scp.download(@path, tmp_file)
+				Net::SCP.start(@host, @user, :password => @password, :port => @port) do |scp|
+					scp.download!(@path, tmp_file)
 				end
 			
-				File.open(tmp_file, 'w') do |file|
-					file << msg['data']
-				end
-					
 				mpw = MPW.new(tmp_file)
 				if !mpw.decrypt(gpg_password)
 					@error_msg = mpw.error_msg
@@ -83,8 +82,12 @@ module MPW
 				end
 		
 				tmp_file = tmpfile
-				Net::SCP.start(@host, @user, :password => @password, :port => @port) do |ssh|
-					ssh.scp.upload(tmp_file, @path)
+				File.open(tmp_file, "w") do |file|
+					file << data
+				end
+
+				Net::SCP.start(@host, @user, :password => @password, :port => @port) do |scp|
+					scp.upload!(tmp_file, @path)
 				end
 
 				File.unlink(tmp_file)
