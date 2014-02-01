@@ -1,7 +1,7 @@
 # Manage your passwords!
 
 MPW is a little software which stores your passwords in an GPG encrypted file.
-MPW can sync your password with a MPW Server.
+MPW can synchronize your password with a MPW Server or via SSH.
 
 # Installation
 
@@ -12,5 +12,9 @@ This program work with ruby >= 1.9
 
 * apt-get install ruby ruby-gpgme ruby-highline ruby-i18n ruby-locale
 
+If you want to synchronize your password via SSH/SCP:
+* apt-get install ruby-ssh ruby-scp
+
 For mpw-ssh:
 * apt-get install sshpass
+
