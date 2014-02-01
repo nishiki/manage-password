@@ -76,19 +76,16 @@ class Cli
 		sync_host   = ask(I18n.t('form.setup.sync_host')).to_s
 		sync_port   = ask(I18n.t('form.setup.sync_port')).to_s
 		sync_pwd    = ask(I18n.t('form.setup.sync_pwd')).to_s
-		sync_suffix = ask(I18n.t('form.setup.sync_suffix')).to_s
+		sync_path   = ask(I18n.t('form.setup.sync_path')).to_s
 		
-		if !File.exist?("#{APP_ROOT}/i18n/#{language}.yml")
-			language= 'en'
-		end
 		I18n.locale = language.to_sym
 
-		sync_host   = sync_host.empty?   ? nil : sync_host
-		sync_port   = sync_port.empty?   ? nil : sync_port.to_i
-		sync_pwd    = sync_pwd.empty?    ? nil : sync_pwd
-		sync_suffix = sync_suffix.empty? ? nil : sync_suffix
+		sync_host = sync_host.empty? ? nil : sync_host
+		sync_port = sync_port.empty? ? nil : sync_port.to_i
+		sync_pwd  = sync_pwd.empty?  ? nil : sync_pwd
+		sync_path = sync_path.empty? ? nil : sync_path
 
-		if @config.setup(key, language, file_gpg, timeout_pwd, sync_host, sync_port, sync_pwd, sync_suffix)
+		if @config.setup(key, language, file_gpg, timeout_pwd, sync_host, sync_port, sync_pwd, sync_path)
 			puts I18n.t('form.setup.valid')
 		else
 			puts "#{I18n.t('display.error')}: #{@config.error_msg}"
