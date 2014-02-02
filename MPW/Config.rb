@@ -14,6 +14,7 @@ module MPW
 		attr_accessor :error_msg
 	
 		attr_accessor :key
+		attr_accessor :share_keys
 		attr_accessor :lang
 		attr_accessor :file_gpg
 		attr_accessor :timeout_pwd
@@ -39,6 +40,7 @@ module MPW
 	
 		# Create a new config file
 		# @args: key -> the gpg key to encrypt
+		#        share_keys -> multiple keys to share the password with other people
 		#        lang -> the software language
 		#        file_gpg -> the file who is encrypted
 		#        timeout_pwd -> time to save the password
@@ -49,11 +51,20 @@ module MPW
 		#        sync_pwd -> the password for synchronization
 		#        sync_suffix -> the suffix file (optionnal) 
 		# @rtrn: true if le config file is create
-		def setup(key, lang, file_gpg, timeout_pwd, sync_type=nil, sync_host=nil, sync_port=nil, sync_user=nil, sync_pwd=nil, sync_path=nil)
+		def setup(key, share_keys, lang, file_gpg, timeout_pwd, sync_type, sync_host, sync_port, sync_user, sync_pwd, sync_path)
 	
 			if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 				@error_msg = I18n.t('error.config.key_bad_format')
 				return false
+			end
+
+			if !share_keys.nil? && !share_keys.empty?
+				share_keys.split.each do |k|
+					if not k =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
+						@error_msg = I18n.t('error.config.key_bad_format')
+						return false
+					end
+				end
 			end
 			
 			if file_gpg.empty?
@@ -63,6 +74,7 @@ module MPW
 			timeout_pwd = timeout_pwd.empty? ? 60 : timeout_pwd.to_i
 	
 			config = {'config' => {'key'         => key,
+			                       'share_keys'  => share_keys,
 			                       'lang'        => lang,
 			                       'file_gpg'    => file_gpg,
 			                       'timeout_pwd' => timeout_pwd,
@@ -89,6 +101,7 @@ module MPW
 		def checkconfig
 			config = YAML::load_file(@file_config)
 			@key         = config['config']['key']
+			@share_keys  = config['config']['share_keys']
 			@lang        = config['config']['lang']
 			@file_gpg    = config['config']['file_gpg']
 			@timeout_pwd = config['config']['timeout_pwd'].to_i
@@ -117,6 +130,7 @@ module MPW
 		# @rtrn: true is the file has been updated
 		def set_last_update
 			config = {'config' => {'key'         => @key,
+			                       'share_keys'  => @share_keys,
 			                       'lang'        => @lang,
 			                       'file_gpg'    => @file_gpg,
 			                       'timeout_pwd' => @timeout_pwd,

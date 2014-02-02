@@ -67,6 +67,7 @@ fr:
       title: "Création d'un nouveau fichier de configuration"
       lang: "Choisissez votre langue (en, fr, ...) [défaut=%{lang}]: "
       gpg_key: "Entrez la clé GPG: " 
+      share_gpg_key: "Entrez les clés GPG avec qui vous voulez partager les mots de passe: " 
       gpg_file: "Entrez le chemin du fichier qui sera chiffré [défaut=%{home}/.mpw.gpg]: "
       timeout: "Entrez le temps (en seconde) du mot de passe GPG [défaut=60]: "
       sync_type: "Type de synchronisation (mpw, ssh, ftp, or nil): "
