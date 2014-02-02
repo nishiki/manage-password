@@ -63,7 +63,7 @@ end.parse!
 # --------------------------------------------------------- #
 
 config      = MPW::Config.new(options[:config])
-check_error = config.checkconfig()
+check_error = config.checkconfig
 
 cli         = CliSSH.new(lang, config)
 cli.login   = options[:login]
@@ -80,11 +80,11 @@ elsif ARGV.length < 1
 	puts "#{I18n.t('ssh.option.usage')}: mpw-ssh SEARCH [options]"
 	exit 2
 else
-	cli.decrypt()
-	cli.sync()
+	cli.decrypt
+	cli.sync
 	cli.ssh(search)
 end
 
-cli.sync_close()
+cli = nil
 
 exit 0

@@ -97,10 +97,6 @@ module MPW
 				@error_msg = "#{I18n.t('error.sync.upload')}\n#{e}"
 				return false
 			end
-		
-			# Close the connection
-			def close
-			end
 
 			# Generate a random string
 			# @rtrn: a random string

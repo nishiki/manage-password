@@ -30,7 +30,7 @@ module MPW
 		# @args: file_config -> the specify config file
 		def initialize(file_config=nil)
 			@error_msg   = nil
-			@file_config = "#{Dir.home()}/.mpw.cfg"
+			@file_config = "#{Dir.home}/.mpw.cfg"
 	
 			if !file_config.nil? && !file_config.empty?
 				@file_config = file_config
@@ -57,7 +57,7 @@ module MPW
 			end
 			
 			if file_gpg.empty?
-				file_gpg = "#{Dir.home()}/.mpw.gpg"
+				file_gpg = "#{Dir.home}/.mpw.gpg"
 			end
 	
 			timeout_pwd = timeout_pwd.empty? ? 60 : timeout_pwd.to_i
@@ -86,7 +86,7 @@ module MPW
 	
 		# Check the config file
 		# @rtrn: true if the config file is correct
-		def checkconfig()
+		def checkconfig
 			config = YAML::load_file(@file_config)
 			@key         = config['config']['key']
 			@lang        = config['config']['lang']

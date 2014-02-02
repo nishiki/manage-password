@@ -11,12 +11,12 @@ class Server
 	attr_accessor :error_msg
 
 	# Constructor
-	def initialize()
+	def initialize
 		YAML::ENGINE.yamler='syck'
 	end
 
 	# Start the server
-	def start()
+	def start
 		server = TCPServer.open(@host, @port)
 		@log.info("The server is started on #{@host}:#{@port}")
 
@@ -134,7 +134,7 @@ class Server
 			hash      = gpg_data['gpg']['hash']
 
 		else
-			salt = salt()
+			salt = salt
 			hash = Digest::SHA256.hexdigest(salt + msg['password'])
 		end
 

@@ -23,11 +23,6 @@ class Cli
 		@config = config
 	end
 
-	# Close sync
-	def sync_close
-		@sync.close
-	end
-
 	# Sync the data with the server
 	# @rtnr: true if the synchro is finish
 	def sync
@@ -77,7 +72,7 @@ class Cli
 		puts '--------------------'
 		language    = ask(I18n.t('form.setup.lang', :lang => lang)).to_s
 		key         = ask(I18n.t('form.setup.gpg_key')).to_s
-		file_gpg    = ask(I18n.t('form.setup.gpg_file', :home => Dir.home())).to_s
+		file_gpg    = ask(I18n.t('form.setup.gpg_file', :home => Dir.home)).to_s
 		timeout_pwd = ask(I18n.t('form.setup.timeout')).to_s
 		sync_type   = ask(I18n.t('form.setup.sync_type')).to_s
 		sync_host   = ask(I18n.t('form.setup.sync_host')).to_s
@@ -101,7 +96,7 @@ class Cli
 			puts "#{I18n.t('display.error')}: #{@config.error_msg}"
 		end
 
-		if not @config.checkconfig()
+		if not @config.checkconfig
 			puts "#{I18n.t('display.error')}: #{@config.error_msg}"
 			exit 2
 		end
@@ -171,7 +166,7 @@ class Cli
 	end
 
 	# Form to add a new item
-	def add()
+	def add
 		row = []
 		puts I18n.t('form.add.title')
 		puts '--------------------'
@@ -185,8 +180,8 @@ class Cli
 		comment  = ask(I18n.t('form.add.comment')).to_s
 
 		if @mpw.update(name, group, server, protocol, login, passwd, port, comment)
-			if @mpw.encrypt()
-				sync()
+			if @mpw.encrypt
+				sync
 				puts I18n.t('form.add.valid')
 			else
 				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
@@ -214,8 +209,8 @@ class Cli
 			comment  = ask(I18n.t('form.update.comment' , :comment => row[MPW::MPW::COMMENT])).to_s
 				
 			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
-				if @mpw.encrypt()
-					sync()
+				if @mpw.encrypt
+					sync
 					puts I18n.t('form.update.valid')
 				else
 					puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
@@ -249,8 +244,8 @@ class Cli
 
 		if force
 			if @mpw.remove(id)
-				if @mpw.encrypt()
-					sync()
+				if @mpw.encrypt
+					sync
 					puts I18n.t('form.delete.valid', :id => id)
 				else
 					puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
@@ -294,8 +289,8 @@ class Cli
 		end
 
 		if force
-			if @mpw.import(file) && @mpw.encrypt()
-				sync()
+			if @mpw.import(file) && @mpw.encrypt
+				sync
 				puts I18n.t('form.import.valid')
 			else
 				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
@@ -304,7 +299,7 @@ class Cli
 	end
 
 	# Interactive mode
-	def interactive()
+	def interactive
 		group       = nil
 		last_access = Time.now.to_i
 
@@ -331,7 +326,7 @@ class Cli
 					display(command[1], group, command[2])
 				end
 			when 'add', 'a'
-				add()
+				add
 			when 'update', 'u'
 				if !command[1].nil? && !command[1].empty?
 					update(command[1])

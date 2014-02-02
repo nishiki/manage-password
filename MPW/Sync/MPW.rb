@@ -35,8 +35,9 @@ module MPW
 				@password = password
 				@suffix   = path
 		
-				@socket = TCPSocket.new(host, port.to_i)
-				@enable = true
+				TCPSocket.new(host, port.to_i) do 
+					@enable = true
+				end
 			rescue Exception => e
 				@error_msg = "#{I18n.t('error.sync.connection')}\n#{e}"
 				@enable    = false
@@ -51,17 +52,19 @@ module MPW
 				if !@enable
 					return nil
 				end
-		
-				send_msg = {:action   => 'get',
-				            :gpg_key  => @gpg_key,
-				            :password => @password,
-				            :suffix   => @suffix}
 				
-				@socket.puts send_msg.to_json
-				msg = JSON.parse(@socket.gets)
-		
+				TCPSocket.new(host, port.to_i) do |socket|
+					send_msg = {:action   => 'get',
+						    :gpg_key  => @gpg_key,
+						    :password => @password,
+						    :suffix   => @suffix}
+					
+					socket.puts send_msg.to_json
+					msg = JSON.parse(socket.gets)
+				end
+
 				if !defined?(msg['error'])
-					@error_msg = I18n.t('error.sync.communication')
+					error_msg = I18n.t('error.sync.communication')
 					return nil
 				elsif msg['error'].nil?
 					tmp_file = tmpfile
@@ -81,6 +84,7 @@ module MPW
 					@error_msg = I18n.t(msg['error'])
 					return nil
 				end
+				
 			end
 		
 			# Update the remote data
@@ -91,14 +95,16 @@ module MPW
 					return true
 				end
 		
-				send_msg = {:action   => 'update',
-				            :gpg_key  => @gpg_key,
-				            :password => @password,
-				            :suffix   => @suffix,
-				            :data     => data}
-				
-				@socket.puts send_msg.to_json
-				msg = JSON.parse(@socket.gets)
+				TCPSocket.new(host, port.to_i) do |socket|
+					send_msg = {:action   => 'update',
+						    :gpg_key  => @gpg_key,
+						    :password => @password,
+						    :suffix   => @suffix,
+						    :data     => data}
+					
+					socket.puts send_msg.to_json
+					msg = JSON.parse(socket.gets)
+				end
 		
 				if !defined?(msg['error'])
 					@error_msg = I18n.t('error.sync.communication')
@@ -111,16 +117,6 @@ module MPW
 				end
 			end
 		
-			# Close the connection
-			def close
-				if !@enable
-					return
-				end
-		
-				send_msg = {:action => 'close'}
-				@socket.puts send_msg.to_json
-			end
-
 			# Generate a random string
 			# @rtrn: a random string
 			def tmpfile
