@@ -58,7 +58,8 @@ module MPW
 				return false
 			end
 
-			if !share_keys.nil? && !share_keys.empty?
+			share_keys = share_keys.nil? ? '' : share_keys
+			if !share_keys.empty?
 				share_keys.split.each do |k|
 					if not k =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 						@error_msg = I18n.t('error.config.key_bad_format')

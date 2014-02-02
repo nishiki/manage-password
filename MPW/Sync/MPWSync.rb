@@ -31,11 +31,13 @@ module MPW
 			#        suffix -> the suffix file
 			# @rtrn: false if the connection fail
 			def connect(host, user, password, path, port=nil)
+				@host     = host
+				@port     = !port.instance_of?(Integer) ? 2201 : port
 				@gpg_key  = user
 				@password = password
 				@suffix   = path
 		
-				TCPSocket.new(host, port.to_i) do 
+				TCPSocket.open(@host, @port) do 
 					@enable = true
 				end
 			rescue Exception => e
@@ -53,7 +55,8 @@ module MPW
 					return nil
 				end
 				
-				TCPSocket.new(host, port.to_i) do |socket|
+				msg = nil
+				TCPSocket.open(@host, @port) do |socket|
 					send_msg = {:action   => 'get',
 						    :gpg_key  => @gpg_key,
 						    :password => @password,
@@ -95,7 +98,8 @@ module MPW
 					return true
 				end
 		
-				TCPSocket.new(host, port.to_i) do |socket|
+				msg = nil
+				TCPSocket.open(@host, @port) do |socket|
 					send_msg = {:action   => 'update',
 						    :gpg_key  => @gpg_key,
 						    :password => @password,

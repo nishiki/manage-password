@@ -26,10 +26,11 @@ module MPW
 		attr_accessor :error_msg
 		
 		# Constructor
-		def initialize(file_gpg, key=nil)
-			@error_msg = nil
-			@file_gpg  = file_gpg
-			@key       = key
+		def initialize(file_gpg, key=nil, share_keys='')
+			@error_msg  = nil
+			@file_gpg   = file_gpg
+			@key        = key
+			@share_keys = share_keys
 		end
 	
 		# Decrypt a gpg file
@@ -64,7 +65,13 @@ module MPW
 				data_to_encrypt << row.to_csv
 			end
 	
-			crypto.encrypt(data_to_encrypt, :recipients => @key, :output => file_gpg)
+			recipients = []
+			recipients.push(@key)
+			if !@share_keys.nil?
+				@share_keys.split.each { |k| recipients.push(k) }
+			end
+
+			crypto.encrypt(data_to_encrypt, :recipients => recipients, :output => file_gpg)
 			file_gpg.close
 	
 			return true

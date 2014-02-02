@@ -117,7 +117,7 @@ class Cli
 	# Request the GPG password and decrypt the file
 	def decrypt
 		if !defined?(@mpw)
-			@mpw = MPW::MPW.new(@config.file_gpg, @config.key)
+			@mpw = MPW::MPW.new(@config.file_gpg, @config.key, @config.share_keys)
 		end
 
 		@passwd = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
