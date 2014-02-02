@@ -20,9 +20,11 @@ fr:
     sync: 
       connection: "La connexion n'a pu être établie!"
       communication: "Un problème de communication avec le serveur est apparu!"
-      no_data: "Aucune donnée!"
+      download: "Impossible de télécharger le fichier!"
       not_authorized: "Vous n'avez pas les autorisations d'accès au fichier distant!"
+      upload: "Impossible d'envoyer le fichier sur le serveur!"
       unknown: "Une erreur inconnue est survenue!" 
+
   option:
     usage: "Utilisation"
     show: "Recherche et affiche les éléments"
@@ -40,6 +42,7 @@ fr:
     format: "Change le format d'affichage des éléments par un alternatif"
     generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères)"
     help: "Affiche ce message d'aide"
+
   form:
     add:
       title: "Ajout d'un nouvel élément"
@@ -66,10 +69,12 @@ fr:
       gpg_key: "Entrez la clé GPG: " 
       gpg_file: "Entrez le chemin du fichier qui sera chiffré [défaut=%{home}/.mpw.gpg]: "
       timeout: "Entrez le temps (en seconde) du mot de passe GPG [défaut=60]: "
+      sync_type: "Type de synchronisation (mpw, ssh, ftp, or nil): "
       sync_host: "Serveur de synchronisation: "
       sync_port: "Port du serveur de synchronisation: "
+      sync_user: "Utilisateur pour la synchronisation: "
       sync_pwd: "Mot de passe pour la synchronisation: "
-      sync_suffix: "Suffix pour la synchronisation (optionnel): "
+      sync_path: "Chemin du fichier pour la synchronisation: "
       valid: "Le fichier de configuration a bien été créé!"
     update:
       title: "Mis à jour d'un élément"
@@ -82,6 +87,7 @@ fr:
       port: "Entrez un port de connexion [%{port}]: "
       comment: "Entrez un commentaire [%{comment}]: "
       valid: "L'élément a bien été mis à jour!" 
+
   interactive:
     ask_password: "Mot de passe GPG: "
     bad_password: "Mauvais mot de passe!"
@@ -96,6 +102,7 @@ fr:
       remove: "Supprime un élément"
       help: "Affiche ce message d'aide"
       quit: "Quitte le programme"
+
   display:
     comment: "Commentaire"
     error: "ERREUR"
@@ -108,6 +115,7 @@ fr:
     port: "Port"
     protocol: "Protocol"
     server: "Serveur"
+
   ssh:
     option:
       usage: "Utilisation"
@@ -118,6 +126,7 @@ fr:
     display:
       connect: "Connexion à:"
       nothing: "Aucun résultat!"
+
   formats:
     default: ! '%Y-%m-%d'
     long: ! '%B %d, %Y'

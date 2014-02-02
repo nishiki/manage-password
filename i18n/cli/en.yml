@@ -20,9 +20,11 @@ en:
     sync: 
       connection: "Connection fail!"
       communication: "A communication problem with the server is appeared!"
-      no_data: "Nothing data!"
+      download: "Can't download the file!"
       not_authorized: "You haven't the access to remote file!"
+      upload: "Can't upload the file on the server!"
       unknown: "An unknown error is occured!" 
+
   option:
     usage: "Usage"
     show: "Search and show the items"
@@ -40,6 +42,7 @@ en:
     format: "Change the display items format by an alternative format"
     generate_password: "Generate a random password (default 8 characters)"
     help: "Show this help message"
+
   form:
     add:
       title: "Add a new item"
@@ -66,10 +69,12 @@ en:
       gpg_key: "Enter the GPG key: " 
       gpg_file: "Enter the path to encrypt file [default=%{home}/.mpw.gpg]: "
       timeout: "Enter the timeout (in seconde) to GPG password [default=60]: "
+      sync_type: "Synchronization type (mpw, ssh, ftp, or nil): "
       sync_host: "Synchronization server: "
       sync_port: "Port of the synchronization server: "
+      sync_user: "Username for the synchronization: "
       sync_pwd: "Password for the synchronization: "
-      sync_suffix: "Suffix for the synchronization (optionnal): "
+      sync_path: "File path for the synchronization : "
       valid: "The config file has been created!"
     update:
       title: "Update an item"
@@ -82,6 +87,7 @@ en:
       port: "Enter the connection port [%{port}]: "
       comment: "Enter a comment [%{comment}]: "
       valid: "Item has been updated!" 
+
   interactive:
     ask_password: "Password GPG: "
     bad_password: "Bad password!"
@@ -96,6 +102,7 @@ en:
       remove: "Remove an item"
       help: "Show this message"
       quit: "Quit the software"
+
   display:
     comment: "Comment"
     error: "ERROR"
@@ -108,6 +115,7 @@ en:
     port: "Port"
     protocol: "Protocol"
     server: "Server"
+
   ssh:
     option:
       usage: "Usage"
@@ -118,6 +126,7 @@ en:
     display:
       connect: "Connection to:"
       nothing: "Nothing result!"
+
   formats:
     default: ! '%Y-%m-%d'
     long: ! '%B %d, %Y'
