@@ -31,11 +31,6 @@ class Server
 						next
 					end
 					
-					if !msg['action'].nil? && msg['action'] == 'close'
-						@log.info("#{client.peeraddr[3]} is disconnected")
-						close_connection(client)
-					end
-
 					if msg['gpg_key'].nil? || msg['gpg_key'].empty? || msg['password'].nil? || msg['password'].empty?
 						@log.warning("#{client.peeraddr[3]} is disconnected because no password or no gpg_key")
 						close_connection(client)
@@ -65,6 +60,7 @@ class Server
 		end
 
 	rescue Exception => e
+		puts "Impossible to start the server: #{e}"
 		@log.error("Impossible to start the server: #{e}")
 		exit 2
 	end
