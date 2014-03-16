@@ -48,22 +48,26 @@ class Cli
 
 		if @sync.enable
 			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
-				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
+				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"  if !@mpw.error_msg.nil?
+				puts "#{I18n.t('display.error')}: #{@sync.error_msg}" if !@sync.error_msg.nil?
+				return false
 			end
 
 			if !@sync.update(File.open(@config.file_gpg).read)
 				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
 			elsif !@config.set_last_update
 				puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+			elsif !@mpw.encrypt
+				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
 			else
 				return true
 			end
 		end
 	rescue Exception => e
 		puts "#{I18n.t('display.error')}: #{e}"
-		puts @sync.error_msg
-		puts @config.error_msg
-		puts @mpw.error_msg
+		puts @sync.error_msg   if @sync.error_msg.nil?
+		puts @config.error_msg if @config.error_msg.nil?
+		puts @mpw.error_msg    if @mpw.error_msg.nil?
 	else
 		return false
 	end
