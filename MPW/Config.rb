@@ -6,6 +6,7 @@
 module MPW
 
 	require 'rubygems'
+	require 'gpgme'
 	require 'yaml'
 	require 'i18n'
 	
@@ -96,6 +97,38 @@ module MPW
 			@error_msg = "#{I18n.t('error.config.write')}\n#{e}"
 			return false
 		end
+
+		# Setup a new gpg key
+		def setup_gpg_key(password, name, length = 2048, expire = 0)
+			if name.nil? || name.empty?
+				@error_msg = "#{I18n.t('error.config.genkey_gpg.name')}"
+				return false
+			elsif password.nil? || password.empty?
+				@error_msg = "#{I18n.t('error.config.genkey_gpg.password')}"
+				return false
+			end
+
+			param = ''
+			param << '<GnupgKeyParms format="internal">' + "\n"
+			param << "Key-Type: DSA\n"  
+			param << "Key-Length: #{length}\n"
+			param << "Subkey-Type: ELG-E\n"
+			param << "Subkey-Length: #{length}\n"
+			param << "Name-Real: #{name}\n"
+			param << "Name-Comment: #{name}\n"
+			param << "Name-Email: #{@key}\n"
+			param << "Expire-Date: #{expire}\n"
+			param << "Passphrase: apc\n"
+			param << "</GnupgKeyParms>\n"
+
+			ctx = GPGME::Ctx.new
+			ctx.genkey(param, nil, nil)
+
+			return true
+		rescue Exception => e
+			@error_msg = "#{I18n.t('error.config.genkey_gpg.exception')}\n#{e}"
+			return false
+		end
 	
 		# Check the config file
 		# @rtrn: true if the config file is correct
@@ -118,12 +151,23 @@ module MPW
 				@error_msg = I18n.t('error.config.check')
 				return false
 			end
-
 			I18n.locale = @lang.to_sym
 
 			return true
 		rescue Exception => e 
+			puts e
 			@error_msg = "#{I18n.t('error.config.check')}\n#{e}"
+			return false
+		end
+
+		# Check if private key exist
+		# @rtrn: true if the key exist, else false
+		def check_gpg_key?
+			ctx = GPGME::Ctx.new
+			ctx.each_key(@key, true) do |key|
+				return true
+			end
+
 			return false
 		end
 	

@@ -5,6 +5,10 @@ fr:
       write: "Impossible d'écrire le fichier de configuration!"
       check: "Le fichier de configuration est invalide!"
       key_bad_format: "La clé GPG est invalide!"
+      genkey_gpg:
+        exception: "La création de la clé GPG n'a pas pu aboutir!"
+        name: "Vous devez définir un nom pour votre clé GPG!"
+        password: "Vous devez définir un mot de passe pour votre clé GPG!"
     delete:
       id_no_exist: "Impossible de supprimer l'élément %{id}, car il n'existe pas!"
     export:
@@ -77,6 +81,13 @@ fr:
       sync_pwd: "Mot de passe pour la synchronisation: "
       sync_path: "Chemin du fichier pour la synchronisation: "
       valid: "Le fichier de configuration a bien été créé!"
+    setup_gpg_key:
+      title: "Configuration d'une clé GPG"
+      name: "Votre nom et prénom: "
+      password: "Mot de passe de la clé GPG: "
+      length: "Taille de la clé GPG [défaut=2048]: "
+      expire: "Expiration de la clé GPG [défaut=0 (illimité)]: "
+      wait: "Veuillez patienter durant la génération de votre clé GPG, ce processus peut prendre quelques minutes."
     update:
       title: "Mis à jour d'un élément"
       name: "Entrez le nom [%{name}]: "

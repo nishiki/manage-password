@@ -117,6 +117,8 @@ cli = Cli.new(lang, config)
 # Setup a new config 
 if !check_error || !options[:setup].nil?
 	cli.setup(lang)
+elsif !config.check_gpg_key?
+	cli.setup_gpg_key
 end
 
 cli.decrypt

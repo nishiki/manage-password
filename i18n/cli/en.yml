@@ -5,6 +5,10 @@ en:
       write: "Can't write the config file!"
       check: "Checkconfig failed!"
       key_bad_format: "The key string isn't in good format!"
+      genkey_gpg:
+        exception: "Can't create the GPG key!"
+        name: "You must define a name for your GPG key!"
+        password: "You must define a password for your GPG key!"
     delete:
       id_no_exist: "Can't delete the item %{id}, it doesn't exist!"
     export:
@@ -77,6 +81,13 @@ en:
       sync_pwd: "Password for the synchronization: "
       sync_path: "File path for the synchronization : "
       valid: "The config file has been created!"
+    setup_gpg_key:
+      title: "Setup a GPG key"
+      name: "Your name and lastname: "
+      password: "A password for the GPG key: "
+      length: "Size of the GPG key [default=2048]: "
+      expire: "Expire time of the GPG key [default=0 (unlimited)]: "
+      wait: "Please waiting during the GPG key generate, this process can take few minutes."
     update:
       title: "Update an item"
       name: "Enter the name [%{name}]: "

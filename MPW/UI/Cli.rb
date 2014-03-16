@@ -89,11 +89,10 @@ class Cli
 			sync_path   = ask(I18n.t('form.setup.sync_path')).to_s
 		end
 		
-		if !language.nil? && !language.empty?
-			I18n.locale = language.to_sym
-		else
-			language = nil
+		if language.nil? || language.empty?
+			language = lang
 		end
+		I18n.locale = language.to_sym
 
 		sync_type = sync_type.nil? || sync_type.empty? ? nil : sync_type
 		sync_host = sync_host.nil? || sync_host.empty? ? nil : sync_host
@@ -110,6 +109,28 @@ class Cli
 		end
 
 		if not @config.checkconfig
+			puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+			exit 2
+		end
+	end
+
+	# Setup a new GPG key
+	def setup_gpg_key
+		puts I18n.t('form.setup_gpg_key.title')
+		puts '--------------------'
+		name     = ask(I18n.t('form.setup_gpg_key.name')).to_s
+		password = ask(I18n.t('form.setup_gpg_key.password')).to_s
+		length   = ask(I18n.t('form.setup_gpg_key.length')).to_s
+		expire   = ask(I18n.t('form.setup_gpg_key.expire')).to_s
+
+		length = length.nil? || length.empty? ? 2048 : length.to_i
+		expire = expire.nil? || expire.empty? ? 0    : expire.to_i
+
+		puts I18n.t('form.setup_gpg_key.wait')
+		
+		if @config.setup_gpg_key(password, name, length, expire)
+			puts I18n.t('form.setup_gpg_key.valid')
+		else
 			puts "#{I18n.t('display.error')}: #{@config.error_msg}"
 			exit 2
 		end
