@@ -50,10 +50,7 @@ class Cli
 			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
 				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"  if !@mpw.error_msg.nil?
 				puts "#{I18n.t('display.error')}: #{@sync.error_msg}" if !@sync.error_msg.nil?
-				return false
-			end
-
-			if !@sync.update(File.open(@config.file_gpg).read)
+			elsif !@sync.update(File.open(@config.file_gpg).read)
 				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
 			elsif !@config.set_last_update
 				puts "#{I18n.t('display.error')}: #{@config.error_msg}"
