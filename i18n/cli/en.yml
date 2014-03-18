@@ -83,6 +83,8 @@ en:
       valid: "The config file has been created!"
     setup_gpg_key:
       title: "Setup a GPG key"
+      ask: "Do you want create your GPG key ? (Y/n)"
+      no_create: "You must create manually your GPG key or relaunch the software."
       name: "Your name and lastname: "
       password: "A password for the GPG key: "
       length: "Size of the GPG key [default=2048]: "

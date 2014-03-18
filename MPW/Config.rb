@@ -99,6 +99,11 @@ module MPW
 		end
 
 		# Setup a new gpg key
+		# @args: password -> the GPG key password
+		#        name -> the name of user
+		#        length -> length of the GPG key
+		#        expire -> the time of expire to GPG key
+		# @rtrn: true if the GPG key is create, else false
 		def setup_gpg_key(password, name, length = 2048, expire = 0)
 			if name.nil? || name.empty?
 				@error_msg = "#{I18n.t('error.config.genkey_gpg.name')}"

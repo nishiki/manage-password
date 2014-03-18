@@ -83,6 +83,8 @@ fr:
       valid: "Le fichier de configuration a bien été créé!"
     setup_gpg_key:
       title: "Configuration d'une clé GPG"
+      ask: "Voulez vous créer votre clé GPG ? (O/n)"
+      no_create: "Veuillez créer manuellement votre clé GPG ou relancer le logiciel."
       name: "Votre nom et prénom: "
       password: "Mot de passe de la clé GPG: "
       length: "Taille de la clé GPG [défaut=2048]: "

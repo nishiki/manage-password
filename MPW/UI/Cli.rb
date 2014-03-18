@@ -118,6 +118,13 @@ class Cli
 	def setup_gpg_key
 		puts I18n.t('form.setup_gpg_key.title')
 		puts '--------------------'
+		ask      = ask(I18n.t('form.setup_gpg_key.ask')).to_s
+		
+		if !['Y', 'y', 'O', 'o'].include?(ask)
+			puts I18n.t('form.setup_gpg_key.no_create')
+			exit 2
+		end
+
 		name     = ask(I18n.t('form.setup_gpg_key.name')).to_s
 		password = ask(I18n.t('form.setup_gpg_key.password')).to_s
 		length   = ask(I18n.t('form.setup_gpg_key.length')).to_s
