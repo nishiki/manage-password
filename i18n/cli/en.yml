@@ -5,6 +5,7 @@ en:
       write: "Can't write the config file!"
       check: "Checkconfig failed!"
       key_bad_format: "The key string isn't in good format!"
+      no_key_public: "You haven't the public key of %{key}!"
       genkey_gpg:
         exception: "Can't create the GPG key!"
         name: "You must define a name for your GPG key!"
@@ -90,6 +91,7 @@ en:
       length: "Size of the GPG key [default=2048]: "
       expire: "Expire time of the GPG key [default=0 (unlimited)]: "
       wait: "Please waiting during the GPG key generate, this process can take few minutes."
+      valid: "Your GPG key has been created ;-)"
     update:
       title: "Update an item"
       name: "Enter the name [%{name}]: "

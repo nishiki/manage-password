@@ -66,6 +66,11 @@ module MPW
 						@error_msg = I18n.t('error.config.key_bad_format')
 						return false
 					end
+					
+					if !check_gpg_key?(k, false)
+						@error_msg = I18n.t('error.config.no_key_public', :key => k)
+						return false
+					end
 				end
 			end
 			
@@ -166,10 +171,11 @@ module MPW
 		end
 
 		# Check if private key exist
+		# @args: only_private -> search only private key
 		# @rtrn: true if the key exist, else false
-		def check_gpg_key?
+		def check_gpg_key?(key = @key, only_private = true)
 			ctx = GPGME::Ctx.new
-			ctx.each_key(@key, true) do |key|
+			ctx.each_key(key, only_private) do
 				return true
 			end
 

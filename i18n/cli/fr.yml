@@ -5,6 +5,7 @@ fr:
       write: "Impossible d'écrire le fichier de configuration!"
       check: "Le fichier de configuration est invalide!"
       key_bad_format: "La clé GPG est invalide!"
+      no_key_public: "Vous ne possédez pas la clé publique de %{key}!"
       genkey_gpg:
         exception: "La création de la clé GPG n'a pas pu aboutir!"
         name: "Vous devez définir un nom pour votre clé GPG!"
@@ -90,6 +91,7 @@ fr:
       length: "Taille de la clé GPG [défaut=2048]: "
       expire: "Expiration de la clé GPG [défaut=0 (illimité)]: "
       wait: "Veuillez patienter durant la génération de votre clé GPG, ce processus peut prendre quelques minutes."
+      valid: "Votre clé GPG a bien été créée ;-)"
     update:
       title: "Mis à jour d'un élément"
       name: "Entrez le nom [%{name}]: "
