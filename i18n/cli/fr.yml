@@ -53,7 +53,7 @@ fr:
       title: "Ajout d'un nouvel élément"
       name: "Entrez le nom: "
       group: "Entrez le groupe (optionnel): "
-      server: "Entrez the hostname or ip: "
+      server: "Entrez le nom de l'hôte ou l'adresse ip: "
       protocol: "Entrez le protocole de connexion (ssh, http, other): "
       login: "Entrez l'identifiant de connexion: "
       password: "Entrez le mot de passe: "
