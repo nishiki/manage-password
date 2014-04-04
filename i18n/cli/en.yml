@@ -72,7 +72,7 @@ en:
       title: "Setup a new config file"
       lang: "Choose your language (en, fr, ...): "
       gpg_key: "Enter the GPG key: " 
-      share_gpg_key: "Enter the GPG keys with who you want to share the passwords: " 
+      share_gpg_keys: "Enter the GPG keys with who you want to share the passwords: " 
       gpg_file: "Enter the path to encrypt file [default=%{home}/.mpw.gpg]: "
       timeout: "Enter the timeout (in seconde) to GPG password [default=60]: "
       sync_type: "Synchronization type (mpw, ssh, ftp, or nil): "
