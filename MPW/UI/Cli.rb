@@ -126,9 +126,17 @@ class Cli
 		end
 
 		name     = ask(I18n.t('form.setup_gpg_key.name')).to_s
-		password = ask(I18n.t('form.setup_gpg_key.password')).to_s
+		password = ask(I18n.t('form.setup_gpg_key.password')) {|q| q.echo = false}
+		confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) {|q| q.echo = false}
+
+		if password != confirm 
+			puts I18n.t('form.setup_gpg_key.error_password')
+			exit 2
+		end
+
 		length   = ask(I18n.t('form.setup_gpg_key.length')).to_s
 		expire   = ask(I18n.t('form.setup_gpg_key.expire')).to_s
+		password = password.to_s
 
 		length = length.nil? || length.empty? ? 2048 : length.to_i
 		expire = expire.nil? || expire.empty? ? 0    : expire.to_i

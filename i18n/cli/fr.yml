@@ -88,6 +88,8 @@ fr:
       no_create: "Veuillez créer manuellement votre clé GPG ou relancer le logiciel."
       name: "Votre nom et prénom: "
       password: "Mot de passe de la clé GPG: "
+      confirm_password: "Retapez votre mot de passe: "
+      error_password: "Vos deux mots de passes ne sont pas identiques!"
       length: "Taille de la clé GPG [défaut=2048]: "
       expire: "Expiration de la clé GPG [défaut=0 (illimité)]: "
       wait: "Veuillez patienter durant la génération de votre clé GPG, ce processus peut prendre quelques minutes."

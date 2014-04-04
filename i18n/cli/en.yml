@@ -88,6 +88,8 @@ en:
       no_create: "You must create manually your GPG key or relaunch the software."
       name: "Your name and lastname: "
       password: "A password for the GPG key: "
+      confirm_password: "Confirm your password: "
+      error_password: "Your passwords aren't identical!" 
       length: "Size of the GPG key [default=2048]: "
       expire: "Expire time of the GPG key [default=0 (unlimited)]: "
       wait: "Please waiting during the GPG key generate, this process can take few minutes."
