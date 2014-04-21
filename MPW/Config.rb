@@ -59,19 +59,8 @@ module MPW
 				return false
 			end
 
-			share_keys = share_keys.nil? ? '' : share_keys
-			if !share_keys.empty?
-				share_keys.split.each do |k|
-					if not k =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
-						@error_msg = I18n.t('error.config.key_bad_format')
-						return false
-					end
-					
-					if !check_gpg_key?(k, false)
-						@error_msg = I18n.t('error.config.no_key_public', :key => k)
-						return false
-					end
-				end
+			if !check_public_gpg_key(share_keys)
+				return false
 			end
 			
 			if file_gpg.empty?
@@ -128,7 +117,7 @@ module MPW
 			param << "Name-Comment: #{name}\n"
 			param << "Name-Email: #{@key}\n"
 			param << "Expire-Date: #{expire}\n"
-			param << "Passphrase: apc\n"
+			param << "Passphrase: #{password}\n"
 			param << "</GnupgKeyParms>\n"
 
 			ctx = GPGME::Ctx.new
@@ -171,15 +160,40 @@ module MPW
 		end
 
 		# Check if private key exist
-		# @args: only_private -> search only private key
 		# @rtrn: true if the key exist, else false
-		def check_gpg_key?(key = @key, only_private = true)
+		def check_gpg_key?
 			ctx = GPGME::Ctx.new
-			ctx.each_key(key, only_private) do
+			ctx.each_key(key, true) do
 				return true
 			end
 
 			return false
+		end
+
+		# Check if private key exist
+		# @args: share_keys -> string with all public keys
+		# @rtrn: true if the key exist, else false
+		def check_public_gpg_key(share_keys = @share_keys)
+			ctx = GPGME::Ctx.new
+
+			share_keys = share_keys.nil? ? '' : share_keys
+			if !share_keys.empty?
+				share_keys.split.each do |k|
+					if not k =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
+						@error_msg = I18n.t('error.config.key_bad_format')
+						return false
+					end
+					
+					ctx.each_key(key, false) do
+						next
+					end
+
+					@error_msg = I18n.t('error.config.no_key_public', :key => k)
+					return false
+				end
+			end
+
+			return true
 		end
 	
 		# Set the last update when there is a sync
