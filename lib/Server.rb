@@ -130,7 +130,7 @@ class Server
 			hash      = gpg_data['gpg']['hash']
 
 		else
-			salt = salt
+			salt = generate_salt
 			hash = Digest::SHA256.hexdigest(salt + msg['password'])
 		end
 
@@ -311,7 +311,7 @@ class Server
 	# Generate a random salt
 	# @args: length -> the length salt
 	# @rtrn: a random string
-	def salt(length=4)
+	def generate_salt(length=4)
 		if length.to_i <= 0 || length.to_i > 16
 			length = 4
 		else
