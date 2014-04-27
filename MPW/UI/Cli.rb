@@ -42,26 +42,26 @@ class Cli
 		
 		if !@config.sync_host.nil? && !@config.sync_port.nil?
 			if !@sync.connect(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
-				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
+				puts "#{I18n.t('display.error')} #1: #{@sync.error_msg}"
 			end
 		end
 
 		if @sync.enable
 			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
-				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"  if !@mpw.error_msg.nil?
-				puts "#{I18n.t('display.error')}: #{@sync.error_msg}" if !@sync.error_msg.nil?
+				puts "#{I18n.t('display.error')} #2: #{@mpw.error_msg}"  if !@mpw.error_msg.nil?
+				puts "#{I18n.t('display.error')} #3: #{@sync.error_msg}" if !@sync.error_msg.nil?
 			elsif !@sync.update(File.open(@config.file_gpg).read)
-				puts "#{I18n.t('display.error')}: #{@sync.error_msg}"
+				puts "#{I18n.t('display.error')} #4: #{@sync.error_msg}"
 			elsif !@config.set_last_update
-				puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+				puts "#{I18n.t('display.error')} #5: #{@config.error_msg}"
 			elsif !@mpw.encrypt
-				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+				puts "#{I18n.t('display.error')} #6: #{@mpw.error_msg}"
 			else
 				return true
 			end
 		end
 	rescue Exception => e
-		puts "#{I18n.t('display.error')}: #{e}"
+		puts "#{I18n.t('display.error')} #7: #{e}"
 		puts @sync.error_msg   if @sync.error_msg.nil?
 		puts @config.error_msg if @config.error_msg.nil?
 		puts @mpw.error_msg    if @mpw.error_msg.nil?
@@ -104,12 +104,12 @@ class Cli
 		if @config.setup(key, share_keys, language, file_gpg, timeout_pwd, sync_type, sync_host, sync_port, sync_user, sync_pwd, sync_path)
 			puts I18n.t('form.setup.valid')
 		else
-			puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+			puts "#{I18n.t('display.error')} #8: #{@config.error_msg}"
 			exit 2
 		end
 
 		if not @config.checkconfig
-			puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+			puts "#{I18n.t('display.error')} #9: #{@config.error_msg}"
 			exit 2
 		end
 	end
@@ -146,7 +146,7 @@ class Cli
 		if @config.setup_gpg_key(password, name, length, expire)
 			puts I18n.t('form.setup_gpg_key.valid')
 		else
-			puts "#{I18n.t('display.error')}: #{@config.error_msg}"
+			puts "#{I18n.t('display.error')} #10: #{@config.error_msg}"
 			exit 2
 		end
 	end
@@ -159,7 +159,7 @@ class Cli
 
 		@passwd = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
 		if !@mpw.decrypt(@passwd)
-			puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+			puts "#{I18n.t('display.error')} #11: #{@mpw.error_msg}"
 			exit 2
 		end
 	end
@@ -233,10 +233,10 @@ class Cli
 				sync
 				puts I18n.t('form.add.valid')
 			else
-				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+				puts "#{I18n.t('display.error')} #12: #{@mpw.error_msg}"
 			end
 		else
-			puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+			puts "#{I18n.t('display.error')} #13: #{@mpw.error_msg}"
 		end
 	end
 
@@ -262,10 +262,10 @@ class Cli
 					sync
 					puts I18n.t('form.update.valid')
 				else
-					puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+					puts "#{I18n.t('display.error')} #14: #{@mpw.error_msg}"
 				end
 			else
-				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+				puts "#{I18n.t('display.error')} #15: #{@mpw.error_msg}"
 			end
 		else
 			puts I18n.t('display.nothing')
@@ -297,7 +297,7 @@ class Cli
 					sync
 					puts I18n.t('form.delete.valid', :id => id)
 				else
-					puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+					puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}"
 				end
 			else
 				puts I18n.t('form.delete.not_valid')
@@ -311,7 +311,7 @@ class Cli
 		if @mpw.export(file)
 			puts "The export in #{file} is succesfull!"
 		else
-			puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+			puts "#{I18n.t('display.error')} #17: #{@mpw.error_msg}"
 		end
 
 	end
@@ -342,7 +342,7 @@ class Cli
 				sync
 				puts I18n.t('form.import.valid')
 			else
-				puts "#{I18n.t('display.error')}: #{@mpw.error_msg}"
+				puts "#{I18n.t('display.error')} #18: #{@mpw.error_msg}"
 			end
 		end
 	end
