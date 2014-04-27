@@ -11,9 +11,6 @@ require 'i18n'
 require 'yaml'
 
 require "#{APP_ROOT}/MPW/MPW"
-require "#{APP_ROOT}/MPW/Sync/MPWSync"
-require "#{APP_ROOT}/MPW/Sync/SSH"
-require "#{APP_ROOT}/MPW/Sync/FTP"
 
 class Cli
 
@@ -30,10 +27,13 @@ class Cli
 		if !defined?(@sync)
 			case @config.sync_type
 			when 'mpw'
+				require "#{APP_ROOT}/MPW/Sync/MPWSync"
 				@sync = MPW::Sync::MPWSync.new
 			when 'sftp', 'scp', 'ssh'
+				require "#{APP_ROOT}/MPW/Sync/SSH"
 				@sync = MPW::Sync::SSH.new
 			when 'ftp'
+				require "#{APP_ROOT}/MPW/Sync/FTP"
 				@sync = MPW::Sync::FTP.new
 			else
 				return false
