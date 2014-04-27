@@ -10,7 +10,7 @@ require 'locale'
 require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
-require "#{APP_ROOT}/lib/Server.rb"
+require "#{APP_ROOT}/MPW/Server.rb"
 
 # --------------------------------------------------------- #
 # Set local
@@ -62,7 +62,7 @@ if options[:config].nil? || options[:config].empty?
 	exit 2
 end
 
-server = Server.new
+server = MPW::Server.new
 
 if options[:checkconfig]
 	server.checkconfig(options[:config])
