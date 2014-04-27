@@ -273,30 +273,28 @@ module MPW
 		def sync(data_remote, last_update)
 			if !data_remote.instance_of?(Array)
 				return false
-			else data_remote.nil? || data_remote.empty?
-				return true
-			end
-	
-			@data.each do |l|
-				j = 0
-				update = false
-	
-				# Update item
-				data_remote.each do |r|
-					if l[ID] == r[ID]
-						if l[DATE].to_i < r[DATE].to_i
-							update(r[NAME], r[GROUP], r[SERVER], r[PROTOCOL], r[LOGIN], r[PASSWORD], r[PORT], r[COMMENT], l[ID])
+			else !data_remote.nil? && !data_remote.empty?
+				@data.each do |l|
+					j = 0
+					update = false
+		
+					# Update item
+					data_remote.each do |r|
+						if l[ID] == r[ID]
+							if l[DATE].to_i < r[DATE].to_i
+								update(r[NAME], r[GROUP], r[SERVER], r[PROTOCOL], r[LOGIN], r[PASSWORD], r[PORT], r[COMMENT], l[ID])
+							end
+							update = true
+							data_remote.delete_at(j)
+							break
 						end
-						update = true
-						data_remote.delete_at(j)
-						break
+						j += 1
 					end
-					j += 1
-				end
-	
-				# Delete an old item
-				if !update && l[DATE].to_i < last_update
-					remove(l[ID])
+		
+					# Delete an old item
+					if !update && l[DATE].to_i < last_update
+						remove(l[ID])
+					end
 				end
 			end
 	
