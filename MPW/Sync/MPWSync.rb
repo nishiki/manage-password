@@ -67,9 +67,14 @@ module MPW
 				end
 
 				if !defined?(msg['error'])
-					error_msg = I18n.t('error.sync.communication')
+					@error_msg = I18n.t('error.sync.communication')
 					return nil
-				elsif msg['error'].nil?
+				elsif !msg['error'].nil?
+					@error_msg = I18n.t(msg['error'])
+					return nil
+				elsif msg['data'].nil? || msg['data'].empty?
+					return []
+				else
 					tmp_file = tmpfile
 					File.open(tmp_file, 'w') do |file|
 						file << msg['data']
@@ -83,11 +88,7 @@ module MPW
 					
 					File.unlink(tmp_file)
 					return mpw.search
-				else
-					@error_msg = I18n.t(msg['error'])
-					return nil
 				end
-				
 			end
 		
 			# Update the remote data

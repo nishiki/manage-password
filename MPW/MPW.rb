@@ -273,6 +273,8 @@ module MPW
 		def sync(data_remote, last_update)
 			if !data_remote.instance_of?(Array)
 				return false
+			else data_remote.nil? || data_remote.empty?
+				return true
 			end
 	
 			@data.each do |l|
