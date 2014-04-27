@@ -27,13 +27,22 @@ module MPW
 		attr_accessor :sync_pwd
 		attr_accessor :sync_path
 		attr_accessor :last_update
+		attr_accessor :dir_config
 	
 		# Constructor
 		# @args: file_config -> the specify config file
 		def initialize(file_config=nil)
-			@error_msg   = nil
-			@file_config = "#{Dir.home}/.mpw.cfg"
-	
+			@error_msg  = nil
+
+			if /darwin/ =~ RUBY_PLATFORM
+				@dir_config = "#{Dir.home}/Library/Preferences/mpw"
+			elsif /cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM
+				@dir_config = "#{Dir.home}/AppData/Local/mpw"
+			else 
+				@dir_config = "#{Dir.home}/.config/mpw"
+			end
+			
+			@file_config = "#{@dir_config}/conf/default.cfg"
 			if !file_config.nil? && !file_config.empty?
 				@file_config = file_config
 			end
@@ -64,7 +73,7 @@ module MPW
 			end
 			
 			if file_gpg.empty?
-				file_gpg = "#{Dir.home}/.mpw.gpg"
+				file_gpg = "#{@dir_config}/db/default.gpg"
 			end
 	
 			timeout_pwd = timeout_pwd.empty? ? 60 : timeout_pwd.to_i
@@ -82,6 +91,8 @@ module MPW
 			                       'sync_path'   => sync_path,
 			                       'last_update' => 0 }}
 	
+			Dir.mkdir("#{@config_dir}/conf", 700)
+			Dir.mkdir("#{@config_dir}/db", 700)
 			File.open(@file_config, 'w') do |file|
 				file << config.to_yaml
 			end
