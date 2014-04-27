@@ -13,7 +13,7 @@ This program work with ruby >= 1.9
 * apt-get install ruby ruby-gpgme ruby-highline ruby-i18n ruby-locale
 
 If you want to synchronize your password via SSH/SCP:
-* apt-get install ruby-ssh ruby-scp
+* apt-get install ruby-net-ssh ruby-net-scp
 
 For mpw-ssh:
 * apt-get install sshpass
