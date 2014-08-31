@@ -11,17 +11,6 @@ module MPW
 	require 'i18n'
 	
 	class MPW
-		
-		ID       = 0
-		NAME     = 1
-		GROUP    = 2
-		PROTOCOL = 3
-		SERVER   = 4
-		LOGIN    = 5
-		PASSWORD = 6
-		PORT     = 7
-		COMMENT  = 8
-		DATE     = 9
 	
 		attr_accessor :error_msg
 		
@@ -37,15 +26,13 @@ module MPW
 		# @args: password -> the GPG key password
 		# @rtrn: true if data has been decrypted
 		def decrypt(passwd=nil)
-			@data = []
+			@data = {}
 	
 			if File.exist?(@file_gpg)
-				crypto = GPGME::Crypto.new(:armor => true)
-				data_decrypt = crypto.decrypt(IO.read(@file_gpg), :password => passwd).read
+				crypto = GPGME::Crypto.new(armor: true)
+				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: passwd).read
 	
-				data_decrypt.lines do |line|
-					@data.push(line.parse_csv)
-				end
+				@data = CSV.parse(data_decrypt, {headers: true, header_converters: :symbol})
 			end
 	
 			return true
@@ -57,21 +44,25 @@ module MPW
 		# Encrypt a file
 		# @rtrn: true if the file has been encrypted
 		def encrypt
-			crypto = GPGME::Crypto.new(:armor => true)
+			crypto = GPGME::Crypto.new(armor: true)
 			file_gpg = File.open(@file_gpg, 'w+')
 	
-			data_to_encrypt = ''
-			@data.each do |row|
-				data_to_encrypt << row.to_csv
+			data_to_encrypt = CSV.generate(write_headers: true,
+			                               headers: ['id', 'name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment', 'date']) do |csv|
+				@data.each do |r|
+					csv << [r[:id], r[:name], r[:group], r[:protocol], r[:host], r[:login], r[:password], r[:port], r[:comment], r[:date]]
+				end
 			end
 	
+			puts 'test'
+			puts data_to_encrypt
 			recipients = []
 			recipients.push(@key)
 			if !@share_keys.nil?
 				@share_keys.split.each { |k| recipients.push(k) }
 			end
 
-			crypto.encrypt(data_to_encrypt, :recipients => recipients, :output => file_gpg)
+			crypto.encrypt(data_to_encrypt, recipients: recipients, output: file_gpg)
 			file_gpg.close
 	
 			return true
@@ -93,12 +84,12 @@ module MPW
 			search = search.force_encoding('ASCII-8BIT')
 	
 			@data.each do |row|
-				name    = row[NAME].nil?    ? nil : row[NAME].downcase
-				server  = row[SERVER].nil?  ? nil : row[SERVER].downcase
-				comment = row[COMMENT].nil? ? nil : row[COMMENT].downcase
+				name    = row[:name].nil?    ? nil : row[:name].downcase
+				server  = row[:host].nil?  ? nil : row[:host].downcase
+				comment = row[:comment].nil? ? nil : row[:comment].downcase
 	
 				if name =~ /^.*#{search}.*$/  || server =~ /^.*#{search}.*$/ || comment =~ /^.*#{search}.*$/ 
-					if (protocol.nil? || protocol.eql?(row[PROTOCOL])) && (group.nil? || group.eql?(row[GROUP]))
+					if (protocol.nil? || protocol.eql?(row[:protocol])) && (group.nil? || group.eql?(row[:group]))
 						result.push(row)
 					end
 				end
@@ -112,7 +103,7 @@ module MPW
 		# @rtrn: a row with the resultat of the search
 		def search_by_id(id)
 			@data.each do |row|
-				if row[ID] == id
+				if row[:id] == id
 					return row
 				end
 			end
@@ -132,12 +123,12 @@ module MPW
 		#        comment -> a comment
 		# @rtrn: true if the item has been updated
 		def update(name, group, server, protocol, login, passwd, port, comment, id=nil)
-			row    = []
+			row    = {}
 			update = false
 	
 			i  = 0
 			@data.each do |r|
-				if r[ID] == id
+				if r[:id] == id
 					row    = r
 					update = true
 					break
@@ -149,28 +140,28 @@ module MPW
 				port = nil
 			end
 	
-			row_update       = []
-			row_update[DATE] = Time.now.to_i
+			row_update        = {}
+			row_update[:date] = Time.now.to_i
 	
-			row_update[ID]       = id.nil?       || id.empty?       ? MPW.password(16) : id
-			row_update[NAME]     = name.nil?     || name.empty?     ? row[NAME]        : name
-			row_update[GROUP]    = group.nil?    || group.empty?    ? row[GROUP]       : group
-			row_update[SERVER]   = server.nil?   || server.empty?   ? row[SERVER]      : server
-			row_update[PROTOCOL] = protocol.nil? || protocol.empty? ? row[PROTOCOL]    : protocol
-			row_update[LOGIN]    = login.nil?    || login.empty?    ? row[LOGIN]       : login
-			row_update[PASSWORD] = passwd.nil?   || passwd.empty?   ? row[PASSWORD]    : passwd
-			row_update[PORT]     = port.nil?     || port.empty?     ? row[PORT]        : port
-			row_update[COMMENT]  = comment.nil?  || comment.empty?  ? row[COMMENT]     : comment
+			row_update[:id]       = id.nil?       || id.empty?       ? MPW.password(16)  : id
+			row_update[:name]     = name.nil?     || name.empty?     ? row[:name]        : name
+			row_update[:group]    = group.nil?    || group.empty?    ? row[:group]       : group
+			row_update[:host]     = server.nil?   || server.empty?   ? row[:host]        : server
+			row_update[:protocol] = protocol.nil? || protocol.empty? ? row[:protocol]    : protocol
+			row_update[:login]    = login.nil?    || login.empty?    ? row[:login]       : login
+			row_update[:password] = passwd.nil?   || passwd.empty?   ? row[:password]    : passwd
+			row_update[:port]     = port.nil?     || port.empty?     ? row[:port]        : port
+			row_update[:comment]  = comment.nil?  || comment.empty?  ? row[:comment]     : comment
 			
-			row_update[NAME]     = row_update[NAME].nil?     ? nil : row_update[NAME].force_encoding('ASCII-8BIT')
-			row_update[GROUP]    = row_update[GROUP].nil?    ? nil : row_update[GROUP].force_encoding('ASCII-8BIT')
-			row_update[SERVER]   = row_update[SERVER].nil?   ? nil : row_update[SERVER].force_encoding('ASCII-8BIT')
-			row_update[PROTOCOL] = row_update[PROTOCOL].nil? ? nil : row_update[PROTOCOL].force_encoding('ASCII-8BIT')
-			row_update[LOGIN]    = row_update[LOGIN].nil?    ? nil : row_update[LOGIN].force_encoding('ASCII-8BIT')
-			row_update[PASSWORD] = row_update[PASSWORD].nil? ? nil : row_update[PASSWORD].force_encoding('ASCII-8BIT')
-			row_update[COMMENT]  = row_update[COMMENT].nil?  ? nil : row_update[COMMENT].force_encoding('ASCII-8BIT')
+			row_update[:name]     = row_update[:name].nil?     ? nil : row_update[:name].force_encoding('ASCII-8BIT')
+			row_update[:group]    = row_update[:group].nil?    ? nil : row_update[:group].force_encoding('ASCII-8BIT')
+			row_update[:host]     = row_update[:host].nil?     ? nil : row_update[:host].force_encoding('ASCII-8BIT')
+			row_update[:protocol] = row_update[:protocol].nil? ? nil : row_update[:protocol].force_encoding('ASCII-8BIT')
+			row_update[:login]    = row_update[:login].nil?    ? nil : row_update[:login].force_encoding('ASCII-8BIT')
+			row_update[:password] = row_update[:password].nil? ? nil : row_update[:password].force_encoding('ASCII-8BIT')
+			row_update[:comment]  = row_update[:comment].nil?  ? nil : row_update[:comment].force_encoding('ASCII-8BIT')
 	
-			if row_update[NAME].nil? || row_update[NAME].empty?
+			if row_update[:name].nil? || row_update[:name].empty?
 				@error_msg = I18n.t('error.update.name_empty')
 				return false
 			end
@@ -190,14 +181,14 @@ module MPW
 		def remove(id)
 			i = 0
 			@data.each do |row|
-				if row[ID] == id
+				if row[:id] == id
 					@data.delete_at(i)
 					return true
 				end
 				i += 1
 			end
 	
-			@error_msg = I18n.t('error.delete.id_no_exist', :id => id)
+			@error_msg = I18n.t('error.delete.id_no_exist', id: id)
 			return false
 		end
 	
@@ -207,14 +198,14 @@ module MPW
 		def export(file)
 			File.open(file, 'w+') do |file|
 				@data.each do |row|
-					row.delete_at(ID).delete_at(DATE)
+					row.delete_at(:id).delete_at(:date)
 					file << row.to_csv
 				end
 			end
 	
 			return true
 		rescue Exception => e 
-			@error_msg = "#{I18n.t('error.export.write', :file => file)}\n#{e}"
+			@error_msg = "#{I18n.t('error.export.write', file: file)}\n#{e}"
 			return false
 		end
 	
@@ -229,7 +220,7 @@ module MPW
 					return false
 				else
 					row = line.parse_csv.unshift(0)
-					if not update(row[NAME], row[GROUP], row[SERVER], row[PROTOCOL], row[LOGIN], row[PASSWORD], row[PORT], row[COMMENT])
+					if not update(row[:name], row[:group], row[:host], row[:protocol], row[:login], row[:password], row[:port], row[:comment])
 						return false
 					end
 				end
@@ -237,7 +228,7 @@ module MPW
 	
 			return true
 		rescue Exception => e 
-			@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
+			@error_msg = "#{I18n.t('error.import.read', file: file)}\n#{e}"
 			return false
 		end
 	
@@ -262,7 +253,7 @@ module MPW
 
 			return result
 		rescue Exception => e 
-			@error_msg = "#{I18n.t('error.import.read', :file => file)}\n#{e}"
+			@error_msg = "#{I18n.t('error.import.read', file: file)}\n#{e}"
 			return false
 		end
 	
@@ -280,9 +271,9 @@ module MPW
 		
 					# Update item
 					data_remote.each do |r|
-						if l[ID] == r[ID]
-							if l[DATE].to_i < r[DATE].to_i
-								update(r[NAME], r[GROUP], r[SERVER], r[PROTOCOL], r[LOGIN], r[PASSWORD], r[PORT], r[COMMENT], l[ID])
+						if l[:id] == r[:id]
+							if l[:date].to_i < r[:date].to_i
+								update(r[:name], r[:group], r[:host], r[:protocol], r[:login], r[:password], r[:port], r[:comment], l[:id])
 							end
 							update = true
 							data_remote.delete_at(j)
@@ -292,16 +283,16 @@ module MPW
 					end
 		
 					# Delete an old item
-					if !update && l[DATE].to_i < last_update
-						remove(l[ID])
+					if !update && l[:date].to_i < last_update
+						remove(l[:id])
 					end
 				end
 			end
 	
 			# Add item
 			data_remote.each do |r|
-				if r[DATE].to_i > last_update
-					update(r[NAME], r[GROUP], r[SERVER], r[PROTOCOL], r[LOGIN], r[PASSWORD], r[PORT], r[COMMENT], r[ID])
+				if r[:date].to_i > last_update
+					update(r[:name], r[:group], r[:host], r[:protocol], r[:login], r[:password], r[:port], r[:comment], r[:id])
 				end
 			end
 	

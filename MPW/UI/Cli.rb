@@ -187,30 +187,30 @@ class Cli
 	# @args: item -> an array with the item information
 	def displayFormat(item)
 		puts '--------------------'
-		puts "Id: #{item[MPW::MPW::ID]}"
-		puts "#{I18n.t('display.name')}: #{item[MPW::MPW::NAME]}"
-		puts "#{I18n.t('display.group')}: #{item[MPW::MPW::GROUP]}"
-		puts "#{I18n.t('display.server')}: #{item[MPW::MPW::SERVER]}"
-		puts "#{I18n.t('display.protocol')}: #{item[MPW::MPW::PROTOCOL]}"
-		puts "#{I18n.t('display.login')}: #{item[MPW::MPW::LOGIN]}"
-		puts "#{I18n.t('display.password')}: #{item[MPW::MPW::PASSWORD]}"
-		puts "#{I18n.t('display.port')}: #{item[MPW::MPW::PORT]}"
-		puts "#{I18n.t('display.comment')}: #{item[MPW::MPW::COMMENT]}"
+		puts "Id: #{item[:id]}"
+		puts "#{I18n.t('display.name')}: #{item[:name]}"
+		puts "#{I18n.t('display.group')}: #{item[:group]}"
+		puts "#{I18n.t('display.server')}: #{item[:host]}"
+		puts "#{I18n.t('display.protocol')}: #{item[:protocol]}"
+		puts "#{I18n.t('display.login')}: #{item[:login]}"
+		puts "#{I18n.t('display.password')}: #{item[:password]}"
+		puts "#{I18n.t('display.port')}: #{item[:port]}"
+		puts "#{I18n.t('display.comment')}: #{item[:comment]}"
 	end
 
 	# Display an item in the alternative format
 	# @args: item -> an array with the item information
 	def displayFormatAlt(item)
-		port = item[MPW::MPW::PORT].nil? ? '' : ":#{item[MPW::MPW::PORT]}"
+		port = item[:port].nil? ? '' : ":#{item[:port]}"
 
-		if item[MPW::MPW::PASSWORD].nil? || item[MPW::MPW::PASSWORD].empty?
-			if item[MPW::MPW::LOGIN].include('@')
-				puts "# #{item[MPW::MPW::ID]} #{item[MPW::MPW::PROTOCOL]}://#{item[MPW::MPW::LOGIN]}@#{item[MPW::MPW::SERVER]}#{port}"
+		if item[:password].nil? || item[:password].empty?
+			if item[:login].include('@')
+				puts "# #{item[:id]} #{item[:protocol]}://#{item[:login]}@#{item[:host]}#{port}"
 			else
-				puts "# #{item[MPW::MPW::ID]} #{item[MPW::MPW::PROTOCOL]}://{#{item[MPW::MPW::LOGIN]}}@#{item[MPW::MPW::SERVER]}#{port}"
+				puts "# #{item[:id]} #{item[:protocol]}://{#{item[:login]}}@#{item[:host]}#{port}"
 			end
 		else
-			puts "# #{item[MPW::MPW::ID]} #{item[MPW::MPW::PROTOCOL]}://{#{item[MPW::MPW::LOGIN]}:#{item[MPW::MPW::PASSWORD]}}@#{item[MPW::MPW::SERVER]}#{port}"
+			puts "# #{item[:id]} #{item[:protocol]}://{#{item[:login]}:#{item[:password]}}@#{item[:host]}#{port}"
 		end
 	end
 
@@ -248,14 +248,14 @@ class Cli
 		if not row.empty?
 			puts I18n.t('form.update.title')
 			puts '--------------------'
-			name     = ask(I18n.t('form.update.name'    , :name => row[MPW::MPW::NAME])).to_s
-			group    = ask(I18n.t('form.update.group'   , :group => row[MPW::MPW::GROUP])).to_s
-			server   = ask(I18n.t('form.update.server'  , :server => row[MPW::MPW::SERVER])).to_s
-			protocol = ask(I18n.t('form.update.protocol', :protocol => row[MPW::MPW::PROTOCOL])).to_s
-			login    = ask(I18n.t('form.update.login'   , :login => row[MPW::MPW::LOGIN])).to_s
+			name     = ask(I18n.t('form.update.name'    , name:     row[:name])).to_s
+			group    = ask(I18n.t('form.update.group'   , group:    row[:group])).to_s
+			server   = ask(I18n.t('form.update.server'  , server:   row[:host])).to_s
+			protocol = ask(I18n.t('form.update.protocol', protocol: row[:protocol])).to_s
+			login    = ask(I18n.t('form.update.login'   , login:    row[:login])).to_s
 			passwd   = ask(I18n.t('form.update.password')).to_s
-			port     = ask(I18n.t('form.update.port'    , :port => row[MPW::MPW::PORT])).to_s
-			comment  = ask(I18n.t('form.update.comment' , :comment => row[MPW::MPW::COMMENT])).to_s
+			port     = ask(I18n.t('form.update.port'    , port:     row[:port])).to_s
+			comment  = ask(I18n.t('form.update.comment' , comment:  row[:comment])).to_s
 				
 			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
 				if @mpw.encrypt
