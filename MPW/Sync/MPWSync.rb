@@ -11,6 +11,7 @@ module MPW
 		require 'i18n'
 		require 'socket'
 		require 'json'
+		require 'timeout'
 		
 		class MPWSync
 		
@@ -37,9 +38,20 @@ module MPW
 				@password = password
 				@suffix   = path
 		
-				TCPSocket.open(@host, @port) do 
-					@enable = true
+				Timeout.timeout(10) do
+					begin
+						TCPSocket.open(@host, @port) do 
+							puts 'testi2'
+							@enable = true
+						end
+                    rescue Errno::ENETUNREACH
+							retry
+					end
 				end
+			rescue Timeout::Error
+				puts 'timeout'
+				@error_msg = "#{I18n.t('error.timeout')}\n#{e}"
+				@enable    = false
 			rescue Exception => e
 				@error_msg = "#{I18n.t('error.sync.connection')}\n#{e}"
 				@enable    = false
@@ -58,9 +70,9 @@ module MPW
 				msg = nil
 				TCPSocket.open(@host, @port) do |socket|
 					send_msg = {:action   => 'get',
-						    :gpg_key  => @gpg_key,
-						    :password => @password,
-						    :suffix   => @suffix}
+					            :gpg_key  => @gpg_key,
+					            :password => @password,
+					            :suffix   => @suffix}
 					
 					socket.puts send_msg.to_json
 					msg = JSON.parse(socket.gets)
