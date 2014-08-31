@@ -52,9 +52,10 @@ module MPW
 							client.puts delete_file(msg)
 						else
 							@log.warning("#{client.peeraddr[3]} is disconnected because unkwnow command")
-							send_msg = {:action      => 'unknown',
-								    :gpg_key     => msg['gpg_key'],
-								    :error       => 'server.error.client.unknown'}
+							send_msg = {action: 'unknown',
+							            gpg_key: msg['gpg_key'],
+							            error:  'server.error.client.unknown'
+							           }
 							client.puts send_msg 
 							close_connection(client)
 						end
@@ -87,20 +88,23 @@ module MPW
 				data        = gpg_data['gpg']['data']
 
 				if is_authorized?(msg['password'], salt, hash)
-					send_msg = {:action      => 'get',
-						    :gpg_key     => msg['gpg_key'],
-						    :data        => data,
-						    :error       => nil}
+					send_msg = {action:  'get',
+					            gpg_key: msg['gpg_key'],
+					            data:    data,
+					            error:   nil
+					           }
 				else
-					send_msg = {:action  => 'get',
-						    :gpg_key => msg['gpg_key'],
-						    :error   => 'server.error.client.no_authorized'}
+					send_msg = {action:  'get',
+					            gpg_key: msg['gpg_key'],
+					            error:   'server.error.client.no_authorized'
+					           }
 				end
 			else
-				send_msg = {:action  => 'get',
-					    :gpg_key => msg['gpg_key'],
-					    :data    => '',
-					    :error   => nil}
+				send_msg = {action:  'get',
+				            gpg_key: msg['gpg_key'],
+				            data:    '',
+				            error:   nil
+				           }
 			end
 
 			return send_msg.to_json
@@ -114,9 +118,10 @@ module MPW
 			data    = msg['data']
 
 			if data.nil? || data.empty?
-				send_msg = {:action  => 'update',
-					    :gpg_key => msg['gpg_key'],
-					    :error   => 'server.error.client.no_data'}
+				send_msg = {action:  'update',
+				            gpg_key: msg['gpg_key'],
+				            error:   'server.error.client.no_data'
+				           }
 				
 				return send_msg.to_json
 			end
@@ -139,26 +144,31 @@ module MPW
 
 			if is_authorized?(msg['password'], salt, hash)
 				begin
-					config = {'gpg' => {'salt'        => salt,
-							    'hash'        => hash,
-							    'data'        => data}}
+					config = {'gpg' => {'salt' => salt,
+					                    'hash' => hash,
+					                    'data' => data
+					                   }
+					         }
 
 					File.open(file_gpg, 'w+') do |file|
 						file << config.to_yaml
 					end
 
-					send_msg = {:action  => 'update',
-						    :gpg_key => msg['gpg_key'],
-						    :error   => nil}
+					send_msg = {action:  'update',
+					            gpg_key: msg['gpg_key'],
+					            error:   nil
+					           }
 				rescue Exception => e
-					send_msg = {:action  => 'update',
-						    :gpg_key => msg['gpg_key'],
-						    :error   => 'server.error.client.unknown'}
+					send_msg = {action:  'update',
+					            gpg_key: msg['gpg_key'],
+					            error:   'server.error.client.unknown'
+					           }
 				end
 			else
-				send_msg = {:action  => 'update',
-					    :gpg_key => msg['gpg_key'],
-					    :error   => 'server.error.client.no_authorized'}
+				send_msg = {action:  'update',
+				            gpg_key: msg['gpg_key'],
+				            error:   'server.error.client.no_authorized'
+				           }
 			end
 			
 			return send_msg.to_json
@@ -184,26 +194,29 @@ module MPW
 				return send_msg.to_json
 			end
 
-			gpg_data  = YAML::load_file(file_gpg)
-			salt      = gpg_data['gpg']['salt']
-			hash      = gpg_data['gpg']['hash']
+			gpg_data = YAML::load_file(file_gpg)
+			salt     = gpg_data['gpg']['salt']
+			hash     = gpg_data['gpg']['hash']
 
 			if is_authorized?(msg['password'], salt, hash)
 				begin
 					File.unlink(file_gpg)
 
-					send_msg = {:action  => 'delete',
-						    :gpg_key => msg['gpg_key'],
-						    :error   => nil}
+					send_msg = {action:  'delete',
+					            gpg_key: msg['gpg_key'],
+					            error:   nil
+					           }
 				rescue Exception => e
-					send_msg = {:action  => 'delete',
-						    :gpg_key => msg['gpg_key'],
-						    :error   => 'server.error.client.unknown'}
+					send_msg = {action:  'delete',
+					            gpg_key: msg['gpg_key'],
+					            error:   'server.error.client.unknown'
+					           }
 				end
 			else
-				send_msg = {:action  => 'delete',
-					    :gpg_key => msg['gpg_key'],
-					    :error   => 'server.error.client.no_authorized'}
+				send_msg = {action:  'delete',
+				            gpg_key: msg['gpg_key'],
+				            error:   'server.error.client.no_authorized'
+				           }
 			end
 			
 			return send_msg.to_json
@@ -296,10 +309,12 @@ module MPW
 			timeout  = ask(I18n.t('form.setup.timeout')).to_s
 
 			config = {'config' => {'host'     => host,
-					       'port'     => port,
-					       'data_dir' => data_dir,
-					       'log_file' => log_file,
-					       'timeout'  => timeout}}
+			                       'port'     => port,
+			                       'data_dir' => data_dir,
+			                       'log_file' => log_file,
+			                       'timeout'  => timeout
+			                      }
+			         }
 
 			File.open(file_config, 'w') do |file|
 				file << config.to_yaml
