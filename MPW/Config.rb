@@ -89,7 +89,9 @@ module MPW
 			                       'sync_user'   => sync_user,
 			                       'sync_pwd'    => sync_pwd,
 			                       'sync_path'   => sync_path,
-			                       'last_update' => 0 }}
+			                       'last_update' => 0 
+			                      }
+			         }
 	
 			Dir.mkdir("#{@config_dir}/conf", 700)
 			Dir.mkdir("#{@config_dir}/db", 700)
@@ -199,7 +201,7 @@ module MPW
 						next
 					end
 
-					@error_msg = I18n.t('error.config.no_key_public', :key => k)
+					@error_msg = I18n.t('error.config.no_key_public', key: k)
 					return false
 				end
 			end
@@ -221,7 +223,9 @@ module MPW
 			                       'sync_user'   => @sync_user,
 			                       'sync_pwd'    => @sync_pwd,
 			                       'sync_path'   => @sync_path,
-			                       'last_update' => Time.now.to_i }}
+			                       'last_update' => Time.now.to_i
+			                      }
+		           }
 	
 			File.open(@file_config, 'w') do |file|
 				file << config.to_yaml
