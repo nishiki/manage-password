@@ -41,7 +41,6 @@ module MPW
 				Timeout.timeout(10) do
 					begin
 						TCPSocket.open(@host, @port) do 
-							puts 'testi2'
 							@enable = true
 						end
                     rescue Errno::ENETUNREACH
