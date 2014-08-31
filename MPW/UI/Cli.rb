@@ -74,10 +74,10 @@ class Cli
 	def setup(lang)
 		puts I18n.t('form.setup.title')
 		puts '--------------------'
-		language    = ask(I18n.t('form.setup.lang', :lang => lang)).to_s
+		language    = ask(I18n.t('form.setup.lang', lang: lang)).to_s
 		key         = ask(I18n.t('form.setup.gpg_key')).to_s
 		share_keys  = ask(I18n.t('form.setup.share_gpg_keys')).to_s
-		file_gpg    = ask(I18n.t('form.setup.gpg_file', :home => @conf.dir_home)).to_s
+		file_gpg    = ask(I18n.t('form.setup.gpg_file', home: @conf.dir_home)).to_s
 		timeout_pwd = ask(I18n.t('form.setup.timeout')).to_s
 		sync_type   = ask(I18n.t('form.setup.sync_type')).to_s
 
@@ -282,7 +282,7 @@ class Cli
 			if result.length > 0
 				displayFormat(result)
 
-				confirm = ask("#{I18n.t('form.delete.ask', :id => id)} (y/N) ").to_s
+				confirm = ask("#{I18n.t('form.delete.ask', id: id)} (y/N) ").to_s
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
 					force = true
 				end
@@ -295,7 +295,7 @@ class Cli
 			if @mpw.remove(id)
 				if @mpw.encrypt
 					sync
-					puts I18n.t('form.delete.valid', :id => id)
+					puts I18n.t('form.delete.valid', id: id)
 				else
 					puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}"
 				end
@@ -328,7 +328,7 @@ class Cli
 					displayFormat(r)
 				end
 
-				confirm = ask("#{I18n.t('form.import.ask', :file => file)} (y/N) ").to_s
+				confirm = ask("#{I18n.t('form.import.ask', file: file)} (y/N) ").to_s
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
 					force = true
 				end
