@@ -54,6 +54,7 @@ module MPW
 				end
 			end
 	
+			recipients = []
 			recipients.push(@key)
 			if !@share_keys.nil?
 				@share_keys.split.each { |k| recipients.push(k) }
