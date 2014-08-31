@@ -37,7 +37,7 @@ module MPW
 				@path     = path
 				@port     = port.instance_of?(Integer) ? 22 : port
 					
-				Net::SSH.start(@host, @user, :password => @password, :port => @port) do
+				Net::SSH.start(@host, @user, password: @password, port: @port) do
 					@enable = true
 				end
 			rescue Exception => e
@@ -56,7 +56,7 @@ module MPW
 				end
 				
 				tmp_file = tmpfile
-				Net::SCP.start(@host, @user, :password => @password, :port => @port) do |scp|
+				Net::SCP.start(@host, @user, password: @password, port: @port) do |scp|
 					scp.download!(@path, tmp_file)
 				end
 			
@@ -86,7 +86,7 @@ module MPW
 					file << data
 				end
 
-				Net::SCP.start(@host, @user, :password => @password, :port => @port) do |scp|
+				Net::SCP.start(@host, @user, password: @password, port: @port) do |scp|
 					scp.upload!(tmp_file, @path)
 				end
 

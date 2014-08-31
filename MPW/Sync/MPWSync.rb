@@ -68,10 +68,11 @@ module MPW
 				
 				msg = nil
 				TCPSocket.open(@host, @port) do |socket|
-					send_msg = {:action   => 'get',
-					            :gpg_key  => @gpg_key,
-					            :password => @password,
-					            :suffix   => @suffix}
+					send_msg = {action:  'get',
+					            gpg_key:  @gpg_key,
+					            password: @password,
+					            suffix:   @suffix
+					           }
 					
 					socket.puts send_msg.to_json
 					msg = JSON.parse(socket.gets)
@@ -112,11 +113,12 @@ module MPW
 		
 				msg = nil
 				TCPSocket.open(@host, @port) do |socket|
-					send_msg = {:action   => 'update',
-						    :gpg_key  => @gpg_key,
-						    :password => @password,
-						    :suffix   => @suffix,
-						    :data     => data}
+					send_msg = {action:   'update',
+					            gpg_key:  @gpg_key,
+					            password: @password,
+					            suffix:   @suffix,
+					            data:     data
+					           }
 					
 					socket.puts send_msg.to_json
 					msg = JSON.parse(socket.gets)
