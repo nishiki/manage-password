@@ -26,7 +26,7 @@ module MPW
 		# @args: password -> the GPG key password
 		# @rtrn: true if data has been decrypted
 		def decrypt(passwd=nil)
-			@data = {}
+			@data = []
 	
 			if File.exist?(@file_gpg)
 				crypto = GPGME::Crypto.new(armor: true)
@@ -54,9 +54,6 @@ module MPW
 				end
 			end
 	
-			puts 'test'
-			puts data_to_encrypt
-			recipients = []
 			recipients.push(@key)
 			if !@share_keys.nil?
 				@share_keys.split.each { |k| recipients.push(k) }
@@ -196,13 +193,13 @@ module MPW
 		# @args: file -> a string to match
 		# @rtrn: true if export work
 		def export(file)
-			File.open(file, 'w+') do |file|
-				@data.each do |row|
-					row.delete_at(:id).delete_at(:date)
-					file << row.to_csv
+			CSV.open(file, 'w', write_headers: true,
+			                    headers: ['name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment']) do |csv|
+				@data.each do |r|
+					csv << [r[:name], r[:group], r[:protocol], r[:host], r[:login], r[:password], r[:port], r[:comment]]
 				end
 			end
-	
+
 			return true
 		rescue Exception => e 
 			@error_msg = "#{I18n.t('error.export.write', file: file)}\n#{e}"
@@ -213,16 +210,9 @@ module MPW
 		# @args: file -> path to file import
 		# @rtrn: true if the import work
 		def import(file)
-			data_new = IO.read(file)
-			data_new.lines do |line|
-				if not line =~ /(.*,){6}/
-					@error_msg = I18n.t('error.import.bad_format')
+			CSV.foreach(file, {headers: true, header_converters: :symbol}) do |row|
+				if not update(row[:name], row[:group], row[:host], row[:protocol], row[:login], row[:password], row[:port], row[:comment])
 					return false
-				else
-					row = line.parse_csv.unshift(0)
-					if not update(row[:name], row[:group], row[:host], row[:protocol], row[:login], row[:password], row[:port], row[:comment])
-						return false
-					end
 				end
 			end
 	
@@ -237,18 +227,8 @@ module MPW
 		# @rtrn: an array with the items to import, if there is an error return false
 		def import_preview(file)
 			result = []
-			id = 0
-
-			data = IO.read(file)
-			data.lines do |line|
-				if not line =~ /(.*,){6}/
-					@error_msg = I18n.t('error.import.bad_format')
-					return false
-				else
-					result.push(line.parse_csv.unshift(id))
-				end
-
-				id += 1
+			CSV.foreach(file, {headers: true, header_converters: :symbol}) do |row|
+				result << row
 			end
 
 			return result
