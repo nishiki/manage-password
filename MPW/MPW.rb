@@ -9,6 +9,7 @@ module MPW
 	require 'gpgme'
 	require 'csv'
 	require 'i18n'
+	require 'fileutils'
 	
 	class MPW
 	
