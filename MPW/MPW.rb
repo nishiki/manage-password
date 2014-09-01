@@ -44,6 +44,8 @@ module MPW
 		# Encrypt a file
 		# @rtrn: true if the file has been encrypted
 		def encrypt
+			FileUtils.cp(@file_gpg, "#{@file_gpg}.bk")
+
 			crypto = GPGME::Crypto.new(armor: true)
 			file_gpg = File.open(@file_gpg, 'w+')
 	
@@ -63,9 +65,11 @@ module MPW
 			crypto.encrypt(data_to_encrypt, recipients: recipients, output: file_gpg)
 			file_gpg.close
 	
+			FileUtils.rm("#{@file_gpg}.bk")
 			return true
 		rescue Exception => e 
 			@error_msg = "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
+			FileUtils.mv("#{@file_gpg}.bk", @file_gpg)
 			return false
 		end
 		
