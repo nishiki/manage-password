@@ -65,7 +65,7 @@ end.parse!
 config      = MPW::Config.new(options[:config])
 check_error = config.checkconfig
 
-cli         = CliSSH.new(lang, config)
+cli         = CliSSH.new(config)
 cli.login   = options[:login]
 cli.server  = options[:server]
 cli.port    = options[:port]

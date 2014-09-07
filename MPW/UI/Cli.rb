@@ -17,7 +17,7 @@ class Cli
 	# Constructor
 	# @args: lang -> the operating system language
 	#        config_file -> a specify config file
-	def initialize(lang, config)
+	def initialize(config)
 		@config = config
 	end
 
