@@ -10,7 +10,7 @@ require 'locale'
 require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
-require "#{APP_ROOT}/MPW/Server.rb"
+require "#{APP_ROOT}/lib/Server.rb"
 
 # --------------------------------------------------------- #
 # Set local

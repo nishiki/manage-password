@@ -10,9 +10,9 @@ require 'locale'
 require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
-require "#{APP_ROOT}/MPW/UI/Cli"
-require "#{APP_ROOT}/MPW/Config"
-require "#{APP_ROOT}/MPW/MPW"
+require "#{APP_ROOT}/lib/UI/Cli"
+require "#{APP_ROOT}/lib/Config"
+require "#{APP_ROOT}/lib/MPW"
 
 # --------------------------------------------------------- #
 # Set local

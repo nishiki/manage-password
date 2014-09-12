@@ -10,8 +10,8 @@ require 'locale'
 require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
-require "#{APP_ROOT}/MPW/UI/CliSSH"
-require "#{APP_ROOT}/MPW/Config"
+require "#{APP_ROOT}/lib/UI/CliSSH"
+require "#{APP_ROOT}/lib/Config"
 
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
