@@ -7,7 +7,7 @@ dep-ubuntu:
 
 install:
 	mkdir -p /usr/local/mpw
-	cp -r ./MPW /usr/local/mpw/
+	cp -r ./lib /usr/local/mpw/
 	cp -r ./i18n /usr/local/mpw/
 	cp ./mpw /usr/local/mpw/
 	ln -snf /usr/local/mpw/mpw /usr/local/bin/
