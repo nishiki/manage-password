@@ -7,7 +7,6 @@ require 'rubygems'
 require 'optparse'
 require 'pathname'
 require 'locale'
-require 'set'
 require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
