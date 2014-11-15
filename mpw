@@ -7,6 +7,7 @@ require 'rubygems'
 require 'optparse'
 require 'pathname'
 require 'locale'
+require 'set'
 require 'i18n'
 
 APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
@@ -81,6 +82,11 @@ OptionParser.new do |opts|
 
 	opts.on('-e', '--export FILE', I18n.t('option.export')) do |file|
 		options[:export] = file
+		options[:type]   = :csv
+	end
+
+	opts.on('-t', '--type TYPE', I18n.t('option.type')) do |type|
+		options[:type] = type.to_sym
 	end
 
 	opts.on('-i', '--import FILE', I18n.t('option.import')) do |file|
@@ -143,7 +149,7 @@ elsif not options[:add].nil?
 
 # Export
 elsif not options[:export].nil?
-	cli.export(options[:export])
+	cli.export(options[:export], options[:type])
 
 # Add a new item
 elsif not options[:import].nil?

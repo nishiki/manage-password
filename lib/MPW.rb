@@ -196,14 +196,43 @@ module MPW
 		end
 	
 		# Export to csv
-		# @args: file -> a string to match
+		# @args: file -> file where you export the data
+		#        type -> data type
 		# @rtrn: true if export work
-		def export(file)
-			CSV.open(file, 'w', write_headers: true,
-			                    headers: ['name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment']) do |csv|
+		def export(file, type=:csv)
+			case type
+			when :csv
+					CSV.open(file, 'w', write_headers: true,
+										headers: ['name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment']) do |csv|
+						@data.each do |r|
+							csv << [r[:name], r[:group], r[:protocol], r[:host], r[:login], r[:password], r[:port], r[:comment]]
+						end
+					end
+			when :yaml
+				data = {}
+
+				i = 0
 				@data.each do |r|
-					csv << [r[:name], r[:group], r[:protocol], r[:host], r[:login], r[:password], r[:port], r[:comment]]
+					data.merge!({i => {'id'       => r[:id],
+					                   'name'     => r[:name],
+					                   'group'    => r[:group],
+					                   'protocol' => r[:protocol],
+					                   'host'     => r[:host],
+					                   'login'    => r[:login],
+					                   'password' => r[:password],
+					                   'port'     => r[:port],
+					                   'comment'  => r[:comment]
+					                  }
+					            }
+					          )
+
+					i += 1
 				end
+
+				File.open(file, 'w') {|f| f << data.to_yaml}
+			else
+				@error_msg = "#{I18n.t('error.export.unknown_type', type: type)}"
+				return false
 			end
 
 			return true

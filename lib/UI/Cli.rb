@@ -307,8 +307,8 @@ class Cli
 
 	# Export the items in a CSV file
 	# @args: file -> the destination file
-	def export(file)
-		if @mpw.export(file)
+	def export(file, type)
+		if @mpw.export(file, type)
 			puts "The export in #{file} is succesfull!"
 		else
 			puts "#{I18n.t('display.error')} #17: #{@mpw.error_msg}"

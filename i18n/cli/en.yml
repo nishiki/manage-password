@@ -13,6 +13,7 @@ en:
     delete:
       id_no_exist: "Can't delete the item %{id}, it doesn't exist!"
     export:
+      unknown_type: "The data type %{type} is unknown!"
       write: "Can't export, unable to write in %{file}!"
     gpg_file: 
       decrypt: "Can't decrypt file!"
@@ -42,6 +43,7 @@ en:
     setup: "Create a new configuration file" 
     protocol: "Select the items with the specified protocol"
     export: "Export all items in a CSV file"
+    type: "Data's type export file [csv|yaml]"
     import: "Import item since a CSV file"
     force: "Force an action"
     format: "Change the display items format by an alternative format"
