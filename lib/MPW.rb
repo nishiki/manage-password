@@ -59,7 +59,7 @@ module MPW
 	
 			recipients = []
 			recipients.push(@key)
-			if !@share_keys.nil?
+			if not @share_keys.nil?
 				@share_keys.split.each { |k| recipients.push(k) }
 			end
 
@@ -81,7 +81,7 @@ module MPW
 		def search(search='', group=nil, protocol=nil)
 			result = []
 	
-			if !search.nil?
+			if not search.nil?
 				search = search.downcase
 			end
 			search = search.force_encoding('ASCII-8BIT')
@@ -91,8 +91,8 @@ module MPW
 				server  = row[:host].nil?  ? nil : row[:host].downcase
 				comment = row[:comment].nil? ? nil : row[:comment].downcase
 	
-				if name =~ /^.*#{search}.*$/  || server =~ /^.*#{search}.*$/ || comment =~ /^.*#{search}.*$/ 
-					if (protocol.nil? || protocol.eql?(row[:protocol])) && (group.nil? || group.eql?(row[:group]))
+				if name =~ /^.*#{search}.*$/ or server =~ /^.*#{search}.*$/ or comment =~ /^.*#{search}.*$/ 
+					if (protocol.nil? or protocol.eql?(row[:protocol])) and (group.nil? or group.eql?(row[:group]))
 						result.push(row)
 					end
 				end
@@ -146,15 +146,15 @@ module MPW
 			row_update        = {}
 			row_update[:date] = Time.now.to_i
 	
-			row_update[:id]       = id.nil?       || id.empty?       ? MPW.password(16)  : id
-			row_update[:name]     = name.nil?     || name.empty?     ? row[:name]        : name
-			row_update[:group]    = group.nil?    || group.empty?    ? row[:group]       : group
-			row_update[:host]     = server.nil?   || server.empty?   ? row[:host]        : server
-			row_update[:protocol] = protocol.nil? || protocol.empty? ? row[:protocol]    : protocol
-			row_update[:login]    = login.nil?    || login.empty?    ? row[:login]       : login
-			row_update[:password] = passwd.nil?   || passwd.empty?   ? row[:password]    : passwd
-			row_update[:port]     = port.nil?     || port.empty?     ? row[:port]        : port
-			row_update[:comment]  = comment.nil?  || comment.empty?  ? row[:comment]     : comment
+			row_update[:id]       = id.nil?       or id.empty?       ? MPW.password(16)  : id
+			row_update[:name]     = name.nil?     or name.empty?     ? row[:name]        : name
+			row_update[:group]    = group.nil?    or group.empty?    ? row[:group]       : group
+			row_update[:host]     = server.nil?   or server.empty?   ? row[:host]        : server
+			row_update[:protocol] = protocol.nil? or protocol.empty? ? row[:protocol]    : protocol
+			row_update[:login]    = login.nil?    or login.empty?    ? row[:login]       : login
+			row_update[:password] = passwd.nil?   or passwd.empty?   ? row[:password]    : passwd
+			row_update[:port]     = port.nil?     or port.empty?     ? row[:port]        : port
+			row_update[:comment]  = comment.nil?  or comment.empty?  ? row[:comment]     : comment
 			
 			row_update[:name]     = row_update[:name].nil?     ? nil : row_update[:name].force_encoding('ASCII-8BIT')
 			row_update[:group]    = row_update[:group].nil?    ? nil : row_update[:group].force_encoding('ASCII-8BIT')
@@ -164,7 +164,7 @@ module MPW
 			row_update[:password] = row_update[:password].nil? ? nil : row_update[:password].force_encoding('ASCII-8BIT')
 			row_update[:comment]  = row_update[:comment].nil?  ? nil : row_update[:comment].force_encoding('ASCII-8BIT')
 	
-			if row_update[:name].nil? || row_update[:name].empty?
+			if row_update[:name].nil? or row_update[:name].empty?
 				@error_msg = I18n.t('error.update.name_empty')
 				return false
 			end
@@ -277,9 +277,9 @@ module MPW
 		#        last_update -> last update
 		# @rtrn: false if data_remote is nil
 		def sync(data_remote, last_update)
-			if !data_remote.instance_of?(Array)
+			if not data_remote.instance_of?(Array)
 				return false
-			else !data_remote.nil? && !data_remote.empty?
+			else not data_remote.nil? and not data_remote.empty?
 				@data.each do |l|
 					j = 0
 					update = false
@@ -298,7 +298,7 @@ module MPW
 					end
 		
 					# Delete an old item
-					if !update && l[:date].to_i < last_update
+					if not update and l[:date].to_i < last_update
 						remove(l[:id])
 					end
 				end

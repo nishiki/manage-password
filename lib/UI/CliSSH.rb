@@ -22,7 +22,7 @@ class CliSSH < Cli
 
 				passwd = r[:password]
 
-				if port.nil? || port.empty?
+				if port.nil? and port.empty?
 					port = 22
 				end
 

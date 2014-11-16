@@ -43,7 +43,7 @@ module MPW
 			end
 			
 			@file_config = "#{@dir_config}/conf/default.cfg"
-			if !file_config.nil? && !file_config.empty?
+			if not file_config.nil? and not file_config.empty?
 				@file_config = file_config
 			end
 		end
@@ -68,7 +68,7 @@ module MPW
 				return false
 			end
 
-			if !check_public_gpg_key(share_keys)
+			if not check_public_gpg_key(share_keys)
 				return false
 			end
 			
@@ -112,10 +112,10 @@ module MPW
 		#        expire -> the time of expire to GPG key
 		# @rtrn: true if the GPG key is create, else false
 		def setup_gpg_key(password, name, length = 2048, expire = 0)
-			if name.nil? || name.empty?
+			if name.nil? or name.empty?
 				@error_msg = "#{I18n.t('error.config.genkey_gpg.name')}"
 				return false
-			elsif password.nil? || password.empty?
+			elsif password.nil? or password.empty?
 				@error_msg = "#{I18n.t('error.config.genkey_gpg.password')}"
 				return false
 			end
@@ -159,7 +159,7 @@ module MPW
 			@sync_path   = config['config']['sync_path']
 			@last_update = config['config']['last_update'].to_i
 
-			if @key.empty? || @file_gpg.empty? 
+			if @key.empty? or @file_gpg.empty? 
 				@error_msg = I18n.t('error.config.check')
 				return false
 			end
@@ -190,7 +190,7 @@ module MPW
 			ctx = GPGME::Ctx.new
 
 			share_keys = share_keys.nil? ? '' : share_keys
-			if !share_keys.empty?
+			if not share_keys.empty?
 				share_keys.split.each do |k|
 					if not k =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 						@error_msg = I18n.t('error.config.key_bad_format')

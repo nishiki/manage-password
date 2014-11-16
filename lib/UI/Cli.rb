@@ -24,7 +24,7 @@ class Cli
 	# Sync the data with the server
 	# @rtnr: true if the synchro is finish
 	def sync
-		if !defined?(@sync)
+		if not defined?(@sync)
 			case @config.sync_type
 			when 'mpw'
 				require "#{APP_ROOT}/lib/Sync/MPWSync"
@@ -40,21 +40,21 @@ class Cli
 			end
 		end
 		
-		if !@config.sync_host.nil? && !@config.sync_port.nil?
-			if !@sync.connect(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
+		if  not @config.sync_host.nil? and not @config.sync_port.nil?
+			if not @sync.connect(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
 				puts "#{I18n.t('display.error')} #1: #{@sync.error_msg}"
 			end
 		end
 
 		if @sync.enable
-			if !@mpw.sync(@sync.get(@passwd), @config.last_update)
+			if not @mpw.sync(@sync.get(@passwd), @config.last_update)
 				puts "#{I18n.t('display.error')} #2: #{@mpw.error_msg}"  if !@mpw.error_msg.nil?
 				puts "#{I18n.t('display.error')} #3: #{@sync.error_msg}" if !@sync.error_msg.nil?
-			elsif !@sync.update(File.open(@config.file_gpg).read)
+			elsif not @sync.update(File.open(@config.file_gpg).read)
 				puts "#{I18n.t('display.error')} #4: #{@sync.error_msg}"
-			elsif !@config.set_last_update
+			elsif not @config.set_last_update
 				puts "#{I18n.t('display.error')} #5: #{@config.error_msg}"
-			elsif !@mpw.encrypt
+			elsif not @mpw.encrypt
 				puts "#{I18n.t('display.error')} #6: #{@mpw.error_msg}"
 			else
 				return true
@@ -89,17 +89,17 @@ class Cli
 			sync_path   = ask(I18n.t('form.setup.sync_path')).to_s
 		end
 		
-		if language.nil? || language.empty?
+		if language.nil? or language.empty?
 			language = lang
 		end
 		I18n.locale = language.to_sym
 
-		sync_type = sync_type.nil? || sync_type.empty? ? nil : sync_type
-		sync_host = sync_host.nil? || sync_host.empty? ? nil : sync_host
-		sync_port = sync_port.nil? || sync_port.empty? ? nil : sync_port.to_i
-		sync_user = sync_user.nil? || sync_user.empty? ? nil : sync_user
-		sync_pwd  = sync_pwd.nil?  || sync_pwd.empty?  ? nil : sync_pwd
-		sync_path = sync_path.nil? || sync_path.empty? ? nil : sync_path
+		sync_type = sync_type.nil? or sync_type.empty? ? nil : sync_type
+		sync_host = sync_host.nil? or sync_host.empty? ? nil : sync_host
+		sync_port = sync_port.nil? or sync_port.empty? ? nil : sync_port.to_i
+		sync_user = sync_user.nil? or sync_user.empty? ? nil : sync_user
+		sync_pwd  = sync_pwd.nil?  or sync_pwd.empty?  ? nil : sync_pwd
+		sync_path = sync_path.nil? or sync_path.empty? ? nil : sync_path
 
 		if @config.setup(key, share_keys, language, file_gpg, timeout_pwd, sync_type, sync_host, sync_port, sync_user, sync_pwd, sync_path)
 			puts I18n.t('form.setup.valid')
@@ -120,7 +120,7 @@ class Cli
 		puts '--------------------'
 		ask      = ask(I18n.t('form.setup_gpg_key.ask')).to_s
 		
-		if !['Y', 'y', 'O', 'o'].include?(ask)
+		if not ['Y', 'y', 'O', 'o'].include?(ask)
 			puts I18n.t('form.setup_gpg_key.no_create')
 			exit 2
 		end
@@ -138,8 +138,8 @@ class Cli
 		expire   = ask(I18n.t('form.setup_gpg_key.expire')).to_s
 		password = password.to_s
 
-		length = length.nil? || length.empty? ? 2048 : length.to_i
-		expire = expire.nil? || expire.empty? ? 0    : expire.to_i
+		length = length.nil? or length.empty? ? 2048 : length.to_i
+		expire = expire.nil? or expire.empty? ? 0    : expire.to_i
 
 		puts I18n.t('form.setup_gpg_key.wait')
 		
@@ -153,12 +153,12 @@ class Cli
 
 	# Request the GPG password and decrypt the file
 	def decrypt
-		if !defined?(@mpw)
+		if not defined?(@mpw)
 			@mpw = MPW::MPW.new(@config.file_gpg, @config.key, @config.share_keys)
 		end
 
 		@passwd = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
-		if !@mpw.decrypt(@passwd)
+		if not @mpw.decrypt(@passwd)
 			puts "#{I18n.t('display.error')} #11: #{@mpw.error_msg}"
 			exit 2
 		end
@@ -203,7 +203,7 @@ class Cli
 	def displayFormatAlt(item)
 		port = item[:port].nil? ? '' : ":#{item[:port]}"
 
-		if item[:password].nil? || item[:password].empty?
+		if item[:password].nil? or item[:password].empty?
 			if item[:login].include('@')
 				puts "# #{item[:id]} #{item[:protocol]}://#{item[:login]}@#{item[:host]}#{port}"
 			else
@@ -338,7 +338,7 @@ class Cli
 		end
 
 		if force
-			if @mpw.import(file) && @mpw.encrypt
+			if @mpw.import(file) and @mpw.encrypt
 				sync
 				puts I18n.t('form.import.valid')
 			else
@@ -371,21 +371,21 @@ class Cli
 
 			case command[0]
 			when 'display', 'show', 'd', 's'
-				if !command[1].nil? && !command[1].empty?
+				if not command[1].nil? and not command[1].empty?
 					display(command[1], group, command[2])
 				end
 			when 'add', 'a'
 				add
 			when 'update', 'u'
-				if !command[1].nil? && !command[1].empty?
+				if not command[1].nil? and not command[1].empty?
 					update(command[1])
 				end
 			when 'remove', 'delete', 'r', 'd'
-				if !command[1].nil? && !command[1].empty?
+				if not command[1].nil? and not command[1].empty?
 					remove(command[1])
 				end
 			when 'group', 'g'
-				if !command[1].nil? && !command[1].empty?
+				if not command[1].nil? and not command[1].empty?
 					group = command[1]
 				else
 					group = nil
@@ -404,7 +404,7 @@ class Cli
 				puts I18n.t('interactive.goodbye')
 				break
 			else
-				if !command[0].nil? && !command[0].empty?
+				if not command[0].nil? and not command[0].empty?
 					puts I18n.t('interactive.unknown_command')
 				end
 			end
