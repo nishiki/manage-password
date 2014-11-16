@@ -30,11 +30,9 @@ module MPW
 					while true do
 						msg = get_client_msg(client)
 
-						if !msg
-							next
-						end
+						next if not msg
 						
-						if msg['gpg_key'].nil? || msg['gpg_key'].empty? || msg['password'].nil? || msg['password'].empty?
+						if msg['gpg_key'].nil? or msg['gpg_key'].empty? or msg['password'].nil? or msg['password'].empty?
 							@log.warning("#{client.peeraddr[3]} is disconnected because no password or no gpg_key")
 							close_connection(client)
 							next
@@ -75,7 +73,7 @@ module MPW
 		def get_file(msg)
 			gpg_key = msg['gpg_key'].sub('@', '_')
 
-			if msg['suffix'].nil? || msg['suffix'].empty?
+			if msg['suffix'].nil? or msg['suffix'].empty?
 				file_gpg = "#{@data_dir}/#{gpg_key}.yml"
 			else
 				file_gpg = "#{@data_dir}/#{gpg_key}-#{msg['suffix']}.yml"
@@ -117,7 +115,7 @@ module MPW
 			gpg_key = msg['gpg_key'].sub('@', '_')
 			data    = msg['data']
 
-			if data.nil? || data.empty?
+			if data.nil? or data.empty?
 				send_msg = {action:  'update',
 				            gpg_key: msg['gpg_key'],
 				            error:   'server.error.client.no_data'
@@ -126,7 +124,7 @@ module MPW
 				return send_msg.to_json
 			end
 
-			if msg['suffix'].nil? || msg['suffix'].empty?
+			if msg['suffix'].nil? or msg['suffix'].empty?
 				file_gpg = "#{@data_dir}/#{gpg_key}.yml"
 			else
 				file_gpg = "#{@data_dir}/#{gpg_key}-#{msg['suffix']}.yml"
@@ -180,16 +178,17 @@ module MPW
 		def delete_file(msg)
 			gpg_key = msg['gpg_key'].sub('@', '_')
 
-			if msg['suffix'].nil? || msg['suffix'].empty?
+			if msg['suffix'].nil? or msg['suffix'].empty?
 				file_gpg = "#{@data_dir}/#{gpg_key}.yml"
 			else
 				file_gpg = "#{@data_dir}/#{gpg_key}-#{msg['suffix']}.yml"
 			end
 
-			if !File.exist?(file_gpg)
+			if not File.exist?(file_gpg)
 				send_msg = {:action  => 'delete',
-					    :gpg_key => msg['gpg_key'],
-					    :error   => nil}
+				            :gpg_key => msg['gpg_key'],
+				            :error   => nil
+				           }
 
 				return send_msg.to_json
 			end
@@ -264,19 +263,19 @@ module MPW
 			@log_file = config['config']['log_file']
 			@timeout  = config['config']['timeout'].to_i
 
-			if @host.empty? || @port <= 0 || @data_dir.empty? 
+			if @host.empty? or @port <= 0 or @data_dir.empty? 
 				puts I18n.t('checkconfig.fail')
 				puts I18n.t('checkconfig.empty')
 				return false
 			end
 
-			if !Dir.exist?(@data_dir)
+			if not Dir.exist?(@data_dir)
 				puts I18n.t('checkconfig.fail')
 				puts I18n.t('checkconfig.datadir')
 				return false
 			end
 
-			if @log_file.nil? || @log_file.empty?
+			if @log_file.nil? or @log_file.empty?
 				puts I18n.t('checkconfig.fail')
 				puts I18n.t('checkconfig.log_file_empty')
 				return false
@@ -330,7 +329,7 @@ module MPW
 		# @args: length -> the length salt
 		# @rtrn: a random string
 		def generate_salt(length=4)
-			if length.to_i <= 0 || length.to_i > 16
+			if length.to_i <= 0 or length.to_i > 16
 				length = 4
 			else
 				length = length.to_i

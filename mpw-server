@@ -18,7 +18,7 @@ require "#{APP_ROOT}/lib/Server.rb"
 
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
-if defined? I18n.enforce_available_locales
+if defined?(I18n.enforce_available_locales)
 	I18n.enforce_available_locales = true
 end
 
@@ -57,7 +57,7 @@ end.parse!
 # Main
 # --------------------------------------------------------- #
 
-if options[:config].nil? || options[:config].empty?
+if options[:config].nil? or options[:config].empty?
 	puts "#{I18n.t('option.usage')}: mpw-server -c CONFIG [options]"
 	exit 2
 end
