@@ -51,9 +51,7 @@ module MPW
 			# @args: gpg_password -> the gpg password
 			# @rtrn: nil if nothing data or error
 			def get(gpg_password)
-				if !@enable
-					return nil
-				end
+				return nil if not @enable
 				
 				tmp_file = tmpfile
 				Net::FTP.open(@host) do |ftp|
@@ -62,7 +60,7 @@ module MPW
 				end
 			
 				mpw = MPW.new(tmp_file)
-				if !mpw.decrypt(gpg_password)
+				if not mpw.decrypt(gpg_password)
 					@error_msg = mpw.error_msg
 					return nil
 				end
@@ -78,9 +76,7 @@ module MPW
 			# @args: data -> the data to send on server
 			# @rtrn: false if there is a problem
 			def update(data)
-				if !@enable
-					return true
-				end
+				return true if not @enable
 		
 				tmp_file = tmpfile
 				File.open(tmp_file, "w") do |file|

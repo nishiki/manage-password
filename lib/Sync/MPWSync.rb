@@ -33,7 +33,7 @@ module MPW
 			# @rtrn: false if the connection fail
 			def connect(host, user, password, path, port=nil)
 				@host     = host
-				@port     = !port.instance_of?(Integer) ? 2201 : port
+				@port     = not port.instance_of?(Integer) ? 2201 : port
 				@gpg_key  = user
 				@password = password
 				@suffix   = path
@@ -62,9 +62,7 @@ module MPW
 			# @args: gpg_password -> the gpg password
 			# @rtrn: nil if nothing data or error
 			def get(gpg_password)
-				if !@enable
-					return nil
-				end
+				return nil if not @enable
 				
 				msg = nil
 				TCPSocket.open(@host, @port) do |socket|
@@ -78,13 +76,13 @@ module MPW
 					msg = JSON.parse(socket.gets)
 				end
 
-				if !defined?(msg['error'])
+				if not defined?(msg['error'])
 					@error_msg = I18n.t('error.sync.communication')
 					return nil
-				elsif !msg['error'].nil?
+				elsif not msg['error'].nil?
 					@error_msg = I18n.t(msg['error'])
 					return nil
-				elsif msg['data'].nil? || msg['data'].empty?
+				elsif msg['data'].nil? or msg['data'].empty?
 					return []
 				else
 					tmp_file = tmpfile
@@ -93,7 +91,7 @@ module MPW
 					end
 					
 					mpw = MPW.new(tmp_file)
-					if !mpw.decrypt(gpg_password)
+					if not mpw.decrypt(gpg_password)
 						@error_msg = mpw.error_msg
 						return nil
 					end
@@ -107,9 +105,7 @@ module MPW
 			# @args: data -> the data to send on server
 			# @rtrn: false if there is a problem
 			def update(data)
-				if !@enable
-					return true
-				end
+				return true if not @enable
 		
 				msg = nil
 				TCPSocket.open(@host, @port) do |socket|
@@ -124,7 +120,7 @@ module MPW
 					msg = JSON.parse(socket.gets)
 				end
 		
-				if !defined?(msg['error'])
+				if not defined?(msg['error'])
 					@error_msg = I18n.t('error.sync.communication')
 					return false
 				elsif msg['error'].nil?
