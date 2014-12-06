@@ -172,7 +172,7 @@ module MPW
 		# @args: file -> file where you export the data
 		#        type -> udata type
 		# @rtrn: true if export work
-		def export(file, type=:csv)
+		def export(file, type=:yaml)
 			case type
 			when :csv
 					CSV.open(file, 'w', write_headers: true,
@@ -200,7 +200,7 @@ module MPW
 		# @args: file -> path to file import
 		#        type -> udata type
 		# @rtrn: true if the import work
-		def import(file, type=:csv)
+		def import(file, type=:yaml)
 			case type
 			when :csv
 				CSV.foreach(file, {headers: true}) do |row|

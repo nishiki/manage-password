@@ -307,7 +307,7 @@ class Cli
 
 	# Export the items in a CSV file
 	# @args: file -> the destination file
-	def export(file, type)
+	def export(file, type=:yaml)
 		if @mpw.export(file, type)
 			puts "The export in #{file} is succesfull!"
 		else
@@ -319,10 +319,10 @@ class Cli
 	# Import items from a CSV file
 	# @args: file -> the import file
 	#        force -> no resquest a validation
-	def import(file, force=false)
+	def import(file, type=:yaml, force=false)
 
 		if not force
-			result = @mpw.import_preview(file)
+			result = @mpw.import_preview(file, type)
 			if result.is_a?(Array) and not result.empty?
 				result.each do |r|
 					displayFormat(r)
@@ -338,7 +338,7 @@ class Cli
 		end
 
 		if force
-			if @mpw.import(file) and @mpw.encrypt
+			if @mpw.import(file, type) and @mpw.encrypt
 				sync
 				puts I18n.t('form.import.valid')
 			else

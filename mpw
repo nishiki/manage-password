@@ -153,7 +153,7 @@ elsif not options[:export].nil?
 
 # Add a new item
 elsif not options[:import].nil?
-	cli.import(options[:import], options[:force])
+	cli.import(options[:import], options[:type], options[:force])
 
 # Interactive mode
 else
