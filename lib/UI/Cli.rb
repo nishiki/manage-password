@@ -78,7 +78,6 @@ class Cli
 		key         = ask(I18n.t('form.setup.gpg_key')).to_s
 		share_keys  = ask(I18n.t('form.setup.share_gpg_keys')).to_s
 		file_gpg    = ask(I18n.t('form.setup.gpg_file', home: @conf.dir_config)).to_s
-		timeout_pwd = ask(I18n.t('form.setup.timeout')).to_s
 		sync_type   = ask(I18n.t('form.setup.sync_type')).to_s
 
 		if ['ssh', 'ftp', 'mpw'].include?(sync_type)
@@ -101,7 +100,7 @@ class Cli
 		sync_pwd  = sync_pwd.nil?  or sync_pwd.empty?  ? nil : sync_pwd
 		sync_path = sync_path.nil? or sync_path.empty? ? nil : sync_path
 
-		if @config.setup(key, share_keys, language, file_gpg, timeout_pwd, sync_type, sync_host, sync_port, sync_user, sync_pwd, sync_path)
+		if @config.setup(key, share_keys, language, file_gpg, sync_type, sync_host, sync_port, sync_user, sync_pwd, sync_path)
 			puts I18n.t('form.setup.valid')
 		else
 			puts "#{I18n.t('display.error')} #8: #{@config.error_msg}"
@@ -347,69 +346,4 @@ class Cli
 		end
 	end
 
-	# Interactive mode
-	def interactive
-		group       = nil
-		last_access = Time.now.to_i
-
-		while buf = Readline.readline('<mpw> ', true)
-
-			if @config.timeout_pwd < Time.now.to_i - last_access
-				passwd_confirm = ask(I18n.t('interactive.ask_password')) {|q| q.echo = false}
-
-				if @passwd.eql?(passwd_confirm)
-					last_access = Time.now.to_i
-				else
-					puts I18n.t('interactive.bad_password')
-					next
-				end
-			else
-				last_access = Time.now.to_i
-			end
-
-			command = buf.split(' ')
-
-			case command[0]
-			when 'display', 'show', 'd', 's'
-				if not command[1].nil? and not command[1].empty?
-					display(command[1], group, command[2])
-				end
-			when 'add', 'a'
-				add
-			when 'update', 'u'
-				if not command[1].nil? and not command[1].empty?
-					update(command[1])
-				end
-			when 'remove', 'delete', 'r', 'd'
-				if not command[1].nil? and not command[1].empty?
-					remove(command[1])
-				end
-			when 'group', 'g'
-				if not command[1].nil? and not command[1].empty?
-					group = command[1]
-				else
-					group = nil
-				end
-			when 'help', 'h', '?'
-				puts I18n.t('interactive.option.title')
-				puts '--------------------'
-				puts "display, show, d, s SEARCH    #{I18n.t('interactive.option.show')}"
-				puts "group, g                      #{I18n.t('interactive.option.group')}"
-				puts "add, a                        #{I18n.t('interactive.option.add')}"
-				puts "update, u ID                  #{I18n.t('interactive.option.update')}"
-				puts "remove, delete, r, d ID       #{I18n.t('interactive.option.remove')}"
-				puts "help, h, ?                    #{I18n.t('interactive.option.help')}"
-				puts "quit, exit, q                 #{I18n.t('interactive.option.quit')}"
-			when 'quit', 'exit', 'q'
-				puts I18n.t('interactive.goodbye')
-				break
-			else
-				if not command[0].nil? and not command[0].empty?
-					puts I18n.t('interactive.unknown_command')
-				end
-			end
-
-		end
-
-	end
 end

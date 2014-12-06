@@ -156,13 +156,6 @@ elsif not options[:import].nil?
 	cli.import(options[:import], options[:type], options[:force])
 
 # Interactive mode
-else
-	begin
-		cli.interactive
-	rescue SystemExit, Interrupt
-		cli = nil
-		return 1
-	end
 end
 
 cli = nil
