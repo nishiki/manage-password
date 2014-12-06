@@ -33,7 +33,7 @@ module MPW
 			# @rtrn: false if the connection fail
 			def connect(host, user, password, path, port=nil)
 				@host     = host
-				@port     = not port.instance_of?(Integer) ? 2201 : port
+				@port     = !port.instance_of?(Integer) ? 2201 : port
 				@gpg_key  = user
 				@password = password
 				@suffix   = path
