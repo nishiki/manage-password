@@ -42,9 +42,9 @@ fr:
     config: "Spécifie le fichier de configuration à utiliser"
     setup: "Création d'un nouveau fichier de configuration" 
     protocol: "Sélectionne les éléments ayant le protocole spécifié"
-    export: "Exporte tous les éléments dans un fichier au format CSV"
+    export: "Exporte tous les éléments dans un fichier"
     type: "Format des données du fichier d'export [csv|yaml]"
-    import: "Importe des éléments depuis un fichier au format CSV"
+    import: "Importe des éléments depuis un fichier yaml ou csv"
     force: "Force une action, l'action ne demandera pas de confirmation"
     format: "Change le format d'affichage des éléments par un alternatif"
     generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères)"
@@ -107,21 +107,8 @@ fr:
       port: "Entrez un port de connexion [%{port}]: "
       comment: "Entrez un commentaire [%{comment}]: "
       valid: "L'élément a bien été mis à jour!" 
-
-  interactive:
-    ask_password: "Mot de passe GPG: "
-    bad_password: "Mauvais mot de passe!"
-    goodbye: "Au revoir!"
-    unknown_command: "Commande inconnue!"
-    option:
-      title: "Aide"
-      show: "Cherche et affiche les résulats"
-      group: "Change de groupe pour la recherche"
-      add: "Ajout un élément"
-      update: "Met à jour un élément"
-      remove: "Supprime un élément"
-      help: "Affiche ce message d'aide"
-      quit: "Quitte le programme"
+    export:
+      valid: "L'export dans %{file} est un succès!"
 
   display:
     comment: "Commentaire"

@@ -8,7 +8,7 @@ require 'highline/import'
 require 'pathname'
 require 'readline'
 require 'i18n'
-require 'yaml'
+require 'colorize'
 
 require "#{APP_ROOT}/lib/MPW"
 
@@ -42,26 +42,26 @@ class Cli
 		
 		if  not @config.sync_host.nil? and not @config.sync_port.nil?
 			if not @sync.connect(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
-				puts "#{I18n.t('display.error')} #1: #{@sync.error_msg}"
+				puts "#{I18n.t('display.error')} #1: #{@sync.error_msg}".red
 			end
 		end
 
 		if @sync.enable
 			if not @mpw.sync(@sync.get(@passwd), @config.last_update)
-				puts "#{I18n.t('display.error')} #2: #{@mpw.error_msg}"  if not @mpw.error_msg.nil?
-				puts "#{I18n.t('display.error')} #3: #{@sync.error_msg}" if not @sync.error_msg.nil?
+				puts "#{I18n.t('display.error')} #2: #{@mpw.error_msg}".red  if not @mpw.error_msg.nil?
+				puts "#{I18n.t('display.error')} #3: #{@sync.error_msg}".red if not @sync.error_msg.nil?
 			elsif not @sync.update(File.open(@config.file_gpg).read)
-				puts "#{I18n.t('display.error')} #4: #{@sync.error_msg}"
+				puts "#{I18n.t('display.error')} #4: #{@sync.error_msg}".red
 			elsif not @config.set_last_update
-				puts "#{I18n.t('display.error')} #5: #{@config.error_msg}"
+				puts "#{I18n.t('display.error')} #5: #{@config.error_msg}".red
 			elsif not @mpw.encrypt
-				puts "#{I18n.t('display.error')} #6: #{@mpw.error_msg}"
+				puts "#{I18n.t('display.error')} #6: #{@mpw.error_msg}".red
 			else
 				return true
 			end
 		end
 	rescue Exception => e
-		puts "#{I18n.t('display.error')} #7: #{e}"
+		puts "#{I18n.t('display.error')} #7: #{e}".red
 		puts @sync.error_msg   if not @sync.error_msg.nil?
 		puts @config.error_msg if not @config.error_msg.nil?
 		puts @mpw.error_msg    if not @mpw.error_msg.nil?
@@ -101,14 +101,14 @@ class Cli
 		sync_path = sync_path.nil? or sync_path.empty? ? nil : sync_path
 
 		if @config.setup(key, share_keys, language, file_gpg, sync_type, sync_host, sync_port, sync_user, sync_pwd, sync_path)
-			puts I18n.t('form.setup.valid')
+			puts "#{I18n.t('form.setup.valid')}".green
 		else
-			puts "#{I18n.t('display.error')} #8: #{@config.error_msg}"
+			puts "#{I18n.t('display.error')} #8: #{@config.error_msg}".red
 			exit 2
 		end
 
 		if not @config.checkconfig
-			puts "#{I18n.t('display.error')} #9: #{@config.error_msg}"
+			puts "#{I18n.t('display.error')} #9: #{@config.error_msg}".red
 			exit 2
 		end
 	end
@@ -143,9 +143,9 @@ class Cli
 		puts I18n.t('form.setup_gpg_key.wait')
 		
 		if @config.setup_gpg_key(password, name, length, expire)
-			puts I18n.t('form.setup_gpg_key.valid')
+			puts "#{I18n.t('form.setup_gpg_key.valid')}".green
 		else
-			puts "#{I18n.t('display.error')} #10: #{@config.error_msg}"
+			puts "#{I18n.t('display.error')} #10: #{@config.error_msg}".red
 			exit 2
 		end
 	end
@@ -158,7 +158,7 @@ class Cli
 
 		@passwd = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
 		if not @mpw.decrypt(@passwd)
-			puts "#{I18n.t('display.error')} #11: #{@mpw.error_msg}"
+			puts "#{I18n.t('display.error')} #11: #{@mpw.error_msg}".red
 			exit 2
 		end
 	end
@@ -230,12 +230,12 @@ class Cli
 		if @mpw.update(name, group, server, protocol, login, passwd, port, comment)
 			if @mpw.encrypt
 				sync
-				puts I18n.t('form.add.valid')
+				puts "#{I18n.t('form.add.valid')}".green
 			else
-				puts "#{I18n.t('display.error')} #12: #{@mpw.error_msg}"
+				puts "#{I18n.t('display.error')} #12: #{@mpw.error_msg}".red
 			end
 		else
-			puts "#{I18n.t('display.error')} #13: #{@mpw.error_msg}"
+			puts "#{I18n.t('display.error')} #13: #{@mpw.error_msg}".red
 		end
 	end
 
@@ -259,12 +259,12 @@ class Cli
 			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
 				if @mpw.encrypt
 					sync
-					puts I18n.t('form.update.valid')
+					puts "#{I18n.t('form.update.valid')}".green
 				else
-					puts "#{I18n.t('display.error')} #14: #{@mpw.error_msg}"
+					puts "#{I18n.t('display.error')} #14: #{@mpw.error_msg}".red
 				end
 			else
-				puts "#{I18n.t('display.error')} #15: #{@mpw.error_msg}"
+				puts "#{I18n.t('display.error')} #15: #{@mpw.error_msg}".red
 			end
 		else
 			puts I18n.t('display.nothing')
@@ -294,9 +294,9 @@ class Cli
 			if @mpw.remove(id)
 				if @mpw.encrypt
 					sync
-					puts I18n.t('form.delete.valid', id: id)
+					puts "#{I18n.t('form.delete.valid', id: id)}".green
 				else
-					puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}"
+					puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}".red
 				end
 			else
 				puts I18n.t('form.delete.not_valid')
@@ -308,9 +308,9 @@ class Cli
 	# @args: file -> the destination file
 	def export(file, type=:yaml)
 		if @mpw.export(file, type)
-			puts "The export in #{file} is succesfull!"
+			puts "#{I18n.t('export.valid', file)}".green
 		else
-			puts "#{I18n.t('display.error')} #17: #{@mpw.error_msg}"
+			puts "#{I18n.t('display.error')} #17: #{@mpw.error_msg}".red
 		end
 
 	end
@@ -339,9 +339,9 @@ class Cli
 		if force
 			if @mpw.import(file, type) and @mpw.encrypt
 				sync
-				puts I18n.t('form.import.valid')
+				puts "#{I18n.t('form.import.valid')}".green
 			else
-				puts "#{I18n.t('display.error')} #18: #{@mpw.error_msg}"
+				puts "#{I18n.t('display.error')} #18: #{@mpw.error_msg}".red
 			end
 		end
 	end

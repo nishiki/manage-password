@@ -42,9 +42,9 @@ en:
     config: "Specify the configuration file to use"
     setup: "Create a new configuration file" 
     protocol: "Select the items with the specified protocol"
-    export: "Export all items in a CSV file"
+    export: "Export all items in a file"
     type: "Data's type export file [csv|yaml]"
-    import: "Import item since a CSV file"
+    import: "Import item since a yaml or csv file"
     force: "Force an action"
     format: "Change the display items format by an alternative format"
     generate_password: "Generate a random password (default 8 characters)"
@@ -107,21 +107,8 @@ en:
       port: "Enter the connection port [%{port}]: "
       comment: "Enter a comment [%{comment}]: "
       valid: "Item has been updated!" 
-
-  interactive:
-    ask_password: "Password GPG: "
-    bad_password: "Bad password!"
-    goodbye: "Goodbye!"
-    unknown_command: "Unknown command!"
-    option:
-      title: "Help"
-      show: "Search and show the results"
-      group: "Change the group for the search"
-      add: "Add an item"
-      update: "Update an item"
-      remove: "Remove an item"
-      help: "Show this message"
-      quit: "Quit the software"
+    export:
+      valid: "The export in %{file} is succesfull!"
 
   display:
     comment: "Comment"
