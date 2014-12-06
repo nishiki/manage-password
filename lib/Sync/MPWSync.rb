@@ -63,7 +63,7 @@ module MPW
 			# @rtrn: nil if nothing data or error
 			def get(gpg_password)
 				return nil if not @enable
-				
+			
 				msg = nil
 				TCPSocket.open(@host, @port) do |socket|
 					send_msg = {action:  'get',
@@ -75,7 +75,7 @@ module MPW
 					socket.puts send_msg.to_json
 					msg = JSON.parse(socket.gets)
 				end
-
+				
 				if not defined?(msg['error'])
 					@error_msg = I18n.t('error.sync.communication')
 					return nil
@@ -83,7 +83,7 @@ module MPW
 					@error_msg = I18n.t(msg['error'])
 					return nil
 				elsif msg['data'].nil? or msg['data'].empty?
-					return []
+					return {}
 				else
 					tmp_file = tmpfile
 					File.open(tmp_file, 'w') do |file|

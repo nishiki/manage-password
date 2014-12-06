@@ -26,12 +26,12 @@ module MPW
 		# @args: password -> the GPG key password
 		# @rtrn: true if data has been decrypted
 		def decrypt(passwd=nil)
-			@data = []
+			@data = {}
 	
 			if File.exist?(@file_gpg)
 				crypto = GPGME::Crypto.new(armor: true)
 				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: passwd).read.force_encoding('utf-8')
-				@data = YAML.load(data_decrypt)
+				@data = YAML.load(data_decrypt) if not data_decrypt.to_s.empty?
 			end
 	
 			return true
@@ -119,7 +119,7 @@ module MPW
 			update = false
 	
 			i  = 0
-			if @data.has_key?(id)
+			if @data.instance_of?(Hash) and @data.has_key?(id)
 				row = @data[id]
 			end
 	
@@ -229,7 +229,7 @@ module MPW
 	
 		# Return a preview import 
 		# @args: file -> path to file import
-		# @rtrn: an array with the items to import, if there is an error return false
+		# @rtrn: a hash with the items to import, if there is an error return false
 		def import_preview(file, type=:csv)
 			result = []
 			case type
@@ -257,23 +257,22 @@ module MPW
 		#        last_update -> last update
 		# @rtrn: false if data_remote is nil
 		def sync(data_remote, last_update)
-			if not data_remote.instance_of?(Hash)
-				@error_msg = I18n.t('error.sync.hash')
+			if not data_remote.instance_of?(Array)
+				@error_msg = I18n.t('error.sync.array')
 				return false
-
 			else not data_remote.to_s.empty?
 				@data.each do |lk, l|
 					j = 0
 					update = false
 		
 					# Update item
-					data_remote.each do |rk, r|
+					data_remote.each do |r|
 						if l['id'] == r['id']
 							if l['date'].to_i < r['date'].to_i
 								update(r['name'], r['group'], r['host'], r['protocol'], r['login'], r['password'], r['port'], r['comment'], l['id'])
 							end
 							update = true
-							data_remote.delete(rk)
+							data_remote.delete(r['id'])
 							break
 						end
 						j += 1
@@ -287,7 +286,7 @@ module MPW
 			end
 	
 			# Add item
-			data_remote.each do |rk, r|
+			data_remote.each do |r|
 				if r['date'].to_i > last_update
 					update(r['name'], r['group'], r['host'], r['protocol'], r['login'], r['password'], r['port'], r['comment'], r['id'])
 				end

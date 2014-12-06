@@ -48,8 +48,8 @@ class Cli
 
 		if @sync.enable
 			if not @mpw.sync(@sync.get(@passwd), @config.last_update)
-				puts "#{I18n.t('display.error')} #2: #{@mpw.error_msg}"  if !@mpw.error_msg.nil?
-				puts "#{I18n.t('display.error')} #3: #{@sync.error_msg}" if !@sync.error_msg.nil?
+				puts "#{I18n.t('display.error')} #2: #{@mpw.error_msg}"  if not @mpw.error_msg.nil?
+				puts "#{I18n.t('display.error')} #3: #{@sync.error_msg}" if not @sync.error_msg.nil?
 			elsif not @sync.update(File.open(@config.file_gpg).read)
 				puts "#{I18n.t('display.error')} #4: #{@sync.error_msg}"
 			elsif not @config.set_last_update
@@ -62,9 +62,9 @@ class Cli
 		end
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #7: #{e}"
-		puts @sync.error_msg   if @sync.error_msg.nil?
-		puts @config.error_msg if @config.error_msg.nil?
-		puts @mpw.error_msg    if @mpw.error_msg.nil?
+		puts @sync.error_msg   if not @sync.error_msg.nil?
+		puts @config.error_msg if not @config.error_msg.nil?
+		puts @mpw.error_msg    if not @mpw.error_msg.nil?
 	else
 		return false
 	end
@@ -323,7 +323,7 @@ class Cli
 
 		if not force
 			result = @mpw.import_preview(file)
-			if result.is_a?(Array) && !result.empty?
+			if result.is_a?(Array) and not result.empty?
 				result.each do |r|
 					displayFormat(r)
 				end
