@@ -3,14 +3,13 @@
 # mail: nishiki@yaegashi.fr
 # info: a simple script who manage your passwords
 
-module MPW
-
-	require 'rubygems'
-	require 'gpgme'
-	require 'csv'
-	require 'i18n'
-	require 'fileutils'
+require 'rubygems'
+require 'gpgme'
+require 'csv'
+require 'i18n'
+require 'fileutils'
 	
+module MPW
 	class MPW
 	
 		attr_accessor :error_msg
@@ -182,25 +181,10 @@ module MPW
 							csv << [r['name'], r['group'], r['protocol'], r['host'], r['login'], r['password'], r['port'], r['comment']]
 						end
 					end
+
 			when :yaml
-				data = {}
+				File.open(file, 'w') {|f| f << @data.to_yaml}
 
-				@data.each do |id, r|
-					data.merge!({id => {'id'       => r['id'],
-					                    'name'     => r['name'],
-					                    'group'    => r['group'],
-					                    'protocol' => r['protocol'],
-					                    'host'     => r['host'],
-					                    'login'    => r['login'],
-					                    'password' => r['password'],
-					                    'port'     => r['port'],
-					                    'comment'  => r['comment'],
-					                   }
-					            }
-					          )
-				end
-
-				File.open(file, 'w') {|f| f << data.to_yaml}
 			else
 				@error_msg = "#{I18n.t('error.export.unknown_type', type: type)}"
 				return false
@@ -219,17 +203,19 @@ module MPW
 		def import(file, type=:csv)
 			case type
 			when :csv
-				CSV.foreach(file, {headers: true, header_converters: :symbol}) do |row|
-					if not update(row[:name], row[:group], row[:host], row[:protocol], row[:login], row[:password], row[:port], row[:comment])
+				CSV.foreach(file, {headers: true}) do |row|
+					if not update(row['name'], row['group'], row['host'], row['protocol'], row['login'], row['password'], row['port'], row['comment'])
 						return false
 					end
 				end
+
 			when :yaml
 				YAML::load_file(file).each do |k, row| 
 					if not update(row['name'], row['group'], row['host'], row['protocol'], row['login'], row['password'], row['port'], row['comment'])
 						return false
 					end
 				end
+
 			else
 				@error_msg = "#{I18n.t('error.export.unknown_type', type: type)}"
 				return false
@@ -271,37 +257,39 @@ module MPW
 		#        last_update -> last update
 		# @rtrn: false if data_remote is nil
 		def sync(data_remote, last_update)
-			if not data_remote.instance_of?(Array)
+			if not data_remote.instance_of?(Hash)
+				@error_msg = I18n.t('error.sync.hash')
 				return false
-			else not data_remote.nil? and not data_remote.empty?
-				@data.each do |l|
+
+			else not data_remote.to_s.empty?
+				@data.each do |lk, l|
 					j = 0
 					update = false
 		
 					# Update item
-					data_remote.each do |r|
-						if l[:id] == r[:id]
-							if l[:date].to_i < r[:date].to_i
-								update(r[:name], r[:group], r[:host], r[:protocol], r[:login], r[:password], r[:port], r[:comment], l[:id])
+					data_remote.each do |rk, r|
+						if l['id'] == r['id']
+							if l['date'].to_i < r['date'].to_i
+								update(r['name'], r['group'], r['host'], r['protocol'], r['login'], r['password'], r['port'], r['comment'], l['id'])
 							end
 							update = true
-							data_remote.delete_at(j)
+							data_remote.delete(rk)
 							break
 						end
 						j += 1
 					end
 		
 					# Delete an old item
-					if not update and l[:date].to_i < last_update
-						remove(l[:id])
+					if not update and l['date'].to_i < last_update
+						remove(l['id'])
 					end
 				end
 			end
 	
 			# Add item
-			data_remote.each do |r|
-				if r[:date].to_i > last_update
-					update(r[:name], r[:group], r[:host], r[:protocol], r[:login], r[:password], r[:port], r[:comment], r[:id])
+			data_remote.each do |rk, r|
+				if r['date'].to_i > last_update
+					update(r['name'], r['group'], r['host'], r['protocol'], r['login'], r['password'], r['port'], r['comment'], r['id'])
 				end
 			end
 	
@@ -327,6 +315,6 @@ module MPW
 	
 			return result
 		end
-	end
 
+	end
 end
