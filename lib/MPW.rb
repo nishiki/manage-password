@@ -31,9 +31,8 @@ module MPW
 	
 			if File.exist?(@file_gpg)
 				crypto = GPGME::Crypto.new(armor: true)
-				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: passwd).read
-	
-				@data = CSV.parse(data_decrypt, {headers: true, header_converters: :symbol})
+				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: passwd).read.force_encoding('utf-8')
+				@data = YAML.load(data_decrypt)
 			end
 	
 			return true
@@ -45,17 +44,9 @@ module MPW
 		# Encrypt a file
 		# @rtrn: true if the file has been encrypted
 		def encrypt
-			FileUtils.cp(@file_gpg, "#{@file_gpg}.bk")
-
-			crypto = GPGME::Crypto.new(armor: true)
-			file_gpg = File.open(@file_gpg, 'w+')
+			FileUtils.cp(@file_gpg, "#{@file_gpg}.bk") if File.exist?(@file_gpg)
 	
-			data_to_encrypt = CSV.generate(write_headers: true,
-			                               headers: ['id', 'name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment', 'date']) do |csv|
-				@data.each do |r|
-					csv << [r[:id], r[:name], r[:group], r[:protocol], r[:host], r[:login], r[:password], r[:port], r[:comment], r[:date]]
-				end
-			end
+			data_to_encrypt = @data.to_yaml
 	
 			recipients = []
 			recipients.push(@key)
@@ -63,14 +54,16 @@ module MPW
 				@share_keys.split.each { |k| recipients.push(k) }
 			end
 
+			crypto = GPGME::Crypto.new(armor: true)
+			file_gpg = File.open(@file_gpg, 'w+')
 			crypto.encrypt(data_to_encrypt, recipients: recipients, output: file_gpg)
 			file_gpg.close
 	
-			FileUtils.rm("#{@file_gpg}.bk")
+			FileUtils.rm("#{@file_gpg}.bk") if File.exist?("#{@file_gpg}.bk")
 			return true
 		rescue Exception => e 
 			@error_msg = "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
-			FileUtils.mv("#{@file_gpg}.bk", @file_gpg)
+			FileUtils.mv("#{@file_gpg}.bk", @file_gpg) if File.exist?("#{@file_gpg}.bk")
 			return false
 		end
 		
@@ -84,12 +77,11 @@ module MPW
 			if not search.nil?
 				search = search.downcase
 			end
-			search = search.force_encoding('ASCII-8BIT')
 	
-			@data.each do |row|
-				name    = row[:name].nil?    ? nil : row[:name].downcase
-				server  = row[:host].nil?  ? nil : row[:host].downcase
-				comment = row[:comment].nil? ? nil : row[:comment].downcase
+			@data.each do |id, row|
+				name    = row['name'].nil?    ? nil : row['name'].downcase
+				server  = row['host'].nil?    ? nil : row['host'].downcase
+				comment = row['comment'].nil? ? nil : row['comment'].downcase
 	
 				if name =~ /^.*#{search}.*$/ or server =~ /^.*#{search}.*$/ or comment =~ /^.*#{search}.*$/ 
 					if (protocol.nil? or protocol.eql?(row[:protocol])) and (group.nil? or group.eql?(row[:group]))
@@ -102,13 +94,11 @@ module MPW
 		end
 	
 		# Search in some csv data
-		# @args: id -> the id item
+		# @args: id_search -> the id item
 		# @rtrn: a row with the resultat of the search
-		def search_by_id(id)
-			@data.each do |row|
-				if row[:id] == id
-					return row
-				end
+		def search_by_id(id_search)
+			@data.each do |id, row|
+				return row if id == id_search
 			end
 	
 			return []
@@ -130,49 +120,35 @@ module MPW
 			update = false
 	
 			i  = 0
-			@data.each do |r|
-				if r[:id] == id
-					row    = r
-					update = true
-					break
-				end
-				i += 1
+			if @data.has_key?(id)
+				row = @data[id]
 			end
 	
 			if port.to_i <= 0
 				port = nil
 			end
 	
-			row_update        = {}
-			row_update[:date] = Time.now.to_i
+			row_update             = {}
+			row_update['id']       = id.to_s.empty?       ? MPW.password(16) : id
+			row_update['name']     = name.to_s.empty?     ? row['name']      : name
+			row_update['group']    = group.to_s.empty?    ? row['group']     : group
+			row_update['host']     = server.to_s.empty?   ? row['host']      : server
+			row_update['protocol'] = protocol.to_s.empty? ? row['protocol']  : protocol
+			row_update['login']    = login.to_s.empty?    ? row['login']     : login
+			row_update['password'] = passwd.to_s.empty?   ? row['password']  : passwd
+			row_update['port']     = port.to_s.empty?     ? row['port']      : port
+			row_update['comment']  = comment.to_s.empty?  ? row['comment']   : comment
+			row_update['date']     = Time.now.to_i
 	
-			row_update[:id]       = id.nil?       or id.empty?       ? MPW.password(16)  : id
-			row_update[:name]     = name.nil?     or name.empty?     ? row[:name]        : name
-			row_update[:group]    = group.nil?    or group.empty?    ? row[:group]       : group
-			row_update[:host]     = server.nil?   or server.empty?   ? row[:host]        : server
-			row_update[:protocol] = protocol.nil? or protocol.empty? ? row[:protocol]    : protocol
-			row_update[:login]    = login.nil?    or login.empty?    ? row[:login]       : login
-			row_update[:password] = passwd.nil?   or passwd.empty?   ? row[:password]    : passwd
-			row_update[:port]     = port.nil?     or port.empty?     ? row[:port]        : port
-			row_update[:comment]  = comment.nil?  or comment.empty?  ? row[:comment]     : comment
-			
-			row_update[:name]     = row_update[:name].nil?     ? nil : row_update[:name].force_encoding('ASCII-8BIT')
-			row_update[:group]    = row_update[:group].nil?    ? nil : row_update[:group].force_encoding('ASCII-8BIT')
-			row_update[:host]     = row_update[:host].nil?     ? nil : row_update[:host].force_encoding('ASCII-8BIT')
-			row_update[:protocol] = row_update[:protocol].nil? ? nil : row_update[:protocol].force_encoding('ASCII-8BIT')
-			row_update[:login]    = row_update[:login].nil?    ? nil : row_update[:login].force_encoding('ASCII-8BIT')
-			row_update[:password] = row_update[:password].nil? ? nil : row_update[:password].force_encoding('ASCII-8BIT')
-			row_update[:comment]  = row_update[:comment].nil?  ? nil : row_update[:comment].force_encoding('ASCII-8BIT')
-	
-			if row_update[:name].nil? or row_update[:name].empty?
+			if row_update['name'].to_s.empty?
 				@error_msg = I18n.t('error.update.name_empty')
 				return false
 			end
 	
 			if update
-				@data[i] = row_update
+				@data[id] = row_update
 			else
-				@data.push(row_update)
+				@data[row_update['id']] = row_update
 			end
 	
 			return true
@@ -182,13 +158,11 @@ module MPW
 		# @args: id -> the item's identifiant
 		# @rtrn: true if the item has been deleted
 		def remove(id)
-			i = 0
-			@data.each do |row|
-				if row[:id] == id
-					@data.delete_at(i)
+			@data.each do |k, row|
+				if k == id
+					@data.delete(id)
 					return true
 				end
-				i += 1
 			end
 	
 			@error_msg = I18n.t('error.delete.id_no_exist', id: id)
@@ -197,36 +171,33 @@ module MPW
 	
 		# Export to csv
 		# @args: file -> file where you export the data
-		#        type -> data type
+		#        type -> udata type
 		# @rtrn: true if export work
 		def export(file, type=:csv)
 			case type
 			when :csv
 					CSV.open(file, 'w', write_headers: true,
 										headers: ['name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment']) do |csv|
-						@data.each do |r|
-							csv << [r[:name], r[:group], r[:protocol], r[:host], r[:login], r[:password], r[:port], r[:comment]]
+						@data.each do |id, r|
+							csv << [r['name'], r['group'], r['protocol'], r['host'], r['login'], r['password'], r['port'], r['comment']]
 						end
 					end
 			when :yaml
 				data = {}
 
-				i = 0
-				@data.each do |r|
-					data.merge!({i => {'id'       => r[:id],
-					                   'name'     => r[:name],
-					                   'group'    => r[:group],
-					                   'protocol' => r[:protocol],
-					                   'host'     => r[:host],
-					                   'login'    => r[:login],
-					                   'password' => r[:password],
-					                   'port'     => r[:port],
-					                   'comment'  => r[:comment]
-					                  }
+				@data.each do |id, r|
+					data.merge!({id => {'id'       => r['id'],
+					                    'name'     => r['name'],
+					                    'group'    => r['group'],
+					                    'protocol' => r['protocol'],
+					                    'host'     => r['host'],
+					                    'login'    => r['login'],
+					                    'password' => r['password'],
+					                    'port'     => r['port'],
+					                    'comment'  => r['comment'],
+					                   }
 					            }
 					          )
-
-					i += 1
 				end
 
 				File.open(file, 'w') {|f| f << data.to_yaml}
@@ -243,12 +214,25 @@ module MPW
 	
 		# Import to csv
 		# @args: file -> path to file import
+		#        type -> udata type
 		# @rtrn: true if the import work
-		def import(file)
-			CSV.foreach(file, {headers: true, header_converters: :symbol}) do |row|
-				if not update(row[:name], row[:group], row[:host], row[:protocol], row[:login], row[:password], row[:port], row[:comment])
-					return false
+		def import(file, type=:csv)
+			case type
+			when :csv
+				CSV.foreach(file, {headers: true, header_converters: :symbol}) do |row|
+					if not update(row[:name], row[:group], row[:host], row[:protocol], row[:login], row[:password], row[:port], row[:comment])
+						return false
+					end
 				end
+			when :yaml
+				YAML::load_file(file).each do |k, row| 
+					if not update(row['name'], row['group'], row['host'], row['protocol'], row['login'], row['password'], row['port'], row['comment'])
+						return false
+					end
+				end
+			else
+				@error_msg = "#{I18n.t('error.export.unknown_type', type: type)}"
+				return false
 			end
 	
 			return true
@@ -260,10 +244,20 @@ module MPW
 		# Return a preview import 
 		# @args: file -> path to file import
 		# @rtrn: an array with the items to import, if there is an error return false
-		def import_preview(file)
+		def import_preview(file, type=:csv)
 			result = []
-			CSV.foreach(file, {headers: true, header_converters: :symbol}) do |row|
-				result << row
+			case type
+			when :csv
+				CSV.foreach(file, {headers: true}) do |row|
+					result << row
+				end
+			when :yaml
+				YAML::load_file(file).each do |k, row| 
+					result << row
+				end
+			else
+				@error_msg = "#{I18n.t('error.export.unknown_type', type: type)}"
+				return false
 			end
 
 			return result

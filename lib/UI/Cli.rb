@@ -77,7 +77,7 @@ class Cli
 		language    = ask(I18n.t('form.setup.lang', lang: lang)).to_s
 		key         = ask(I18n.t('form.setup.gpg_key')).to_s
 		share_keys  = ask(I18n.t('form.setup.share_gpg_keys')).to_s
-		file_gpg    = ask(I18n.t('form.setup.gpg_file', home: @conf.dir_home)).to_s
+		file_gpg    = ask(I18n.t('form.setup.gpg_file', home: @conf.dir_config)).to_s
 		timeout_pwd = ask(I18n.t('form.setup.timeout')).to_s
 		sync_type   = ask(I18n.t('form.setup.sync_type')).to_s
 
@@ -187,15 +187,15 @@ class Cli
 	# @args: item -> an array with the item information
 	def displayFormat(item)
 		puts '--------------------'
-		puts "Id: #{item[:id]}"
-		puts "#{I18n.t('display.name')}: #{item[:name]}"
-		puts "#{I18n.t('display.group')}: #{item[:group]}"
-		puts "#{I18n.t('display.server')}: #{item[:host]}"
-		puts "#{I18n.t('display.protocol')}: #{item[:protocol]}"
-		puts "#{I18n.t('display.login')}: #{item[:login]}"
-		puts "#{I18n.t('display.password')}: #{item[:password]}"
-		puts "#{I18n.t('display.port')}: #{item[:port]}"
-		puts "#{I18n.t('display.comment')}: #{item[:comment]}"
+		puts "Id: #{item['id']}"
+		puts "#{I18n.t('display.name')}: #{item['name']}"
+		puts "#{I18n.t('display.group')}: #{item['group']}"
+		puts "#{I18n.t('display.server')}: #{item['host']}"
+		puts "#{I18n.t('display.protocol')}: #{item['protocol']}"
+		puts "#{I18n.t('display.login')}: #{item['login']}"
+		puts "#{I18n.t('display.password')}: #{item['password']}"
+		puts "#{I18n.t('display.port')}: #{item['port']}"
+		puts "#{I18n.t('display.comment')}: #{item['comment']}"
 	end
 
 	# Display an item in the alternative format
@@ -320,9 +320,9 @@ class Cli
 	# @args: file -> the import file
 	#        force -> no resquest a validation
 	def import(file, force=false)
-		result = @mpw.import_preview(file)
 
 		if not force
+			result = @mpw.import_preview(file)
 			if result.is_a?(Array) && !result.empty?
 				result.each do |r|
 					displayFormat(r)
