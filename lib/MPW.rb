@@ -20,20 +20,20 @@ module MPW
 			@file_gpg   = file_gpg
 			@key        = key
 			@share_keys = share_keys
+			@data       = {}
 		end
 	
 		# Decrypt a gpg file
 		# @args: password -> the GPG key password
 		# @rtrn: true if data has been decrypted
 		def decrypt(passwd=nil)
-			@data = {}
-	
 			if File.exist?(@file_gpg)
 				crypto = GPGME::Crypto.new(armor: true)
 				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: passwd).read.force_encoding('utf-8')
 				@data = YAML.load(data_decrypt) if not data_decrypt.to_s.empty?
 			end
 	
+			puts @data.class
 			return true
 		rescue Exception => e 
 			@error_msg = "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
@@ -135,7 +135,7 @@ module MPW
 			row_update['protocol'] = protocol.to_s.empty? ? row['protocol']  : protocol
 			row_update['login']    = login.to_s.empty?    ? row['login']     : login
 			row_update['password'] = passwd.to_s.empty?   ? row['password']  : passwd
-			row_update['port']     = port.to_s.empty?     ? row['port']      : port
+			row_update['port']     = port.to_s.empty?     ? row['port']      : port.to_i
 			row_update['comment']  = comment.to_s.empty?  ? row['comment']   : comment
 			row_update['date']     = Time.now.to_i
 	
@@ -147,7 +147,8 @@ module MPW
 			if update
 				@data[id] = row_update
 			else
-				@data[row_update['id']] = row_update
+				id = row_update['id']
+				@data[id] = row_update
 			end
 	
 			return true
