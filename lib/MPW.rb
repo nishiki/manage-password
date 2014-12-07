@@ -8,6 +8,7 @@ require 'gpgme'
 require 'csv'
 require 'i18n'
 require 'fileutils'
+require 'yaml'
 	
 module MPW
 	class MPW
@@ -15,7 +16,7 @@ module MPW
 		attr_accessor :error_msg
 		
 		# Constructor
-		def initialize(file_gpg, key=nil, share_keys='')
+		def initialize(file_gpg, key, share_keys='')
 			@error_msg  = nil
 			@file_gpg   = file_gpg
 			@key        = key
@@ -33,7 +34,6 @@ module MPW
 				@data = YAML.load(data_decrypt) if not data_decrypt.to_s.empty?
 			end
 	
-			puts @data.class
 			return true
 		rescue Exception => e 
 			@error_msg = "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
