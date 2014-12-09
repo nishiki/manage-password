@@ -1,20 +1,23 @@
 # File:  tc_simple_number.rb
  
-require_relative "../lib/MPW"
-require "test/unit"
+require_relative '../lib/MPW'
+require 'test/unit'
+require 'yaml'
  
 class TestMPW < Test::Unit::TestCase
 
+	#@@mpw = MPW::MPW.new('test.gpg', 'a.waksberg@yaegashi.fr')
 	def setup
-		@file_gpg = 'test.gpg'
-		@key      = 'test-mpw@test-mpw.local'
+		file_gpg = 'test.gpg'
+		key      = 'test-mpw@test-mpw.local'
 
 		if defined?(I18n.enforce_available_locales)
 			I18n.enforce_available_locales = false
 		end
 
-		File.delete(@file_gpg) if File.exist?(@file_gpg)
-		@mpw = MPW::MPW.new(@file_gpg, @key)
+		File.delete(file_gpg) if File.exist?(file_gpg)
+		@mpw = MPW::MPW.new(file_gpg, key)
+		@fixtures = YAML.load_file('fixtures.yml')
 	end
 	
 	def test_load_empty_file
@@ -23,16 +26,14 @@ class TestMPW < Test::Unit::TestCase
 	end
 
 	def test_add
-		name     = 'test_name'
-		group    = 'test_group'
-		host     = 'test_host'
-		protocol = 'test_protocol'
-		login    = 'test_login'
-		password = 'test_password'
-		port     = '42'
-		comment  = 'test_comment'
-
-		assert(@mpw.update(name, group, host, protocol, login, password, port, comment))
+		assert(@mpw.update(@fixtures['add']['name'], 
+		                   @fixtures['add']['group'], 
+		                   @fixtures['add']['host'],
+		                   @fixtures['add']['protocol'],
+		                   @fixtures['add']['login'],
+		                   @fixtures['add']['password'],
+		                   @fixtures['add']['port'],
+		                   @fixtures['add']['comment']))
 
 		assert_equal(1, @mpw.search.length)
 
@@ -46,49 +47,54 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(42,              result['port'])
 		assert_equal('test_comment',  result['comment'])
 
-		assert(@mpw.update(name, group, host, protocol, login, password, port, comment))
+		assert(@mpw.update(@fixtures['add']['name'], 
+		                   @fixtures['add']['group'], 
+		                   @fixtures['add']['host'],
+		                   @fixtures['add']['protocol'],
+		                   @fixtures['add']['login'],
+		                   @fixtures['add']['password'],
+		                   @fixtures['add']['port'],
+		                   @fixtures['add']['comment']))
+
 
 		assert_equal(2, @mpw.search.length)
 	end
 
 	def test_add_empty_name
-		name     = ''
-		group    = 'test_group'
-		host     = 'test_host'
-		protocol = 'test_protocol'
-		login    = 'test_login'
-		password = 'test_password'
-		port     = '42'
-		comment  = 'test_comment'
-
-		assert(!@mpw.update(name, group, host, protocol, login, password, port, comment))
+		assert(!@mpw.update('', 
+		                   @fixtures['add']['group'], 
+		                   @fixtures['add']['host'],
+		                   @fixtures['add']['protocol'],
+		                   @fixtures['add']['login'],
+		                   @fixtures['add']['password'],
+		                   @fixtures['add']['port'],
+		                   @fixtures['add']['comment']))
 
 		assert_equal(0, @mpw.search.length)
 	end
 
 	def test_update
-		name     = 'test_name'
-		group    = 'test_group'
-		host     = 'test_host'
-		protocol = 'test_protocol'
-		login    = 'test_login'
-		password = 'test_password'
-		port     = '42'
-		comment  = 'test_comment'
+		assert(@mpw.update(@fixtures['add']['name'], 
+		                   @fixtures['add']['group'], 
+		                   @fixtures['add']['host'],
+		                   @fixtures['add']['protocol'],
+		                   @fixtures['add']['login'],
+		                   @fixtures['add']['password'],
+		                   @fixtures['add']['port'],
+		                   @fixtures['add']['comment']))
 
-		assert(@mpw.update(name, group, host, protocol, login, password, port, comment))
+		id = @mpw.search[0]['id']
 
-		id       = @mpw.search[0]['id']
-		name     = 'test_name_update'
-		group    = 'test_group_update'
-		host     = 'test_host_update'
-		protocol = 'test_protocol_update'
-		login    = 'test_login_update'
-		password = 'test_password_update'
-		port     = '43'
-		comment  = 'test_comment_update'
+		assert(@mpw.update(@fixtures['update']['name'], 
+		                   @fixtures['update']['group'], 
+		                   @fixtures['update']['host'],
+		                   @fixtures['update']['protocol'],
+		                   @fixtures['update']['login'],
+		                   @fixtures['update']['password'],
+		                   @fixtures['update']['port'],
+		                   @fixtures['update']['comment'],
+		                   id))
 
-		assert(@mpw.update(name, group, host, protocol, login, password, port, comment, id))
 		assert_equal(1, @mpw.search.length)
 
 		result = @mpw.search_by_id(id)
@@ -102,4 +108,6 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal('test_comment_update',  result['comment'])
 	end
  
+ 	def test_import
+	end
 end
