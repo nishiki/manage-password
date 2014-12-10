@@ -109,5 +109,7 @@ class TestMPW < Test::Unit::TestCase
 	end
  
  	def test_import
+		assert(@mpw.import('fixtures.yml'))
+		assert_equal(2, @mpw.search.length)
 	end
 end
