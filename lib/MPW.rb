@@ -231,7 +231,7 @@ module MPW
 		# Return a preview import 
 		# @args: file -> path to file import
 		# @rtrn: a hash with the items to import, if there is an error return false
-		def import_preview(file, type=:csv)
+		def import_preview(file, type=:yaml)
 			result = []
 			case type
 			when :csv
