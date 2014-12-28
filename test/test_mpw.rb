@@ -128,6 +128,16 @@ class TestMPW < Test::Unit::TestCase
  	def test_import_yaml
 		assert(@mpw.import(@fixture_file, :yaml))
 		assert_equal(2, @mpw.search.length)
+
+		result = @mpw.search[0]
+		assert_equal(@fixtures['add']['name'],      result['name'])
+		assert_equal(@fixtures['add']['group'],     result['group'])
+		assert_equal(@fixtures['add']['host'],      result['host'])
+		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
+		assert_equal(@fixtures['add']['login'],     result['login'])
+		assert_equal(@fixtures['add']['password'],  result['password'])
+		assert_equal(@fixtures['add']['port'].to_i, result['port'])
+		assert_equal(@fixtures['add']['comment'],   result['comment'])
 	end
 
 	def test_export_yaml
@@ -136,6 +146,16 @@ class TestMPW < Test::Unit::TestCase
 		assert(@mpw.export('export.yml', :yaml))
 		export = YAML::load_file('export.yml')
 		assert_equal(2, export.length)
+
+		result = export.values[0]
+		assert_equal(@fixtures['add']['name'],      result['name'])
+		assert_equal(@fixtures['add']['group'],     result['group'])
+		assert_equal(@fixtures['add']['host'],      result['host'])
+		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
+		assert_equal(@fixtures['add']['login'],     result['login'])
+		assert_equal(@fixtures['add']['password'],  result['password'])
+		assert_equal(@fixtures['add']['port'].to_i, result['port'])
+		assert_equal(@fixtures['add']['comment'],   result['comment'])
 	end
 
 	def test_export_csv
@@ -144,6 +164,17 @@ class TestMPW < Test::Unit::TestCase
 		assert(@mpw.export('export.csv', :csv))
 		export = CSV.parse(File.read('export.csv'), headers: true)
 		assert_equal(2, export.length)
+
+		result = export[0]
+		assert_equal(@fixtures['add']['name'],     result['name'])
+		assert_equal(@fixtures['add']['group'],    result['group'])
+		assert_equal(@fixtures['add']['host'],     result['host'])
+		assert_equal(@fixtures['add']['protocol'], result['protocol'])
+		assert_equal(@fixtures['add']['login'],    result['login'])
+		assert_equal(@fixtures['add']['password'], result['password'])
+		assert_equal(@fixtures['add']['port'],     result['port'])
+		assert_equal(@fixtures['add']['comment'],  result['comment'])
+
 	end
 
 	def test_import_csv
@@ -152,5 +183,16 @@ class TestMPW < Test::Unit::TestCase
 		assert(@mpw.export('export.csv', :csv))
 		assert(@mpw.import('export.csv', :csv))
 		assert_equal(4, @mpw.search.length)
+
+		result = @mpw.search[2]
+		assert_equal(@fixtures['add']['name'],      result['name'])
+		assert_equal(@fixtures['add']['group'],     result['group'])
+		assert_equal(@fixtures['add']['host'],      result['host'])
+		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
+		assert_equal(@fixtures['add']['login'],     result['login'])
+		assert_equal(@fixtures['add']['password'],  result['password'])
+		assert_equal(@fixtures['add']['port'].to_i, result['port'])
+		assert_equal(@fixtures['add']['comment'],   result['comment'])
+	
 	end
 end
