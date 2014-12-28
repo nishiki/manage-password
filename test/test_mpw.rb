@@ -109,8 +109,8 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal('test_comment_update',  result['comment'])
 	end
  
- 	def test_import
-		assert(@mpw.import('fixtures.yml'))
+ 	def test_import_yaml
+		assert(@mpw.import('fixtures.yml', :yaml))
 		assert_equal(2, @mpw.search.length)
 	end
 
@@ -125,9 +125,16 @@ class TestMPW < Test::Unit::TestCase
 	def test_export_csv
 		assert(@mpw.import('fixtures.yml'))
 		assert_equal(2, @mpw.search.length)
-		assert(@mpw.export('export.yml', :csv))
-		export = CSV.parse(File.read('export.yml'), headers: true)
+		assert(@mpw.export('export.csv', :csv))
+		export = CSV.parse(File.read('export.csv'), headers: true)
 		assert_equal(2, export.length)
+	end
 
+	def test_import_csv
+		assert(@mpw.import('fixtures.yml'))
+		assert_equal(2, @mpw.search.length)
+		assert(@mpw.export('export.csv', :csv))
+		assert(@mpw.import('export.csv', :csv))
+		assert_equal(4, @mpw.search.length)
 	end
 end
