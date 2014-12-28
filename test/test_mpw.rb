@@ -3,6 +3,7 @@
 require_relative '../lib/MPW'
 require 'test/unit'
 require 'yaml'
+require 'csv'
  
 class TestMPW < Test::Unit::TestCase
 
@@ -111,5 +112,22 @@ class TestMPW < Test::Unit::TestCase
  	def test_import
 		assert(@mpw.import('fixtures.yml'))
 		assert_equal(2, @mpw.search.length)
+	end
+
+	def test_export_yaml
+		assert(@mpw.import('fixtures.yml'))
+		assert_equal(2, @mpw.search.length)
+		assert(@mpw.export('export.yml', :yaml))
+		export = YAML::load_file('export.yml')
+		assert_equal(2, export.length)
+	end
+
+	def test_export_csv
+		assert(@mpw.import('fixtures.yml'))
+		assert_equal(2, @mpw.search.length)
+		assert(@mpw.export('export.yml', :csv))
+		export = CSV.parse(File.read('export.yml'), headers: true)
+		assert_equal(2, export.length)
+
 	end
 end
