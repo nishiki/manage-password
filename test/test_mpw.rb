@@ -1,4 +1,4 @@
-# File:  tc_simple_number.rb
+#!/usr/bin/ruby
  
 require_relative '../lib/MPW'
 require 'test/unit'
@@ -200,5 +200,24 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(@fixtures['update']['password'],  result['password'])
 		assert_equal(@fixtures['update']['port'].to_i, result['port'])
 		assert_equal(@fixtures['update']['comment'],   result['comment'])
+	end
+
+	def test_remove
+		assert(@mpw.import(@fixture_file, :yaml))
+		assert_equal(2, @mpw.search.length)
+
+		id = @mpw.search[0]['id']
+		assert(@mpw.remove(id)) 
+
+		assert_equal(1, @mpw.search.length)
+	end
+
+	def test_remove_noexistent
+		assert(@mpw.import(@fixture_file, :yaml))
+		assert_equal(2, @mpw.search.length)
+
+		assert(!@mpw.remove('TEST_NOEXISTENT_ID')) 
+
+		assert_equal(2, @mpw.search.length)
 	end
 end
