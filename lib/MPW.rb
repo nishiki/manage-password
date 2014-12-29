@@ -176,12 +176,12 @@ module MPW
 		def export(file, type=:yaml)
 			case type
 			when :csv
-					CSV.open(file, 'w', write_headers: true,
-										headers: ['name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment']) do |csv|
-						@data.each do |id, r|
-							csv << [r['name'], r['group'], r['protocol'], r['host'], r['login'], r['password'], r['port'], r['comment']]
-						end
+				CSV.open(file, 'w', write_headers: true,
+									headers: ['name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment']) do |csv|
+					@data.each do |id, r|
+						csv << [r['name'], r['group'], r['protocol'], r['host'], r['login'], r['password'], r['port'], r['comment']]
 					end
+				end
 
 			when :yaml
 				File.open(file, 'w') {|f| f << @data.to_yaml}
