@@ -170,7 +170,7 @@ module MPW
 		# @rtrn: true if the key exist, else false
 		def check_gpg_key?
 			ctx = GPGME::Ctx.new
-			ctx.each_key(key, true) do
+			ctx.each_key(@key, true) do
 				return true
 			end
 
