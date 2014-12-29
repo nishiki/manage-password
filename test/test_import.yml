@@ -1,0 +1,23 @@
+---
+XWas7vpy0HerhOYd:
+  id: XWas7vpy0HerhOYd
+  name: test_name
+  group: test_group
+  host: test_host
+  protocol: test_protocol
+  login: test_login
+  password: test_password
+  port: 42
+  comment: test_comment
+  date: 1419858983
+D7URyJENLa91jt0b:
+  id: D7URyJENLa91jt0b
+  name: test_name_update
+  group: test_group_update
+  host: test_host_update
+  protocol: test_protocol_update
+  login: test_login_update
+  password: test_password_update
+  port: 43
+  comment: test_comment_update
+  date: 1419858983

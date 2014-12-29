@@ -26,6 +26,85 @@ class TestMPW < Test::Unit::TestCase
 		assert(@mpw.decrypt)
 		assert_equal(0, @mpw.search.length)
 	end
+ 
+ 	def test_import_yaml
+		import_file = 'test_import.yml'
+
+		assert(@mpw.import(import_file, :yaml))
+		assert_equal(2, @mpw.search.length)
+
+		result = @mpw.search[0]
+		assert_equal(@fixtures['add']['name'],      result['name'])
+		assert_equal(@fixtures['add']['group'],     result['group'])
+		assert_equal(@fixtures['add']['host'],      result['host'])
+		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
+		assert_equal(@fixtures['add']['login'],     result['login'])
+		assert_equal(@fixtures['add']['password'],  result['password'])
+		assert_equal(@fixtures['add']['port'].to_i, result['port'])
+		assert_equal(@fixtures['add']['comment'],   result['comment'])
+	end
+
+	def test_export_yaml
+		export_file = 'test_export.yml'
+
+		assert(@mpw.import(@fixture_file))
+		assert_equal(2, @mpw.search.length)
+		assert(@mpw.export(export_file, :yaml))
+		export = YAML::load_file(export_file)
+		assert_equal(2, export.length)
+
+		result = export.values[0]
+		assert_equal(@fixtures['add']['name'],      result['name'])
+		assert_equal(@fixtures['add']['group'],     result['group'])
+		assert_equal(@fixtures['add']['host'],      result['host'])
+		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
+		assert_equal(@fixtures['add']['login'],     result['login'])
+		assert_equal(@fixtures['add']['password'],  result['password'])
+		assert_equal(@fixtures['add']['port'].to_i, result['port'])
+		assert_equal(@fixtures['add']['comment'],   result['comment'])
+
+		File.unlink(export_file)
+	end
+
+	def test_import_csv
+		import_file = 'test_import.csv'
+
+		assert(@mpw.import(import_file, :csv))
+		assert_equal(2, @mpw.search.length)
+
+		import = CSV.parse(File.read(import_file), headers: true)
+
+		result = @mpw.search[0]
+		assert_equal(import[0]['name'],      result['name'])
+		assert_equal(import[0]['group'],     result['group'])
+		assert_equal(import[0]['host'],      result['host'])
+		assert_equal(import[0]['protocol'],  result['protocol'])
+		assert_equal(import[0]['login'],     result['login'])
+		assert_equal(import[0]['password'],  result['password'])
+		assert_equal(import[0]['port'].to_i, result['port'])
+		assert_equal(import[0]['comment'],   result['comment'])
+	end
+
+	def test_export_csv
+		export_file = 'test_export.csv'
+		assert(@mpw.import(@fixture_file))
+		assert_equal(2, @mpw.search.length)
+		assert(@mpw.export(export_file, :csv))
+		export = CSV.parse(File.read(export_file), headers: true)
+		assert_equal(2, export.length)
+
+		result = export[0]
+		assert_equal(@fixtures['add']['name'],     result['name'])
+		assert_equal(@fixtures['add']['group'],    result['group'])
+		assert_equal(@fixtures['add']['host'],     result['host'])
+		assert_equal(@fixtures['add']['protocol'], result['protocol'])
+		assert_equal(@fixtures['add']['login'],    result['login'])
+		assert_equal(@fixtures['add']['password'], result['password'])
+		assert_equal(@fixtures['add']['port'],     result['port'])
+		assert_equal(@fixtures['add']['comment'],  result['comment'])
+
+		File.unlink(export_file)
+	end
 
 	def test_add
 		assert(@mpw.update(@fixtures['add']['name'], 
@@ -75,19 +154,12 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(0, @mpw.search.length)
 	end
 
-	def test_update
-		assert(@mpw.update(@fixtures['add']['name'], 
-		                   @fixtures['add']['group'], 
-		                   @fixtures['add']['host'],
-		                   @fixtures['add']['protocol'],
-		                   @fixtures['add']['login'],
-		                   @fixtures['add']['password'],
-		                   @fixtures['add']['port'],
-		                   @fixtures['add']['comment']))
+	def test_update_empty
+		assert(@mpw.import(@fixture_file, :yaml))
+		assert_equal(2, @mpw.search.length)
 
 		id = @mpw.search[0]['id']
 
-		# Test empty update
 		assert(@mpw.update('','', '','','','','', '', id))
 
 		result = @mpw.search_by_id(id)
@@ -99,9 +171,14 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(@fixtures['add']['password'],  result['password'])
 		assert_equal(@fixtures['add']['port'].to_i, result['port'])
 		assert_equal(@fixtures['add']['comment'],   result['comment'])
+	end
 
+	def test_update
+		assert(@mpw.import(@fixture_file, :yaml))
+		assert_equal(2, @mpw.search.length)
 
-		# Test real update
+		id = @mpw.search[0]['id']
+
 		assert(@mpw.update(@fixtures['update']['name'], 
 		                   @fixtures['update']['group'], 
 		                   @fixtures['update']['host'],
@@ -112,7 +189,7 @@ class TestMPW < Test::Unit::TestCase
 		                   @fixtures['update']['comment'],
 		                   id))
 
-		assert_equal(1, @mpw.search.length)
+		assert_equal(2, @mpw.search.length)
 
 		result = @mpw.search_by_id(id)
 		assert_equal(@fixtures['update']['name'],      result['name'])
@@ -123,76 +200,5 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(@fixtures['update']['password'],  result['password'])
 		assert_equal(@fixtures['update']['port'].to_i, result['port'])
 		assert_equal(@fixtures['update']['comment'],   result['comment'])
-	end
- 
- 	def test_import_yaml
-		assert(@mpw.import(@fixture_file, :yaml))
-		assert_equal(2, @mpw.search.length)
-
-		result = @mpw.search[0]
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
-	end
-
-	def test_export_yaml
-		assert(@mpw.import(@fixture_file))
-		assert_equal(2, @mpw.search.length)
-		assert(@mpw.export('export.yml', :yaml))
-		export = YAML::load_file('export.yml')
-		assert_equal(2, export.length)
-
-		result = export.values[0]
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
-	end
-
-	def test_export_csv
-		assert(@mpw.import(@fixture_file))
-		assert_equal(2, @mpw.search.length)
-		assert(@mpw.export('export.csv', :csv))
-		export = CSV.parse(File.read('export.csv'), headers: true)
-		assert_equal(2, export.length)
-
-		result = export[0]
-		assert_equal(@fixtures['add']['name'],     result['name'])
-		assert_equal(@fixtures['add']['group'],    result['group'])
-		assert_equal(@fixtures['add']['host'],     result['host'])
-		assert_equal(@fixtures['add']['protocol'], result['protocol'])
-		assert_equal(@fixtures['add']['login'],    result['login'])
-		assert_equal(@fixtures['add']['password'], result['password'])
-		assert_equal(@fixtures['add']['port'],     result['port'])
-		assert_equal(@fixtures['add']['comment'],  result['comment'])
-
-	end
-
-	def test_import_csv
-		assert(@mpw.import(@fixture_file))
-		assert_equal(2, @mpw.search.length)
-		assert(@mpw.export('export.csv', :csv))
-		assert(@mpw.import('export.csv', :csv))
-		assert_equal(4, @mpw.search.length)
-
-		result = @mpw.search[2]
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
-	
 	end
 end
