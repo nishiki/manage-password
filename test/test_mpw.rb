@@ -6,12 +6,13 @@ require 'yaml'
 require 'csv'
  
 class TestMPW < Test::Unit::TestCase
-
 	def setup
 		@fixture_file = 'files/fixtures.yml'
 
 		file_gpg = 'test.gpg'
-		key      = 'test-mpw@test-mpw.local'
+		key      = 'a.waksberg@yaegashi.fr'
+
+		puts
 
 		if defined?(I18n.enforce_available_locales)
 			I18n.enforce_available_locales = false
@@ -21,13 +22,8 @@ class TestMPW < Test::Unit::TestCase
 		@mpw = MPW::MPW.new(file_gpg, key)
 		@fixtures = YAML.load_file(@fixture_file)
 	end
-	
-	def test_load_empty_file
-		assert(@mpw.decrypt)
-		assert_equal(0, @mpw.search.length)
-	end
  
- 	def test_import_yaml
+ 	def test_01_import_yaml
 		import_file = 'files/test_import.yml'
 
 		assert(@mpw.import(import_file, :yaml))
@@ -44,7 +40,7 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(@fixtures['add']['comment'],   result['comment'])
 	end
 
-	def test_export_yaml
+	def test_02_export_yaml
 		export_file = 'test_export.yml'
 
 		assert(@mpw.import(@fixture_file))
@@ -66,7 +62,7 @@ class TestMPW < Test::Unit::TestCase
 		File.unlink(export_file)
 	end
 
-	def test_import_csv
+	def test_03_import_csv
 		import_file = 'files/test_import.csv'
 
 		assert(@mpw.import(import_file, :csv))
@@ -85,7 +81,7 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(import[0]['comment'],   result['comment'])
 	end
 
-	def test_export_csv
+	def test_04_export_csv
 		export_file = 'test_export.csv'
 		assert(@mpw.import(@fixture_file))
 		assert_equal(2, @mpw.search.length)
@@ -106,7 +102,7 @@ class TestMPW < Test::Unit::TestCase
 		File.unlink(export_file)
 	end
 
-	def test_add
+	def test_05_add
 		assert(@mpw.update(@fixtures['add']['name'], 
 		                   @fixtures['add']['group'], 
 		                   @fixtures['add']['host'],
@@ -141,7 +137,7 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(2, @mpw.search.length)
 	end
 
-	def test_add_empty_name
+	def test_06_add_empty_name
 		assert(!@mpw.update('', 
 		                    @fixtures['add']['group'], 
 		                    @fixtures['add']['host'],
@@ -154,7 +150,7 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(0, @mpw.search.length)
 	end
 
-	def test_update_empty
+	def test_07_update_empty
 		assert(@mpw.import(@fixture_file, :yaml))
 		assert_equal(2, @mpw.search.length)
 
@@ -173,7 +169,7 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(@fixtures['add']['comment'],   result['comment'])
 	end
 
-	def test_update
+	def test_08_update
 		assert(@mpw.import(@fixture_file, :yaml))
 		assert_equal(2, @mpw.search.length)
 
@@ -202,7 +198,7 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(@fixtures['update']['comment'],   result['comment'])
 	end
 
-	def test_remove
+	def test_09_remove
 		assert(@mpw.import(@fixture_file, :yaml))
 		assert_equal(2, @mpw.search.length)
 
@@ -212,12 +208,48 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(1, @mpw.search.length)
 	end
 
-	def test_remove_noexistent
+	def test_10_remove_noexistent
 		assert(@mpw.import(@fixture_file, :yaml))
 		assert_equal(2, @mpw.search.length)
 
 		assert(!@mpw.remove('TEST_NOEXISTENT_ID')) 
 
 		assert_equal(2, @mpw.search.length)
+	end
+
+	def test_11_encrypt_empty_file
+		assert(@mpw.encrypt)	
+	end
+
+	def test_12_encrypt
+		assert(@mpw.import(@fixture_file, :yaml))
+		assert_equal(2, @mpw.search.length)
+
+		assert(@mpw.encrypt)	
+	end
+
+	def test_13_decrypt_empty_file
+		assert(@mpw.decrypt)
+		assert_equal(0, @mpw.search.length)
+	end
+
+	def test_14_decrypt
+		assert(@mpw.import(@fixture_file, :yaml))
+		assert_equal(2, @mpw.search.length)
+
+		assert(@mpw.encrypt)	
+
+		assert(@mpw.decrypt)
+		assert_equal(2, @mpw.search.length)
+
+		result = @mpw.search[0]
+		assert_equal(@fixtures['add']['name'],      result['name'])
+		assert_equal(@fixtures['add']['group'],     result['group'])
+		assert_equal(@fixtures['add']['host'],      result['host'])
+		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
+		assert_equal(@fixtures['add']['login'],     result['login'])
+		assert_equal(@fixtures['add']['password'],  result['password'])
+		assert_equal(@fixtures['add']['port'].to_i, result['port'])
+		assert_equal(@fixtures['add']['comment'],   result['comment'])
 	end
 end
