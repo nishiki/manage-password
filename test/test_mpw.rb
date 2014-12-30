@@ -8,7 +8,7 @@ require 'csv'
 class TestMPW < Test::Unit::TestCase
 
 	def setup
-		@fixture_file = 'fixtures.yml'
+		@fixture_file = 'files/fixtures.yml'
 
 		file_gpg = 'test.gpg'
 		key      = 'test-mpw@test-mpw.local'
@@ -28,7 +28,7 @@ class TestMPW < Test::Unit::TestCase
 	end
  
  	def test_import_yaml
-		import_file = 'test_import.yml'
+		import_file = 'files/test_import.yml'
 
 		assert(@mpw.import(import_file, :yaml))
 		assert_equal(2, @mpw.search.length)
@@ -67,7 +67,7 @@ class TestMPW < Test::Unit::TestCase
 	end
 
 	def test_import_csv
-		import_file = 'test_import.csv'
+		import_file = 'files/test_import.csv'
 
 		assert(@mpw.import(import_file, :csv))
 		assert_equal(2, @mpw.search.length)
