@@ -10,7 +10,7 @@ class TestMPW < Test::Unit::TestCase
 		@fixture_file = 'files/fixtures.yml'
 
 		file_gpg = 'test.gpg'
-		key      = 'a.waksberg@yaegashi.fr'
+		key      = ENV['MPW_TEST_KEY']
 
 		puts
 
