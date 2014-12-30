@@ -252,4 +252,37 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(@fixtures['add']['port'].to_i, result['port'])
 		assert_equal(@fixtures['add']['comment'],   result['comment'])
 	end
+
+	def test_15_sync_local_empty
+		import_file = 'files/test_import.yml'
+
+		data = []
+		YAML.load_file(import_file).each_value { |v| data.push(v) }
+
+		@mpw.sync(data, 0)
+
+		result = @mpw.search[0]
+		assert_equal(@fixtures['add']['name'],      result['name'])
+		assert_equal(@fixtures['add']['group'],     result['group'])
+		assert_equal(@fixtures['add']['host'],      result['host'])
+		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
+		assert_equal(@fixtures['add']['login'],     result['login'])
+		assert_equal(@fixtures['add']['password'],  result['password'])
+		assert_equal(@fixtures['add']['port'].to_i, result['port'])
+		assert_equal(@fixtures['add']['comment'],   result['comment'])
+
+		assert_equal(2, @mpw.search.length)
+	end
+
+	def test_16_sync_remote_outdated_and_local_empty
+		import_file = 'files/test_import.yml'
+
+		data = []
+		YAML.load_file(import_file).each_value { |v| data.push(v) }
+
+		@mpw.sync(data, Time.now.to_i)
+
+		assert_equal(0, @mpw.search.length)
+	end
+
 end
