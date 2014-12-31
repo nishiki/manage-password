@@ -77,7 +77,7 @@ module MPW
 				search = search.downcase
 			end
 	
-			@data.each do |id, row|
+			@data.each_value do |row|
 				name    = row['name'].nil?    ? nil : row['name'].downcase
 				server  = row['host'].nil?    ? nil : row['host'].downcase
 				comment = row['comment'].nil? ? nil : row['comment'].downcase
@@ -93,11 +93,11 @@ module MPW
 		end
 	
 		# Search in some csv data
-		# @args: id_search -> the id item
+		# @args: id -> the id item
 		# @rtrn: a row with the resultat of the search
-		def search_by_id(id_search)
-			@data.each do |id, row|
-				return row if id == id_search
+		def search_by_id(id)
+			@data.each_value do |row|
+				return row if row['id'] == id
 			end
 	
 			return []
@@ -158,8 +158,8 @@ module MPW
 		# @args: id -> the item's identifiant
 		# @rtrn: true if the item has been deleted
 		def remove(id)
-			@data.each do |k, row|
-				if k == id
+			@data.each_value do |row|
+				if row['id'] == id
 					@data.delete(id)
 					return true
 				end
@@ -211,7 +211,7 @@ module MPW
 				end
 
 			when :yaml
-				YAML::load_file(file).each do |k, row| 
+				YAML::load_file(file).each_value do |row| 
 					if not update(row['name'], row['group'], row['host'], row['protocol'], row['login'], row['password'], row['port'], row['comment'])
 						return false
 					end
@@ -262,7 +262,7 @@ module MPW
 				@error_msg = I18n.t('error.sync.array')
 				return false
 			else not data_remote.to_s.empty?
-				@data.each do |lk, l|
+				@data.each_value do |l|
 					j = 0
 					update = false
 		
