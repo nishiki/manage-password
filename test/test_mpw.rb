@@ -280,9 +280,17 @@ class TestMPW < Test::Unit::TestCase
 		data = []
 		YAML.load_file(import_file).each_value { |v| data.push(v) }
 
-		@mpw.sync(data, Time.now.to_i)
+		assert(@mpw.sync(data, Time.now.to_i))
 
 		assert_equal(0, @mpw.search.length)
 	end
 
+	def test_17_sync_empty_data
+		assert(@mpw.import(@fixture_file, :yaml))
+		assert_equal(2, @mpw.search.length)
+	
+		assert(@mpw.sync([], 0))
+
+		assert_equal(2, @mpw.search.length)
+	end
 end
