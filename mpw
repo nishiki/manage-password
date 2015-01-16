@@ -133,7 +133,7 @@ cli.sync
 
 # Display the item's informations
 if not options[:display].nil?
-	cli.display(options[:display], options[:group], options[:type], options[:format])
+	cli.display(options[:display], options[:group], options[:type])
 
 # Remove an item
 elsif not options[:remove].nil?

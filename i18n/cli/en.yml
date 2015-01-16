@@ -31,6 +31,9 @@ en:
       upload: "Can't upload the file on the server!"
       unknown: "An unknown error is occured!" 
 
+  warning:
+    select: 'Your choice is not a valid element!'
+
   option:
     usage: "Usage"
     show: "Search and show the items"
@@ -51,6 +54,7 @@ en:
     help: "Show this help message"
 
   form:
+    select: "Select the item: "
     add:
       title: "Add a new item"
       name: "Enter the name: "
@@ -122,6 +126,7 @@ en:
     port: "Port"
     protocol: "Protocol"
     server: "Server"
+    warning: "Warning"
 
   ssh:
     option:

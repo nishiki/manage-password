@@ -39,7 +39,7 @@ class Cli
 				return false
 			end
 		end
-		
+
 		if  not @config.sync_host.nil? and not @config.sync_port.nil?
 			if not @sync.connect(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
 				puts "#{I18n.t('display.error')} #1: #{@sync.error_msg}".red
@@ -166,21 +166,37 @@ class Cli
 	# Display the query's result
 	# @args: search -> the string to search
 	#        protocol -> search from a particular protocol
-	def display(search, protocol=nil, group=nil, format=nil)
+	def display(search, protocol=nil, group=nil)
 		result = @mpw.search(search, group, protocol)
 
-		if not result.empty?
-			result.each do |r|
-				display_item(r)
-			end
-		else
+		case result.length
+		when 0
 			puts I18n.t('display.nothing')
+		when 1
+			display_item(result.first)
+		else
+			i = 1
+			result.each do |r|
+				print "#{i}: ".cyan
+				print r['name']
+				print " -> #{r['comment']}".magenta if not r['comment'].to_s.empty?
+				print "\n"
+
+				i += 1
+			end
+			choice = ask(I18n.t('form.select')).to_i
+
+			if choice >= 1 and choice < i 
+				display_item(result[choice-1])
+			else
+				puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+			end
 		end
 	end
 
 	# Display an item in the default format
 	# @args: item -> an array with the item information
-	def diplay_item(item)
+	def display_item(item)
 		puts '--------------------'
 		puts "Id: #{item['id']}"
 		puts "#{I18n.t('display.name')}: #{item['name']}"
@@ -192,6 +208,7 @@ class Cli
 		puts "#{I18n.t('display.port')}: #{item['port']}"
 		puts "#{I18n.t('display.comment')}: #{item['comment']}"
 	end
+
 
 	# Form to add a new item
 	def add

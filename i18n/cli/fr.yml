@@ -31,6 +31,9 @@ fr:
       upload: "Impossible d'envoyer le fichier sur le serveur!"
       unknown: "Une erreur inconnue est survenue!" 
 
+  warning:
+    select: "Votre choix n'est pas un élément valide!"
+
   option:
     usage: "Utilisation"
     show: "Recherche et affiche les éléments"
@@ -51,6 +54,7 @@ fr:
     help: "Affiche ce message d'aide"
 
   form:
+    select: "Sélectionner l'élément: "
     add:
       title: "Ajout d'un nouvel élément"
       name: "Entrez le nom: "
@@ -122,6 +126,7 @@ fr:
     port: "Port"
     protocol: "Protocol"
     server: "Serveur"
+    warning: "Warning"
 
   ssh:
     option:

@@ -90,7 +90,7 @@ module MPW
 						file << msg['data']
 					end
 					
-					mpw = MPW.new(tmp_file)
+					mpw = MPW.new(tmp_file, @gpg_key)
 					if not mpw.decrypt(gpg_password)
 						@error_msg = mpw.error_msg
 						return nil
