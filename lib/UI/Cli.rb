@@ -197,18 +197,26 @@ class Cli
 	# Display an item in the default format
 	# @args: item -> an array with the item information
 	def display_item(item)
-		puts '--------------------'
-		puts "Id: #{item['id']}"
-		puts "#{I18n.t('display.name')}: #{item['name']}"
-		puts "#{I18n.t('display.group')}: #{item['group']}"
-		puts "#{I18n.t('display.server')}: #{item['host']}"
-		puts "#{I18n.t('display.protocol')}: #{item['protocol']}"
-		puts "#{I18n.t('display.login')}: #{item['login']}"
-		puts "#{I18n.t('display.password')}: #{item['password']}"
-		puts "#{I18n.t('display.port')}: #{item['port']}"
-		puts "#{I18n.t('display.comment')}: #{item['comment']}"
+		puts '--------------------'.cyan
+		print 'Id: '.cyan
+		puts  item['id']
+		print "#{I18n.t('display.name')}: ".cyan
+		puts  item['name']
+		print "#{I18n.t('display.group')}: ".cyan
+		puts  item['group']
+		print "#{I18n.t('display.server')}: ".cyan
+		puts  item['host']
+		print "#{I18n.t('display.protocol')}: ".cyan
+		puts  item['protocol']
+		print "#{I18n.t('display.login')}: ".cyan
+		puts  item['login']
+		print "#{I18n.t('display.password')}: ".cyan
+		puts  item['password']
+		print "#{I18n.t('display.port')}: ".cyan
+		puts  item['port']
+		print "#{I18n.t('display.comment')}: ".cyan
+		puts  item['comment']
 	end
-
 
 	# Form to add a new item
 	def add
