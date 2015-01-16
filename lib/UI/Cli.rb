@@ -171,11 +171,7 @@ class Cli
 
 		if not result.empty?
 			result.each do |r|
-				if format.nil? || !format
-					displayFormat(r)
-				else
-					displayFormatAlt(r)
-				end
+				display_item(r)
 			end
 		else
 			puts I18n.t('display.nothing')
@@ -184,7 +180,7 @@ class Cli
 
 	# Display an item in the default format
 	# @args: item -> an array with the item information
-	def displayFormat(item)
+	def diplay_item(item)
 		puts '--------------------'
 		puts "Id: #{item['id']}"
 		puts "#{I18n.t('display.name')}: #{item['name']}"
@@ -195,22 +191,6 @@ class Cli
 		puts "#{I18n.t('display.password')}: #{item['password']}"
 		puts "#{I18n.t('display.port')}: #{item['port']}"
 		puts "#{I18n.t('display.comment')}: #{item['comment']}"
-	end
-
-	# Display an item in the alternative format
-	# @args: item -> an array with the item information
-	def displayFormatAlt(item)
-		port = item[:port].nil? ? '' : ":#{item[:port]}"
-
-		if item[:password].nil? or item[:password].empty?
-			if item[:login].include('@')
-				puts "# #{item[:id]} #{item[:protocol]}://#{item[:login]}@#{item[:host]}#{port}"
-			else
-				puts "# #{item[:id]} #{item[:protocol]}://{#{item[:login]}}@#{item[:host]}#{port}"
-			end
-		else
-			puts "# #{item[:id]} #{item[:protocol]}://{#{item[:login]}:#{item[:password]}}@#{item[:host]}#{port}"
-		end
 	end
 
 	# Form to add a new item
@@ -279,7 +259,7 @@ class Cli
 			result = @mpw.search_by_id(id)
 
 			if result.length > 0
-				displayFormat(result)
+				display_item(result)
 
 				confirm = ask("#{I18n.t('form.delete.ask', id: id)} (y/N) ").to_s
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
@@ -324,7 +304,7 @@ class Cli
 			result = @mpw.import_preview(file, type)
 			if result.is_a?(Array) and not result.empty?
 				result.each do |r|
-					displayFormat(r)
+					display_item(r)
 				end
 
 				confirm = ask("#{I18n.t('form.import.ask', file: file)} (y/N) ").to_s
