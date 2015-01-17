@@ -50,7 +50,7 @@ module MPW
 			# Get data on server
 			# @args: gpg_password -> the gpg password
 			# @rtrn: nil if nothing data or error
-			def get(gpg_password)
+			def get(gpg_key, gpg_password)
 				return nil if not @enable
 				
 				tmp_file = tmpfile
@@ -59,7 +59,7 @@ module MPW
 					ftp.gettextfile(@path, tmp_file)
 				end
 			
-				mpw = MPW.new(tmp_file)
+				mpw = MPW.new(tmp_file, gpg_key)
 				if not mpw.decrypt(gpg_password)
 					@error_msg = mpw.error_msg
 					return nil

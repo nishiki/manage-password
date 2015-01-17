@@ -61,7 +61,7 @@ module MPW
 			# Get data on server
 			# @args: gpg_password -> the gpg password
 			# @rtrn: nil if nothing data or error
-			def get(gpg_password)
+			def get(gpg_key, gpg_password)
 				return nil if not @enable
 			
 				msg = nil
@@ -90,7 +90,7 @@ module MPW
 						file << msg['data']
 					end
 					
-					mpw = MPW.new(tmp_file, @gpg_key)
+					mpw = MPW.new(tmp_file, gpg_key)
 					if not mpw.decrypt(gpg_password)
 						@error_msg = mpw.error_msg
 						return nil

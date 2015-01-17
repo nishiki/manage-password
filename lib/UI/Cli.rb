@@ -47,15 +47,19 @@ class Cli
 		end
 
 		if @sync.enable
-			if not @mpw.sync(@sync.get(@passwd), @config.last_update)
+			if not @mpw.sync(@sync.get(@config.key, @passwd), @config.last_update)
 				puts "#{I18n.t('display.error')} #2: #{@mpw.error_msg}".red  if not @mpw.error_msg.nil?
 				puts "#{I18n.t('display.error')} #3: #{@sync.error_msg}".red if not @sync.error_msg.nil?
+
 			elsif not @sync.update(File.open(@config.file_gpg).read)
 				puts "#{I18n.t('display.error')} #4: #{@sync.error_msg}".red
+
 			elsif not @config.set_last_update
 				puts "#{I18n.t('display.error')} #5: #{@config.error_msg}".red
+
 			elsif not @mpw.encrypt
 				puts "#{I18n.t('display.error')} #6: #{@mpw.error_msg}".red
+
 			else
 				return true
 			end
