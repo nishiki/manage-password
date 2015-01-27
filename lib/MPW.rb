@@ -9,6 +9,7 @@ require 'csv'
 require 'i18n'
 require 'fileutils'
 require 'yaml'
+require "#{APP_ROOT}/lib/Item"
 	
 module MPW
 	class MPW
@@ -21,17 +22,31 @@ module MPW
 			@file_gpg   = file_gpg
 			@key        = key
 			@share_keys = share_keys
-			@data       = {}
+			@data       = []
 		end
 	
 		# Decrypt a gpg file
 		# @args: password -> the GPG key password
 		# @rtrn: true if data has been decrypted
-		def decrypt(passwd=nil)
+		def decrypt(password=nil)
 			if File.exist?(@file_gpg)
-				crypto = GPGME::Crypto.new(armor: true)
-				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: passwd).read.force_encoding('utf-8')
-				@data = YAML.load(data_decrypt) if not data_decrypt.to_s.empty?
+				crypto       = GPGME::Crypto.new(armor: true)
+				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: password).read.force_encoding('utf-8')
+				if not data_decrypt.to_s.empty?
+					YAML.load(data_decrypt).each do |d|
+						@data.push(MPW::Item.new(id:        d['id'],
+						                         name:      d['name'],
+						                         group:     d['group'],
+						                         host:      d['host'],
+						                         protocol:  d['protocol'],
+						                         user:      d['login'],
+						                         password:  d['password'],
+						                         port:      d['port'],
+						                         comment:   d['comment'],
+						                         last_edit: d['last_edit'],
+						                         created:   d['created'],
+						                        )
+					end
 			end
 	
 			return true
@@ -70,21 +85,20 @@ module MPW
 		# @args: search -> the string to search
 		#        protocol -> the connection protocol (ssh, web, other)
 		# @rtrn: a list with the resultat of the search
-		def search(search='', group=nil, protocol=nil)
+		def list(options={})
 			result = []
 	
-			if not search.nil?
-				search = search.downcase
-			end
+			search = defined?(options[:search]) ? options[:search].downcase : ''
 	
-			@data.each_value do |row|
-				name    = row['name'].nil?    ? nil : row['name'].downcase
-				server  = row['host'].nil?    ? nil : row['host'].downcase
-				comment = row['comment'].nil? ? nil : row['comment'].downcase
+			@data.each do |item|
+				name    = item.name.nil?    ? nil : item.name.downcase
+				host    = item.host.nil?    ? nil : item.host.downcase
+				comment = item.comment.nil? ? nil : item.comment.downcase
 	
-				if name =~ /^.*#{search}.*$/ or server =~ /^.*#{search}.*$/ or comment =~ /^.*#{search}.*$/ 
-					if (protocol.nil? or protocol.eql?(row[:protocol])) and (group.nil? or group.eql?(row[:group]))
-						result.push(row)
+				if name =~ /^.*#{search}.*$/ or host =~ /^.*#{search}.*$/ or comment =~ /^.*#{search}.*$/ 
+					if (not defined?(options[:protocol] or options[:protocol].eql?(item.protocol)) and 
+					   (group.nil? or options[:group].eql?(item.group))
+						result.push(item)
 					end
 				end
 			end
@@ -96,62 +110,11 @@ module MPW
 		# @args: id -> the id item
 		# @rtrn: a row with the resultat of the search
 		def search_by_id(id)
-			@data.each_value do |row|
-				return row if row['id'] == id
+			@data.each do |item|
+				return item if item.id == id
 			end
 	
-			return []
-		end
-	
-		# Update an item
-		# @args: id -> the item's identifiant
-		#        name -> the item name
-		#        group ->  the item group
-		#        server -> the ip or hostname
-		#        protocol -> the protocol
-		#        login -> the login
-		#        passwd -> the password
-		#        port -> the port
-		#        comment -> a comment
-		# @rtrn: true if the item has been updated
-		def update(name, group, server, protocol, login, passwd, port, comment, id=nil)
-			row    = {}
-			update = false
-	
-			i  = 0
-			if @data.instance_of?(Hash) and @data.has_key?(id)
-				row = @data[id]
-			end
-	
-			if port.to_i <= 0
-				port = nil
-			end
-	
-			row_update             = {}
-			row_update['id']       = id.to_s.empty?       ? MPW.password(16) : id
-			row_update['name']     = name.to_s.empty?     ? row['name']      : name
-			row_update['group']    = group.to_s.empty?    ? row['group']     : group
-			row_update['host']     = server.to_s.empty?   ? row['host']      : server
-			row_update['protocol'] = protocol.to_s.empty? ? row['protocol']  : protocol
-			row_update['login']    = login.to_s.empty?    ? row['login']     : login
-			row_update['password'] = passwd.to_s.empty?   ? row['password']  : passwd
-			row_update['port']     = port.to_s.empty?     ? row['port']      : port.to_i
-			row_update['comment']  = comment.to_s.empty?  ? row['comment']   : comment
-			row_update['date']     = Time.now.to_i
-	
-			if row_update['name'].to_s.empty?
-				@error_msg = I18n.t('error.update.name_empty')
-				return false
-			end
-	
-			if update
-				@data[id] = row_update
-			else
-				id = row_update['id']
-				@data[id] = row_update
-			end
-	
-			return true
+			return nil
 		end
 		
 		# Remove an item 
