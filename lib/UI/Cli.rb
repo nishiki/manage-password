@@ -256,14 +256,14 @@ class Cli
 		if not row.empty?
 			puts I18n.t('form.update.title')
 			puts '--------------------'
-			name     = ask(I18n.t('form.update.name'    , name:     row[:name])).to_s
-			group    = ask(I18n.t('form.update.group'   , group:    row[:group])).to_s
-			server   = ask(I18n.t('form.update.server'  , server:   row[:host])).to_s
-			protocol = ask(I18n.t('form.update.protocol', protocol: row[:protocol])).to_s
-			login    = ask(I18n.t('form.update.login'   , login:    row[:login])).to_s
+			name     = ask(I18n.t('form.update.name'    , name:     row['name'])).to_s
+			group    = ask(I18n.t('form.update.group'   , group:    row['group'])).to_s
+			server   = ask(I18n.t('form.update.server'  , server:   row['host'])).to_s
+			protocol = ask(I18n.t('form.update.protocol', protocol: row['protocol'])).to_s
+			login    = ask(I18n.t('form.update.login'   , login:    row['login'])).to_s
 			passwd   = ask(I18n.t('form.update.password')).to_s
-			port     = ask(I18n.t('form.update.port'    , port:     row[:port])).to_s
-			comment  = ask(I18n.t('form.update.comment' , comment:  row[:comment])).to_s
+			port     = ask(I18n.t('form.update.port'    , port:     row['port'])).to_s
+			comment  = ask(I18n.t('form.update.comment' , comment:  row['comment'])).to_s
 				
 			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
 				if @mpw.encrypt
