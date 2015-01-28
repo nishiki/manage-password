@@ -171,7 +171,7 @@ class Cli
 	# @args: search -> the string to search
 	#        protocol -> search from a particular protocol
 	def display(search, protocol=nil, group=nil)
-		result = @mpw.search(search, group, protocol)
+		result = @mpw.list(search: search)
 
 		case result.length
 		when 0
@@ -180,10 +180,10 @@ class Cli
 			display_item(result.first)
 		else
 			i = 1
-			result.each do |r|
+			result.each do |item|
 				print "#{i}: ".cyan
-				print r['name']
-				print " -> #{r['comment']}".magenta if not r['comment'].to_s.empty?
+				print item.name
+				print " -> #{item.comment}".magenta if not item.comment.to_s.empty?
 				print "\n"
 
 				i += 1
@@ -203,23 +203,23 @@ class Cli
 	def display_item(item)
 		puts '--------------------'.cyan
 		print 'Id: '.cyan
-		puts  item['id']
+		puts  item.id
 		print "#{I18n.t('display.name')}: ".cyan
-		puts  item['name']
+		puts  item.name
 		print "#{I18n.t('display.group')}: ".cyan
-		puts  item['group']
+		puts  item.group
 		print "#{I18n.t('display.server')}: ".cyan
-		puts  item['host']
+		puts  item.host
 		print "#{I18n.t('display.protocol')}: ".cyan
-		puts  item['protocol']
+		puts  item.protocol
 		print "#{I18n.t('display.login')}: ".cyan
-		puts  item['login']
+		puts  item.user
 		print "#{I18n.t('display.password')}: ".cyan
-		puts  item['password']
+		puts  item.password
 		print "#{I18n.t('display.port')}: ".cyan
-		puts  item['port']
+		puts  item.port
 		print "#{I18n.t('display.comment')}: ".cyan
-		puts  item['comment']
+		puts  item.comment
 	end
 
 	# Form to add a new item
@@ -251,19 +251,19 @@ class Cli
 	# Update an item
 	# @args: id -> the item's id
 	def update(id)
-		row = @mpw.search_by_id(id)
+		item = @mpw.search_by_id(id)
 
 		if not row.empty?
 			puts I18n.t('form.update.title')
 			puts '--------------------'
-			name     = ask(I18n.t('form.update.name'    , name:     row['name'])).to_s
-			group    = ask(I18n.t('form.update.group'   , group:    row['group'])).to_s
-			server   = ask(I18n.t('form.update.server'  , server:   row['host'])).to_s
-			protocol = ask(I18n.t('form.update.protocol', protocol: row['protocol'])).to_s
-			login    = ask(I18n.t('form.update.login'   , login:    row['login'])).to_s
+			name     = ask(I18n.t('form.update.name'    , name:     item.name)).to_s
+			group    = ask(I18n.t('form.update.group'   , group:    item.group)).to_s
+			server   = ask(I18n.t('form.update.server'  , server:   item.host)).to_s
+			protocol = ask(I18n.t('form.update.protocol', protocol: item.protocol)).to_s
+			login    = ask(I18n.t('form.update.login'   , login:    item.user)).to_s
 			passwd   = ask(I18n.t('form.update.password')).to_s
-			port     = ask(I18n.t('form.update.port'    , port:     row['port'])).to_s
-			comment  = ask(I18n.t('form.update.comment' , comment:  row['comment'])).to_s
+			port     = ask(I18n.t('form.update.port'    , port:     item.port)).to_s
+			comment  = ask(I18n.t('form.update.comment' , comment:  item.comment)).to_s
 				
 			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
 				if @mpw.encrypt

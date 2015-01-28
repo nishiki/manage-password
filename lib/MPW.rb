@@ -33,20 +33,22 @@ module MPW
 				crypto       = GPGME::Crypto.new(armor: true)
 				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: password).read.force_encoding('utf-8')
 				if not data_decrypt.to_s.empty?
-					YAML.load(data_decrypt).each do |d|
-						@data.push(MPW::Item.new(id:        d['id'],
-						                         name:      d['name'],
-						                         group:     d['group'],
-						                         host:      d['host'],
-						                         protocol:  d['protocol'],
-						                         user:      d['login'],
-						                         password:  d['password'],
-						                         port:      d['port'],
-						                         comment:   d['comment'],
-						                         last_edit: d['last_edit'],
-						                         created:   d['created'],
-						                        )
+					YAML.load(data_decrypt).each_value do |d|
+						@data.push(Item.new(id:        d['id'],
+						                    name:      d['name'],
+						                    group:     d['group'],
+						                    host:      d['host'],
+						                    protocol:  d['protocol'],
+						                    user:      d['login'],
+						                    password:  d['password'],
+						                    port:      d['port'],
+						                    comment:   d['comment'],
+						                    last_edit: d['last_edit'],
+						                    created:   d['created'],
+						                   )
+						          )
 					end
+				end
 			end
 	
 			return true
@@ -60,7 +62,21 @@ module MPW
 		def encrypt
 			FileUtils.cp(@file_gpg, "#{@file_gpg}.bk") if File.exist?(@file_gpg)
 	
-			data_to_encrypt = @data.to_yaml
+			data_to_encrypt = {}
+			@data.each do |item|
+				data_to_encrypt.merge!({'id'        => item.id,
+				                        'name'      => item.name,
+				                        'group'     => item.group,
+				                        'host'      => item.host,
+				                        'protocol'  => item.protocol,
+				                        'user'      => item.user,
+				                        'password'  => item.password,
+				                        'port'      => item.port,
+				                        'comment'   => item.comment,
+				                        'last_edit' => item.last_edit,
+				                        'created'   => item.created,
+				                      })
+			end
 	
 			recipients = []
 			recipients.push(@key)
@@ -70,7 +86,7 @@ module MPW
 
 			crypto = GPGME::Crypto.new(armor: true)
 			file_gpg = File.open(@file_gpg, 'w+')
-			crypto.encrypt(data_to_encrypt, recipients: recipients, output: file_gpg)
+			crypto.encrypt(data_to_encrypt.to_yaml, recipients: recipients, output: file_gpg)
 			file_gpg.close
 	
 			FileUtils.rm("#{@file_gpg}.bk") if File.exist?("#{@file_gpg}.bk")
@@ -88,7 +104,11 @@ module MPW
 		def list(options={})
 			result = []
 	
-			search = defined?(options[:search]) ? options[:search].downcase : ''
+			if not defined?(options[:search]) or options[:search].nil?
+				search = ''
+			else
+				search = options[:search].downcase
+			end
 	
 			@data.each do |item|
 				name    = item.name.nil?    ? nil : item.name.downcase
@@ -96,10 +116,7 @@ module MPW
 				comment = item.comment.nil? ? nil : item.comment.downcase
 	
 				if name =~ /^.*#{search}.*$/ or host =~ /^.*#{search}.*$/ or comment =~ /^.*#{search}.*$/ 
-					if (not defined?(options[:protocol] or options[:protocol].eql?(item.protocol)) and 
-					   (group.nil? or options[:group].eql?(item.group))
-						result.push(item)
-					end
+					result.push(item)
 				end
 			end
 	
@@ -117,21 +134,6 @@ module MPW
 			return nil
 		end
 		
-		# Remove an item 
-		# @args: id -> the item's identifiant
-		# @rtrn: true if the item has been deleted
-		def remove(id)
-			@data.each_value do |row|
-				if row['id'] == id
-					@data.delete(id)
-					return true
-				end
-			end
-	
-			@error_msg = I18n.t('error.delete.id_no_exist', id: id)
-			return false
-		end
-	
 		# Export to csv
 		# @args: file -> file where you export the data
 		#        type -> udata type
@@ -140,14 +142,30 @@ module MPW
 			case type
 			when :csv
 				CSV.open(file, 'w', write_headers: true,
-									headers: ['name', 'group', 'protocol', 'host', 'login', 'password', 'port', 'comment']) do |csv|
-					@data.each do |id, r|
-						csv << [r['name'], r['group'], r['protocol'], r['host'], r['login'], r['password'], r['port'], r['comment']]
+									headers: ['name', 'group', 'protocol', 'host', 'user', 'password', 'port', 'comment']) do |csv|
+					@data.each do |item|
+						csv << [item.id, item.group, item.protocol, item.host, item.user, item.password, item.port, item.comment]
 					end
 				end
 
 			when :yaml
-				File.open(file, 'w') {|f| f << @data.to_yaml}
+				data = {}
+				@data.each do |item|
+						data.merge!({'id'        => item.id,
+						             'name'      => item.name,
+						             'group'     => item.group,
+						             'host'      => item.host,
+						             'protocol'  => item.protocol,
+						             'user'      => item.user,
+						             'password'  => item.password,
+						             'port'      => item.port,
+						             'comment'   => item.comment,
+						             'last_edit' => item.last_edit,
+						             'created'   => item.created,
+						           })
+				end
+
+				File.open(file, 'w') {|f| f << data.to_yaml}
 
 			else
 				@error_msg = "#{I18n.t('error.export.unknown_type', type: type)}"

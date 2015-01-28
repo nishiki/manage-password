@@ -67,6 +67,7 @@ module MPW
 		def set_name(name)
 			if name.to_s.empty?
 				return false
+			end
 
 			@name = name
 			return true
