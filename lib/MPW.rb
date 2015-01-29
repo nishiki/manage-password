@@ -191,16 +191,36 @@ module MPW
 			case type
 			when :csv
 				CSV.foreach(file, {headers: true}) do |row|
-					if not update(row['name'], row['group'], row['host'], row['protocol'], row['login'], row['password'], row['port'], row['comment'])
-						return false
-					end
+					item = Item.new(name:     row['name'], 
+					                group:    row['group'],
+					                host:     row['host'],
+					                protocol: row['protocol'],
+					                login:    row['login'],
+					                password: row['password'],
+					                port:     row['port'],
+					                comment:  row['comment'],
+					               )
+
+					return false if item.empty?
+
+					@data.push(item)
 				end
 
 			when :yaml
 				YAML::load_file(file).each_value do |row| 
-					if not update(row['name'], row['group'], row['host'], row['protocol'], row['login'], row['password'], row['port'], row['comment'])
-						return false
-					end
+					item = Item.new(name:     row['name'], 
+					                group:    row['group'],
+					                host:     row['host'],
+					                protocol: row['protocol'],
+					                login:    row['login'],
+					                password: row['password'],
+					                port:     row['port'],
+					                comment:  row['comment'],
+					               )
+
+					return false if item.empty?
+
+					@data.push(item)
 				end
 
 			else
