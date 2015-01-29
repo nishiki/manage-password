@@ -32,6 +32,7 @@ module MPW
 			if File.exist?(@file_gpg)
 				crypto       = GPGME::Crypto.new(armor: true)
 				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: password).read.force_encoding('utf-8')
+
 				if not data_decrypt.to_s.empty?
 					YAML.load(data_decrypt).each_value do |d|
 						@data.push(Item.new(id:        d['id'],
@@ -64,18 +65,21 @@ module MPW
 	
 			data_to_encrypt = {}
 			@data.each do |item|
-				data_to_encrypt.merge!({'id'        => item.id,
-				                        'name'      => item.name,
-				                        'group'     => item.group,
-				                        'host'      => item.host,
-				                        'protocol'  => item.protocol,
-				                        'user'      => item.user,
-				                        'password'  => item.password,
-				                        'port'      => item.port,
-				                        'comment'   => item.comment,
-				                        'last_edit' => item.last_edit,
-				                        'created'   => item.created,
-				                      })
+				next if item.empty?
+
+				data_to_encrypt.merge!(item.id => {'id'        => item.id,
+				                                   'name'      => item.name,
+				                                   'group'     => item.group,
+				                                   'host'      => item.host,
+				                                   'protocol'  => item.protocol,
+				                                   'user'      => item.user,
+				                                   'password'  => item.password,
+				                                   'port'      => item.port,
+				                                   'comment'   => item.comment,
+				                                   'last_edit' => item.last_edit,
+				                                   'created'   => item.created,
+				                                  }
+				                      )
 			end
 	
 			recipients = []
@@ -151,18 +155,19 @@ module MPW
 			when :yaml
 				data = {}
 				@data.each do |item|
-						data.merge!({'id'        => item.id,
-						             'name'      => item.name,
-						             'group'     => item.group,
-						             'host'      => item.host,
-						             'protocol'  => item.protocol,
-						             'user'      => item.user,
-						             'password'  => item.password,
-						             'port'      => item.port,
-						             'comment'   => item.comment,
-						             'last_edit' => item.last_edit,
-						             'created'   => item.created,
-						           })
+					data.merge!(item.id => {'id'        => item.id,
+					                        'name'      => item.name,
+					                        'group'     => item.group,
+					                        'host'      => item.host,
+					                        'protocol'  => item.protocol,
+					                        'user'      => item.user,
+					                        'password'  => item.password,
+					                        'port'      => item.port,
+					                        'comment'   => item.comment,
+					                        'last_edit' => item.last_edit,
+					                        'created'   => item.created,
+					                       }
+					            )
 				end
 
 				File.open(file, 'w') {|f| f << data.to_yaml}

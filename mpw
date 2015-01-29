@@ -82,7 +82,7 @@ OptionParser.new do |opts|
 
 	opts.on('-e', '--export FILE', I18n.t('option.export')) do |file|
 		options[:export] = file
-		options[:type]   = :csv
+		options[:type]   = :yaml
 	end
 
 	opts.on('-t', '--type TYPE', I18n.t('option.type')) do |type|
