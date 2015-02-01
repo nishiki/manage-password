@@ -97,10 +97,6 @@ OptionParser.new do |opts|
 		options[:force] = true
 	end
 
-	opts.on('-F', '--format', I18n.t('option.format')) do
-		options[:format] = true
-	end
-
 	opts.on('-G', '--generate-password [LENGTH]', I18n.t('option.generate_password')) do |length|
 		puts MPW::MPW::password(length)
 		exit 0
