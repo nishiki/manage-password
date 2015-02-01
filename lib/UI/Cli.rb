@@ -233,7 +233,7 @@ class Cli
 		options[:host]     = ask(I18n.t('form.add.server')).to_s
 		options[:protocol] = ask(I18n.t('form.add.protocol')).to_s
 		options[:user]     = ask(I18n.t('form.add.login')).to_s
-		options[:passwd]   = ask(I18n.t('form.add.password')).to_s
+		options[:password] = ask(I18n.t('form.add.password')).to_s
 		options[:port]     = ask(I18n.t('form.add.port')).to_s
 		options[:comment]  = ask(I18n.t('form.add.comment')).to_s
 
@@ -246,7 +246,7 @@ class Cli
 				puts "#{I18n.t('display.error')} #12: #{@mpw.error_msg}".red
 			end
 		else
-			puts "#{I18n.t('display.error')} #13: #{@mpw.error_msg}".red
+			puts "#{I18n.t('display.error')} #13: #{item.error_msg}".red
 		end
 	end
 
@@ -255,19 +255,23 @@ class Cli
 	def update(id)
 		item = @mpw.search_by_id(id)
 
-		if not row.empty?
+		if not item.nil?
+			options = {}
+
 			puts I18n.t('form.update.title')
 			puts '--------------------'
-			name     = ask(I18n.t('form.update.name'    , name:     item.name)).to_s
-			group    = ask(I18n.t('form.update.group'   , group:    item.group)).to_s
-			server   = ask(I18n.t('form.update.server'  , server:   item.host)).to_s
-			protocol = ask(I18n.t('form.update.protocol', protocol: item.protocol)).to_s
-			login    = ask(I18n.t('form.update.login'   , login:    item.user)).to_s
-			passwd   = ask(I18n.t('form.update.password')).to_s
-			port     = ask(I18n.t('form.update.port'    , port:     item.port)).to_s
-			comment  = ask(I18n.t('form.update.comment' , comment:  item.comment)).to_s
+			options[:name]     = ask(I18n.t('form.update.name'    , name:     item.name)).to_s
+			options[:group]    = ask(I18n.t('form.update.group'   , group:    item.group)).to_s
+			options[:host]     = ask(I18n.t('form.update.server'  , server:   item.host)).to_s
+			options[:protocol] = ask(I18n.t('form.update.protocol', protocol: item.protocol)).to_s
+			options[:user]     = ask(I18n.t('form.update.login'   , login:    item.user)).to_s
+			options[:password] = ask(I18n.t('form.update.password')).to_s
+			options[:port]     = ask(I18n.t('form.update.port'    , port:     item.port)).to_s
+			options[:comment]  = ask(I18n.t('form.update.comment' , comment:  item.comment)).to_s
+
+			options.delete_if { |k,v| v.empty? }
 				
-			if @mpw.update(name, group, server, protocol, login, passwd, port, comment, id)
+			if item.update(options)
 				if @mpw.encrypt
 					sync
 					puts "#{I18n.t('form.update.valid')}".green
@@ -275,7 +279,7 @@ class Cli
 					puts "#{I18n.t('display.error')} #14: #{@mpw.error_msg}".red
 				end
 			else
-				puts "#{I18n.t('display.error')} #15: #{@mpw.error_msg}".red
+				puts "#{I18n.t('display.error')} #15: #{item.error_msg}".red
 			end
 		else
 			puts I18n.t('display.nothing')

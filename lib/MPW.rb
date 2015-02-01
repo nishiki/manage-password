@@ -40,7 +40,7 @@ module MPW
 						                    group:     d['group'],
 						                    host:      d['host'],
 						                    protocol:  d['protocol'],
-						                    user:      d['login'],
+						                    user:      d['user'],
 						                    password:  d['password'],
 						                    port:      d['port'],
 						                    comment:   d['comment'],
@@ -62,9 +62,10 @@ module MPW
 		# @rtrn: true if the file has been encrypted
 		def encrypt
 			FileUtils.cp(@file_gpg, "#{@file_gpg}.bk") if File.exist?(@file_gpg)
+
+			data_to_encrypt = {}
 	
 			@data.each do |item|
-				puts item.class
 				next if item.empty?
 
 				data_to_encrypt.merge!(item.id => {'id'        => item.id,
