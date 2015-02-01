@@ -43,21 +43,21 @@ options[:config] = nil
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw [options]"
 
-	opts.on('-d', '--display [SEARCH]', I18n.t('option.show')) do |search|
-		search.nil? ? (options[:display]  = '')  : (options[:display] = search)
+	opts.on('-s', '--show [SEARCH]', I18n.t('option.show')) do |search|
+		search.nil? ? (options[:show]  = '')  : (options[:show] = search)
 	end
 
 	opts.on('-A', '--show-all', I18n.t('option.show_all')) do
-		options[:type]    = nil
-		options[:display] = ''
+		options[:type] = nil
+		options[:show] = ''
 	end
 
 	opts.on('-u', '--update ID', I18n.t('option.update')) do |id|
 		options[:update] = id
 	end
 
-	opts.on('-r', '--remove ID', I18n.t('option.remove')) do |id|
-		options[:remove] = id
+	opts.on('-d', '--delete ID', I18n.t('option.remove')) do |id|
+		options[:delete] = id
 	end
 
 	opts.on('-g', '--group GROUP', I18n.t('option.group')) do |group|
@@ -128,12 +128,12 @@ cli.decrypt
 cli.sync
 
 # Display the item's informations
-if not options[:display].nil?
-	cli.display(options[:display], options[:group], options[:type])
+if not options[:show].nil?
+	cli.display(options[:show], options[:group], options[:type])
 
 # Remove an item
-elsif not options[:remove].nil?
-	cli.remove(options[:remove], options[:force])
+elsif not options[:delete].nil?
+	cli.delete(options[:delete], options[:force])
 
 # Update an item
 elsif not options[:update].nil?

@@ -54,6 +54,19 @@ module MPW
 			return true
 		end
 
+		def delete
+			@id        = nil
+			@name      = nil
+			@group     = nil
+			@host      = nil
+			@protocol  = nil
+			@user      = nil
+			@password  = nil
+			@port      = nil
+			@created   = nil
+			@last_edit = nil
+		end
+
 		def empty?
 			return @name.to_s.empty?
 		end

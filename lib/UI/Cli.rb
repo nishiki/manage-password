@@ -289,12 +289,12 @@ class Cli
 	# Remove an item
 	# @args: id -> the item's id
 	#        force -> no resquest a validation
-	def remove(id, force=false)
+	def delete(id, force=false)
 		if not force
-			result = @mpw.search_by_id(id)
+			item = @mpw.search_by_id(id)
 
-			if result.length > 0
-				display_item(result)
+			if not item.nil?
+				display_item(item)
 
 				confirm = ask("#{I18n.t('form.delete.ask', id: id)} (y/N) ").to_s
 				if confirm =~ /^(y|yes|YES|Yes|Y)$/
@@ -306,15 +306,13 @@ class Cli
 		end
 
 		if force
-			if @mpw.remove(id)
-				if @mpw.encrypt
-					sync
-					puts "#{I18n.t('form.delete.valid', id: id)}".green
-				else
-					puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}".red
-				end
+			item.delete
+
+			if @mpw.encrypt
+				sync
+				puts "#{I18n.t('form.delete.valid', id: id)}".green
 			else
-				puts I18n.t('form.delete.not_valid')
+				puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}".red
 			end
 		end
 	end
@@ -327,7 +325,6 @@ class Cli
 		else
 			puts "#{I18n.t('display.error')} #17: #{@mpw.error_msg}".red
 		end
-
 	end
 
 	# Import items from a CSV file
