@@ -63,8 +63,8 @@ module MPW
 		def encrypt
 			FileUtils.cp(@file_gpg, "#{@file_gpg}.bk") if File.exist?(@file_gpg)
 	
-			data_to_encrypt = {}
 			@data.each do |item|
+				puts item.class
 				next if item.empty?
 
 				data_to_encrypt.merge!(item.id => {'id'        => item.id,
@@ -101,6 +101,22 @@ module MPW
 			return false
 		end
 		
+		# Add a new item
+		# @args: item -> Object MPW::Item
+		# @rtrn: true if add item
+		def add(item)
+			if not item.instance_of?(Item)
+				@error_msg = I18n.t('error.bad_class')
+				return false
+			elsif item.empty?
+				@error_msg = I18n.t('error.add.empty')
+				return false
+			else
+				@data.push(item)
+				return true
+			end
+		end
+
 		# Search in some csv data
 		# @args: search -> the string to search
 		#        protocol -> the connection protocol (ssh, web, other)

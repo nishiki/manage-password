@@ -224,19 +224,21 @@ class Cli
 
 	# Form to add a new item
 	def add
-		row = []
+		options = {}
+
 		puts I18n.t('form.add.title')
 		puts '--------------------'
-		name     = ask(I18n.t('form.add.name')).to_s
-		group    = ask(I18n.t('form.add.group')).to_s
-		server   = ask(I18n.t('form.add.server')).to_s
-		protocol = ask(I18n.t('form.add.protocol')).to_s
-		login    = ask(I18n.t('form.add.login')).to_s
-		passwd   = ask(I18n.t('form.add.password')).to_s
-		port     = ask(I18n.t('form.add.port')).to_s
-		comment  = ask(I18n.t('form.add.comment')).to_s
+		options[:name]     = ask(I18n.t('form.add.name')).to_s
+		options[:group]    = ask(I18n.t('form.add.group')).to_s
+		options[:host]     = ask(I18n.t('form.add.server')).to_s
+		options[:protocol] = ask(I18n.t('form.add.protocol')).to_s
+		options[:user]     = ask(I18n.t('form.add.login')).to_s
+		options[:passwd]   = ask(I18n.t('form.add.password')).to_s
+		options[:port]     = ask(I18n.t('form.add.port')).to_s
+		options[:comment]  = ask(I18n.t('form.add.comment')).to_s
 
-		if @mpw.update(name, group, server, protocol, login, passwd, port, comment)
+		item = MPW::Item.new(options)
+		if @mpw.add(item)
 			if @mpw.encrypt
 				sync
 				puts "#{I18n.t('form.add.valid')}".green
