@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 # author: nishiki
 # mail: nishiki@yaegashi.fr
-# info: a simple script who manage your passwords
 
 require 'rubygems'
 require 'gpgme'
@@ -276,50 +275,7 @@ module MPW
 			return false
 		end
 	
-		# Sync remote data and local data
-		# @args: data_remote -> array with the data remote
-		#        last_update -> last update
-		# @rtrn: false if data_remote is nil
-		def sync(data_remote, last_update)
-			if not data_remote.instance_of?(Array)
-				@error_msg = I18n.t('error.sync.array')
-				return false
-			else not data_remote.to_s.empty?
-				@data.each_value do |l|
-					j = 0
-					update = false
-		
-					# Update item
-					data_remote.each do |r|
-						if l['id'] == r['id']
-							if l['date'].to_i < r['date'].to_i
-								update(r['name'], r['group'], r['host'], r['protocol'], r['login'], r['password'], r['port'], r['comment'], l['id'])
-							end
-							update = true
-							data_remote.delete(r['id'])
-							break
-						end
-						j += 1
-					end
-		
-					# Delete an old item
-					if not update and l['date'].to_i < last_update
-						remove(l['id'])
-					end
-				end
-			end
-	
-			# Add item
-			data_remote.each do |r|
-				if r['date'].to_i > last_update
-					update(r['name'], r['group'], r['host'], r['protocol'], r['login'], r['password'], r['port'], r['comment'], r['id'])
-				end
-			end
-	
-			return encrypt
-		end
-	
-		# Generate a random password
+	# Generate a random password
 		# @args: length -> the length password
 		# @rtrn: a random string
 		def self.password(length=8)

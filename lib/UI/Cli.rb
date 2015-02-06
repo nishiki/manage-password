@@ -11,6 +11,7 @@ require 'i18n'
 require 'colorize'
 
 require "#{APP_ROOT}/lib/MPW"
+require "#{APP_ROOT}/lib/Sync"
 
 class Cli
 
@@ -24,52 +25,14 @@ class Cli
 	# Sync the data with the server
 	# @rtnr: true if the synchro is finish
 	def sync
-		if not defined?(@sync)
-			case @config.sync_type
-			when 'mpw'
-				require "#{APP_ROOT}/lib/Sync/MPWSync"
-				@sync = MPW::Sync::MPWSync.new
-			when 'sftp', 'scp', 'ssh'
-				require "#{APP_ROOT}/lib/Sync/SSH"
-				@sync = MPW::Sync::SSH.new
-			when 'ftp'
-				require "#{APP_ROOT}/lib/Sync/FTP"
-				@sync = MPW::Sync::FTP.new
-			else
-				return false
-			end
-		end
+		@sync = MPW::Sync.new(@config, @password, @mpw.list) 
 
-		if  not @config.sync_host.nil? and not @config.sync_port.nil?
-			if not @sync.connect(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
-				puts "#{I18n.t('display.error')} #1: #{@sync.error_msg}".red
-			end
-		end
+		raise(@sync.error_msg) if not @sync.get_remote
+		raise(@sync.error_msg) if not @sync.sync
 
-		if @sync.enable
-			if not @mpw.sync(@sync.get(@config.key, @passwd), @config.last_update)
-				puts "#{I18n.t('display.error')} #2: #{@mpw.error_msg}".red  if not @mpw.error_msg.nil?
-				puts "#{I18n.t('display.error')} #3: #{@sync.error_msg}".red if not @sync.error_msg.nil?
-
-			elsif not @sync.update(File.open(@config.file_gpg).read)
-				puts "#{I18n.t('display.error')} #4: #{@sync.error_msg}".red
-
-			elsif not @config.set_last_update
-				puts "#{I18n.t('display.error')} #5: #{@config.error_msg}".red
-
-			elsif not @mpw.encrypt
-				puts "#{I18n.t('display.error')} #6: #{@mpw.error_msg}".red
-
-			else
-				return true
-			end
-		end
+		return true
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #7: #{e}".red
-		puts @sync.error_msg   if not @sync.error_msg.nil?
-		puts @config.error_msg if not @config.error_msg.nil?
-		puts @mpw.error_msg    if not @mpw.error_msg.nil?
-	else
 		return false
 	end
 
@@ -160,8 +123,8 @@ class Cli
 			@mpw = MPW::MPW.new(@config.file_gpg, @config.key, @config.share_keys)
 		end
 
-		@passwd = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
-		if not @mpw.decrypt(@passwd)
+		@password = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
+		if not @mpw.decrypt(@password)
 			puts "#{I18n.t('display.error')} #11: #{@mpw.error_msg}".red
 			exit 2
 		end
