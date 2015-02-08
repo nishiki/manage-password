@@ -6,6 +6,5 @@ gem 'gpgme'
 gem 'colorize'
 
 group :ssh do
-	gem 'net-ssh'
-	gem 'net-scp'
+	gem 'net-sftp'
 end
