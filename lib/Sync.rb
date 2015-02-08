@@ -34,7 +34,7 @@ module MPW
 				@sync = SyncSSH.new(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
 			when 'ftp'
 				require "#{APP_ROOT}/lib/Sync/FTP"
-				@sync = SyncFTP.new
+				@sync = SyncFTP.new(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
 			else
 				@error_msg =  I18n.t('error.unknown_type')
 				return false
@@ -74,11 +74,19 @@ module MPW
 					@remote.list.each do |r|
 						if item.id == r.id
 							if item.last_edit < r.last_edit
-								raise item.error_msg if not item.update(r.name, r.group, r.host, r.protocol, r.user, r.password, r.port, r.comment)
+								raise item.error_msg if not item.update(name:     r.name,
+								                                        group:    r.group,
+								                                        host:     r.host,
+								                                        protocol: r.protocol,
+								                                        user:     r.user,
+								                                        password: r.password,
+								                                        port:     r.port,
+								                                        comment:  r.comment
+								                                       )
 							end
 
 							update = true
-							data_remote.delete(j)
+							item.delete
 
 							break
 						end
@@ -96,7 +104,15 @@ module MPW
 			# Add item
 			@remote.list.each do |r|
 				if r.last_edit > @config.last_update
-					item = Item.new(r.name, r.group, r.host, r.protocol, r.user, r.password, r.port, r.comment)
+					item = Item.new(name:     r.name,
+					                group:    r.group,
+					                host:     r.host,
+					                protocol: r.protocol,
+					                user:     r.user,
+					                password: r.password,
+					                port:     r.port,
+					                comment:  r.comment
+					               )
 					raise @local.error_msg if not @local.add(item)
 				end
 			end
