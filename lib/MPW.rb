@@ -28,7 +28,7 @@ module MPW
 		# @args: password -> the GPG key password
 		# @rtrn: true if data has been decrypted
 		def decrypt(password=nil)
-			if File.exist?(@file_gpg)
+			if File.exist?(@file_gpg) and not File.zero?(@file_gpg)
 				crypto       = GPGME::Crypto.new(armor: true)
 				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: password).read.force_encoding('utf-8')
 
