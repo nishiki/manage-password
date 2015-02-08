@@ -6,6 +6,7 @@
 require 'rubygems'
 require 'i18n'
 require 'yaml'
+require 'tempfile'
 require "#{APP_ROOT}/lib/Item"
 require "#{APP_ROOT}/lib/MPW"
 	

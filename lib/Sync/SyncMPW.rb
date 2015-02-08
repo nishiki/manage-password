@@ -55,8 +55,8 @@ module MPW
 		# Get data on server
 		# @args: gpg_password -> the gpg password
 		# @rtrn: nil if nothing data or error
-		def get(gpg_key, gpg_password)
-			return nil if not @enable
+		def get(file_tmp)
+			return false if not @enable
 		
 			msg = nil
 			TCPSocket.open(@host, @port) do |socket|
@@ -72,38 +72,30 @@ module MPW
 			
 			if not defined?(msg['error'])
 				@error_msg = I18n.t('error.sync.communication')
-				return nil
+				return false
 			elsif not msg['error'].nil?
 				@error_msg = I18n.t(msg['error'])
-				return nil
-			elsif msg['data'].nil? or msg['data'].empty?
-				return {}
-			else
-				file_tmp = Tempfile.new('mpw-')
-				File.open(file_tmp, 'w') do |file|
-					file << msg['data']
-				end
-				
-				mpw = MPW.new(file_tmp, gpg_key)
-				raise mpw.error_msg if not mpw.decrypt(gpg_password)
-				
-				file_tmp.close(true)
-
-				puts 'test'
-				return mpw.list
+				return false
 			end
+
+			File.open(file_tmp, 'w') do |file|
+				file << msg['data']
+			end
+
+			return true
 		rescue Exception => e
 			@error_msg = "#{I18n.t('error.sync.download')}\n#{e}"
-			file_tmp.close(true)
-			return nil
+			return false
 		end
 	
 		# Update the remote data
 		# @args: data -> the data to send on server
 		# @rtrn: false if there is a problem
-		def update(data)
+		def update(file_gpg)
 			return true if not @enable
 	
+			data = File.open(file_gpg, 'r').read
+
 			msg = nil
 			TCPSocket.open(@host, @port) do |socket|
 				send_msg = {action:   'update',
