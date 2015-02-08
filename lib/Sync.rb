@@ -104,14 +104,16 @@ module MPW
 			# Add item
 			@remote.list.each do |r|
 				if r.last_edit > @config.last_update
-					item = Item.new(name:     r.name,
+					item = Item.new(id:       r.id,
+					                name:     r.name,
 					                group:    r.group,
 					                host:     r.host,
 					                protocol: r.protocol,
 					                user:     r.user,
 					                password: r.password,
 					                port:     r.port,
-					                comment:  r.comment
+					                comment:  r.comment,
+					                created:  r.created
 					               )
 					raise @local.error_msg if not @local.add(item)
 				end
