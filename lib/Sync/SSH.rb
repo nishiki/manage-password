@@ -4,7 +4,6 @@
 
 require 'rubygems'
 require 'i18n'
-require 'tempfile'
 require 'net/ssh'
 require 'net/sftp'
 	
