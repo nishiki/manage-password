@@ -31,7 +31,7 @@ class Cli
 		raise(@sync.error_msg) if not @sync.sync
 
 		return true
-#	rescue Exception => e
+	rescue Exception => e
 		puts "#{I18n.t('display.error')} #7: #{e}".red
 		return false
 	end
