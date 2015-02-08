@@ -8,7 +8,8 @@ require 'csv'
 require 'i18n'
 require 'fileutils'
 require 'yaml'
-require "#{APP_ROOT}/lib/Item"
+
+require_relative './Item'
 	
 module MPW
 	class MPW

@@ -10,8 +10,9 @@ require 'readline'
 require 'i18n'
 require 'colorize'
 
-require "#{APP_ROOT}/lib/MPW"
-require "#{APP_ROOT}/lib/Sync"
+require_relative '../Sync'
+require_relative '../MPW'
+require_relative '../Item'
 
 class Cli
 

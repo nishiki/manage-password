@@ -1,15 +1,13 @@
 #!/usr/bin/ruby
 # author: nishiki
 # mail: nishiki@yaegashi.fr
-# info: a simple script who manage your passwords
 
-module MPW
-
-	require 'rubygems'
-	require 'gpgme'
-	require 'yaml'
-	require 'i18n'
+require 'rubygems'
+require 'gpgme'
+require 'yaml'
+require 'i18n'
 	
+module MPW
 	class Config
 		
 		attr_accessor :error_msg
@@ -231,5 +229,4 @@ module MPW
 		end
 		
 	end
-
 end
