@@ -56,7 +56,7 @@ module MPW
 			file_tmp.close(true)
 			return true
 		rescue Exception => e
-			@error_msg = "#{I18n.t('error.sync')} #{e}"
+			@error_msg = "#{I18n.t('error.sync.download')} #{e}"
 			file_tmp.close(true)
 			return false
 		end
@@ -125,7 +125,7 @@ module MPW
 
 			return true
 		rescue Exception => e
-			@error_msg = "#{I18n.t('error.sync')} #{e}"
+			@error_msg = "#{I18n.t('error.sync.unknown')} #{e}"
 			return false
 		end
 	end
