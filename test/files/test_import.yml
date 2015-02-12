@@ -5,7 +5,7 @@ XWas7vpy0HerhOYd:
   group: test_group
   host: test_host
   protocol: test_protocol
-  login: test_login
+  user: test_user
   password: test_password
   port: 42
   comment: test_comment
@@ -16,7 +16,7 @@ D7URyJENLa91jt0b:
   group: test_group_update
   host: test_host_update
   protocol: test_protocol_update
-  login: test_login_update
+  user: test_user_update
   password: test_password_update
   port: 43
   comment: test_comment_update

@@ -29,6 +29,8 @@ module MPW
 		# @args: password -> the GPG key password
 		# @rtrn: true if data has been decrypted
 		def decrypt(password=nil)
+			@data = []
+
 			if File.exist?(@file_gpg) and not File.zero?(@file_gpg)
 				crypto       = GPGME::Crypto.new(armor: true)
 				data_decrypt = crypto.decrypt(IO.read(@file_gpg), password: password).read.force_encoding('utf-8')
@@ -165,7 +167,7 @@ module MPW
 				CSV.open(file, 'w', write_headers: true,
 									headers: ['name', 'group', 'protocol', 'host', 'user', 'password', 'port', 'comment']) do |csv|
 					@data.each do |item|
-						csv << [item.id, item.group, item.protocol, item.host, item.user, item.password, item.port, item.comment]
+						csv << [item.name, item.group, item.protocol, item.host, item.user, item.password, item.port, item.comment]
 					end
 				end
 
@@ -212,7 +214,7 @@ module MPW
 					                group:    row['group'],
 					                host:     row['host'],
 					                protocol: row['protocol'],
-					                login:    row['login'],
+					                user:     row['user'],
 					                password: row['password'],
 					                port:     row['port'],
 					                comment:  row['comment'],
@@ -229,7 +231,7 @@ module MPW
 					                group:    row['group'],
 					                host:     row['host'],
 					                protocol: row['protocol'],
-					                login:    row['login'],
+					                user:     row['user'],
 					                password: row['password'],
 					                port:     row['port'],
 					                comment:  row['comment'],

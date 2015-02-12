@@ -1,13 +1,14 @@
 #!/usr/bin/ruby
  
 require_relative '../lib/MPW'
+require_relative '../lib/Item'
 require 'test/unit'
 require 'yaml'
 require 'csv'
  
 class TestMPW < Test::Unit::TestCase
 	def setup
-		@fixture_file = 'files/fixtures.yml'
+		fixture_file = 'files/fixtures.yml'
 
 		file_gpg = 'test.gpg'
 		key      = ENV['MPW_TEST_KEY']
@@ -19,45 +20,47 @@ class TestMPW < Test::Unit::TestCase
 		end
 
 		File.delete(file_gpg) if File.exist?(file_gpg)
-		@mpw = MPW::MPW.new(file_gpg, key)
-		@fixtures = YAML.load_file(@fixture_file)
+
+		@mpw      = MPW::MPW.new(file_gpg, key)
+		@fixtures = YAML.load_file(fixture_file)
 	end
  
  	def test_01_import_yaml
 		import_file = 'files/test_import.yml'
 
 		assert(@mpw.import(import_file, :yaml))
-		assert_equal(2, @mpw.search.length)
+		assert_equal(2, @mpw.list.length)
 
-		result = @mpw.search[0]
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
+		item = @mpw.list[0]
+		assert_equal(@fixtures['add_new']['name'],      item.name)
+		assert_equal(@fixtures['add_new']['group'],     item.group)
+		assert_equal(@fixtures['add_new']['host'],      item.host)
+		assert_equal(@fixtures['add_new']['protocol'],  item.protocol)
+		assert_equal(@fixtures['add_new']['user'],      item.user)
+		assert_equal(@fixtures['add_new']['password'],  item.password)
+		assert_equal(@fixtures['add_new']['port'].to_i, item.port)
+		assert_equal(@fixtures['add_new']['comment'],   item.comment)
 	end
 
 	def test_02_export_yaml
+		import_file = 'files/test_import.yml'
 		export_file = 'test_export.yml'
 
-		assert(@mpw.import(@fixture_file))
-		assert_equal(2, @mpw.search.length)
+		assert(@mpw.import(import_file))
+		assert_equal(2, @mpw.list.length)
 		assert(@mpw.export(export_file, :yaml))
 		export = YAML::load_file(export_file)
 		assert_equal(2, export.length)
 
 		result = export.values[0]
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
+		assert_equal(@fixtures['add_new']['name'],      result['name'])
+		assert_equal(@fixtures['add_new']['group'],     result['group'])
+		assert_equal(@fixtures['add_new']['host'],      result['host'])
+		assert_equal(@fixtures['add_new']['protocol'],  result['protocol'])
+		assert_equal(@fixtures['add_new']['user'],      result['user'])
+		assert_equal(@fixtures['add_new']['password'],  result['password'])
+		assert_equal(@fixtures['add_new']['port'].to_i, result['port'])
+		assert_equal(@fixtures['add_new']['comment'],   result['comment'])
 
 		File.unlink(export_file)
 	end
@@ -66,155 +69,73 @@ class TestMPW < Test::Unit::TestCase
 		import_file = 'files/test_import.csv'
 
 		assert(@mpw.import(import_file, :csv))
-		assert_equal(2, @mpw.search.length)
+		assert_equal(2, @mpw.list.length)
 
 		import = CSV.parse(File.read(import_file), headers: true)
 
-		result = @mpw.search[0]
-		assert_equal(import[0]['name'],      result['name'])
-		assert_equal(import[0]['group'],     result['group'])
-		assert_equal(import[0]['host'],      result['host'])
-		assert_equal(import[0]['protocol'],  result['protocol'])
-		assert_equal(import[0]['login'],     result['login'])
-		assert_equal(import[0]['password'],  result['password'])
-		assert_equal(import[0]['port'].to_i, result['port'])
-		assert_equal(import[0]['comment'],   result['comment'])
+		item = @mpw.list[0]
+		assert_equal(import[0]['name'],      item.name)
+		assert_equal(import[0]['group'],     item.group)
+		assert_equal(import[0]['host'],      item.host)
+		assert_equal(import[0]['protocol'],  item.protocol)
+		assert_equal(import[0]['user'],      item.user)
+		assert_equal(import[0]['password'],  item.password)
+		assert_equal(import[0]['port'].to_i, item.port)
+		assert_equal(import[0]['comment'],   item.comment)
 	end
 
 	def test_04_export_csv
+		import_file = 'files/test_import.csv'
 		export_file = 'test_export.csv'
-		assert(@mpw.import(@fixture_file))
-		assert_equal(2, @mpw.search.length)
+
+		assert(@mpw.import(import_file, :csv))
+		assert_equal(2, @mpw.list.length)
 		assert(@mpw.export(export_file, :csv))
 		export = CSV.parse(File.read(export_file), headers: true)
 		assert_equal(2, export.length)
 
 		result = export[0]
-		assert_equal(@fixtures['add']['name'],     result['name'])
-		assert_equal(@fixtures['add']['group'],    result['group'])
-		assert_equal(@fixtures['add']['host'],     result['host'])
-		assert_equal(@fixtures['add']['protocol'], result['protocol'])
-		assert_equal(@fixtures['add']['login'],    result['login'])
-		assert_equal(@fixtures['add']['password'], result['password'])
-		assert_equal(@fixtures['add']['port'],     result['port'])
-		assert_equal(@fixtures['add']['comment'],  result['comment'])
+		assert_equal(@fixtures['add_new']['name'],     result['name'])
+		assert_equal(@fixtures['add_new']['group'],    result['group'])
+		assert_equal(@fixtures['add_new']['host'],     result['host'])
+		assert_equal(@fixtures['add_new']['protocol'], result['protocol'])
+		assert_equal(@fixtures['add_new']['user'],     result['user'])
+		assert_equal(@fixtures['add_new']['password'], result['password'])
+		assert_equal(@fixtures['add_new']['port'],     result['port'])
+		assert_equal(@fixtures['add_new']['comment'],  result['comment'])
 
 		File.unlink(export_file)
 	end
 
-	def test_05_add
-		assert(@mpw.update(@fixtures['add']['name'], 
-		                   @fixtures['add']['group'], 
-		                   @fixtures['add']['host'],
-		                   @fixtures['add']['protocol'],
-		                   @fixtures['add']['login'],
-		                   @fixtures['add']['password'],
-		                   @fixtures['add']['port'],
-		                   @fixtures['add']['comment']))
+	def test_05_add_item
+		data = {name:     @fixtures['add_new']['name'],
+		        group:    @fixtures['add_new']['group'],
+		        host:     @fixtures['add_new']['host'],
+		        protocol: @fixtures['add_new']['protocol'],
+		        user:     @fixtures['add_new']['user'],
+		        password: @fixtures['add_new']['password'],
+		        port:     @fixtures['add_new']['port'],
+		        comment:  @fixtures['add_new']['comment'],
+		       }
+		
+		item = MPW::Item.new(data)
 
-		assert_equal(1, @mpw.search.length)
+		assert(!item.nil?)
+		assert(!item.empty?)
 
-		result = @mpw.search[0]
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
+		assert(@mpw.add(item))
 
-		assert(@mpw.update(@fixtures['add']['name'], 
-		                   @fixtures['add']['group'], 
-		                   @fixtures['add']['host'],
-		                   @fixtures['add']['protocol'],
-		                   @fixtures['add']['login'],
-		                   @fixtures['add']['password'],
-		                   @fixtures['add']['port'],
-		                   @fixtures['add']['comment']))
+		assert_equal(1, @mpw.list.length)
 
-
-		assert_equal(2, @mpw.search.length)
-	end
-
-	def test_06_add_empty_name
-		assert(!@mpw.update('', 
-		                    @fixtures['add']['group'], 
-		                    @fixtures['add']['host'],
-		                    @fixtures['add']['protocol'],
-		                    @fixtures['add']['login'],
-		                    @fixtures['add']['password'],
-		                    @fixtures['add']['port'],
-		                    @fixtures['add']['comment']))
-
-		assert_equal(0, @mpw.search.length)
-	end
-
-	def test_07_update_empty
-		assert(@mpw.import(@fixture_file, :yaml))
-		assert_equal(2, @mpw.search.length)
-
-		id = @mpw.search[0]['id']
-
-		assert(@mpw.update('','', '','','','','', '', id))
-
-		result = @mpw.search_by_id(id)
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
-	end
-
-	def test_08_update
-		assert(@mpw.import(@fixture_file, :yaml))
-		assert_equal(2, @mpw.search.length)
-
-		id = @mpw.search[0]['id']
-
-		assert(@mpw.update(@fixtures['update']['name'], 
-		                   @fixtures['update']['group'], 
-		                   @fixtures['update']['host'],
-		                   @fixtures['update']['protocol'],
-		                   @fixtures['update']['login'],
-		                   @fixtures['update']['password'],
-		                   @fixtures['update']['port'],
-		                   @fixtures['update']['comment'],
-		                   id))
-
-		assert_equal(2, @mpw.search.length)
-
-		result = @mpw.search_by_id(id)
-		assert_equal(@fixtures['update']['name'],      result['name'])
-		assert_equal(@fixtures['update']['group'],     result['group'])
-		assert_equal(@fixtures['update']['host'],      result['host'])
-		assert_equal(@fixtures['update']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['update']['login'],     result['login'])
-		assert_equal(@fixtures['update']['password'],  result['password'])
-		assert_equal(@fixtures['update']['port'].to_i, result['port'])
-		assert_equal(@fixtures['update']['comment'],   result['comment'])
-	end
-
-	def test_09_remove
-		assert(@mpw.import(@fixture_file, :yaml))
-		assert_equal(2, @mpw.search.length)
-
-		id = @mpw.search[0]['id']
-		assert(@mpw.remove(id)) 
-
-		assert_equal(1, @mpw.search.length)
-	end
-
-	def test_10_remove_noexistent
-		assert(@mpw.import(@fixture_file, :yaml))
-		assert_equal(2, @mpw.search.length)
-
-		assert(!@mpw.remove('TEST_NOEXISTENT_ID')) 
-
-		assert_equal(2, @mpw.search.length)
+		item = @mpw.list[0]
+		assert_equal(@fixtures['add_new']['name'],      item.name)
+		assert_equal(@fixtures['add_new']['group'],     item.group)
+		assert_equal(@fixtures['add_new']['host'],      item.host)
+		assert_equal(@fixtures['add_new']['protocol'],  item.protocol)
+		assert_equal(@fixtures['add_new']['user'],      item.user)
+		assert_equal(@fixtures['add_new']['password'],  item.password)
+		assert_equal(@fixtures['add_new']['port'].to_i, item.port)
+		assert_equal(@fixtures['add_new']['comment'],   item.comment)
 	end
 
 	def test_11_encrypt_empty_file
@@ -222,75 +143,38 @@ class TestMPW < Test::Unit::TestCase
 	end
 
 	def test_12_encrypt
-		assert(@mpw.import(@fixture_file, :yaml))
-		assert_equal(2, @mpw.search.length)
+		import_file = 'files/test_import.yml'
+
+		assert(@mpw.import(import_file, :yaml))
+		assert_equal(2, @mpw.list.length)
 
 		assert(@mpw.encrypt)	
 	end
 
 	def test_13_decrypt_empty_file
 		assert(@mpw.decrypt)
-		assert_equal(0, @mpw.search.length)
+		assert_equal(0, @mpw.list.length)
 	end
 
 	def test_14_decrypt
-		assert(@mpw.import(@fixture_file, :yaml))
-		assert_equal(2, @mpw.search.length)
+		import_file = 'files/test_import.yml'
+
+		assert(@mpw.import(import_file, :yaml))
+		assert_equal(2, @mpw.list.length)
 
 		assert(@mpw.encrypt)	
 
 		assert(@mpw.decrypt)
-		assert_equal(2, @mpw.search.length)
+		assert_equal(2, @mpw.list.length)
 
-		result = @mpw.search[0]
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
-	end
-
-	def test_15_sync_local_empty
-		import_file = 'files/test_import.yml'
-
-		data = []
-		YAML.load_file(import_file).each_value { |v| data.push(v) }
-
-		@mpw.sync(data, 0)
-
-		result = @mpw.search[0]
-		assert_equal(@fixtures['add']['name'],      result['name'])
-		assert_equal(@fixtures['add']['group'],     result['group'])
-		assert_equal(@fixtures['add']['host'],      result['host'])
-		assert_equal(@fixtures['add']['protocol'],  result['protocol'])
-		assert_equal(@fixtures['add']['login'],     result['login'])
-		assert_equal(@fixtures['add']['password'],  result['password'])
-		assert_equal(@fixtures['add']['port'].to_i, result['port'])
-		assert_equal(@fixtures['add']['comment'],   result['comment'])
-
-		assert_equal(2, @mpw.search.length)
-	end
-
-	def test_16_sync_remote_outdated_and_local_empty
-		import_file = 'files/test_import.yml'
-
-		data = []
-		YAML.load_file(import_file).each_value { |v| data.push(v) }
-
-		assert(@mpw.sync(data, Time.now.to_i))
-
-		assert_equal(0, @mpw.search.length)
-	end
-
-	def test_17_sync_empty_data
-		assert(@mpw.import(@fixture_file, :yaml))
-		assert_equal(2, @mpw.search.length)
-	
-		assert(@mpw.sync([], 0))
-
-		assert_equal(2, @mpw.search.length)
+		item = @mpw.list[0]
+		assert_equal(@fixtures['add_new']['name'],      item.name)
+		assert_equal(@fixtures['add_new']['group'],     item.group)
+		assert_equal(@fixtures['add_new']['host'],      item.host)
+		assert_equal(@fixtures['add_new']['protocol'],  item.protocol)
+		assert_equal(@fixtures['add_new']['user'],      item.user)
+		assert_equal(@fixtures['add_new']['password'],  item.password)
+		assert_equal(@fixtures['add_new']['port'].to_i, item.port)
+		assert_equal(@fixtures['add_new']['comment'],   item.comment)
 	end
 end
