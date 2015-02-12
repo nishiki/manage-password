@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 # author: nishiki
 # mail: nishiki@yaegashi.fr
-# info: a simple script who manage your passwords
 
 require 'rubygems'
 require 'i18n'
@@ -63,8 +62,11 @@ module MPW
 			@user      = nil
 			@password  = nil
 			@port      = nil
+			@comment   = nil
 			@created   = nil
 			@last_edit = nil
+
+			return true
 		end
 
 		def empty?

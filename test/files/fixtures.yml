@@ -1,18 +1,31 @@
-add:
+add_new:
   name:	'test_name'
   group: 'test_group'
   host: 'test_host'
   protocol: 'test_protocol'
-  login: 'test_login'
+  user: 'test_login'
   password: 'test_password'
   port: '42'
   comment: 'test_comment'
+
+add_existing:
+  id: 'TEST-ID-XXXXX'
+  name:	'test_name_existing'
+  group: 'test_group_existing'
+  host: 'test_host_existing'
+  protocol: 'test_protocol_existing'
+  user: 'test_user_existing'
+  password: 'test_password_existing'
+  port: '44'
+  comment: 'test_comment_existing'
+  created: 1386752948
+
 update:
   name:	'test_name_update'
   group: 'test_group_update'
   host: 'test_host_update'
   protocol: 'test_protocol_update'
-  login: 'test_login_update'
+  user: 'test_login_update'
   password: 'test_password_update'
   port: '43'
   comment: 'test_comment_update'
