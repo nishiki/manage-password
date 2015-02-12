@@ -13,7 +13,15 @@ class TestItem < Test::Unit::TestCase
 			I18n.enforce_available_locales = false
 		end
 
+		I18n.load_path      = Dir['../i18n/cli/*.yml']
+		I18n.default_locale = :en
+
+
 		puts
+	end
+
+	def test_00_add_without_name
+		assert_raise {MPW::Item.new}
 	end
 
 	def test_01_add_new
@@ -176,7 +184,7 @@ class TestItem < Test::Unit::TestCase
 		assert_not_equal(last_edit, item.last_edit)
 	end
 
-	def test_04_delete
+	def test_05_delete
 		data = {name:     @fixtures['add_new']['name'],
 		        group:    @fixtures['add_new']['group'],
 		        host:     @fixtures['add_new']['host'],

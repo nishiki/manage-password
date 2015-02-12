@@ -23,6 +23,11 @@ module MPW
 		attr_accessor :created
 
 		def initialize(options={})
+			if not options.has_key?(:name) or options[:name].to_s.empty?
+				@error_msg = I18n.t('error.update.name_empty')
+				raise ExceptionMPW @error_msg
+			end
+
 			if not options.has_key?(:id) or options[:id].to_s.empty? or not options.has_key?(:created) or options[:created].to_s.empty?  
 				@id      = generate_id
 				@created = Time.now.to_i
