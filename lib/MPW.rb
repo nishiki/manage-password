@@ -121,8 +121,7 @@ module MPW
 		end
 
 		# Search in some csv data
-		# @args: search -> the string to search
-		#        protocol -> the connection protocol (ssh, web, other)
+		# @args: options -> a hash with paramaters
 		# @rtrn: a list with the resultat of the search
 		def list(options={})
 			result = []
@@ -148,7 +147,7 @@ module MPW
 	
 		# Search in some csv data
 		# @args: id -> the id item
-		# @rtrn: a row with the resultat of the search
+		# @rtrn: a row with the result of the search
 		def search_by_id(id)
 			@data.each do |item|
 				return item if item.id == id
@@ -278,7 +277,7 @@ module MPW
 			return false
 		end
 	
-	# Generate a random password
+		# Generate a random password
 		# @args: length -> the length password
 		# @rtrn: a random string
 		def self.password(length=8)
