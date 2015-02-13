@@ -22,10 +22,14 @@ module MPW
 		attr_accessor :last_edit
 		attr_accessor :created
 
+		# Constructor
+		# Create a new item
+		# @args: options -> a hash of parameter
+		# raise an error if the hash hasn't the key name 
 		def initialize(options={})
 			if not options.has_key?(:name) or options[:name].to_s.empty?
 				@error_msg = I18n.t('error.update.name_empty')
-				raise ExceptionMPW @error_msg
+				raise @error_msg
 			end
 
 			if not options.has_key?(:id) or options[:id].to_s.empty? or not options.has_key?(:created) or options[:created].to_s.empty?  
@@ -39,6 +43,9 @@ module MPW
 			update(options)
 		end
 
+		# Update the item
+		# @args: options -> a hash of parameter
+		# @rtrn: true if the item is update
 		def update(options={})
 			if options.has_key?(:name) and options[:name].to_s.empty?
 				@error_msg = I18n.t('error.update.name_empty')
@@ -58,6 +65,8 @@ module MPW
 			return true
 		end
 
+		# Delete all data
+		# @rtrn: true
 		def delete
 			@id        = nil
 			@name      = nil
@@ -82,6 +91,7 @@ module MPW
 			return false
 		end
 
+		# Generate an random id
 		private
 		def generate_id
 			return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(16).join
