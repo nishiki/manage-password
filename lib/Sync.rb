@@ -16,6 +16,8 @@ module MPW
 
 		attr_accessor :error_msg
 
+		# Constructor
+		# raise an exception if there is a bad parameter
 		def initialize(config, local, password=nil)
 			@error_msg = nil
 			@config    = config
@@ -25,6 +27,8 @@ module MPW
 			raise I18n.t('error.class') if not @local.instance_of?(MPW)
 		end
 
+		# Get the data on remote host
+		# @rtrn: true if get the date, else false
 		def get_remote
 			case @config.sync_type
 			when 'mpw'
@@ -62,9 +66,7 @@ module MPW
 		end
 
 		# Sync remote data and local data
-		# @args: data_remote -> array with the data remote
-		#        last_update -> last update
-		# @rtrn: false if data_remote is nil
+		# raise an exception if there is a problem
 		def sync
 			if not @remote.to_s.empty?
 				@local.list.each do |item|
