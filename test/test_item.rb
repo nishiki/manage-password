@@ -21,7 +21,7 @@ class TestItem < Test::Unit::TestCase
 	end
 
 	def test_00_add_without_name
-		assert_raise {MPW::Item.new}
+		assert_raise(RuntimeError){MPW::Item.new}
 	end
 
 	def test_01_add_new
