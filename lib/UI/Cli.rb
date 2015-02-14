@@ -134,8 +134,8 @@ class Cli
 	# Display the query's result
 	# @args: search -> the string to search
 	#        protocol -> search from a particular protocol
-	def display(search, protocol=nil, group=nil)
-		result = @mpw.list(search: search)
+	def display(options={})
+		result = @mpw.list(options)
 
 		case result.length
 		when 0

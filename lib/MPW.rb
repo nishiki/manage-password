@@ -126,20 +126,23 @@ module MPW
 		def list(options={})
 			result = []
 	
-			if not defined?(options[:search]) or options[:search].nil?
-				search = ''
-			else
-				search = options[:search].downcase
-			end
-	
+			search    = options[:search].to_s.downcase
+			group     = options[:group].to_s.downcase
+			protocol  = options[:protocol].to_s.downcase
+
 			@data.each do |item|
-				name    = item.name.nil?    ? nil : item.name.downcase
-				host    = item.host.nil?    ? nil : item.host.downcase
-				comment = item.comment.nil? ? nil : item.comment.downcase
-	
-				if name =~ /^.*#{search}.*$/ or host =~ /^.*#{search}.*$/ or comment =~ /^.*#{search}.*$/ 
-					result.push(item)
+				next if not group.empty?    and not group.eql?(item.group.downcase)
+				next if not protocol.empty? and not protocol.eql?(item.protocol.downcase)
+				
+				name    = item.name.to_s.downcase
+				host    = item.host.to_s.downcase
+				comment = item.comment.to_s.downcase
+
+				if not name =~ /^.*#{search}.*$/ and not host =~ /^.*#{search}.*$/ and not comment =~ /^.*#{search}.*$/ 
+					next
 				end
+
+				result.push(item)
 			end
 	
 			return result

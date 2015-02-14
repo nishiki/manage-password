@@ -77,8 +77,8 @@ OptionParser.new do |opts|
 		options[:setup] = true
 	end
 
-	opts.on('-p', '--protocol PROTOCOL', I18n.t('option.protocol')) do |type|
-		options[:type] = type
+	opts.on('-p', '--protocol PROTOCOL', I18n.t('option.protocol')) do |protocol|
+		options[:protocol] = protocol
 	end
 
 	opts.on('-e', '--export FILE', I18n.t('option.export')) do |file|
@@ -130,7 +130,12 @@ cli.sync
 
 # Display the item's informations
 if not options[:show].nil?
-	cli.display(options[:show], options[:group], options[:type])
+	opts = {search:    options[:show],
+	        group:     options[:group],
+	        protocol:  options[:protocol],
+	       }
+
+	cli.display(opts)
 
 # Remove an item
 elsif not options[:delete].nil?
