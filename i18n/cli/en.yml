@@ -30,6 +30,7 @@ en:
       not_authorized: "You haven't the access to remote file!"
       upload: "Can't upload the file on the server!"
       unknown: "An unknown error is occured!" 
+    unknown_type: "The sync type is unknown" 
 
   warning:
     select: 'Your choice is not a valid element!'

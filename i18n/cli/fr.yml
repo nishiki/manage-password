@@ -30,6 +30,7 @@ fr:
       not_authorized: "Vous n'avez pas les autorisations d'accès au fichier distant!"
       upload: "Impossible d'envoyer le fichier sur le serveur!"
       unknown: "Une erreur inconnue est survenue!" 
+    unknown_type: "Le type de synchronisation est inconnu" 
 
   warning:
     select: "Votre choix n'est pas un élément valide!"
