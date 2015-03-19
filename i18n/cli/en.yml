@@ -1,6 +1,8 @@
 ---
 en:
   error:
+    client:
+      no_authorized: "You aren't authorized."
     config:
       write: "Can't write the config file!"
       check: "Checkconfig failed!"

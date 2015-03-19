@@ -1,6 +1,8 @@
 ---
 fr:
   error:
+    client:
+      no_authorized: "Vous n'êtes pas autorisé!"
     config:
       write: "Impossible d'écrire le fichier de configuration!"
       check: "Le fichier de configuration est invalide!"
