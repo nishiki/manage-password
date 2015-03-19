@@ -126,9 +126,9 @@ module MPW
 		def list(options={})
 			result = []
 	
-			search    = options[:search].to_s.downcase
-			group     = options[:group].to_s.downcase
-			protocol  = options[:protocol].to_s.downcase
+			search   = options[:search].to_s.downcase
+			group    = options[:group].to_s.downcase
+			protocol = options[:protocol].to_s.downcase
 
 			@data.each do |item|
 				next if not group.empty?    and not group.eql?(item.group.downcase)
@@ -259,22 +259,49 @@ module MPW
 		# @args: file -> path to file import
 		# @rtrn: a hash with the items to import, if there is an error return false
 		def import_preview(file, type=:yaml)
-			result = []
+			data = []
+
 			case type
 			when :csv
 				CSV.foreach(file, {headers: true}) do |row|
-					result << row
+					item = Item.new(name:     row['name'], 
+					                group:    row['group'],
+					                host:     row['host'],
+					                protocol: row['protocol'],
+					                user:     row['user'],
+					                password: row['password'],
+					                port:     row['port'],
+					                comment:  row['comment'],
+					               )
+
+					return false if item.empty?
+
+					data.push(item)
 				end
+
 			when :yaml
-				YAML::load_file(file).each do |k, row| 
-					result << row
+				YAML::load_file(file).each_value do |row| 
+					item = Item.new(name:     row['name'], 
+					                group:    row['group'],
+					                host:     row['host'],
+					                protocol: row['protocol'],
+					                user:     row['user'],
+					                password: row['password'],
+					                port:     row['port'],
+					                comment:  row['comment'],
+					               )
+
+					return false if item.empty?
+
+					data.push(item)
 				end
+
 			else
 				@error_msg = "#{I18n.t('error.export.unknown_type', type: type)}"
 				return false
 			end
-
-			return result
+	
+			return data
 		rescue Exception => e 
 			@error_msg = "#{I18n.t('error.import.read', file: file)}\n#{e}"
 			return false

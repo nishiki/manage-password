@@ -298,8 +298,10 @@ class Cli
 
 		if not force
 			result = @mpw.import_preview(file, type)
+			puts result
 			if result.is_a?(Array) and not result.empty?
 				result.each do |r|
+					puts r.class
 					display_item(r)
 				end
 
