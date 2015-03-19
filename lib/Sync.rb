@@ -121,9 +121,9 @@ module MPW
 					raise @local.error_msg if not @local.add(item)
 				end
 			end
-	
-			raise @sync.error_msg if not @sync.update(@config.file_gpg)
+
 			raise @mpw.error_msg  if not @local.encrypt 
+			raise @sync.error_msg if not @sync.update(@config.file_gpg)
 
 			return true
 		rescue Exception => e
