@@ -103,7 +103,6 @@ module MPW
 	
 			# Add item
 			@remote.list.each do |r|
-				puts r.last_edit
 				if r.last_edit > @config.last_update
 					item = Item.new(id:        r.id,
 					                name:      r.name,
@@ -114,7 +113,7 @@ module MPW
 					                password:  r.password,
 					                port:      r.port,
 					                comment:   r.comment,
-					                created:   r.created
+					                created:   r.created,
 					                last_edit: r.last_edit
 					               )
 					puts item.last_edit
