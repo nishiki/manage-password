@@ -131,6 +131,8 @@ module MPW
 			protocol = options[:protocol].to_s.downcase
 
 			@data.each do |item|
+				next if item.empty?
+
 				next if not group.empty?    and not group.eql?(item.group.downcase)
 				next if not protocol.empty? and not protocol.eql?(item.protocol.downcase)
 				
