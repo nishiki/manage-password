@@ -70,7 +70,6 @@ module MPW
 		def sync
 			if not @remote.to_s.empty?
 				@local.list.each do |item|
-					j      = 0
 					update = false
 		
 					# Update item
@@ -89,12 +88,10 @@ module MPW
 							end
 
 							update = true
-							item.delete
+							r.delete
 
 							break
 						end
-
-						j += 1
 					end
 		
 					# Delete an old item
@@ -106,24 +103,29 @@ module MPW
 	
 			# Add item
 			@remote.list.each do |r|
+				puts r.last_edit
 				if r.last_edit > @config.last_update
-					item = Item.new(id:       r.id,
-					                name:     r.name,
-					                group:    r.group,
-					                host:     r.host,
-					                protocol: r.protocol,
-					                user:     r.user,
-					                password: r.password,
-					                port:     r.port,
-					                comment:  r.comment,
-					                created:  r.created
+					item = Item.new(id:        r.id,
+					                name:      r.name,
+					                group:     r.group,
+					                host:      r.host,
+					                protocol:  r.protocol,
+					                user:      r.user,
+					                password:  r.password,
+					                port:      r.port,
+					                comment:   r.comment,
+					                created:   r.created
+					                last_edit: r.last_edit
 					               )
+					puts item.last_edit
 					raise @local.error_msg if not @local.add(item)
 				end
 			end
 
 			raise @mpw.error_msg  if not @local.encrypt 
 			raise @sync.error_msg if not @sync.update(@config.file_gpg)
+			
+			@config.set_last_update
 
 			return true
 		rescue Exception => e

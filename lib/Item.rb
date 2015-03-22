@@ -36,8 +36,10 @@ module MPW
 				@id      = generate_id
 				@created = Time.now.to_i
 			else
-				@id      = options[:id]
-				@created = options[:created]
+				@id        = options[:id]
+				@created   = options[:created]
+				@last_edit = options[:last_edit]
+				options[:no_update_last_edit] = true
 			end
 
 			update(options)
@@ -60,7 +62,7 @@ module MPW
 			@password  = options[:password]   if options.has_key?(:password)
 			@port      = options[:port].to_i  if options.has_key?(:port) and not options[:port].to_s.empty?
 			@comment   = options[:comment]    if options.has_key?(:comment)
-			@last_edit = Time.now.to_i
+			@last_edit = Time.now.to_i        if not options.has_key?(:no_update_last_edit)
 
 			return true
 		end
