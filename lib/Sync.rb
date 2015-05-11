@@ -101,7 +101,7 @@ module MPW
 	
 			# Add item
 			@remote.list.each do |r|
-				if r.last_edit > @config.last_update
+				if r.last_edit > @config.last_sync
 					item = Item.new(id:        r.id,
 					                name:      r.name,
 					                group:     r.group,
