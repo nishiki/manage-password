@@ -71,6 +71,7 @@ module MPW
 			
 			if not @remote.to_s.empty?
 				@local.list.each do |item|
+					update = true
 					@remote.list.each do |r|
 
 						# Update item
@@ -88,12 +89,14 @@ module MPW
 							end
 
 							r.delete
+							update = true
+
 							break
 						end
 					end
 
 					# Remove an old item
-					if item.last_sync.to_i < @config.last_sync and item.last_edit < @config.last_sync
+					if not update and item.last_sync.to_i < @config.last_sync and item.last_edit < @config.last_sync
 						item.delete
 					end
 				end
