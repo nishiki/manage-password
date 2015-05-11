@@ -23,7 +23,7 @@ module MPW
 		attr_accessor :sync_user
 		attr_accessor :sync_pwd
 		attr_accessor :sync_path
-		attr_accessor :last_update
+		attr_accessor :last_sync
 		attr_accessor :dir_config
 	
 		# Constructor
@@ -82,7 +82,7 @@ module MPW
 			                       'sync_user'   => sync_user,
 			                       'sync_pwd'    => sync_pwd,
 			                       'sync_path'   => sync_path,
-			                       'last_update' => 0 
+			                       'last_sync' => 0 
 			                      }
 			         }
 	
@@ -139,17 +139,17 @@ module MPW
 		# @rtrn: true if the config file is correct
 		def checkconfig
 			config = YAML::load_file(@file_config)
-			@key         = config['config']['key']
-			@share_keys  = config['config']['share_keys']
-			@lang        = config['config']['lang']
-			@file_gpg    = config['config']['file_gpg']
-			@sync_type   = config['config']['sync_type']
-			@sync_host   = config['config']['sync_host']
-			@sync_port   = config['config']['sync_port']
-			@sync_user   = config['config']['sync_user']
-			@sync_pwd    = config['config']['sync_pwd']
-			@sync_path   = config['config']['sync_path']
-			@last_update = config['config']['last_update'].to_i
+			@key        = config['config']['key']
+			@share_keys = config['config']['share_keys']
+			@lang       = config['config']['lang']
+			@file_gpg   = config['config']['file_gpg']
+			@sync_type  = config['config']['sync_type']
+			@sync_host  = config['config']['sync_host']
+			@sync_port  = config['config']['sync_port']
+			@sync_user  = config['config']['sync_user']
+			@sync_pwd   = config['config']['sync_pwd']
+			@sync_path  = config['config']['sync_path']
+			@last_sync  = config['config']['last_sync'].to_i
 
 			if @key.empty? or @file_gpg.empty? 
 				@error_msg = I18n.t('error.config.check')
@@ -203,7 +203,7 @@ module MPW
 	
 		# Set the last update when there is a sync
 		# @rtrn: true is the file has been updated
-		def set_last_update
+		def set_last_sync
 			config = {'config' => {'key'         => @key,
 			                       'share_keys'  => @share_keys,
 			                       'lang'        => @lang,
@@ -214,7 +214,7 @@ module MPW
 			                       'sync_user'   => @sync_user,
 			                       'sync_pwd'    => @sync_pwd,
 			                       'sync_path'   => @sync_path,
-			                       'last_update' => Time.now.to_i
+			                       'last_sync' => Time.now.to_i
 			                      }
 		           }
 	

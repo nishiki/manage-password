@@ -20,6 +20,7 @@ module MPW
 		attr_accessor :port
 		attr_accessor :comment
 		attr_accessor :last_edit
+		attr_accessor :last_sync
 		attr_accessor :created
 
 		# Constructor
@@ -67,6 +68,11 @@ module MPW
 			return true
 		end
 
+		# Update last_sync
+		def set_last_sync
+			@last_sync = Time.now.to_i
+		end
+
 		# Delete all data
 		# @rtrn: true
 		def delete
@@ -81,6 +87,7 @@ module MPW
 			@comment   = nil
 			@created   = nil
 			@last_edit = nil
+			@last_sync = nil
 
 			return true
 		end

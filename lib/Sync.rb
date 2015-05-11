@@ -68,34 +68,32 @@ module MPW
 		# Sync remote data and local data
 		# raise an exception if there is a problem
 		def sync
+			
 			if not @remote.to_s.empty?
 				@local.list.each do |item|
-					update = false
-		
-					# Update item
 					@remote.list.each do |r|
+
+						# Update item
 						if item.id == r.id
 							if item.last_edit < r.last_edit
-								raise item.error_msg if not item.update(name:     r.name,
-								                                        group:    r.group,
-								                                        host:     r.host,
-								                                        protocol: r.protocol,
-								                                        user:     r.user,
-								                                        password: r.password,
-								                                        port:     r.port,
-								                                        comment:  r.comment
+								raise item.error_msg if not item.update(name:      r.name,
+								                                        group:     r.group,
+								                                        host:      r.host,
+								                                        protocol:  r.protocol,
+								                                        user:      r.user,
+								                                        password:  r.password,
+								                                        port:      r.port,
+								                                        comment:   r.comment
 								                                       )
 							end
 
-							update = true
 							r.delete
-
 							break
 						end
 					end
-		
-					# Delete an old item
-					if not update and item.last_edit < @config.last_update
+
+					# Remove an old item
+					if item.last_sync < @config.last_sync
 						item.delete
 					end
 				end
@@ -116,15 +114,18 @@ module MPW
 					                created:   r.created,
 					                last_edit: r.last_edit
 					               )
-					puts item.last_edit
 					raise @local.error_msg if not @local.add(item)
 				end
+			end
+
+			@local.list.each do |item|
+				item.set_last_sync
 			end
 
 			raise @mpw.error_msg  if not @local.encrypt 
 			raise @sync.error_msg if not @sync.update(@config.file_gpg)
 			
-			@config.set_last_update
+			@config.set_last_sync
 
 			return true
 		rescue Exception => e
