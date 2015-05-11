@@ -177,4 +177,15 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(@fixtures['add_new']['port'].to_i, item.port)
 		assert_equal(@fixtures['add_new']['comment'],   item.comment)
 	end
+
+	def test_15_search
+		import_file = 'files/test_import.yml'
+
+		assert(@mpw.import(import_file, :yaml))
+		assert_equal(2, @mpw.list.length)
+
+		assert_equal(1, @mpw.list(group:    @fixtures['add_new']['group']).length)
+		assert_equal(1, @mpw.list(protocol: @fixtures['add_new']['protocol']).length)
+		assert_equal(2, @mpw.list(search:   @fixtures['add_new']['name'][0..-2]).length)
+	end
 end
