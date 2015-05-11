@@ -48,8 +48,6 @@ module MPW
 		def get(file_tmp)
 			return false if not @enable
 			
-			puts @path
-			puts file_tmp
 			Net::SFTP.start(@host, @user, password: @password, port: @port) do |sftp|
 				sftp.lstat(@path) do |response|
 					sftp.download!(@path, file_tmp) if response.ok?

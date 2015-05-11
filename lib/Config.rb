@@ -159,7 +159,6 @@ module MPW
 
 			return true
 		rescue Exception => e 
-			puts e
 			@error_msg = "#{I18n.t('error.config.check')}\n#{e}"
 			return false
 		end
