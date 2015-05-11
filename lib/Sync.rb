@@ -131,7 +131,7 @@ module MPW
 			@config.set_last_sync
 
 			return true
-#		rescue Exception => e
+		rescue Exception => e
 			@error_msg = "#{I18n.t('error.sync.unknown')} #{e}"
 			return false
 		end
