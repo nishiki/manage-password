@@ -93,7 +93,7 @@ module MPW
 					end
 
 					# Remove an old item
-					if item.last_sync < @config.last_sync
+					if item.last_sync.to_i < @config.last_sync
 						item.delete
 					end
 				end
@@ -128,7 +128,7 @@ module MPW
 			@config.set_last_sync
 
 			return true
-		rescue Exception => e
+#		rescue Exception => e
 			@error_msg = "#{I18n.t('error.sync.unknown')} #{e}"
 			return false
 		end
