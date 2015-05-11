@@ -32,7 +32,7 @@ class Cli
 		raise(@sync.error_msg) if not @sync.sync
 
 		return true
-	rescue Exception => e
+#	rescue Exception => e
 		puts "#{I18n.t('display.error')} #7: #{e}".red
 		return false
 	end
@@ -298,10 +298,8 @@ class Cli
 
 		if not force
 			result = @mpw.import_preview(file, type)
-			puts result
 			if result.is_a?(Array) and not result.empty?
 				result.each do |r|
-					puts r.class
 					display_item(r)
 				end
 

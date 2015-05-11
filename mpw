@@ -92,6 +92,7 @@ OptionParser.new do |opts|
 
 	opts.on('-i', '--import FILE', I18n.t('option.import')) do |file|
 		options[:import] = file
+		options[:type]   = :yaml
 	end
 
 	opts.on('-f', '--force', I18n.t('option.force')) do
