@@ -93,7 +93,7 @@ module MPW
 					end
 
 					# Remove an old item
-					if item.last_sync.to_i < @config.last_sync
+					if item.last_sync.to_i < @config.last_sync and item.last_edit < @config.last_sync
 						item.delete
 					end
 				end
