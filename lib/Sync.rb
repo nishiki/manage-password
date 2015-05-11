@@ -71,7 +71,7 @@ module MPW
 			
 			if not @remote.to_s.empty?
 				@local.list.each do |item|
-					update = true
+					update = false
 					@remote.list.each do |r|
 
 						# Update item
