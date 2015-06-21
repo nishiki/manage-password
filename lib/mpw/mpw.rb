@@ -8,8 +8,7 @@ require 'csv'
 require 'i18n'
 require 'fileutils'
 require 'yaml'
-
-require_relative './Item'
+require 'mpw/item'
 	
 module MPW
 	class MPW

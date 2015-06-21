@@ -9,10 +9,9 @@ require 'pathname'
 require 'readline'
 require 'i18n'
 require 'colorize'
-
-require_relative '../Sync'
-require_relative '../MPW'
-require_relative '../Item'
+require 'mpw/sync'
+require 'mpw/mpw'
+require 'mpw/item'
 
 class Cli
 

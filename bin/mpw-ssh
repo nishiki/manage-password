@@ -8,23 +8,22 @@ require 'optparse'
 require 'pathname'
 require 'locale'
 require 'i18n'
-
-APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
-require "#{APP_ROOT}/lib/UI/CliSSH"
-require "#{APP_ROOT}/lib/Config"
-
-lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
+require 'mpw/ui/clissh'
+require 'mpw/config'
 
 # --------------------------------------------------------- #
 # Set local
 # --------------------------------------------------------- #
+
+APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
+lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
 if defined?(I18n.enforce_available_locales)
 	I18n.enforce_available_locales = true
 end
 
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-I18n.load_path      = Dir["#{APP_ROOT}/i18n/cli/*.yml"]
+I18n.load_path      = Dir["#{APP_ROOT}/../i18n/cli/*.yml"]
 I18n.default_locale = :en
 I18n.locale         = lang.to_sym
 

@@ -1,4 +1,10 @@
 = CHANGELOG =
+== v2.0.0 ==
+
+* change format csv to yaml
+* easy install with gem
+* add sync with ftp and ssh
+* many improvement
 
 == v1.1.0 ==
 

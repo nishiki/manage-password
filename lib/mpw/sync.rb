@@ -7,9 +7,8 @@ require 'rubygems'
 require 'i18n'
 require 'yaml'
 require 'tempfile'
-
-require_relative './MPW'
-require_relative './Item'
+require 'mpw/mpw'
+require 'mpw/item'
 	
 module MPW
 	class Sync
@@ -32,13 +31,13 @@ module MPW
 		def get_remote
 			case @config.sync_type
 			when 'mpw'
-				require "#{APP_ROOT}/lib/Sync/SyncMPW"
+				require 'mpw/sync/mpw'
 				@sync = SyncMPW.new(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
 			when 'sftp', 'scp', 'ssh'
-				require "#{APP_ROOT}/lib/Sync/SSH"
+				require 'mpw/sync/ssh'
 				@sync = SyncSSH.new(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
 			when 'ftp'
-				require "#{APP_ROOT}/lib/Sync/FTP"
+				require 'mpw/sync/ftp'
 				@sync = SyncFTP.new(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
 			else
 				@error_msg =  I18n.t('error.unknown_type')
