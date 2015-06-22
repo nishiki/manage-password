@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['gems@yae.im']
   spec.summary       = 'Manage your password'
   spec.description   = 'Save and read your password with gpg'
-  spec.homepage      = 'https://github.com/nishiki/checkupdate'
+  spec.homepage      = 'https://github.com/nishiki/manage-password'
   spec.license       = 'GPL'
 
   spec.files         = `git ls-files -z`.split("\x0")
