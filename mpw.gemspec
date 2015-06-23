@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'GPL'
 
   spec.files         = `git ls-files -z`.split("\x0")
-  spec.executables   = ['mpw', 'mpw-server']
+  spec.executables   = ['mpw', 'mpw-server', 'mpw-ssh']
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 end

@@ -11,4 +11,8 @@ This program work with ruby >= 1.9
 * install ruby and rubygems on your computer
 * gem install mpw
 
+If you want use mpw-ssh, you must install sshpass
 
+# How to use
+
+mpw -h 

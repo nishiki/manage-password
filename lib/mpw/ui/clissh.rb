@@ -12,15 +12,15 @@ class CliSSH < Cli
 	# Connect to SSH
 	# args: search -> string to search
 	def ssh(search)
-		result = @mpw.search(search, nil, 'ssh')
+		result = @mpw.list(search: search, protocol: 'ssh')
 
 		if result.length > 0
-			result.each do |r|
-				server = @server.nil? ? r[:host]  : @server
-				port   = @port.nil?   ? r[:port]  : @port
-				login  = @login.nil?  ? r[:login] : @login
+			result.each do |item|
+				server = @server.nil? ? item.host : @server
+				port   = @port.nil?   ? item.port : @port
+				login  = @login.nil?  ? item.user : @login
 
-				passwd = r[:password]
+				passwd = item.password
 
 				if port.nil? and port.empty?
 					port = 22
