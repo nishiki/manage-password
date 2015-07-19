@@ -16,4 +16,11 @@ Gem::Specification.new do |spec|
   spec.executables   = ['mpw', 'mpw-server', 'mpw-ssh']
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
+
+  spec.add_dependency "i18n", "~> 0.6", ">= 0.6.9"
+  spec.add_dependency "gpgme"
+  spec.add_dependency "highline"
+  spec.add_dependency "locale"
+  spec.add_dependency "colorize"
+  spec.add_dependency "net-sftp"
 end
