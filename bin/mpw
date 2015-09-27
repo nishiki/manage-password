@@ -37,6 +37,7 @@ I18n.locale         = lang.to_sym
 options = {}
 options[:force]  = false
 options[:format] = false
+options[:sync]   = true
 options[:group]  = nil
 options[:config] = nil
 
@@ -98,6 +99,10 @@ OptionParser.new do |opts|
 		options[:force] = true
 	end
 
+	opts.on('-N', '--no-sync', I18n.t('option.no_sync')) do
+		options[:sync] = false
+	end
+
 	opts.on('-G', '--generate-password [LENGTH]', I18n.t('option.generate_password')) do |length|
 		puts MPW::MPW::password(length)
 		exit 0
@@ -126,7 +131,7 @@ elsif not config.check_gpg_key?
 end
 
 cli.decrypt
-cli.sync
+cli.sync(options[:sync])
 
 # Display the item's informations
 if not options[:show].nil?

@@ -52,6 +52,7 @@ en:
     type: "Data's type export file [csv|yaml]"
     import: "Import item since a yaml or csv file"
     force: "Force an action"
+    no_sync: "Disable synchronization with the server"
     format: "Change the display items format by an alternative format"
     generate_password: "Generate a random password (default 8 characters)"
     help: "Show this help message"

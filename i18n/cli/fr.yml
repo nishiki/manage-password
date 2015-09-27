@@ -52,6 +52,7 @@ fr:
     type: "Format des données du fichier d'export [csv|yaml]"
     import: "Importe des éléments depuis un fichier yaml ou csv"
     force: "Force une action, l'action ne demandera pas de confirmation"
+    no_sync: "Désactive la synchronisation avec le serveur"
     format: "Change le format d'affichage des éléments par un alternatif"
     generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères)"
     help: "Affiche ce message d'aide"

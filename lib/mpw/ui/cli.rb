@@ -23,8 +23,15 @@ class Cli
 	end
 
 	# Sync the data with the server
+	# @args: allow_sync -> allow or disable sync (boolean)
 	# @rtnr: true if the synchro is finish
-	def sync
+	def sync(allow_sync=nil)
+		if not allow_sync.nil?
+			@allow_sync = allow_sync
+		end
+
+		return true if not @allow_sync
+
 		@sync = MPW::Sync.new(@config, @mpw, @password) 
 
 		raise(@sync.error_msg) if not @sync.get_remote
