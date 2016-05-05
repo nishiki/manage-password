@@ -95,6 +95,9 @@ class Cli
 		end
 
 		@mpw.read_data
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #11: #{e}".red
+		exit 2
 	end
 
 	# Display the query's result
