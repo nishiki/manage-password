@@ -198,13 +198,15 @@ class Cli
 			options.delete_if { |k,v| v.empty? }
 				
 			item.update(options)
-			@mpw.encrypt
+			@mpw.set_password(item.id, password) if not password.empty?
 			@mpw.write_data
 
 			puts "#{I18n.t('form.update.valid')}".green
 		else
 			puts I18n.t('display.nothing')
 		end
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #14: #{e}".red
 	end
 
 	# Remove an item
