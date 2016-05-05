@@ -1,7 +1,6 @@
 #!/usr/bin/ruby
 # author: nishiki
 # mail: nishiki@yaegashi.fr
-# info: a simple script who manage your passwords
 
 require 'rubygems'
 require 'optparse'
@@ -11,7 +10,7 @@ require 'set'
 require 'i18n'
 require 'mpw/mpw'
 require 'mpw/config'
-require 'mpw/ui/cli'
+require 'mpw/cli'
 
 # --------------------------------------------------------- #
 # Set local
@@ -77,26 +76,12 @@ OptionParser.new do |opts|
 		options[:setup] = true
 	end
 
-	opts.on('-p', '--protocol PROTOCOL', I18n.t('option.protocol')) do |protocol|
-		options[:protocol] = protocol
-	end
-
 	opts.on('-e', '--export FILE', I18n.t('option.export')) do |file|
 		options[:export] = file
-		options[:type]   = :yaml
-	end
-
-	opts.on('-t', '--type TYPE', I18n.t('option.type')) do |type|
-		options[:type] = type.to_sym
 	end
 
 	opts.on('-i', '--import FILE', I18n.t('option.import')) do |file|
 		options[:import] = file
-		options[:type]   = :yaml
-	end
-
-	opts.on('-f', '--force', I18n.t('option.force')) do
-		options[:force] = true
 	end
 
 	opts.on('-N', '--no-sync', I18n.t('option.no_sync')) do
@@ -131,7 +116,6 @@ elsif not config.check_gpg_key?
 end
 
 cli.decrypt
-cli.sync(options[:sync])
 
 # Display the item's informations
 if not options[:show].nil?
@@ -156,11 +140,11 @@ elsif not options[:add].nil?
 
 # Export
 elsif not options[:export].nil?
-	cli.export(options[:export], options[:type])
+	cli.export(options[:export])
 
 # Add a new item
 elsif not options[:import].nil?
-	cli.import(options[:import], options[:type], options[:force])
+	cli.import(options[:import])
 
 # Interactive mode
 end

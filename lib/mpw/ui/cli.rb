@@ -1,15 +1,11 @@
 #!/usr/bin/ruby
 # author: nishiki
 # mail: nishiki@yaegashi.fr
-# info: a simple script who m your passwords
 
-require 'rubygems'
-require 'highline/import'
-require 'pathname'
 require 'readline'
 require 'i18n'
 require 'colorize'
-require 'mpw/sync'
+require 'highline/import'
 require 'mpw/mpw'
 require 'mpw/item'
 
@@ -18,29 +14,10 @@ class Cli
 	# Constructor
 	# @args: lang -> the operating system language
 	#        config_file -> a specify config file
+	# TODO
 	def initialize(config)
 		@config = config
-	end
-
-	# Sync the data with the server
-	# @args: allow_sync -> allow or disable sync (boolean)
-	# @rtnr: true if the synchro is finish
-	def sync(allow_sync=nil)
-		if not allow_sync.nil?
-			@allow_sync = allow_sync
-		end
-
-		return true if not @allow_sync
-
-		@sync = MPW::Sync.new(@config, @mpw, @password) 
-
-		raise(@sync.error_msg) if not @sync.get_remote
-		raise(@sync.error_msg) if not @sync.sync
-
-		return true
-	rescue Exception => e
-		puts "#{I18n.t('display.error')} #7: #{e}".red
-		return false
+		@wallet_file = "#{@config.wallet_dir}/test.mpw"
 	end
 
 	# Create a new config file
@@ -48,33 +25,16 @@ class Cli
 	def setup(lang)
 		puts I18n.t('form.setup.title')
 		puts '--------------------'
-		language    = ask(I18n.t('form.setup.lang', lang: lang)).to_s
-		key         = ask(I18n.t('form.setup.gpg_key')).to_s
-		share_keys  = ask(I18n.t('form.setup.share_gpg_keys')).to_s
-		file_gpg    = ask(I18n.t('form.setup.gpg_file', home: @conf.dir_config)).to_s
-		sync_type   = ask(I18n.t('form.setup.sync_type')).to_s
+		language   = ask(I18n.t('form.setup.lang', lang: lang)).to_s
+		key        = ask(I18n.t('form.setup.gpg_key')).to_s
+		wallet_dir = ask(I18n.t('form.setup.wallet_dir')).to_s
 
-		if ['ssh', 'ftp', 'mpw'].include?(sync_type)
-			sync_host   = ask(I18n.t('form.setup.sync_host')).to_s
-			sync_port   = ask(I18n.t('form.setup.sync_port')).to_s
-			sync_user   = ask(I18n.t('form.setup.sync_user')).to_s
-			sync_pwd    = ask(I18n.t('form.setup.sync_pwd')).to_s
-			sync_path   = ask(I18n.t('form.setup.sync_path')).to_s
-		end
-		
 		if language.nil? or language.empty?
 			language = lang
 		end
 		I18n.locale = language.to_sym
 
-		sync_type = sync_type.nil? or sync_type.empty? ? nil : sync_type
-		sync_host = sync_host.nil? or sync_host.empty? ? nil : sync_host
-		sync_port = sync_port.nil? or sync_port.empty? ? nil : sync_port.to_i
-		sync_user = sync_user.nil? or sync_user.empty? ? nil : sync_user
-		sync_pwd  = sync_pwd.nil?  or sync_pwd.empty?  ? nil : sync_pwd
-		sync_path = sync_path.nil? or sync_path.empty? ? nil : sync_path
-
-		if @config.setup(key, share_keys, language, file_gpg, sync_type, sync_host, sync_port, sync_user, sync_pwd, sync_path)
+		if @config.setup(key, lang, wallet_dir)
 			puts "#{I18n.t('form.setup.valid')}".green
 		else
 			puts "#{I18n.t('display.error')} #8: #{@config.error_msg}".red
@@ -86,7 +46,7 @@ class Cli
 			exit 2
 		end
 	end
-
+	
 	# Setup a new GPG key
 	def setup_gpg_key
 		puts I18n.t('form.setup_gpg_key.title')
@@ -124,17 +84,15 @@ class Cli
 		end
 	end
 
+	
 	# Request the GPG password and decrypt the file
 	def decrypt
 		if not defined?(@mpw)
-			@mpw = MPW::MPW.new(@config.file_gpg, @config.key, @config.share_keys)
+			@password = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
+			@mpw = MPW::MPW.new(@config.key, @wallet_file, @password)
 		end
 
-		@password = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
-		if not @mpw.decrypt(@password)
-			puts "#{I18n.t('display.error')} #11: #{@mpw.error_msg}".red
-			exit 2
-		end
+		@mpw.read_data
 	end
 
 	# Display the query's result
@@ -185,7 +143,7 @@ class Cli
 		print "#{I18n.t('display.login')}: ".cyan
 		puts  item.user
 		print "#{I18n.t('display.password')}: ".cyan
-		puts  item.password
+		puts  @mpw.get_password(item.id)
 		print "#{I18n.t('display.port')}: ".cyan
 		puts  item.port
 		print "#{I18n.t('display.comment')}: ".cyan
@@ -203,21 +161,17 @@ class Cli
 		options[:host]     = ask(I18n.t('form.add.server')).to_s
 		options[:protocol] = ask(I18n.t('form.add.protocol')).to_s
 		options[:user]     = ask(I18n.t('form.add.login')).to_s
-		options[:password] = ask(I18n.t('form.add.password')).to_s
+		password           = ask(I18n.t('form.add.password')).to_s
 		options[:port]     = ask(I18n.t('form.add.port')).to_s
 		options[:comment]  = ask(I18n.t('form.add.comment')).to_s
 
 		item = MPW::Item.new(options)
-		if @mpw.add(item)
-			if @mpw.encrypt
-				sync
-				puts "#{I18n.t('form.add.valid')}".green
-			else
-				puts "#{I18n.t('display.error')} #12: #{@mpw.error_msg}".red
-			end
-		else
-			puts "#{I18n.t('display.error')} #13: #{item.error_msg}".red
-		end
+
+		@mpw.add(item)
+		@mpw.set_password(item.id, password)
+		@mpw.write_data
+
+		puts "#{I18n.t('form.add.valid')}".green
 	end
 
 	# Update an item
@@ -235,22 +189,17 @@ class Cli
 			options[:host]     = ask(I18n.t('form.update.server'  , server:   item.host)).to_s
 			options[:protocol] = ask(I18n.t('form.update.protocol', protocol: item.protocol)).to_s
 			options[:user]     = ask(I18n.t('form.update.login'   , login:    item.user)).to_s
-			options[:password] = ask(I18n.t('form.update.password')).to_s
+			password           = ask(I18n.t('form.update.password')).to_s
 			options[:port]     = ask(I18n.t('form.update.port'    , port:     item.port)).to_s
 			options[:comment]  = ask(I18n.t('form.update.comment' , comment:  item.comment)).to_s
 
 			options.delete_if { |k,v| v.empty? }
 				
-			if item.update(options)
-				if @mpw.encrypt
-					sync
-					puts "#{I18n.t('form.update.valid')}".green
-				else
-					puts "#{I18n.t('display.error')} #14: #{@mpw.error_msg}".red
-				end
-			else
-				puts "#{I18n.t('display.error')} #15: #{item.error_msg}".red
-			end
+			item.update(options)
+			@mpw.encrypt
+			@mpw.write_data
+
+			puts "#{I18n.t('form.update.valid')}".green
 		else
 			puts I18n.t('display.nothing')
 		end
@@ -289,43 +238,22 @@ class Cli
 
 	# Export the items in a CSV file
 	# @args: file -> the destination file
-	def export(file, type=:yaml)
-		if @mpw.export(file, type)
-			puts "#{I18n.t('export.valid', file)}".green
-		else
-			puts "#{I18n.t('display.error')} #17: #{@mpw.error_msg}".red
-		end
+	def export(file)
+		@mpw.export(file)
+
+		puts "#{I18n.t('export.valid', file)}".green
+	rescue Exception => e
+			puts "#{I18n.t('display.error')} #17: #{e}".red
 	end
 
-	# Import items from a CSV file
+	# Import items from a YAML file
 	# @args: file -> the import file
-	#        force -> no resquest a validation
-	def import(file, type=:yaml, force=false)
+	def import(file)
+		@mpw.import(file)
+		@mpw.write_data
 
-		if not force
-			result = @mpw.import_preview(file, type)
-			if result.is_a?(Array) and not result.empty?
-				result.each do |r|
-					display_item(r)
-				end
-
-				confirm = ask("#{I18n.t('form.import.ask', file: file)} (y/N) ").to_s
-				if confirm =~ /^(y|yes|YES|Yes|Y)$/
-					force = true
-				end
-			else
-				puts I18n.t('form.import.not_valid')
-			end
-		end
-
-		if force
-			if @mpw.import(file, type) and @mpw.encrypt
-				sync
-				puts "#{I18n.t('form.import.valid')}".green
-			else
-				puts "#{I18n.t('display.error')} #18: #{@mpw.error_msg}".red
-			end
-		end
+		puts "#{I18n.t('form.import.valid')}".green
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #18: #{e}".red
 	end
-
 end
