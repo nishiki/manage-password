@@ -17,9 +17,9 @@ class Cli
 	# @args: lang -> the operating system language
 	#        config_file -> a specify config file
 	# TODO
-	def initialize(config)
+	def initialize(config, wallet)
 		@config = config
-		@wallet_file = "#{@config.wallet_dir}/test.mpw"
+		@wallet_file = "#{@config.wallet_dir}/#{wallet}.mpw"
 	end
 
 	# Create a new config file
