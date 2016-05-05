@@ -7,7 +7,9 @@ require 'gpgme'
 require 'i18n'
 require 'fileutils'
 require 'yaml'
-require 'mpw/item'
+
+#TODO
+require "#{APP_ROOT}/../lib/mpw/item.rb"
 	
 module MPW
 class MPW

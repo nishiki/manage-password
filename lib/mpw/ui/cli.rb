@@ -6,8 +6,10 @@ require 'readline'
 require 'i18n'
 require 'colorize'
 require 'highline/import'
-require 'mpw/mpw'
-require 'mpw/item'
+
+#TODO
+require "#{APP_ROOT}/../lib/mpw/item.rb"
+require "#{APP_ROOT}/../lib/mpw/mpw.rb"
 
 class Cli
 
