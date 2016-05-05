@@ -213,31 +213,28 @@ class Cli
 	# @args: id -> the item's id
 	#        force -> no resquest a validation
 	def delete(id, force=false)
+		item = @mpw.search_by_id(id)
+
+		if item.nil?
+			puts I18n.t('display.nothing')
+			return
+		end
+
 		if not force
-			item = @mpw.search_by_id(id)
+			display_item(item)
 
-			if not item.nil?
-				display_item(item)
-
-				confirm = ask("#{I18n.t('form.delete.ask', id: id)} (y/N) ").to_s
-				if confirm =~ /^(y|yes|YES|Yes|Y)$/
-					force = true
-				end
-			else
-				puts I18n.t('display.nothing')
+			confirm = ask("#{I18n.t('form.delete.ask', id: id)} (y/N) ").to_s
+			if not confirm =~ /^(y|yes|YES|Yes|Y)$/
+				return
 			end
 		end
 
-		if force
-			item.delete
+		item.delete
+		@mpw.write_data
 
-			if @mpw.encrypt
-				sync
-				puts "#{I18n.t('form.delete.valid', id: id)}".green
-			else
-				puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}".red
-			end
-		end
+		puts "#{I18n.t('form.delete.valid', id: id)}".green
+	rescue
+		puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}".red
 	end
 
 	# Export the items in a CSV file
