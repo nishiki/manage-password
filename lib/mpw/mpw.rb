@@ -99,8 +99,6 @@ class MPW
 			           )
 		end
 
-
-
 		Gem::Package::TarWriter.new(File.open(@wallet_file, 'w+')) do |tar|
 			data_encrypt = encrypt(YAML::dump(data))
 			tar.add_file_simple('wallet/meta.gpg', 0400, data_encrypt.length) do |io|
@@ -112,8 +110,13 @@ class MPW
 					io.write(password)
 				end
 			end
-		end
 
+			@keys.each do |id, key|
+				tar.add_file_simple("wallet/keys/#{id}.pub", 0400, key.length) do |io|
+					io.write(password)
+				end
+			end
+		end
 	end
 
 	# TODO comment
