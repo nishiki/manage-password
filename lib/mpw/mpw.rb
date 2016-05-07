@@ -24,9 +24,7 @@ class MPW
 		@wallet_file = wallet_file
 	end
 
-	# Decrypt a gpg file
-	# @args: password -> the GPG key password
-	# @rtrn: true if data has been decrypted
+	# Read mpw file
 	def read_data
 		@config    = nil
 		@keys      = []
@@ -74,6 +72,8 @@ class MPW
 				          )
 			end
 		end
+	rescue Exception => e
+		raise "#{I18n.t('error.mpw_file.read_data')}\n#{e}"
 	end
 
 	# Encrypt a file
