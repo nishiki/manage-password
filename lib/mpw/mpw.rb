@@ -112,7 +112,7 @@ class MPW
 
 			@keys.each do |id, key|
 				tar.add_file_simple("wallet/keys/#{id}.pub", 0400, key.length) do |io|
-					io.write(password)
+					io.write(key)
 				end
 			end
 		end
@@ -129,6 +129,18 @@ class MPW
 	#       password -> the new password
 	def set_password(id, password)
 		@passwords[id] = encrypt(password)
+	end
+
+	# Add public key
+	# args: key ->  new public key
+	def add_key(key)
+		data = GPGME::Key.export(key).read
+
+		if data.to_s.empty?
+			raise I18n.t('error.export_key')
+		end
+
+		@keys[key] = data
 	end
 
 	# TODO
@@ -149,7 +161,6 @@ class MPW
 			@data.push(item)
 		end
 	end
-
 
 	# Search in some csv data
 	# @args: options -> a hash with paramaters

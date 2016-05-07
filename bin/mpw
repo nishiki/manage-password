@@ -92,6 +92,10 @@ OptionParser.new do |opts|
 		options[:import] = file
 	end
 
+	opts.on('-k', '--key KEY', I18n.t('option.import')) do |key|
+		options[:key] = key
+	end
+
 	opts.on('-N', '--no-sync', I18n.t('option.no_sync')) do
 		options[:sync] = false
 	end
@@ -150,8 +154,12 @@ elsif not options[:update].nil? and not options[:id].nil?
 	cli.update(options[:id])
 
 # Add a new item
-elsif not options[:add].nil?
+elsif not options[:add].nil? and options[:key].nil?
 	cli.add
+
+# Add a new public key in wallet
+elsif not options[:add].nil? and not options[:key].nil?
+	cli.add_key(options[:key])
 
 # Export
 elsif not options[:export].nil?

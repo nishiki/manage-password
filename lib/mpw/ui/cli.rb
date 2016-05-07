@@ -157,7 +157,6 @@ class Cli
 	def get_wallet(wallet=nil)
 		if wallet.to_s.empty?
 			wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
-			puts wallets
 
 			case wallets.length
 			when 0
@@ -184,6 +183,14 @@ class Cli
 		else
 			@wallet_file = "#{@config.wallet_dir}/#{wallet}.mpw"
 		end
+	end
+
+	# Add new public key
+	def add_key(key)
+		@mpw.add_key(key)
+		@mpw.write_data
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #13: #{e}".red
 	end
 
 	# Form to add a new item
