@@ -190,6 +190,8 @@ class Cli
 	def add_key(key)
 		@mpw.add_key(key)
 		@mpw.write_data
+
+		puts "#{I18n.t('key.add.valid')}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #13: #{e}".red
 	end

@@ -140,7 +140,7 @@ class MPW
 	# Add public key
 	# args: key ->  new public key
 	def add_key(key)
-		data = GPGME::Key.export(key).read
+		data = GPGME::Key.export(key, armor: true).read
 
 		if data.to_s.empty?
 			raise I18n.t('error.export_key')
