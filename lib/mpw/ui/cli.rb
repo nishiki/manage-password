@@ -14,12 +14,9 @@ require "#{APP_ROOT}/../lib/mpw/mpw.rb"
 class Cli
 
 	# Constructor
-	# @args: lang -> the operating system language
-	#        config_file -> a specify config file
-	# TODO
-	def initialize(config, wallet)
+	# @args: config_file -> a specify config file
+	def initialize(config)
 		@config = config
-		@wallet_file = "#{@config.wallet_dir}/#{wallet}.mpw"
 	end
 
 	# Create a new config file
@@ -153,6 +150,40 @@ class Cli
 		puts  item.port
 		print "#{I18n.t('display.comment')}: ".cyan
 		puts  item.comment
+	end
+
+	# Display the wallet
+	# @args: wallet -> the wallet name
+	def get_wallet(wallet=nil)
+		if wallet.to_s.empty?
+			wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
+			puts wallets
+
+			case wallets.length
+			when 0
+				puts I18n.t('display.nothing')
+			when 1
+				@wallet_file = wallets[0]
+			else
+				i = 1
+				wallets.each do |wallet|
+						print "#{i}: ".cyan
+						puts File.basename(wallet, '.mpw')
+
+						i += 1
+				end
+
+				choice = ask(I18n.t('form.select')).to_i
+
+				if choice >= 1 and choice < i
+					@wallet_file = wallets[choice-1]
+				else
+					puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+				end
+			end
+		else
+			@wallet_file = "#{@config.wallet_dir}/#{wallet}.mpw"
+		end
 	end
 
 	# Form to add a new item
