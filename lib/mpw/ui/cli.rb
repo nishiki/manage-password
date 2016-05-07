@@ -11,6 +11,7 @@ require 'highline/import'
 require "#{APP_ROOT}/../lib/mpw/item.rb"
 require "#{APP_ROOT}/../lib/mpw/mpw.rb"
 
+module MPW
 class Cli
 
 	# Constructor
@@ -88,7 +89,7 @@ class Cli
 	def decrypt
 		if not defined?(@mpw)
 			@password = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
-			@mpw = MPW::MPW.new(@config.key, @wallet_file, @password)
+			@mpw = MPW.new(@config.key, @wallet_file, @password)
 		end
 
 		@mpw.read_data
@@ -208,7 +209,7 @@ class Cli
 		options[:port]     = ask(I18n.t('form.add.port')).to_s
 		options[:comment]  = ask(I18n.t('form.add.comment')).to_s
 
-		item = MPW::Item.new(options)
+		item = Item.new(options)
 
 		@mpw.add(item)
 		@mpw.set_password(item.id, password)
@@ -298,4 +299,5 @@ class Cli
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #18: #{e}".red
 	end
+end
 end

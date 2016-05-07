@@ -124,7 +124,7 @@ end.parse!
 config      = MPW::Config.new(options[:config])
 check_error = config.checkconfig
 
-cli = Cli.new(config)
+cli = MPW::Cli.new(config)
 	
 # Setup a new config 
 if not check_error or not options[:setup].nil?
