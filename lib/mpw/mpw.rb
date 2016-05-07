@@ -195,24 +195,24 @@ class MPW
 	# Export to csv
 	# @args: file -> file where you export the data
 	def export(file)
-			data = {}
-			@data.each do |item|
-				data.merge!(item.id => {'id'        => item.id,
-				                        'name'      => item.name,
-				                        'group'     => item.group,
-				                        'host'      => item.host,
-				                        'protocol'  => item.protocol,
-				                        'user'      => item.user,
-				                        'password'  => get_password(item.id),
-				                        'port'      => item.port,
-				                        'comment'   => item.comment,
-				                        'last_edit' => item.last_edit,
-				                        'created'   => item.created,
-				                       }
-				            )
-			end
+		data = {}
+		@data.each do |item|
+			data.merge!(item.id => {'id'        => item.id,
+			                        'name'      => item.name,
+			                        'group'     => item.group,
+			                        'host'      => item.host,
+			                        'protocol'  => item.protocol,
+			                        'user'      => item.user,
+			                        'password'  => get_password(item.id),
+			                        'port'      => item.port,
+			                        'comment'   => item.comment,
+			                        'last_edit' => item.last_edit,
+			                        'created'   => item.created,
+			                       }
+			            )
+		end
 
-			File.open(file, 'w') {|f| f << data.to_yaml}
+		File.open(file, 'w') {|f| f << data.to_yaml}
 	rescue Exception => e 
 		raise "#{I18n.t('error.export.write', file: file)}\n#{e}"
 	end
