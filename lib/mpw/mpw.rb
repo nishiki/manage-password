@@ -77,8 +77,7 @@ class MPW
 	end
 
 	# Encrypt a file
-	# @rtrn: true if the file has been encrypted
-	# TODO export key pub
+	# TODO backup and restore file with raise
 	def write_data
 		data = {}
 
@@ -119,12 +118,15 @@ class MPW
 		end
 	end
 
-	# TODO comment
+	# Get a password
+	# args: id -> the item id
 	def get_password(id)
 		return decrypt(@passwords[id])
 	end
 
-	# TODO comment
+	# Set a password
+	# args: id -> the item id
+	#       password -> the new password
 	def set_password(id, password)
 		@passwords[id] = encrypt(password)
 	end
@@ -138,8 +140,6 @@ class MPW
 
 	# Add a new item
 	# @args: item -> Object MPW::Item
-	# @rtrn: true if add item
-	# TODO add password
 	def add(item)
 		if not item.instance_of?(Item)
 			raise I18n.t('error.bad_class')
@@ -192,7 +192,7 @@ class MPW
 		return nil
 	end
 
-	# Export to csv
+	# Export to yaml
 	# @args: file -> file where you export the data
 	def export(file)
 		data = {}
@@ -261,8 +261,7 @@ class MPW
 	end
 
 	# Decrypt a gpg file
-	# @args: password -> the GPG key password
-	# @rtrn: true if data has been decrypted
+	# @args: data -> string to decrypt
 	private
 	def decrypt(data)
 		crypto = GPGME::Crypto.new(armor: true)
@@ -273,7 +272,7 @@ class MPW
 	end
 
 	# Encrypt a file
-	# @rtrn: true if the file has been encrypted
+	# args: data -> string to encrypt
 	private
 	def encrypt(data)
 		recipients = []
