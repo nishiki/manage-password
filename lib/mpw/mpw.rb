@@ -77,9 +77,9 @@ class MPW
 	end
 
 	# Encrypt a file
-	# TODO backup and restore file with raise
 	def write_data
-		data = {}
+		data     = {}
+		tmp_file = "#{@wallet_file}.tmp"
 
 		@data.each do |item|
 			next if item.empty?
@@ -98,7 +98,7 @@ class MPW
 			           )
 		end
 
-		Gem::Package::TarWriter.new(File.open(@wallet_file, 'w+')) do |tar|
+		Gem::Package::TarWriter.new(File.open(tmp_file, 'w+')) do |tar|
 			data_encrypt = encrypt(YAML::dump(data))
 			tar.add_file_simple('wallet/meta.gpg', 0400, data_encrypt.length) do |io|
 				io.write(data_encrypt)
@@ -116,6 +116,12 @@ class MPW
 				end
 			end
 		end
+
+		File.rename(tmp_file, @wallet_file)
+	rescue Exception => e
+		File.unlink(tmp_file)
+
+		raise "#{I18n.t('error.mpw_file.write_data')}\n#{e}"
 	end
 
 	# Get a password
