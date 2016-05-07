@@ -5,7 +5,6 @@
 require 'rubygems/package'
 require 'gpgme'
 require 'i18n'
-require 'fileutils'
 require 'yaml'
 
 #TODO
