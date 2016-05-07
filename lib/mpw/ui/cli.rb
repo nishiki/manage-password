@@ -186,7 +186,8 @@ class Cli
 		end
 	end
 
-	# Add new public key
+	# Add a new public key
+	# args: key -> the key name to add
 	def add_key(key)
 		@mpw.add_key(key)
 		@mpw.write_data
@@ -194,6 +195,17 @@ class Cli
 		puts "#{I18n.t('key.add.valid')}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #13: #{e}".red
+	end
+
+	# Add new public key
+	# args: key -> the key name to delete
+	def delete_key(key)
+		@mpw.delete_key(key)
+		@mpw.write_data
+
+		puts "#{I18n.t('key.delete.valid')}".green
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #15: #{e}".red
 	end
 
 	# Form to add a new item

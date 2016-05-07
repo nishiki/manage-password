@@ -161,6 +161,10 @@ elsif not options[:add].nil? and options[:key].nil?
 elsif not options[:add].nil? and not options[:key].nil?
 	cli.add_key(options[:key])
 
+# Delete a public key in wallet
+elsif not options[:delete].nil? and not options[:key].nil?
+	cli.delete_key(options[:key])
+
 # Export
 elsif not options[:export].nil?
 	cli.export(options[:export])
@@ -169,7 +173,6 @@ elsif not options[:export].nil?
 elsif not options[:import].nil?
 	cli.import(options[:import])
 
-# Interactive mode
 end
 
 cli = nil

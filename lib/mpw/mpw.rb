@@ -137,7 +137,7 @@ class MPW
 		@passwords[id] = encrypt(password)
 	end
 
-	# Add public key
+	# Add a public key
 	# args: key ->  new public key
 	def add_key(key)
 		data = GPGME::Key.export(key, armor: true).read
@@ -147,6 +147,12 @@ class MPW
 		end
 
 		@keys[key] = data
+	end
+
+	# Delete a public key
+	# args: key ->  public key to delete
+	def delete_key(key)
+		@keys.delete(key)
 	end
 
 	# TODO
