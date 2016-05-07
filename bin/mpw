@@ -37,7 +37,6 @@ I18n.locale         = lang.to_sym
 
 options = {}
 options[:force]  = false
-options[:format] = false
 options[:sync]   = true
 options[:group]  = nil
 options[:config] = nil
@@ -46,8 +45,8 @@ options[:wallet] = nil
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw [options]"
 
-	opts.on('-s', '--show [SEARCH]', I18n.t('option.show')) do |search|
-		search.nil? ? (options[:show]  = '')  : (options[:show] = search)
+	opts.on('-a', '--add', I18n.t('option.add')) do
+		options[:add] = true
 	end
 
 	opts.on('-A', '--show-all', I18n.t('option.show_all')) do
@@ -55,44 +54,24 @@ OptionParser.new do |opts|
 		options[:show] = ''
 	end
 
-	opts.on('-u', '--update ID', I18n.t('option.update')) do |id|
-		options[:update] = id
+	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
+		options[:config] = config
 	end
 
 	opts.on('-d', '--delete ID', I18n.t('option.remove')) do |id|
 		options[:delete] = id
 	end
 
-	opts.on('-g', '--group GROUP', I18n.t('option.group')) do |group|
-		options[:group] = group
-	end
-
-	opts.on('-a', '--add', I18n.t('option.add')) do
-		options[:add] = true
-	end
-
-	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
-		options[:config] = config
-	end
-
-	opts.on('-S', '--setup', I18n.t('option.setup')) do
-		options[:setup] = true
-	end
-
 	opts.on('-e', '--export FILE', I18n.t('option.export')) do |file|
 		options[:export] = file
 	end
 
-	opts.on('-i', '--import FILE', I18n.t('option.import')) do |file|
-		options[:import] = file
+	opts.on('-f', '--force', I18n.t('option.force')) do
+		options[:force] = true
 	end
 
-	opts.on('-N', '--no-sync', I18n.t('option.no_sync')) do
-		options[:sync] = false
-	end
-
-	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
-		options[:wallet] = wallet
+	opts.on('-g', '--group GROUP', I18n.t('option.group')) do |group|
+		options[:group] = group
 	end
 
 	opts.on('-G', '--generate-password [LENGTH]', I18n.t('option.generate_password')) do |length|
@@ -103,6 +82,30 @@ OptionParser.new do |opts|
 	opts.on('-h', '--help', I18n.t('option.help')) do
 		puts opts
 		exit 0
+	end
+
+	opts.on('-i', '--import FILE', I18n.t('option.import')) do |file|
+		options[:import] = file
+	end
+
+	opts.on('-N', '--no-sync', I18n.t('option.no_sync')) do
+		options[:sync] = false
+	end
+
+	opts.on('-s', '--show [SEARCH]', I18n.t('option.show')) do |search|
+		search.nil? ? (options[:show]  = '')  : (options[:show] = search)
+	end
+
+	opts.on('-S', '--setup', I18n.t('option.setup')) do
+		options[:setup] = true
+	end
+
+	opts.on('-u', '--update ID', I18n.t('option.update')) do |id|
+		options[:update] = id
+	end
+
+	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
+		options[:wallet] = wallet
 	end
 end.parse!
 
