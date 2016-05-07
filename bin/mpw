@@ -58,8 +58,8 @@ OptionParser.new do |opts|
 		options[:config] = config
 	end
 
-	opts.on('-d', '--delete ID', I18n.t('option.remove')) do |id|
-		options[:delete] = id
+	opts.on('-d', '--delete', I18n.t('option.remove')) do
+		options[:delete] = true
 	end
 
 	opts.on('-e', '--export FILE', I18n.t('option.export')) do |file|
@@ -84,7 +84,11 @@ OptionParser.new do |opts|
 		exit 0
 	end
 
-	opts.on('-i', '--import FILE', I18n.t('option.import')) do |file|
+	opts.on('-i', '--id ID', I18n.t('option.id')) do |id|
+		options[:id] = id
+	end
+
+	opts.on('-I', '--import FILE', I18n.t('option.import')) do |file|
 		options[:import] = file
 	end
 
@@ -100,8 +104,8 @@ OptionParser.new do |opts|
 		options[:setup] = true
 	end
 
-	opts.on('-u', '--update ID', I18n.t('option.update')) do |id|
-		options[:update] = id
+	opts.on('-u', '--update', I18n.t('option.update')) do
+		options[:update] = true
 	end
 
 	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
@@ -138,12 +142,12 @@ if not options[:show].nil?
 	cli.display(opts)
 
 # Remove an item
-elsif not options[:delete].nil?
-	cli.delete(options[:delete], options[:force])
+elsif not options[:delete].nil? and not options[:id].nil?
+	cli.delete(options[:id], options[:force])
 
 # Update an item
-elsif not options[:update].nil?
-	cli.update(options[:update])
+elsif not options[:update].nil? and not options[:id].nil?
+	cli.update(options[:id])
 
 # Add a new item
 elsif not options[:add].nil?
