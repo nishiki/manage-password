@@ -27,8 +27,8 @@ class MPW
 	# Read mpw file
 	def read_data
 		@config    = nil
-		@keys      = []
 		@data      = []
+		@keys      = {}
 		@passwords = {}
 
 		data       = nil
@@ -46,7 +46,7 @@ class MPW
 						data = decrypt(f.read)
 
 					when /^wallet\/keys\/(?<key>.+)\.pub$/
-						@keys[match['key']] = f.read
+						@keys[Regexp.last_match('key')] = f.read
 
 					when /^wallet\/passwords\/(?<id>[a-zA-Z0-9]+)\.gpg$/
 						@passwords[Regexp.last_match('id')] = f.read
@@ -279,11 +279,11 @@ class MPW
 		recipients = []
 		crypto     = GPGME::Crypto.new(armor: true)
 
-#		@config['keys'].each do |key|
-#			recipients.push(key)
-#		end
+		@keys.each_key do |key|
+			recipients.push(key)
+		end
 
-		recipients.push(@key)
+		recipients.push(@key) if not recipients.index(@key).nil?
 
 		return crypto.encrypt(data, recipients: recipients).read
 	rescue Exception => e 
