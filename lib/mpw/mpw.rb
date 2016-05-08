@@ -45,7 +45,13 @@ class MPW
 						data = decrypt(f.read)
 
 					when /^wallet\/keys\/(?<key>.+)\.pub$/
-						@keys[Regexp.last_match('key')] = f.read
+						key = Regexp.last_match('key')
+
+						if GPGME::Key.find(:public, key).length == 0
+							GPGME::Key.import(f.read, armor: true)
+						end
+
+						@keys[key] = f.read
 
 					when /^wallet\/passwords\/(?<id>[a-zA-Z0-9]+)\.gpg$/
 						@passwords[Regexp.last_match('id')] = f.read
@@ -143,7 +149,6 @@ class MPW
 		if not file.nil? and File.exists?(file)
 			data = File.open(file).read
 			GPGME::Key.import(data, armor: true)
-			puts GPGME::Key.find(key)[0].trust
 		else
 			data = GPGME::Key.export(key, armor: true).read
 		end
