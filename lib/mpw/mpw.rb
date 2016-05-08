@@ -13,11 +13,8 @@ require "#{APP_ROOT}/../lib/mpw/item.rb"
 module MPW
 class MPW
 
-	attr_accessor :error_msg
-	
 	# Constructor
 	def initialize(key, wallet_file, gpg_pass=nil)
-		@error_msg   = nil
 		@key         = key
 		@gpg_pass    = gpg_pass
 		@wallet_file = wallet_file
