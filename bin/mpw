@@ -62,11 +62,15 @@ OptionParser.new do |opts|
 		options[:delete] = true
 	end
 
-	opts.on('-e', '--export FILE', I18n.t('option.export')) do |file|
-		options[:export] = file
+	opts.on('-e', '--export', I18n.t('option.export')) do
+		options[:export] = true
 	end
 
-	opts.on('-f', '--force', I18n.t('option.force')) do
+	opts.on('-f', '--file', I18n.t('option.file')) do |file|
+		options[:file] = file
+	end
+
+	opts.on('-F', '--force', I18n.t('option.force')) do
 		options[:force] = true
 	end
 
@@ -88,11 +92,11 @@ OptionParser.new do |opts|
 		options[:id] = id
 	end
 
-	opts.on('-I', '--import FILE', I18n.t('option.import')) do |file|
-		options[:import] = file
+	opts.on('-I', '--import', I18n.t('option.import')) do
+		options[:import] = true
 	end
 
-	opts.on('-k', '--key KEY', I18n.t('option.import')) do |key|
+	opts.on('-k', '--key KEY', I18n.t('option.key')) do |key|
 		options[:key] = key
 	end
 
@@ -166,12 +170,12 @@ elsif not options[:delete].nil? and not options[:key].nil?
 	cli.delete_key(options[:key])
 
 # Export
-elsif not options[:export].nil?
-	cli.export(options[:export])
+elsif not options[:export].nil? and not options[:file].nil?
+	cli.export(options[:file])
 
 # Add a new item
-elsif not options[:import].nil?
-	cli.import(options[:import])
+elsif not options[:import].nil? and not options[:file].nil?
+	cli.import(options[:file])
 
 end
 
