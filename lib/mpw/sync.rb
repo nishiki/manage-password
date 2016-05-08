@@ -30,9 +30,6 @@ module MPW
 		# @rtrn: true if get the date, else false
 		def get_remote
 			case @config.sync_type
-			when 'mpw'
-				require 'mpw/sync/mpw'
-				@sync = SyncMPW.new(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
 			when 'sftp', 'scp', 'ssh'
 				require 'mpw/sync/ssh'
 				@sync = SyncSSH.new(@config.sync_host, @config.sync_user, @config.sync_pwd, @config.sync_path, @config.sync_port)
