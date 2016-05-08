@@ -138,8 +138,15 @@ class MPW
 
 	# Add a public key
 	# args: key ->  new public key
-	def add_key(key)
-		data = GPGME::Key.export(key, armor: true).read
+	#       file -> public gpg file to import
+	def add_key(key, file=nil)
+		if not file.nil? and File.exists?(file)
+			data = File.open(file).read
+			GPGME::Key.import(data, armor: true)
+			puts GPGME::Key.find(key)[0].trust
+		else
+			data = GPGME::Key.export(key, armor: true).read
+		end
 
 		if data.to_s.empty?
 			raise I18n.t('error.export_key')
@@ -298,7 +305,7 @@ class MPW
 	private
 	def encrypt(data)
 		recipients = []
-		crypto     = GPGME::Crypto.new(armor: true)
+		crypto     = GPGME::Crypto.new(armor: true, always_trust: true)
 
 		@keys.each_key do |key|
 			recipients.push(key)

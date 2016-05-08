@@ -66,7 +66,7 @@ OptionParser.new do |opts|
 		options[:export] = true
 	end
 
-	opts.on('-f', '--file', I18n.t('option.file')) do |file|
+	opts.on('-f', '--file FILE', I18n.t('option.file')) do |file|
 		options[:file] = file
 	end
 
@@ -163,7 +163,7 @@ elsif not options[:add].nil? and options[:key].nil?
 
 # Add a new public key in wallet
 elsif not options[:add].nil? and not options[:key].nil?
-	cli.add_key(options[:key])
+	cli.add_key(options[:key], options[:file])
 
 # Delete a public key in wallet
 elsif not options[:delete].nil? and not options[:key].nil?

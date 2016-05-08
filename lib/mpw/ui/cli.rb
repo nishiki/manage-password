@@ -188,8 +188,9 @@ class Cli
 
 	# Add a new public key
 	# args: key -> the key name to add
-	def add_key(key)
-		@mpw.add_key(key)
+	#       file -> gpg public file to import
+	def add_key(key, file=nil)
+		@mpw.add_key(key, file)
 		@mpw.write_data
 
 		puts "#{I18n.t('key.add.valid')}".green
