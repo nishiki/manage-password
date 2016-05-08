@@ -132,13 +132,22 @@ class MPW
 	# Get a password
 	# args: id -> the item id
 	def get_password(id)
-		return decrypt(@passwords[id])
+		password = decrypt(@passwords[id])
+		
+		if /^\$[a-zA-Z0-9]{4,9}::(?<password>.+)$/ =~ password
+			return Regexp.last_match('password')
+		else
+			return password
+		end
 	end
 
 	# Set a password
 	# args: id -> the item id
 	#       password -> the new password
 	def set_password(id, password)
+		salt     = MPW::password(Random.rand(4..9))
+		password = "$#{salt}::#{password}"
+
 		@passwords[id] = encrypt(password)
 	end
 
