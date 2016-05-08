@@ -37,8 +37,8 @@ class MPW
 		Gem::Package::TarReader.new(File.open(@wallet_file)) do |tar|
 			tar.each do |f| 
 				case f.full_name
-					when 'wallet/config.yml'
-						@config = YAML.load(f.read)
+					when 'wallet/config.gpg'
+						@config = YAML.load(decrypt(f.read))
 						check_config
 
 					when 'wallet/meta.gpg'
@@ -107,6 +107,11 @@ class MPW
 			data_encrypt = encrypt(YAML::dump(data))
 			tar.add_file_simple('wallet/meta.gpg', 0400, data_encrypt.length) do |io|
 				io.write(data_encrypt)
+			end
+
+			config = @config.to_yaml
+			tar.add_file_simple('wallet/config.gpg', 0400, config.length) do |io|
+				io.write(config)
 			end
 
 			@passwords.each do |id, password|
