@@ -285,6 +285,13 @@ class MPW
 		raise "#{I18n.t('error.import.read', file: file)}\n#{e}"
 	end
 
+	# Get last sync
+	def get_last_sync
+		return @config['sync']['last_sync'].to_i
+	rescue
+		return 0
+	end
+
 	# Generate a random password
 	# @args: length -> the length password
 	# @rtrn: a random string
