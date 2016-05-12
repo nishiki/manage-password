@@ -298,6 +298,101 @@ class MPW
 		return 0
 	end
 
+	# Sync data with remote file
+	def sync
+		return if @config['sync'].nil?
+		
+		tmp_file  = "#{@wallet_file}.sync"
+		last_sync = @config['last_sync'].to_i
+
+		case @config['sync']['type']
+		when 'sftp', 'scp', 'ssh'
+			require "#{APP_ROOT}/../lib/mpw/sync/ssh.rb"
+			sync = SyncSSH.new(@config['sync'])
+		when 'ftp'
+			require 'mpw/sync/ftp'
+			sync = SyncFTP.new(@config['sync'])
+		else
+			raise I18n.t('error.unknown_type')
+		end
+
+		sync.connect
+		sync.get(tmp_file)
+
+		remote = MPW.new(@key, @wallet_file, @gpg_pass)
+		remote.read_data
+
+		File.unlink(tmp_file) if File.exist?(tmp_file)
+
+		if not remote.to_s.empty?
+			@data.each do |item|
+				update = false
+
+				remote.list.each do |r|
+					next if item.id != r.id
+
+					# Update item
+					if item.last_edit < r.last_edit
+						item.update(name:      r.name,
+						            group:     r.group,
+						            host:      r.host,
+						            protocol:  r.protocol,
+						            user:      r.user,
+						            port:      r.port,
+						            comment:   r.comment
+						           )
+						set_password(item.id, r.get_password(item.id))
+					end
+
+					r.delete
+					update = true
+
+					break
+				end
+
+				# Remove an old item
+				if not update and item.last_sync.to_i < last_sync and item.last_edit < last_sync
+					item.delete
+				end
+			end
+		end
+
+		# Add item
+		remote.list.each do |r|
+			next if r.last_edit <= last_sync
+
+			item = Item.new(id:        r.id,
+			                name:      r.name,
+			                group:     r.group,
+			                host:      r.host,
+			                protocol:  r.protocol,
+			                user:      r.user,
+			                port:      r.port,
+			                comment:   r.comment,
+			                created:   r.created,
+			                last_edit: r.last_edit
+			               )
+
+			set_password(item.id, r.get_password(item.id))
+			add(item)
+		end
+
+		remote = nil
+
+		@data.each do |item|
+			item.set_last_sync
+		end
+
+		@config['sync']['last_sync'] = Time.now.to_i
+
+		write_data
+		sync.update(@wallet_file)
+	rescue Exception => e
+		File.unlink(tmp_file) if File.exist?(tmp_file)
+
+		raise "#{I18n.t('error.sync.unknown')}\n#{e}"
+	end
+
 	# Generate a random password
 	# @args: length -> the length password
 	# @rtrn: a random string

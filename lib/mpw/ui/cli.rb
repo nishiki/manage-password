@@ -113,6 +113,7 @@ class Cli
 		end
 
 		@mpw.read_data
+		@mpw.sync
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #11: #{e}".red
 		exit 2
