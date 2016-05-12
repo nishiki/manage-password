@@ -101,12 +101,12 @@ class MPW
 		end
 
 		Gem::Package::TarWriter.new(File.open(tmp_file, 'w+')) do |tar|
-			data_encrypt = encrypt(YAML::dump(data))
+			data_encrypt = encrypt(data.to_yaml)
 			tar.add_file_simple('wallet/meta.gpg', 0400, data_encrypt.length) do |io|
 				io.write(data_encrypt)
 			end
 
-			config = @config.to_yaml
+			config = encrypt(@config.to_yaml)
 			tar.add_file_simple('wallet/config.gpg', 0400, config.length) do |io|
 				io.write(config)
 			end
