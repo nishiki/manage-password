@@ -184,6 +184,12 @@ class MPW
 		end
 	end
 
+	# Set config
+	# args: config -> a hash with config options
+	def set_config(config)
+		@config = config
+	end
+
 	# Add a new item
 	# @args: item -> Object MPW::Item
 	def add(item)

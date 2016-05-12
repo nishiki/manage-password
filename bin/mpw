@@ -2,7 +2,6 @@
 # author: nishiki
 # mail: nishiki@yaegashi.fr
 
-require 'rubygems'
 require 'optparse'
 require 'pathname'
 require 'locale'
@@ -119,6 +118,10 @@ OptionParser.new do |opts|
 	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
 		options[:wallet] = wallet
 	end
+
+	opts.on('-W', '--setup-wallet', I18n.t('option.setup_wallet')) do
+		options[:setup_wallet] = true
+	end
 end.parse!
 
 # --------------------------------------------------------- #
@@ -176,6 +179,10 @@ elsif not options[:export].nil? and not options[:file].nil?
 # Add a new item
 elsif not options[:import].nil? and not options[:file].nil?
 	cli.import(options[:file])
+
+# Setup wallet config
+elsif not options[:setup_wallet].nil?
+	cli.setup_wallet_config
 
 end
 

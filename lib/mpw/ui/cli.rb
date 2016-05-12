@@ -84,6 +84,26 @@ class Cli
 		end
 	end
 
+	# Setup wallet config for sync
+	def setup_wallet_config
+		config         = {}
+		config['sync'] = {}
+
+		puts I18n.t('form.setup.title')
+		puts '--------------------'
+		config['sync']['type'] = ask(I18n.t('form.setup.sync_type')).to_s
+		config['sync']['host'] = ask(I18n.t('form.setup.sync_host')).to_s
+		config['sync']['port'] = ask(I18n.t('form.setup.sync_port')).to_s
+		config['sync']['user'] = ask(I18n.t('form.setup.sync_user')).to_s
+		config['sync']['pwd']  = ask(I18n.t('form.setup.sync_pwd')).to_s
+		config['sync']['path'] = ask(I18n.t('form.setup.sync_path')).to_s
+
+		@mpw.set_config(config)
+		@mpw.write_data
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #10: #{e}".red
+		exit 2
+	end
 	
 	# Request the GPG password and decrypt the file
 	def decrypt
