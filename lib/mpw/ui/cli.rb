@@ -91,12 +91,12 @@ class Cli
 
 		puts I18n.t('form.setup.title')
 		puts '--------------------'
-		config['sync']['type'] = ask(I18n.t('form.setup.sync_type')).to_s
-		config['sync']['host'] = ask(I18n.t('form.setup.sync_host')).to_s
-		config['sync']['port'] = ask(I18n.t('form.setup.sync_port')).to_s
-		config['sync']['user'] = ask(I18n.t('form.setup.sync_user')).to_s
-		config['sync']['pwd']  = ask(I18n.t('form.setup.sync_pwd')).to_s
-		config['sync']['path'] = ask(I18n.t('form.setup.sync_path')).to_s
+		config['sync']['type']      = ask(I18n.t('form.setup.sync_type')).to_s
+		config['sync']['host']      = ask(I18n.t('form.setup.sync_host')).to_s
+		config['sync']['port']      = ask(I18n.t('form.setup.sync_port')).to_s
+		config['sync']['user']      = ask(I18n.t('form.setup.sync_user')).to_s
+		config['sync']['password']  = ask(I18n.t('form.setup.sync_pwd')).to_s
+		config['sync']['path']      = ask(I18n.t('form.setup.sync_path')).to_s
 
 		@mpw.set_config(config)
 		@mpw.write_data
