@@ -213,6 +213,7 @@ class Cli
 	def add_key(key, file=nil)
 		@mpw.add_key(key, file)
 		@mpw.write_data
+		@mpw.sync
 
 		puts "#{I18n.t('key.add.valid')}".green
 	rescue Exception => e
@@ -224,6 +225,7 @@ class Cli
 	def delete_key(key)
 		@mpw.delete_key(key)
 		@mpw.write_data
+		@mpw.sync
 
 		puts "#{I18n.t('key.delete.valid')}".green
 	rescue Exception => e
@@ -250,6 +252,7 @@ class Cli
 		@mpw.add(item)
 		@mpw.set_password(item.id, password)
 		@mpw.write_data
+		@mpw.sync
 
 		puts "#{I18n.t('form.add.valid')}".green
 	end
@@ -278,6 +281,7 @@ class Cli
 			item.update(options)
 			@mpw.set_password(item.id, password) if not password.empty?
 			@mpw.write_data
+			@mpw.sync
 
 			puts "#{I18n.t('form.update.valid')}".green
 		else
@@ -309,6 +313,7 @@ class Cli
 
 		item.delete
 		@mpw.write_data
+		@mpw.sync
 
 		puts "#{I18n.t('form.delete.valid', id: id)}".green
 	rescue
