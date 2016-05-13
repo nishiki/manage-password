@@ -22,7 +22,7 @@ class MPW
 
 	# Read mpw file
 	def read_data
-		@config    = nil
+		@config    = {}
 		@data      = []
 		@keys      = {}
 		@passwords = {}
@@ -187,7 +187,15 @@ class MPW
 	# Set config
 	# args: config -> a hash with config options
 	def set_config(config)
-		@config = config
+		@config['sync'] = {} if @config['sync'].nil?
+
+		@config['sync']['type']      = config['sync']['type']
+		@config['sync']['host']      = config['sync']['host']
+		@config['sync']['port']      = config['sync']['port']
+		@config['sync']['user']      = config['sync']['user']
+		@config['sync']['password']  = config['sync']['password']
+		@config['sync']['path']      = config['sync']['path']
+		@config['sync']['last_sync'] = @config['sync']['last_sync'].nil? ? 0 : @config['sync']['last_sync']
 	end
 
 	# Add a new item
@@ -300,7 +308,7 @@ class MPW
 
 	# Sync data with remote file
 	def sync
-		return if @config['sync'].nil?
+		return if @config.empty? or @config['sync'].nil?
 		
 		tmp_file  = "#{@wallet_file}.sync"
 		last_sync = @config['last_sync'].to_i
