@@ -327,7 +327,7 @@ class MPW
 		sync.connect
 		sync.get(tmp_file)
 
-		remote = MPW.new(@key, @wallet_file, @gpg_pass)
+		remote = MPW.new(@key, tmp_file, @gpg_pass)
 		remote.read_data
 
 		File.unlink(tmp_file) if File.exist?(tmp_file)
@@ -349,7 +349,7 @@ class MPW
 						            port:      r.port,
 						            comment:   r.comment
 						           )
-						set_password(item.id, r.get_password(item.id))
+						set_password(item.id, remote.get_password(item.id))
 					end
 
 					r.delete
@@ -381,7 +381,7 @@ class MPW
 			                last_edit: r.last_edit
 			               )
 
-			set_password(item.id, r.get_password(item.id))
+			set_password(item.id, remote.get_password(item.id))
 			add(item)
 		end
 
