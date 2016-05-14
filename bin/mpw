@@ -147,7 +147,6 @@ cli.decrypt
 if not options[:show].nil?
 	opts = {search:    options[:show],
 	        group:     options[:group],
-	        protocol:  options[:protocol],
 	       }
 
 	cli.display(opts)
