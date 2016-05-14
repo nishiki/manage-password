@@ -23,11 +23,11 @@ class Cli
 	# Create a new config file
 	# @args: lang -> the software language
 	def setup(lang)
-		puts I18n.t('form.setup.title')
+		puts I18n.t('form.setup_config.title')
 		puts '--------------------'
-		language   = ask(I18n.t('form.setup.lang', lang: lang)).to_s
-		key        = ask(I18n.t('form.setup.gpg_key')).to_s
-		wallet_dir = ask(I18n.t('form.setup.wallet_dir')).to_s
+		language   = ask(I18n.t('form.setup_config.lang', lang: lang)).to_s
+		key        = ask(I18n.t('form.setup_config.gpg_key')).to_s
+		wallet_dir = ask(I18n.t('form.setup_config.wallet_dir', home: "#{@config.config_dir}")).to_s
 
 		if language.nil? or language.empty?
 			language = lang
@@ -35,7 +35,7 @@ class Cli
 		I18n.locale = language.to_sym
 
 		if @config.setup(key, lang, wallet_dir)
-			puts "#{I18n.t('form.setup.valid')}".green
+			puts "#{I18n.t('form.setup_config.valid')}".green
 		else
 			puts "#{I18n.t('display.error')} #8: #{@config.error_msg}".red
 			exit 2
@@ -89,17 +89,19 @@ class Cli
 		config         = {}
 		config['sync'] = {}
 
-		puts I18n.t('form.setup.title')
+		puts I18n.t('form.setup_wallet.title')
 		puts '--------------------'
-		config['sync']['type']      = ask(I18n.t('form.setup.sync_type')).to_s
-		config['sync']['host']      = ask(I18n.t('form.setup.sync_host')).to_s
-		config['sync']['port']      = ask(I18n.t('form.setup.sync_port')).to_s
-		config['sync']['user']      = ask(I18n.t('form.setup.sync_user')).to_s
-		config['sync']['password']  = ask(I18n.t('form.setup.sync_pwd')).to_s
-		config['sync']['path']      = ask(I18n.t('form.setup.sync_path')).to_s
+		config['sync']['type']      = ask(I18n.t('form.setup_wallet.sync_type')).to_s
+		config['sync']['host']      = ask(I18n.t('form.setup_wallet.sync_host')).to_s
+		config['sync']['port']      = ask(I18n.t('form.setup_wallet.sync_port')).to_s
+		config['sync']['user']      = ask(I18n.t('form.setup_wallet.sync_user')).to_s
+		config['sync']['password']  = ask(I18n.t('form.setup_wallet.sync_pwd')).to_s
+		config['sync']['path']      = ask(I18n.t('form.setup_wallet.sync_path')).to_s
 
 		@mpw.set_config(config)
 		@mpw.write_data
+
+		puts "#{I18n.t('form.setup_wallet.valid')}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #10: #{e}".red
 		exit 2
@@ -215,7 +217,7 @@ class Cli
 		@mpw.write_data
 		@mpw.sync
 
-		puts "#{I18n.t('key.add.valid')}".green
+		puts "#{I18n.t('form.add_key.valid')}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #13: #{e}".red
 	end
@@ -227,7 +229,7 @@ class Cli
 		@mpw.write_data
 		@mpw.sync
 
-		puts "#{I18n.t('key.delete.valid')}".green
+		puts "#{I18n.t('form.delete_key.valid')}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #15: #{e}".red
 	end
@@ -236,16 +238,16 @@ class Cli
 	def add
 		options = {}
 
-		puts I18n.t('form.add.title')
+		puts I18n.t('form.add_item.title')
 		puts '--------------------'
-		options[:name]     = ask(I18n.t('form.add.name')).to_s
-		options[:group]    = ask(I18n.t('form.add.group')).to_s
-		options[:host]     = ask(I18n.t('form.add.server')).to_s
-		options[:protocol] = ask(I18n.t('form.add.protocol')).to_s
-		options[:user]     = ask(I18n.t('form.add.login')).to_s
-		password           = ask(I18n.t('form.add.password')).to_s
-		options[:port]     = ask(I18n.t('form.add.port')).to_s
-		options[:comment]  = ask(I18n.t('form.add.comment')).to_s
+		options[:name]     = ask(I18n.t('form.add_item.name')).to_s
+		options[:group]    = ask(I18n.t('form.add_item.group')).to_s
+		options[:host]     = ask(I18n.t('form.add_item.server')).to_s
+		options[:protocol] = ask(I18n.t('form.add_item.protocol')).to_s
+		options[:user]     = ask(I18n.t('form.add_item.login')).to_s
+		password           = ask(I18n.t('form.add_item.password')).to_s
+		options[:port]     = ask(I18n.t('form.add_item.port')).to_s
+		options[:comment]  = ask(I18n.t('form.add_item.comment')).to_s
 
 		item = Item.new(options)
 
@@ -254,7 +256,7 @@ class Cli
 		@mpw.write_data
 		@mpw.sync
 
-		puts "#{I18n.t('form.add.valid')}".green
+		puts "#{I18n.t('form.add_item.valid')}".green
 	end
 
 	# Update an item
@@ -265,16 +267,16 @@ class Cli
 		if not item.nil?
 			options = {}
 
-			puts I18n.t('form.update.title')
+			puts I18n.t('form.update_item.title')
 			puts '--------------------'
-			options[:name]     = ask(I18n.t('form.update.name'    , name:     item.name)).to_s
-			options[:group]    = ask(I18n.t('form.update.group'   , group:    item.group)).to_s
-			options[:host]     = ask(I18n.t('form.update.server'  , server:   item.host)).to_s
-			options[:protocol] = ask(I18n.t('form.update.protocol', protocol: item.protocol)).to_s
-			options[:user]     = ask(I18n.t('form.update.login'   , login:    item.user)).to_s
-			password           = ask(I18n.t('form.update.password')).to_s
-			options[:port]     = ask(I18n.t('form.update.port'    , port:     item.port)).to_s
-			options[:comment]  = ask(I18n.t('form.update.comment' , comment:  item.comment)).to_s
+			options[:name]     = ask(I18n.t('form.update_item.name'    , name:     item.name)).to_s
+			options[:group]    = ask(I18n.t('form.update_item.group'   , group:    item.group)).to_s
+			options[:host]     = ask(I18n.t('form.update_item.server'  , server:   item.host)).to_s
+			options[:protocol] = ask(I18n.t('form.update_item.protocol', protocol: item.protocol)).to_s
+			options[:user]     = ask(I18n.t('form.update_item.login'   , login:    item.user)).to_s
+			password           = ask(I18n.t('form.update_item.password')).to_s
+			options[:port]     = ask(I18n.t('form.update_item.port'    , port:     item.port)).to_s
+			options[:comment]  = ask(I18n.t('form.update_item.comment' , comment:  item.comment)).to_s
 
 			options.delete_if { |k,v| v.empty? }
 				
@@ -283,7 +285,7 @@ class Cli
 			@mpw.write_data
 			@mpw.sync
 
-			puts "#{I18n.t('form.update.valid')}".green
+			puts "#{I18n.t('form.update_item.valid')}".green
 		else
 			puts I18n.t('display.nothing')
 		end
@@ -298,14 +300,14 @@ class Cli
 		item = @mpw.search_by_id(id)
 
 		if item.nil?
-			puts I18n.t('display.nothing')
+			puts I18n.t('form.delete_item.not_valid', id: id)
 			return
 		end
 
 		if not force
 			display_item(item)
 
-			confirm = ask("#{I18n.t('form.delete.ask', id: id)} (y/N) ").to_s
+			confirm = ask("#{I18n.t('form.delete_item.ask', id: id)} (y/N) ").to_s
 			if not confirm =~ /^(y|yes|YES|Yes|Y)$/
 				return
 			end
@@ -315,9 +317,9 @@ class Cli
 		@mpw.write_data
 		@mpw.sync
 
-		puts "#{I18n.t('form.delete.valid', id: id)}".green
-	rescue
-		puts "#{I18n.t('display.error')} #16: #{@mpw.error_msg}".red
+		puts "#{I18n.t('form.delete_item.valid', id: id)}".green
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #16: #{e}".red
 	end
 
 	# Export the items in a CSV file
@@ -327,7 +329,7 @@ class Cli
 
 		puts "#{I18n.t('export.valid', file)}".green
 	rescue Exception => e
-			puts "#{I18n.t('display.error')} #17: #{e}".red
+		puts "#{I18n.t('display.error')} #17: #{e}".red
 	end
 
 	# Import items from a YAML file
