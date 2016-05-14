@@ -61,7 +61,9 @@ fr:
 
   form:
     select: "Sélectionner l'élément: "
-    add:
+    add_key:
+      valid: "La clé a bien été ajoutée!"
+    add_item:
       title: "Ajout d'un nouvel élément"
       name: "Entrez le nom: "
       group: "Entrez le groupe (optionnel): "
@@ -72,7 +74,9 @@ fr:
       port: "Entrez le port de connexion (optionnel): "
       comment: "Entrez un commentaire (optionnel): "
       valid: "L'élément a bien été ajouté!"
-    delete:
+    delete_key:
+      valid: "La clé a bien été supprimée!"
+    delete_item:
       ask: "Êtes vous sûre de vouloir supprimer l'élément %{id} ?"
       valid: "L'élément %{id} a bien été supprimé!"
       not_valid: "L'élément %{id} n'a pu être supprimé, car il n'existe pas!"
@@ -80,22 +84,23 @@ fr:
       ask: "Êtes vous sûre de vouloir importer le fichier %{file} ?"
       valid: "L'import est un succès!"
       not_valid: "Aucune donnée à importer!"
-    setup:
+    setup_config:
       title: "Création d'un nouveau fichier de configuration"
       lang: "Choisissez votre langue (en, fr, ...) [défaut=%{lang}]: "
       gpg_key: "Entrez la clé GPG: " 
-      share_gpg_keys: "Entrez les clés GPG avec qui vous voulez partager les mots de passe: " 
-      gpg_file: "Entrez le chemin du fichier qui sera chiffré [défaut=%{home}/db/default.gpg]: "
-      timeout: "Entrez le temps (en seconde) du mot de passe GPG [défaut=60]: "
-      sync_type: "Type de synchronisation (mpw, ssh, ftp, or nil): "
-      sync_host: "Serveur de synchronisation: "
-      sync_port: "Port du serveur de synchronisation: "
-      sync_user: "Utilisateur pour la synchronisation: "
-      sync_pwd: "Mot de passe pour la synchronisation: "
-      sync_path: "Chemin du fichier pour la synchronisation: "
+      wallet_dir: "Entrez le chemin du répertoire qui contiendra les porte-feuilles de mot de passe [défaut=%{home}/wallets]: "
       valid: "Le fichier de configuration a bien été créé!"
+    setup_wallet:
+      title: "Configuration du porte-feuille"
+      sync_type: "Type de synchronisation (ssh, ftp): "
+      sync_host: "Serveur: "
+      sync_port: "Port: "
+      sync_user: "Utilisateur: "
+      sync_pwd: "Mot de passe: "
+      sync_path: "Chemin du fichier: "
+      valid: "Le fichier de configuration du porte-feuille a bien été créé!"
     setup_gpg_key:
-      title: "Configuration d'une clé GPG"
+      title: "Configuration d'une nouvelle clé GPG"
       ask: "Voulez vous créer votre clé GPG ? (O/n)"
       no_create: "Veuillez créer manuellement votre clé GPG ou relancer le logiciel."
       name: "Votre nom et prénom: "
@@ -106,7 +111,7 @@ fr:
       expire: "Expiration de la clé GPG [défaut=0 (illimité)]: "
       wait: "Veuillez patienter durant la génération de votre clé GPG, ce processus peut prendre quelques minutes."
       valid: "Votre clé GPG a bien été créée ;-)"
-    update:
+    update_item:
       title: "Mis à jour d'un élément"
       name: "Entrez le nom [%{name}]: "
       group: "Entrez le groupe [%{group}]: "
