@@ -45,7 +45,7 @@ en:
     force: "No ask to confirm when you delete an item"
     generate_password: "Generate a random password (default 8 characters)"
     group: "Search the items with specified group"
-    help: "Affiche ce message d'aide"
+    help: "Show this help message"
     id: "Specify an id, to use with the options [--delete | --update]"
     import: "Import item since a yaml file"
     key: "Specify the key name, to use with the options [--add | --delete | --update]"
@@ -59,11 +59,11 @@ en:
     usage: "Usage"
     wallet: "Specify a wallet to use"
 
-   help: "Show this help message"
-
   form:
     select: "Select the item: "
-    add:
+    add_key:
+      valid: "Key has been added!"
+    add_item:
       title: "Add a new item"
       name: "Enter the name: "
       group: "Enter the group (optional): "
@@ -74,7 +74,9 @@ en:
       port: "Enter the connection port (optional): "
       comment: "Enter a comment (optional): "
       valid: "Item has been added!"
-    delete:
+    delete_key:
+      valid: "Key has been deleted!"
+    delete_item:
       ask: "Are you sure you want to remove the item %{id} ?"
       valid: "The item %{id} has been removed!"
       not_valid: "The item %{id} hasn't been removed, because it doesn't exist!"
@@ -82,20 +84,21 @@ en:
       ask: "Are you sure you want to import this file %{file} ?"
       valid: "The import is succesfull!"
       not_valid: "No data to import!"
-    setup:
+    setup_config:
       title: "Setup a new config file"
       lang: "Choose your language (en, fr, ...): "
       gpg_key: "Enter the GPG key: " 
-      share_gpg_keys: "Enter the GPG keys with who you want to share the passwords: " 
-      gpg_file: "Enter the path to encrypt file [default=%{home}/db/default.gpg]: "
-      timeout: "Enter the timeout (in seconde) to GPG password [default=60]: "
+      wallet_dir: "Enter the wallets's folder path [défaut=%{home}/wallets]: "
+      valid: "The config file has been created!"
+    setup_wallet:
+      title: "Wallet setup"
       sync_type: "Synchronization type (mpw, ssh, ftp, or nil): "
       sync_host: "Synchronization server: "
       sync_port: "Port of the synchronization server: "
       sync_user: "Username for the synchronization: "
       sync_pwd: "Password for the synchronization: "
       sync_path: "File path for the synchronization : "
-      valid: "The config file has been created!"
+      valid: "The wallet config file has been created!"
     setup_gpg_key:
       title: "Setup a GPG key"
       ask: "Do you want create your GPG key ? (Y/n)"
@@ -108,7 +111,7 @@ en:
       expire: "Expire time of the GPG key [default=0 (unlimited)]: "
       wait: "Please waiting during the GPG key generate, this process can take few minutes."
       valid: "Your GPG key has been created ;-)"
-    update:
+    updatei_item:
       title: "Update an item"
       name: "Enter the name [%{name}]: "
       group: "Enter the group [%{group}]: "
