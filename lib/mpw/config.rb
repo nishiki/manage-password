@@ -19,7 +19,6 @@ class Config
 	# Constructor
 	# @args: config_file -> the specify config file
 	def initialize(config_file=nil)
-		@error_msg   = nil
 		@config_file = config_file
 
 		if /darwin/ =~ RUBY_PLATFORM
@@ -43,8 +42,7 @@ class Config
 	def setup(key, lang, wallet_dir)
 
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
-			@error_msg = I18n.t('error.config.key_bad_format')
-			return false
+			raise I18n.t('error.config.key_bad_format')
 		end
 
 		if wallet_dir.empty?
@@ -62,10 +60,8 @@ class Config
 			file << config.to_yaml
 		end
 		
-		return true
 	rescue Exception => e 
-		@error_msg = "#{I18n.t('error.config.write')}\n#{e}"
-		return false
+		raise "#{I18n.t('error.config.write')}\n#{e}"
 	end
 
 	# Setup a new gpg key
@@ -76,11 +72,9 @@ class Config
 	# @rtrn: true if the GPG key is create, else false
 	def setup_gpg_key(password, name, length = 4096, expire = 0)
 		if name.nil? or name.empty?
-			@error_msg = "#{I18n.t('error.config.genkey_gpg.name')}"
-			return false
+			raise "#{I18n.t('error.config.genkey_gpg.name')}"
 		elsif password.nil? or password.empty?
-			@error_msg = "#{I18n.t('error.config.genkey_gpg.password')}"
-			return false
+			raise "#{I18n.t('error.config.genkey_gpg.password')}"
 		end
 
 		param = ''
@@ -98,31 +92,24 @@ class Config
 
 		ctx = GPGME::Ctx.new
 		ctx.genkey(param, nil, nil)
-
-		return true
 	rescue Exception => e
-		@error_msg = "#{I18n.t('error.config.genkey_gpg.exception')}\n#{e}"
-		return false
+		raise "#{I18n.t('error.config.genkey_gpg.exception')}\n#{e}"
 	end
 
 	# Check the config file
 	# @rtrn: true if the config file is correct
 	def checkconfig
-		config = YAML::load_file(@config_file)
+		config      = YAML::load_file(@config_file)
 		@key        = config['config']['key']
 		@lang       = config['config']['lang']
 		@wallet_dir = config['config']['wallet_dir']
 
 		if @key.empty? or @wallet_dir.empty? 
-			@error_msg = I18n.t('error.config.check')
-			return false
+			raise I18n.t('error.config.check')
 		end
 		I18n.locale = @lang.to_sym
-
-		return true
 	rescue Exception => e 
-		@error_msg = "#{I18n.t('error.config.check')}\n#{e}"
-		return false
+		raise "#{I18n.t('error.config.check')}\n#{e}"
 	end
 
 	# Check if private key exist
@@ -148,11 +135,8 @@ class Config
 		File.open(@config_file, 'w') do |file|
 			file << config.to_yaml
 		end
-
-		return true
 	rescue Exception => e 
-		@error_msg = "#{I18n.t('error.config.write')}\n#{e}"
-		return false
+		raise "#{I18n.t('error.config.write')}\n#{e}"
 	end
 	
 end

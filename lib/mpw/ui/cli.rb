@@ -34,17 +34,13 @@ class Cli
 		end
 		I18n.locale = language.to_sym
 
-		if @config.setup(key, lang, wallet_dir)
-			puts "#{I18n.t('form.setup_config.valid')}".green
-		else
-			puts "#{I18n.t('display.error')} #8: #{@config.error_msg}".red
-			exit 2
-		end
+		@config.setup(key, lang, wallet_dir)
+		@config.checkconfig
 
-		if not @config.checkconfig
-			puts "#{I18n.t('display.error')} #9: #{@config.error_msg}".red
-			exit 2
-		end
+		puts "#{I18n.t('form.setup_config.valid')}".green
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #8: #{e}".red
+		exit 2
 	end
 	
 	# Setup a new GPG key
@@ -54,8 +50,7 @@ class Cli
 		ask      = ask(I18n.t('form.setup_gpg_key.ask')).to_s
 		
 		if not ['Y', 'y', 'O', 'o'].include?(ask)
-			puts I18n.t('form.setup_gpg_key.no_create')
-			exit 2
+			raise I18n.t('form.setup_gpg_key.no_create')
 		end
 
 		name     = ask(I18n.t('form.setup_gpg_key.name')).to_s
@@ -63,8 +58,7 @@ class Cli
 		confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) {|q| q.echo = false}
 
 		if password != confirm 
-			puts I18n.t('form.setup_gpg_key.error_password')
-			exit 2
+			raise I18n.t('form.setup_gpg_key.error_password')
 		end
 
 		length   = ask(I18n.t('form.setup_gpg_key.length')).to_s
@@ -76,12 +70,12 @@ class Cli
 
 		puts I18n.t('form.setup_gpg_key.wait')
 		
-		if @config.setup_gpg_key(password, name, length, expire)
-			puts "#{I18n.t('form.setup_gpg_key.valid')}".green
-		else
-			puts "#{I18n.t('display.error')} #10: #{@config.error_msg}".red
-			exit 2
-		end
+		@config.setup_gpg_key(password, name, length, expire)
+
+		puts "#{I18n.t('form.setup_gpg_key.valid')}".green
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #8: #{e}".red
+		exit 2
 	end
 
 	# Setup wallet config for sync
