@@ -1,8 +1,6 @@
 ---
 fr:
   error:
-    client:
-      no_authorized: "Vous n'êtes pas autorisé!"
     config:
       write: "Impossible d'écrire le fichier de configuration!"
       check: "Le fichier de configuration est invalide!"
@@ -14,25 +12,25 @@ fr:
         password: "Vous devez définir un mot de passe pour votre clé GPG!"
     delete:
       id_no_exist: "Impossible de supprimer l'élément %{id}, car il n'existe pas!"
-    export:
-      unknown_type: "Le type de donnée %{type} est inconnu!"
-      write: "Impossible d'exporter les données dans le fichier %{file}!"
+    export: "Impossible d'exporter les données dans le fichier %{file}!"
     gpg_file: 
       decrypt: "Impossible de déchiffrer le fichier GPG!"
       encrypt: "Impossible de chiffrer le fichier GPG!"
-    import:
-      bad_format: "Impossible d'importer le fichier car son format est incorrect!"
-      read: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
+    mpw_file: 
+      read_data: "Impossible de lire le fichier MPW!"
+      write_data: "Impossible d'écrire le fichier MPW!"
+    import: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
     update:
       name_empty: "Vous devez définir un nom!"
     sync: 
+      general: "Une erreur est survenue durant la synchronisation"
       connection: "La connexion n'a pu être établie!"
       communication: "Un problème de communication avec le serveur est apparu!"
       download: "Impossible de télécharger le fichier!"
       not_authorized: "Vous n'avez pas les autorisations d'accès au fichier distant!"
       upload: "Impossible d'envoyer le fichier sur le serveur!"
-      unknown: "Une erreur inconnue est survenue!" 
-    unknown_type: "Le type de synchronisation est inconnu" 
+      unknown: "Une erreur inconnue est survenue!"
+      unknown_type: "Le type de synchronisation est inconnu"
 
   warning:
     select: "Votre choix n'est pas un élément valide!"

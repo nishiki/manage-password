@@ -265,7 +265,7 @@ class MPW
 
 		File.open(file, 'w') {|f| f << data.to_yaml}
 	rescue Exception => e 
-		raise "#{I18n.t('error.export.write', file: file)}\n#{e}"
+		raise "#{I18n.t('error.export', file: file)}\n#{e}"
 	end
 
 	# Import to yaml
@@ -287,7 +287,7 @@ class MPW
 			set_password(item.id, row['password'])
 		end
 	rescue Exception => e 
-		raise "#{I18n.t('error.import.read', file: file)}\n#{e}"
+		raise "#{I18n.t('error.import', file: file)}\n#{e}"
 	end
 
 	# Get last sync
@@ -312,7 +312,7 @@ class MPW
 			require 'mpw/sync/ftp'
 			sync = SyncFTP.new(@config['sync'])
 		else
-			raise I18n.t('error.unknown_type')
+			raise I18n.t('error.sync.unknown_type')
 		end
 
 		sync.connect
@@ -389,7 +389,7 @@ class MPW
 	rescue Exception => e
 		File.unlink(tmp_file) if File.exist?(tmp_file)
 
-		raise "#{I18n.t('error.sync.unknown')}\n#{e}"
+		raise "#{I18n.t('error.sync.general')}\n#{e}"
 	end
 
 	# Generate a random password

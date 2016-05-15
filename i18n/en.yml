@@ -1,8 +1,6 @@
 ---
 en:
   error:
-    client:
-      no_authorized: "You aren't authorized."
     config:
       write: "Can't write the config file!"
       check: "Checkconfig failed!"
@@ -14,25 +12,25 @@ en:
         password: "You must define a password for your GPG key!"
     delete:
       id_no_exist: "Can't delete the item %{id}, it doesn't exist!"
-    export:
-      unknown_type: "The data type %{type} is unknown!"
-      write: "Can't export, unable to write in %{file}!"
+    export: "Can't export, unable to write in %{file}!"
     gpg_file: 
       decrypt: "Can't decrypt file!"
       encrypt: "Can't encrypt the GPG file!"
-    import:
-      bad_format: "Can't import, the file is badly formated!"
-      read: "Can't import, unable to read %{file}!"
+    mpw_file: 
+      read_data: "Can't to read the MPW file!"
+      write_data: "Can't to write the MPW file!"
+    import: "Can't import, unable to read %{file}!"
     update:
       name_empty: "You must define a name!"
     sync: 
+      general: "An error is appeared durint the sync"
       connection: "Connection fail!"
       communication: "A communication problem with the server is appeared!"
       download: "Can't download the file!"
       not_authorized: "You haven't the access to remote file!"
       upload: "Can't upload the file on the server!"
-      unknown: "An unknown error is occured!" 
-    unknown_type: "The sync type is unknown" 
+      unknown: "An unknown error is occured!"
+      unknown_type: "The sync type is unknown"
 
   warning:
     select: 'Your choice is not a valid element!'
@@ -111,7 +109,7 @@ en:
       expire: "Expire time of the GPG key [default=0 (unlimited)]: "
       wait: "Please waiting during the GPG key generate, this process can take few minutes."
       valid: "Your GPG key has been created ;-)"
-    updatei_item:
+    update_item:
       title: "Update an item"
       name: "Enter the name [%{name}]: "
       group: "Enter the group [%{group}]: "
