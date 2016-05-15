@@ -122,22 +122,5 @@ class Config
 
 		return false
 	end
-
-	# Set the last update when there is a sync
-	# @rtrn: true is the file has been updated
-	def set_last_sync
-		config = {'config' => {'key'        => @key,
-		                       'lang'       => @lang,
-		                       'wallet_dir' => @wallet_dir,
-		                      }
-	           }
-
-		File.open(@config_file, 'w') do |file|
-			file << config.to_yaml
-		end
-	rescue Exception => e 
-		raise "#{I18n.t('error.config.write')}\n#{e}"
-	end
-	
 end
 end
