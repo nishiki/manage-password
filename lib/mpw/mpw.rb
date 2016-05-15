@@ -179,13 +179,6 @@ class MPW
 		@keys.delete(key)
 	end
 
-	# TODO
-	def check_config
-		if false
-			raise 'ERROR'
-		end
-	end
-
 	# Set config
 	# args: config -> a hash with config options
 	def set_config(config)
@@ -277,7 +270,6 @@ class MPW
 
 	# Import to yaml
 	# @args: file -> path to file import
-	# TODO raise
 	def import(file)
 		YAML::load_file(file).each_value do |row| 
 			item = Item.new(name:     row['name'], 
