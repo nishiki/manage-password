@@ -139,17 +139,6 @@ en:
     server: "Server"
     warning: "Warning"
 
-  ssh:
-    option:
-      usage: "Usage"
-      login: "Change the login"
-      server: "Change the host or the ip"
-      port: "Change the port"
-      help: "Show this help message"
-    display:
-      connect: "Connection to:"
-      nothing: "Nothing result!"
-
   formats:
     default: ! '%Y-%m-%d'
     long: ! '%B %d, %Y'
