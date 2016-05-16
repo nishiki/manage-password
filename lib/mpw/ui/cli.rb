@@ -35,7 +35,8 @@ class Cli
 		I18n.locale = language.to_sym
 
 		@config.setup(key, lang, wallet_dir)
-		@config.checkconfig
+
+		raise I18n.t('error.config.check') if not @config.is_valid?
 
 		puts "#{I18n.t('form.setup_config.valid')}".green
 	rescue Exception => e

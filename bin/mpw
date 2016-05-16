@@ -128,13 +128,11 @@ end.parse!
 # Main
 # --------------------------------------------------------- #
 
-config      = MPW::Config.new(options[:config])
-check_error = config.checkconfig
-
-cli = MPW::Cli.new(config)
+config = MPW::Config.new(options[:config])
+cli    = MPW::Cli.new(config)
 	
 # Setup a new config 
-if not check_error or not options[:setup].nil?
+if not config.is_valid? or not options[:setup].nil?
 	cli.setup(lang)
 elsif not config.check_gpg_key?
 	cli.setup_gpg_key

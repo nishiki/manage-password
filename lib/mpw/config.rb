@@ -98,18 +98,19 @@ class Config
 
 	# Check the config file
 	# @rtrn: true if the config file is correct
-	def checkconfig
+	def is_valid?
 		config      = YAML::load_file(@config_file)
 		@key        = config['config']['key']
 		@lang       = config['config']['lang']
 		@wallet_dir = config['config']['wallet_dir']
 
-		if @key.empty? or @wallet_dir.empty? 
-			raise I18n.t('error.config.check')
-		end
+		raise if @key.empty? or @wallet_dir.empty?
+			
 		I18n.locale = @lang.to_sym
-	rescue Exception => e 
-		raise "#{I18n.t('error.config.check')}\n#{e}"
+
+		return true
+	rescue
+		return false
 	end
 
 	# Check if private key exist
