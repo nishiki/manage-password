@@ -40,7 +40,7 @@ fr:
     config: "Spécifie le fichier de configuration à utiliser"
     export: "Exporte un portefeuille dans un fichier yaml"
     file: "Spécifie un fichier, à utiliser avec les options [--import | --export | --add]"
-    force: "Ne demande pas de confirmation pour la supprésion d'un élément"
+    force: "Ne demande pas de confirmation pour la suppression d'un élément"
     generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères)"
     group: "Recherche les éléments appartenant au groupe spécifié"
     help: "Affiche ce message d'aide"
