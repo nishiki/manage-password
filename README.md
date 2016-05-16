@@ -13,17 +13,44 @@ This program work with ruby >= 2.0
 # How to use
 
 * Show help
+```
 mpw --help
+```
 
 * Setup a new config file
-
+```
 mpw --setup
 mpw --setup --config /path/conf/file.cfg
+```
 
 * Create and setup a new wallet
-
+```
 mpw --setup-wallet --wallet new_wallet_name
 mpw --setup-wallet --wallet new_wallet_name --config /path/conf/file.cfg 
+```
+
+* Add a GPG key in wallet
+```
+mpw --add --key root@localhost.local
+mpw --add --key root@localhost.local --config /path/conf/file.cfg 
+mpw --add --key root@localhost.local --wallet wallet_name
+mpw --add --key root@localhost.local --config /path/conf/file.cfg --wallet wallet_name
+```
+
+* Add a new  GPG key in wallet
+```
+mpw --add --key root@localhost.local --file /path/gpg/file.pub
+mpw --add --key root@localhost.local --file /path/gpg/file.pub --config /path/conf/file.cfg 
+mpw --add --key root@localhost.local --file /path/gpg/file.pub --wallet wallet_name
+mpw --add --key root@localhost.local --file /path/gpg/file.pub --config /path/conf/file.cfg --wallet wallet_name
+```
+
+* Delete a GPG key in wallet
+```
+mpw --delete --key root@localhost.local
+mpw --delete --key root@localhost.local --wallet wallet_name
+mpw --delete --key root@localhost.local --wallet wallet_name --config /path/conf/file.cfg 
+```
 
 * Add a new item in wallet
 ```
