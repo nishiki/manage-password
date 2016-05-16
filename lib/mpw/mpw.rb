@@ -36,7 +36,6 @@ class MPW
 				case f.full_name
 					when 'wallet/config.gpg'
 						@config = YAML.load(decrypt(f.read))
-						check_config
 
 					when 'wallet/meta.gpg'
 						data = decrypt(f.read)
