@@ -5,6 +5,7 @@
 require 'gpgme'
 require 'yaml'
 require 'i18n'
+require 'fileutils'
 	
 module MPW
 class Config
@@ -55,7 +56,7 @@ class Config
 		                      }
 		         }
 
-		Dir.mkdir(wallet_dir, 0700)
+		FileUtils.mkdir_p(wallet_dir, mode: 0700)
 		File.open(@config_file, 'w') do |file|
 			file << config.to_yaml
 		end
