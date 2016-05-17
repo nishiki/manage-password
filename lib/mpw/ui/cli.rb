@@ -322,7 +322,7 @@ class Cli
 	def export(file)
 		@mpw.export(file)
 
-		puts "#{I18n.t('export.valid', file)}".green
+		puts "#{I18n.t('export.export.valid', file)}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #17: #{e}".red
 	end

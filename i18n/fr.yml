@@ -85,7 +85,7 @@ fr:
     setup_config:
       title: "Création d'un nouveau fichier de configuration"
       lang: "Choisissez votre langue (en, fr, ...) [défaut=%{lang}]: "
-      gpg_key: "Entrez la clé GPG: " 
+      gpg_key: "Entrez la clé GPG [ex: test@host.local]: " 
       wallet_dir: "Entrez le chemin du répertoire qui contiendra les porte-feuilles de mot de passe [défaut=%{home}/wallets]: "
       valid: "Le fichier de configuration a bien été créé!"
     setup_wallet:
