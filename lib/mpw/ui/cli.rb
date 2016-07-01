@@ -29,9 +29,11 @@ module MPW
 class Cli
 
 	# Constructor
-	# @args: config_file -> a specify config file
-	def initialize(config)
+	# @args: config -> the config
+	#        sync -> boolean for sync or not
+	def initialize(config, sync=true)
 		@config = config
+		@sync   = sync
 	end
 
 	# Create a new config file
@@ -124,7 +126,7 @@ class Cli
 		end
 
 		@mpw.read_data
-		@mpw.sync
+		@mpw.sync if @sync
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #11: #{e}".red
 		exit 2
@@ -224,7 +226,7 @@ class Cli
 	def add_key(key, file=nil)
 		@mpw.add_key(key, file)
 		@mpw.write_data
-		@mpw.sync
+		@mpw.sync if @sync
 
 		puts "#{I18n.t('form.add_key.valid')}".green
 	rescue Exception => e
@@ -236,7 +238,7 @@ class Cli
 	def delete_key(key)
 		@mpw.delete_key(key)
 		@mpw.write_data
-		@mpw.sync
+		@mpw.sync if @sync
 
 		puts "#{I18n.t('form.delete_key.valid')}".green
 	rescue Exception => e
@@ -263,7 +265,7 @@ class Cli
 		@mpw.add(item)
 		@mpw.set_password(item.id, password)
 		@mpw.write_data
-		@mpw.sync
+		@mpw.sync if @sync
 
 		puts "#{I18n.t('form.add_item.valid')}".green
 	end
@@ -292,7 +294,7 @@ class Cli
 			item.update(options)
 			@mpw.set_password(item.id, password) if not password.empty?
 			@mpw.write_data
-			@mpw.sync
+			@mpw.sync if @sync
 
 			puts "#{I18n.t('form.update_item.valid')}".green
 		else
@@ -324,7 +326,7 @@ class Cli
 
 		item.delete
 		@mpw.write_data
-		@mpw.sync
+		@mpw.sync if @sync
 
 		puts "#{I18n.t('form.delete_item.valid', id: id)}".green
 	rescue Exception => e
