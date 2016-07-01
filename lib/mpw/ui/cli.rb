@@ -102,12 +102,12 @@ class Cli
 
 		puts I18n.t('form.setup_wallet.title')
 		puts '--------------------'
-		config['sync']['type']      = ask(I18n.t('form.setup_wallet.sync_type')).to_s
-		config['sync']['host']      = ask(I18n.t('form.setup_wallet.sync_host')).to_s
-		config['sync']['port']      = ask(I18n.t('form.setup_wallet.sync_port')).to_s
-		config['sync']['user']      = ask(I18n.t('form.setup_wallet.sync_user')).to_s
-		config['sync']['password']  = ask(I18n.t('form.setup_wallet.sync_pwd')).to_s
-		config['sync']['path']      = ask(I18n.t('form.setup_wallet.sync_path')).to_s
+		config['sync']['type']     = ask(I18n.t('form.setup_wallet.sync_type')).to_s
+		config['sync']['host']     = ask(I18n.t('form.setup_wallet.sync_host')).to_s
+		config['sync']['port']     = ask(I18n.t('form.setup_wallet.sync_port')).to_s
+		config['sync']['user']     = ask(I18n.t('form.setup_wallet.sync_user')).to_s
+		config['sync']['password'] = ask(I18n.t('form.setup_wallet.sync_pwd')).to_s
+		config['sync']['path']     = ask(I18n.t('form.setup_wallet.sync_path')).to_s
 
 		@mpw.set_config(config)
 		@mpw.write_data
