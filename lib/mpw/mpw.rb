@@ -336,6 +336,8 @@ class MPW
 
 		File.unlink(tmp_file) if File.exist?(tmp_file)
 
+		return if remote.get_last_sync == get_last_sync
+
 		if not remote.to_s.empty?
 			@data.each do |item|
 				update = false
