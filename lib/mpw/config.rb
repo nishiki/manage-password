@@ -30,6 +30,7 @@ class Config
 	attr_accessor :lang
 	attr_accessor :config_dir
 	attr_accessor :wallet_dir
+	attr_accessor :gpg_exe
 
 	# Constructor
 	# @args: config_file -> the specify config file
@@ -53,8 +54,9 @@ class Config
 	# @args: key -> the gpg key to encrypt
 	#        lang -> the software language
 	#        wallet_dir -> the  directory where are the wallets password
+	#        gpg_exe -> the  path of gpg executable
 	# @rtrn: true if le config file is create
-	def setup(key, lang, wallet_dir)
+	def setup(key, lang, wallet_dir, gpg_exe)
 
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 			raise I18n.t('error.config.key_bad_format')
@@ -67,6 +69,7 @@ class Config
 		config = {'config' => {'key'        => key,
 		                       'lang'       => lang,
 		                       'wallet_dir' => wallet_dir,
+		                       'gpg_exe'    => gpg_exe,
 		                      }
 		         }
 
@@ -118,6 +121,7 @@ class Config
 		@key        = config['config']['key']
 		@lang       = config['config']['lang']
 		@wallet_dir = config['config']['wallet_dir']
+		@gpg_exe    = config['config']['gpg_exe']
 
 		raise if @key.empty? or @wallet_dir.empty?
 			

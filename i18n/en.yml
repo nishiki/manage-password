@@ -86,6 +86,7 @@ en:
       title: "Setup a new config file"
       lang: "Choose your language (en, fr, ...) [default=%{lang}]: "
       gpg_key: "Enter the GPG key [ex: test@host.local]: " 
+      gpg_exe: "Enter the executable GPG path (optional): "
       wallet_dir: "Enter the wallets's folder path [default=%{home}/wallets]: "
       valid: "The config file has been created!"
     setup_wallet:

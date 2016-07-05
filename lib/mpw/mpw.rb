@@ -28,10 +28,15 @@ module MPW
 class MPW
 
 	# Constructor
-	def initialize(key, wallet_file, gpg_pass=nil)
+	def initialize(key, wallet_file, gpg_pass=nil, gpg_exe=nil)
 		@key         = key
 		@gpg_pass    = gpg_pass
+		@gpg_exe     = gpg_exe
 		@wallet_file = wallet_file
+
+		if @gpg_exe
+			GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg")
+		end
 	end
 
 	# Read mpw file
@@ -331,7 +336,7 @@ class MPW
 		sync.connect
 		sync.get(tmp_file)
 
-		remote = MPW.new(@key, tmp_file, @gpg_pass)
+		remote = MPW.new(@key, tmp_file, @gpg_pass, @gpg_exe)
 		remote.read_data
 
 		File.unlink(tmp_file) if File.exist?(tmp_file)

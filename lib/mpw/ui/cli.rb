@@ -44,13 +44,14 @@ class Cli
 		language   = ask(I18n.t('form.setup_config.lang', lang: lang)).to_s
 		key        = ask(I18n.t('form.setup_config.gpg_key')).to_s
 		wallet_dir = ask(I18n.t('form.setup_config.wallet_dir', home: "#{@config.config_dir}")).to_s
+		gpg_exe    = ask(I18n.t('form.setup_config.gpg_exe')).to_s
 
 		if language.nil? or language.empty?
 			language = lang
 		end
 		I18n.locale = language.to_sym
 
-		@config.setup(key, lang, wallet_dir)
+		@config.setup(key, lang, wallet_dir, gpg_exe)
 
 		raise I18n.t('error.config.check') if not @config.is_valid?
 
@@ -122,7 +123,7 @@ class Cli
 	def decrypt
 		if not defined?(@mpw)
 			@password = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
-			@mpw = MPW.new(@config.key, @wallet_file, @password)
+			@mpw      = MPW.new(@config.key, @wallet_file, @password, @config.gpg_exe)
 		end
 
 		@mpw.read_data
