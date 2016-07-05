@@ -142,61 +142,66 @@ end.parse!
 # Main
 # --------------------------------------------------------- #
 
-config = MPW::Config.new(options[:config])
-cli    = MPW::Cli.new(config, options[:sync])
+begin
+	config = MPW::Config.new(options[:config])
+	cli    = MPW::Cli.new(config, options[:sync])
+		
+	# Setup a new config 
+	if not config.is_valid? or not options[:setup].nil?
+		cli.setup(lang)
+	elsif not config.check_gpg_key?
+		cli.setup_gpg_key
+	end
 	
-# Setup a new config 
-if not config.is_valid? or not options[:setup].nil?
-	cli.setup(lang)
-elsif not config.check_gpg_key?
-	cli.setup_gpg_key
+	cli.get_wallet(options[:wallet])
+	cli.decrypt
+	
+	# Display the item's informations
+	if not options[:show].nil?
+		opts = {search:    options[:show],
+		        group:     options[:group],
+		       }
+	
+		cli.display(opts)
+	
+	# Remove an item
+	elsif not options[:delete].nil? and not options[:id].nil?
+		cli.delete(options[:id], options[:force])
+	
+	# Update an item
+	elsif not options[:update].nil? and not options[:id].nil?
+		cli.update(options[:id])
+	
+	# Add a new item
+	elsif not options[:add].nil? and options[:key].nil?
+		cli.add
+	
+	# Add a new public key in wallet
+	elsif not options[:add].nil? and not options[:key].nil?
+		cli.add_key(options[:key], options[:file])
+	
+	# Delete a public key in wallet
+	elsif not options[:delete].nil? and not options[:key].nil?
+		cli.delete_key(options[:key])
+	
+	# Export
+	elsif not options[:export].nil? and not options[:file].nil?
+		cli.export(options[:file])
+	
+	# Add a new item
+	elsif not options[:import].nil? and not options[:file].nil?
+		cli.import(options[:file])
+	
+	# Setup wallet config
+	elsif not options[:setup_wallet].nil?
+		cli.setup_wallet_config
+	
+	end
+	
+	cli = nil
+	
+	exit 0
+
+rescue SystemExit, Interrupt
+	exit 3
 end
-
-cli.get_wallet(options[:wallet])
-cli.decrypt
-
-# Display the item's informations
-if not options[:show].nil?
-	opts = {search:    options[:show],
-	        group:     options[:group],
-	       }
-
-	cli.display(opts)
-
-# Remove an item
-elsif not options[:delete].nil? and not options[:id].nil?
-	cli.delete(options[:id], options[:force])
-
-# Update an item
-elsif not options[:update].nil? and not options[:id].nil?
-	cli.update(options[:id])
-
-# Add a new item
-elsif not options[:add].nil? and options[:key].nil?
-	cli.add
-
-# Add a new public key in wallet
-elsif not options[:add].nil? and not options[:key].nil?
-	cli.add_key(options[:key], options[:file])
-
-# Delete a public key in wallet
-elsif not options[:delete].nil? and not options[:key].nil?
-	cli.delete_key(options[:key])
-
-# Export
-elsif not options[:export].nil? and not options[:file].nil?
-	cli.export(options[:file])
-
-# Add a new item
-elsif not options[:import].nil? and not options[:file].nil?
-	cli.import(options[:file])
-
-# Setup wallet config
-elsif not options[:setup_wallet].nil?
-	cli.setup_wallet_config
-
-end
-
-cli = nil
-
-exit 0
