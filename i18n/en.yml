@@ -91,7 +91,7 @@ en:
       valid: "The config file has been created!"
     setup_wallet:
       title: "Wallet setup"
-      sync_type: "Synchronization type (ssh, ftp, or nil): "
+      sync_type: "Synchronization type (ssh, ftp): "
       sync_host: "Synchronization server: "
       sync_port: "Port of the synchronization server: "
       sync_user: "Username for the synchronization: "
