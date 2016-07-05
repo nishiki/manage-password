@@ -317,7 +317,7 @@ class MPW
 
 	# Sync data with remote file
 	def sync
-		return if @config.empty? or @config['sync'].nil?
+		return if @config.empty? or @config['sync']['type'].to_s.empty?
 		
 		tmp_file  = "#{@wallet_file}.sync"
 		last_sync = @config['last_sync'].to_i
