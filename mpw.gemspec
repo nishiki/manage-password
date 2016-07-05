@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Adrien Waksberg']
   spec.email         = ['mpw@yae.im']
   spec.summary       = 'MPW is a software to crypt and manage your passwords'
-  spec.description   = 'Manage your passwords in all security with MPW, we use GPG to crypt your passwords'
+  spec.description   = 'Manage your passwords in all security with MPW, we use GPG to encrypt your passwords'
   spec.homepage      = 'https://github.com/nishiki/manage-password'
   spec.license       = 'GPL-2.0'
 
