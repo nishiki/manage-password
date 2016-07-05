@@ -23,7 +23,7 @@ en:
     update:
       name_empty: "You must define a name!"
     sync: 
-      general: "An error is appeared during the sync"
+      general: "An error has appeared during the sync"
       connection: "Connection fail!"
       communication: "A communication problem with the server is appeared!"
       download: "Can't download the file!"
