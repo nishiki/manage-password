@@ -147,11 +147,13 @@ begin
 	cli    = MPW::Cli.new(config, options[:sync])
 		
 	# Setup a new config 
-	if not config.is_valid? or not options[:setup].nil?
+	if not options[:setup].nil?
 		cli.setup(lang)
-	elsif not config.check_gpg_key?
-		cli.setup_gpg_key
+		exit 0
 	end
+
+	cli.setup(lang)   if not config.is_valid?
+	cli.setup_gpg_key if not config.check_gpg_key?
 	
 	cli.get_wallet(options[:wallet])
 	cli.decrypt
