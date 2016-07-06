@@ -316,12 +316,13 @@ class MPW
 	end
 
 	# Sync data with remote file
-	def sync
+	# @args: force -> force the sync
+	def sync(force=false)
 		return if @config.empty? or @config['sync']['type'].to_s.empty?
+		return if get_last_sync < Time.now.to_i + 300 and not force
 		
 		tmp_file  = "#{@wallet_file}.sync"
-		last_sync = @config['last_sync'].to_i
-
+		
 		case @config['sync']['type']
 		when 'sftp', 'scp', 'ssh'
 			require "#{APP_ROOT}/../lib/mpw/sync/ssh.rb"
@@ -370,7 +371,7 @@ class MPW
 				end
 
 				# Remove an old item
-				if not update and item.last_sync.to_i < last_sync and item.last_edit < last_sync
+				if not update and item.last_sync.to_i < get_last_sync and item.last_edit < get_last_sync
 					item.delete
 				end
 			end
