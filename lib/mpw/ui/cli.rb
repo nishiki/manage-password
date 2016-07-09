@@ -147,11 +147,23 @@ class Cli
 		case result.length
 		when 0
 			puts I18n.t('display.nothing')
+
 		when 1
 			display_item(result.first)
+
 		else
-			i = 1
+			group = nil
+			i     = 1
+
+			result.sort! { |a,b| a.group.downcase <=> b.group.downcase }
+
 			result.each do |item|
+				if group != item.group
+					group = item.group
+					puts "#{I18n.t('display.group')}: #{group}".yellow
+				end
+
+				print " |_ ".yellow
 				print "#{i}: ".cyan
 				print item.name
 				print " -> #{item.comment}".magenta if not item.comment.to_s.empty?
