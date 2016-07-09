@@ -48,12 +48,13 @@ I18n.locale         = lang.to_sym
 # Options
 # --------------------------------------------------------- #
 
-options = {}
-options[:force]  = false
-options[:sync]   = true
-options[:group]  = nil
-options[:config] = nil
-options[:wallet] = nil
+options             = {}
+options[:force]     = false
+options[:sync]      = true
+options[:clipboard] = true
+options[:group]     = nil
+options[:config]    = nil
+options[:wallet]    = nil
 
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw [options]"
@@ -69,6 +70,10 @@ OptionParser.new do |opts|
 
 	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
 		options[:config] = config
+	end
+
+	opts.on('-C', '--no-clipboard', I18n.t('option.clipboard')) do
+		options[:clipboard] = false
 	end
 
 	opts.on('-d', '--delete', I18n.t('option.remove')) do
@@ -144,7 +149,7 @@ end.parse!
 
 begin
 	config = MPW::Config.new(options[:config])
-	cli    = MPW::Cli.new(config, options[:sync])
+	cli    = MPW::Cli.new(config, options[:clipboard], options[:sync])
 		
 	# Setup a new config 
 	if not options[:setup].nil?

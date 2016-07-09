@@ -38,6 +38,7 @@ fr:
   option:
     add: "Ajoute un élément ou une clé"
     config: "Spécifie le fichier de configuration à utiliser"
+    clipboard: "Désactive la fonction presse papier"
     export: "Exporte un portefeuille dans un fichier yaml"
     file: "Spécifie un fichier, à utiliser avec les options [--import | --export | --add]"
     force: "Ne demande pas de confirmation pour la suppression d'un élément"
@@ -72,6 +73,10 @@ fr:
       port: "Entrez le port de connexion (optionnel): "
       comment: "Entrez un commentaire (optionnel): "
       valid: "L'élément a bien été ajouté!"
+    clipboard:
+      clean: "Le presse papier a été nettoyé."
+      login: "L'identifiant a été copié dans le presse papier, pressez n'importe quelle touche pour continuer."
+      password: "Le mot de passe a été copié dans le presse papier pour 30s!"
     delete_key:
       valid: "La clé a bien été supprimée!"
     delete_item:

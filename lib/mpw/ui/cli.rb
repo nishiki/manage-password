@@ -20,6 +20,7 @@ require 'readline'
 require 'i18n'
 require 'colorize'
 require 'highline/import'
+require 'clipboard'
 
 #TODO
 require "#{APP_ROOT}/../lib/mpw/item.rb"
@@ -31,9 +32,10 @@ class Cli
 	# Constructor
 	# @args: config -> the config
 	#        sync -> boolean for sync or not
-	def initialize(config, sync=true)
-		@config = config
-		@sync   = sync
+	def initialize(config, clipboard=true, sync=true)
+		@config    = config
+		@clipboard = clipboard
+		@sync      = sync
 	end
 
 	# Create a new config file
@@ -184,11 +186,34 @@ class Cli
 		print "#{I18n.t('display.login')}: ".cyan
 		puts  item.user
 		print "#{I18n.t('display.password')}: ".cyan
-		puts  @mpw.get_password(item.id)
+		if @clipboard
+			puts '***********'
+		else
+			puts  @mpw.get_password(item.id)
+		end
 		print "#{I18n.t('display.port')}: ".cyan
 		puts  item.port
 		print "#{I18n.t('display.comment')}: ".cyan
 		puts  item.comment
+
+		clipboard(item) if @clipboard
+	end
+
+	# Copy in clipboard the login and password
+	def clipboard(item)
+		Clipboard.copy(item.user)
+		print "\n#{I18n.t('form.clipboard.login')}".green
+		gets
+
+		Clipboard.copy(@mpw.get_password(item.id))
+		puts I18n.t('form.clipboard.password').yellow
+
+		sleep(30)
+
+		Clipboard.clear
+		puts I18n.t('form.clipboard.clean').green
+	rescue SystemExit, Interrupt
+		Clipboard.clear
 	end
 
 	# Display the wallet

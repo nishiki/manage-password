@@ -38,6 +38,7 @@ en:
   option:
     add: "Add an item or key"
     config: "Specify the configuration file to use"
+    clipboard: "Disable the clipboard feature"
     export: "Export a wallet in an yaml file"
     file: "Specify a file, to use with the options [--import | --export | --add]"
     force: "No ask to confirm when you delete an item"
@@ -72,6 +73,10 @@ en:
       port: "Enter the connection port (optional): "
       comment: "Enter a comment (optional): "
       valid: "Item has been added!"
+    clipboard:
+      clean: "The clipboard has been cleaned."
+      login: "The login has been copied in clipboard, press any key to continue."
+      password: "The password has been copied in clipboard for 30s!"
     delete_key:
       valid: "Key has been deleted!"
     delete_item:

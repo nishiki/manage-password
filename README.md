@@ -8,6 +8,7 @@ MPW can synchronize your password with SSH or FTP.
 This program work with ruby >= 2.0
 
 * install ruby and rubygems on your computer
+* install xclip
 * gem install mpw
 
 # How to use
