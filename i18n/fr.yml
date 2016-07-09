@@ -52,7 +52,7 @@ fr:
     setup: "Création d'un nouveau fichier de configuration"
     setup_wallet: "Création d'un nouveau fichier de configuration pour un portefeuille"
     show: "Recherche et affiche les éléments"
-    show_all: "Affiche tous les éléments"
+    show_all: "Liste tous les éléments"
     remove: "Supprime un élément"
     update: "Met à jour un élément"
     usage: "Utilisation"

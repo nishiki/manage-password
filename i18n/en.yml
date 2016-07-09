@@ -52,7 +52,7 @@ en:
     setup: "Create a new configuration file" 
     setup_wallet: "Create a new configuration file for a wallet"
     show: "Search and show the items"
-    show_all: "Show all items"
+    show_all: "List all items"
     remove: "Delete an item"
     update: "Update an item"
     usage: "Usage"
