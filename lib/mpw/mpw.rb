@@ -417,6 +417,8 @@ class MPW
 	def self.password(options={})
 		if not options.include?(:length) or options[:length].to_i <= 0
 			length = 8
+		elsif options[:length].to_i >= 32768
+			length = 32768
 		else
 			length = options[:length].to_i
 		end
