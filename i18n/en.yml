@@ -37,6 +37,7 @@ en:
 
   option:
     add: "Add an item or key"
+    alpha: "Use letter to generate a password"
     config: "Specify the configuration file to use"
     clipboard: "Disable the clipboard feature"
     export: "Export a wallet in an yaml file"
@@ -49,8 +50,10 @@ en:
     import: "Import item since a yaml file"
     key: "Specify the key name, to use with the options [--add | --delete | --update]"
     no_sync: "Disable synchronization with the server"
+    numeric: "Use number to generate a password"
     setup: "Create a new configuration file" 
     setup_wallet: "Create a new configuration file for a wallet"
+    special_chars: "Use special char to generate a password"
     show: "Search and show the items"
     show_all: "List all items"
     remove: "Delete an item"
@@ -136,6 +139,7 @@ en:
     group: "Group"
     login: "Login"
     name: "Name"
+    no_group: "Without group"
     nothing: "No matches!"
     password: "Password"
     port: "Port"

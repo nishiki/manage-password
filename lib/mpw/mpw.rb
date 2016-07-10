@@ -414,21 +414,27 @@ class MPW
 	end
 
 	# Generate a random password
-	# @args: length -> the length password
+	# @args: options -> :length, :special, :alpha, :numeric
 	# @rtrn: a random string
-	def self.password(length=8)
-		if length.to_i <= 0
+	def self.password(options={})
+		if not options.include?(:length) or options[:length].to_i <= 0
 			length = 8
 		else
-			length = length.to_i
+			length = options[:length].to_i
 		end
+
+		chars = []
+		chars += [*('!'..'?')] - [*('0'..'9')]        if options.include?(:special)
+		chars += [*('A'..'Z'),*('a'..'z')]            if options.include?(:alpha)
+		chars += [*('0'..'9')]                        if options.include?(:numeric)
+		chars = [*('A'..'Z'),*('a'..'z'),*('0'..'9')] if chars.empty?
 
 		result = ''
 		while length > 62 do
-			result << ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(62).join
+			result << chars.sample(62).join
 			length -= 62
 		end
-		result << ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(length).join
+		result << chars.sample(length).join
 
 		return result
 	end

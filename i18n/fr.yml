@@ -37,6 +37,7 @@ fr:
 
   option:
     add: "Ajoute un élément ou une clé"
+    alpha: "Utilise des lettres dans la génération d'un mot de passe"
     config: "Spécifie le fichier de configuration à utiliser"
     clipboard: "Désactive la fonction presse papier"
     export: "Exporte un portefeuille dans un fichier yaml"
@@ -49,8 +50,10 @@ fr:
     import: "Importe des éléments depuis un fichier yaml"
     key: "Spécifie le nom d'une clé, à utiliser avec les options [--add | --delete | --update]"
     no_sync: "Désactive la synchronisation avec le serveur"
+    numeric: "Utilise des chiffre dans la génération d'un mot de passe"
     setup: "Création d'un nouveau fichier de configuration"
     setup_wallet: "Création d'un nouveau fichier de configuration pour un portefeuille"
+    special_chars: "Utilise des charactères speciaux dans la génération d'un mot de passe"
     show: "Recherche et affiche les éléments"
     show_all: "Liste tous les éléments"
     remove: "Supprime un élément"
@@ -136,6 +139,7 @@ fr:
     group: "Groupe"
     login: "Identifiant"
     name: "Nom"
+    no_group: "Sans groupe"
     nothing: "Aucun résultat!"
     password: "Mot de passe"
     port: "Port"
