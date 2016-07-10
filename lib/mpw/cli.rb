@@ -21,10 +21,8 @@ require 'i18n'
 require 'colorize'
 require 'highline/import'
 require 'clipboard'
-
-#TODO
-require "#{APP_ROOT}/../lib/mpw/item.rb"
-require "#{APP_ROOT}/../lib/mpw/mpw.rb"
+require 'mpw/item'
+require 'mpw/mpw'
 
 module MPW
 class Cli

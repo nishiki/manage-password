@@ -16,11 +16,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+$: << File.expand_path('../../lib', __FILE__)
+
 require 'optparse'
-require 'pathname'
 require 'locale'
 require 'set'
 require 'i18n'
+require 'mpw/mpw'
+require 'mpw/config'
+require 'mpw/cli'
 
 # --------------------------------------------------------- #
 # Set local
@@ -32,15 +36,8 @@ if defined?(I18n.enforce_available_locales)
 	I18n.enforce_available_locales = true
 end
 
-APP_ROOT = File.dirname(Pathname.new(__FILE__).realpath)
-
-# TODO
-require "#{APP_ROOT}/../lib/mpw/mpw.rb"
-require "#{APP_ROOT}/../lib/mpw/config.rb"
-require "#{APP_ROOT}/../lib/mpw/ui/cli.rb"
-
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-I18n.load_path      = Dir["#{APP_ROOT}/../i18n/*.yml"]
+I18n.load_path      = Dir["#{File.expand_path('../../i18n', __FILE__)}/*.yml"]
 I18n.default_locale = :en
 I18n.locale         = lang.to_sym
 

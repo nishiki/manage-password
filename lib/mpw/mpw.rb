@@ -20,9 +20,7 @@ require 'rubygems/package'
 require 'gpgme'
 require 'i18n'
 require 'yaml'
-
-#TODO
-require "#{APP_ROOT}/../lib/mpw/item.rb"
+require 'mpw/item'
 	
 module MPW
 class MPW
@@ -325,7 +323,7 @@ class MPW
 		
 		case @config['sync']['type']
 		when 'sftp', 'scp', 'ssh'
-			require "#{APP_ROOT}/../lib/mpw/sync/ssh.rb"
+			require "mpw/sync/ssh"
 			sync = SyncSSH.new(@config['sync'])
 		when 'ftp'
 			require 'mpw/sync/ftp'
