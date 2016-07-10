@@ -160,7 +160,12 @@ class Cli
 			result.each do |item|
 				if group != item.group
 					group = item.group
-					puts "#{I18n.t('display.group')}: #{group}".yellow
+
+					if group.empty?
+						puts I18n.t('display.no_group').yellow
+					else
+						puts "\n#{group}".yellow
+					end
 				end
 
 				print " |_ ".yellow
@@ -171,6 +176,8 @@ class Cli
 
 				i += 1
 			end
+
+			print "\n"
 			choice = ask(I18n.t('form.select')).to_i
 
 			if choice >= 1 and choice < i 
