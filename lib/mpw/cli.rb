@@ -217,20 +217,69 @@ class Cli
 	end
 
 	# Copy in clipboard the login and password
+	# @args: item -> the item
 	def clipboard(item)
-		Clipboard.copy(item.user)
-		print "\n#{I18n.t('form.clipboard.login')}".green
-		gets
+		pid = nil
 
-		Clipboard.copy(@mpw.get_password(item.id))
-		puts I18n.t('form.clipboard.password').yellow
+		# Security: force quit after 90s
+		pid_s = Process.fork do
+			begin
+				sleep 90
+				Process.kill(3, Process.ppid)
+			rescue Interrupt
+				exit
+			end
+		end
+		
+		while true
+			choice = ask(I18n.t('form.clipboard.choice')).to_s
+			
+			if not pid.nil?
+				Clipboard.clear
+				Process.kill(9, pid)
 
-		sleep(30)
+				pid = nil
+			end
+
+			case choice
+			when 'q', 'quit'
+				break
+
+			when 'l', 'login'
+				Clipboard.copy(item.user)
+				puts I18n.t('form.clipboard.login').green
+
+			when 'p', 'password'
+				Clipboard.copy(@mpw.get_password(item.id))
+				puts I18n.t('form.clipboard.password').yellow
+
+				pid = Process.fork do
+					begin
+						sleep 30
+
+						Clipboard.clear
+						puts I18n.t('form.clipboard.clean').green
+					rescue Interrupt
+						exit
+					end
+				end
+
+			else
+				puts I18n.t('warning.select').yellow
+				next
+			end
+		end
 
 		Clipboard.clear
 		puts I18n.t('form.clipboard.clean').green
+
 	rescue SystemExit, Interrupt
 		Clipboard.clear
+		puts I18n.t('form.clipboard.clean').green
+
+	ensure
+		Process.kill('HUP', pid)  if not pid.nil?
+		Process.kill('HUP', pid_s)
 	end
 
 	# Display the wallet
@@ -259,6 +308,7 @@ class Cli
 					@wallet_file = wallets[choice-1]
 				else
 					puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+					exit 2
 				end
 			end
 		else

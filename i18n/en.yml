@@ -77,8 +77,9 @@ en:
       comment: "Enter a comment (optional): "
       valid: "Item has been added!"
     clipboard:
+      choice: "What do you want to copy ? [q = quit, p = password, l = login]: "
       clean: "The clipboard has been cleaned."
-      login: "The login has been copied in clipboard, press any key to continue."
+      login: "The login has been copied in clipboard."
       password: "The password has been copied in clipboard for 30s!"
     delete_key:
       valid: "Key has been deleted!"

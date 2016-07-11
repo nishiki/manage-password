@@ -77,8 +77,9 @@ fr:
       comment: "Entrez un commentaire (optionnel): "
       valid: "L'élément a bien été ajouté!"
     clipboard:
+      choice: "Que voulez-vous copier ? [q = quitter, p = mot de passe, l = identifiant]: "
       clean: "Le presse papier a été nettoyé."
-      login: "L'identifiant a été copié dans le presse papier, pressez n'importe quelle touche pour continuer."
+      login: "L'identifiant a été copié dans le presse papier"
       password: "Le mot de passe a été copié dans le presse papier pour 30s!"
     delete_key:
       valid: "La clé a bien été supprimée!"
