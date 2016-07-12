@@ -118,6 +118,8 @@ class MPW
 			           )
 		end
 
+		@config['last_update'] = Time.now.to_i
+
 		Gem::Package::TarWriter.new(File.open(tmp_file, 'w+')) do |tar|
 			data_encrypt = encrypt(data.to_yaml)
 			tar.add_file_simple('wallet/meta.gpg', 0400, data_encrypt.length) do |io|
@@ -317,8 +319,8 @@ class MPW
 	# @args: force -> force the sync
 	def sync(force=false)
 		return if @config.empty? or @config['sync']['type'].to_s.empty?
-		return if get_last_sync < Time.now.to_i + 300 and not force
-		
+		return if get_last_sync + 300 > Time.now.to_i and not force
+
 		tmp_file  = "#{@wallet_file}.sync"
 		
 		case @config['sync']['type']
@@ -340,7 +342,7 @@ class MPW
 
 		File.unlink(tmp_file) if File.exist?(tmp_file)
 
-		return if remote.get_last_sync == get_last_sync
+		return if remote.get_last_sync == @config['last_update']
 
 		if not remote.to_s.empty?
 			@data.each do |item|
