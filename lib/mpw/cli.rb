@@ -258,7 +258,6 @@ class Cli
 						sleep 30
 
 						Clipboard.clear
-						puts I18n.t('form.clipboard.clean').green
 					rescue Interrupt
 						exit
 					end
@@ -271,11 +270,9 @@ class Cli
 		end
 
 		Clipboard.clear
-		puts I18n.t('form.clipboard.clean').green
 
 	rescue SystemExit, Interrupt
 		Clipboard.clear
-		puts I18n.t('form.clipboard.clean').green
 
 	ensure
 		Process.kill('HUP', pid)  if not pid.nil?
