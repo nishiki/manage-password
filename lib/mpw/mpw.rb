@@ -167,7 +167,7 @@ class MPW
 	# args: id -> the item id
 	#       password -> the new password
 	def set_password(id, password)
-		salt     = MPW::password(Random.rand(4..9))
+		salt     = MPW::password(length: Random.rand(4..9))
 		password = "$#{salt}::#{password}"
 
 		@passwords[id] = encrypt(password)
