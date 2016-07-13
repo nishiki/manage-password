@@ -222,25 +222,14 @@ class Cli
 		pid = nil
 
 		# Security: force quit after 90s
-		pid_s = Process.fork do
-			begin
-				sleep 90
-				Process.kill(3, Process.ppid)
-			rescue Interrupt
-				exit
-			end
+		Thread.new do
+			sleep 90
+			exit
 		end
 		
 		while true
 			choice = ask(I18n.t('form.clipboard.choice')).to_s
 			
-			if not pid.nil?
-				Clipboard.clear
-				Process.kill(9, pid)
-
-				pid = nil
-			end
-
 			case choice
 			when 'q', 'quit'
 				break
@@ -253,14 +242,10 @@ class Cli
 				Clipboard.copy(@mpw.get_password(item.id))
 				puts I18n.t('form.clipboard.password').yellow
 
-				pid = Process.fork do
-					begin
-						sleep 30
+				Thread.new do
+					sleep 30
 
-						Clipboard.clear
-					rescue Interrupt
-						exit
-					end
+					Clipboard.clear
 				end
 
 			else
@@ -270,13 +255,8 @@ class Cli
 		end
 
 		Clipboard.clear
-
 	rescue SystemExit, Interrupt
 		Clipboard.clear
-
-	ensure
-		Process.kill('HUP', pid)  if not pid.nil?
-		Process.kill('HUP', pid_s)
 	end
 
 	# Display the wallet
