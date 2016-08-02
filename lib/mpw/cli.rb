@@ -30,10 +30,13 @@ class Cli
 	# Constructor
 	# @args: config -> the config
 	#        sync -> boolean for sync or not
-	def initialize(config, clipboard=true, sync=true)
+	#        clipboard -> enable clopboard
+	#        otp -> enable otp
+	def initialize(config, clipboard=true, sync=true, otp=false)
 		@config    = config
 		@clipboard = clipboard
 		@sync      = sync
+		@otp       = otp
 	end
 
 	# Create a new config file
@@ -203,11 +206,13 @@ class Cli
 		print "#{I18n.t('display.login')}: ".cyan
 		puts  item.user
 		print "#{I18n.t('display.password')}: ".cyan
+
 		if @clipboard
 			puts '***********'
 		else
 			puts  @mpw.get_password(item.id)
 		end
+
 		print "#{I18n.t('display.port')}: ".cyan
 		puts  item.port
 		print "#{I18n.t('display.comment')}: ".cyan
@@ -248,8 +253,15 @@ class Cli
 					Clipboard.clear
 				end
 
+			when 'o', 'otp'
+				Clipboard.copy(@mpw.get_otp_code(item.id))
+				puts I18n.t('form.clipboard.otp', time: @mpw.get_otp_remaining_time).yellow
+
 			else
-				puts I18n.t('warning.select').yellow
+				puts "----- #{I18n.t('form.clipboard.help.name')} -----".cyan
+				puts I18n.t('form.clipboard.help.login')
+				puts I18n.t('form.clipboard.help.password')
+				puts I18n.t('form.clipboard.help.otp_code')
 				next
 			end
 		end
@@ -333,10 +345,15 @@ class Cli
 		options[:port]     = ask(I18n.t('form.add_item.port')).to_s
 		options[:comment]  = ask(I18n.t('form.add_item.comment')).to_s
 
+		if @otp
+			otp_key = ask(I18n.t('form.add_item.otp_key')).to_s
+		end
+
 		item = Item.new(options)
 
 		@mpw.add(item)
 		@mpw.set_password(item.id, password)
+		@mpw.set_otp_key(item.id, otp_key)
 		@mpw.write_data
 		@mpw.sync(true) if @sync
 
@@ -362,10 +379,15 @@ class Cli
 			options[:port]     = ask(I18n.t('form.update_item.port'    , port:     item.port)).to_s
 			options[:comment]  = ask(I18n.t('form.update_item.comment' , comment:  item.comment)).to_s
 
+			if @otp
+				otp_key = ask(I18n.t('form.update_item.otp_key')).to_s
+			end
+
 			options.delete_if { |k,v| v.empty? }
-				
+
 			item.update(options)
 			@mpw.set_password(item.id, password) if not password.empty?
+			@mpw.set_otp_key(item.id, otp_key)   if not otp_key.empty?
 			@mpw.write_data
 			@mpw.sync(true) if @sync
 

@@ -20,6 +20,7 @@ require 'rubygems/package'
 require 'gpgme'
 require 'i18n'
 require 'yaml'
+require 'rotp'
 require 'mpw/item'
 	
 module MPW
@@ -43,6 +44,7 @@ class MPW
 		@data      = []
 		@keys      = {}
 		@passwords = {}
+		@otp_keys  = {}
 
 		data       = nil
 
@@ -68,6 +70,10 @@ class MPW
 
 					when /^wallet\/passwords\/(?<id>[a-zA-Z0-9]+)\.gpg$/
 						@passwords[Regexp.last_match('id')] = f.read
+
+					when /^wallet\/otp_keys\/(?<id>[a-zA-Z0-9]+)\.gpg$/
+						@otp_keys[Regexp.last_match('id')] = f.read
+
 					else
 						next
 				end
@@ -134,6 +140,12 @@ class MPW
 			@passwords.each do |id, password|
 				tar.add_file_simple("wallet/passwords/#{id}.gpg", 0400, password.length) do |io|
 					io.write(password)
+				end
+			end
+
+			@otp_keys.each do |id, key|
+				tar.add_file_simple("wallet/otp_keys/#{id}.gpg", 0400, key.length) do |io|
+					io.write(key)
 				end
 			end
 
@@ -411,6 +423,30 @@ class MPW
 		File.unlink(tmp_file) if File.exist?(tmp_file)
 
 		raise "#{I18n.t('error.sync.general')}\n#{e}"
+	end
+
+	# Set an opt key
+	# args: id -> the item id
+	#       key -> the new key
+	def set_otp_key(id, key)
+		@otp_keys[id] = encrypt(key)
+	end
+
+	# Get an otp code
+	# @args: id -> the item id
+	# @rtrn: an otp code
+	def	get_otp_code(id)
+		if not @otp_keys.has_key?(id)
+			return 0
+		else
+			return ROTP::TOTP.new(decrypt(@otp_keys[id])).now
+		end
+	end
+
+	# Get remaining time before expire otp code
+	# @rtrn: return time in seconde
+	def get_otp_remaining_time
+		return (Time.now.utc.to_i / 30 + 1) * 30 - Time.now.utc.to_i
 	end
 
 	# Generate a random password
