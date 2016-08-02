@@ -75,12 +75,19 @@ en:
       password: "Enter the the password: "
       port: "Enter the connection port (optional): "
       comment: "Enter a comment (optional): "
+      otp_key: "Enter the otp secret (base32 secret key): "
       valid: "Item has been added!"
     clipboard:
       choice: "What do you want to copy ? [q = quit, p = password, l = login]: "
       clean: "The clipboard has been cleaned."
       login: "The login has been copied in clipboard."
       password: "The password has been copied in clipboard for 30s!"
+      otp: "The OTP code has been copied for %{time}s!"
+      help:
+         name: "Help"
+         login: "Press <l> to copy the login"
+         password: "Press <p> to copy the password"
+         otp_code: "Press <o> to copy the otp code"
     delete_key:
       valid: "Key has been deleted!"
     delete_item:
@@ -129,6 +136,7 @@ en:
       password: "Enter the the password: "
       port: "Enter the connection port [%{port}]: "
       comment: "Enter a comment [%{comment}]: "
+      otp_key: "Enter the otp secret (base32 secret key): "
       valid: "Item has been updated!" 
     export:
       valid: "The export in %{file} is succesfull!"

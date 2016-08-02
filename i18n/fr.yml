@@ -75,12 +75,19 @@ fr:
       password: "Entrez le mot de passe: "
       port: "Entrez le port de connexion (optionnel): "
       comment: "Entrez un commentaire (optionnel): "
+      otp_key: "Entrez le secret OTP: "
       valid: "L'élément a bien été ajouté!"
     clipboard:
-      choice: "Que voulez-vous copier ? [q = quitter, p = mot de passe, l = identifiant]: "
+      choice: "Que voulez-vous copier ? : "
       clean: "Le presse papier a été nettoyé."
       login: "L'identifiant a été copié dans le presse papier"
       password: "Le mot de passe a été copié dans le presse papier pour 30s!"
+      otp: "Le code OTP a été copié dans le presse papier il est valable %{time}s!"
+      help:
+         name: "Aide"
+         login: "Pressez <l> pour copier l'identifiant"
+         password: "Pressez <p> pour copier le mot de passe"
+         otp_code: "Pressez <o> pour copier le code OTP"
     delete_key:
       valid: "La clé a bien été supprimée!"
     delete_item:
@@ -129,6 +136,7 @@ fr:
       password: "Entrez le mot de passe: "
       port: "Entrez un port de connexion [%{port}]: "
       comment: "Entrez un commentaire [%{comment}]: "
+      otp_key: "Entrez le secret OTP: "
       valid: "L'élément a bien été mis à jour!" 
     export:
       valid: "L'export dans %{file} est un succès!"
