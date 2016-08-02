@@ -48,6 +48,7 @@ I18n.locale         = lang.to_sym
 options_password    = {}
 options             = {}
 options[:force]     = false
+options[:otp]       = false
 options[:sync]      = true
 options[:clipboard] = true
 options[:group]     = nil
@@ -123,6 +124,10 @@ OptionParser.new do |opts|
 		options[:sync] = false
 	end
 
+	opts.on('-O', '--otp', I18n.t('option.otp')) do
+		options[:otp] = true
+	end
+
 	opts.on('-s', '--show [SEARCH]', I18n.t('option.show')) do |search|
 		search.nil? ? (options[:show]  = '')  : (options[:show] = search)
 	end
@@ -164,7 +169,7 @@ end
 
 begin
 	config = MPW::Config.new(options[:config])
-	cli    = MPW::Cli.new(config, options[:clipboard], options[:sync])
+	cli    = MPW::Cli.new(config, options[:clipboard], options[:sync], options[:otp])
 		
 	# Setup a new config 
 	if not options[:setup].nil?
