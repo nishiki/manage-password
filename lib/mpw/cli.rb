@@ -387,7 +387,7 @@ class Cli
 
 			item.update(options)
 			@mpw.set_password(item.id, password) if not password.empty?
-			@mpw.set_otp_key(item.id, otp_key)   if not otp_key.empty?
+			@mpw.set_otp_key(item.id, otp_key)   if not otp_key.to_s.empty?
 			@mpw.write_data
 			@mpw.sync(true) if @sync
 
