@@ -150,6 +150,7 @@ en:
     name: "Name"
     no_group: "Without group"
     nothing: "No matches!"
+    otp_code: "OTP code"
     password: "Password"
     port: "Port"
     protocol: "Protocol"

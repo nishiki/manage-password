@@ -150,6 +150,7 @@ fr:
     name: "Nom"
     no_group: "Sans groupe"
     nothing: "Aucun résultat!"
+    otp_code: "Code OTP"
     password: "Mot de passe"
     port: "Port"
     protocol: "Protocol"
