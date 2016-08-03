@@ -212,8 +212,11 @@ class Cli
 		else
 			print "#{I18n.t('display.password')}: ".cyan
 			puts  @mpw.get_password(item.id)
-			print "#{I18n.t('display.otp_code')}: ".cyan
-			puts "#{@mpw.get_otp_code(item.id)} (#{@mpw.get_otp_remaining_time}s)"
+
+			if @mpw.get_otp_code(item.id) > 0
+				print "#{I18n.t('display.otp_code')}: ".cyan
+				puts "#{@mpw.get_otp_code(item.id)} (#{@mpw.get_otp_remaining_time}s)"
+			end
 		end
 
 		print "#{I18n.t('display.port')}: ".cyan
