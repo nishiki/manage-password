@@ -391,7 +391,7 @@ class MPW
 
 		# Add item
 		remote.list.each do |r|
-			next if r.last_edit <= last_sync
+			next if r.last_edit <= get_last_sync
 
 			item = Item.new(id:        r.id,
 			                name:      r.name,
