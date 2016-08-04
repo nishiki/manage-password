@@ -409,7 +409,8 @@ class Cli
 	# @args: id -> the item's id
 	#        force -> no resquest a validation
 	def delete(id, force=false)
-		item = @mpw.search_by_id(id)
+		@clipboard = false
+		item       = @mpw.search_by_id(id)
 
 		if item.nil?
 			puts I18n.t('form.delete_item.not_valid', id: id)
