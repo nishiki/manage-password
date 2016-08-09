@@ -21,6 +21,7 @@ require 'i18n'
 require 'colorize'
 require 'highline/import'
 require 'clipboard'
+require 'tmpdir'
 require 'mpw/item'
 require 'mpw/mpw'
 
@@ -156,7 +157,7 @@ class Cli
 			group = nil
 			i     = 1
 
-			result.sort! { |a,b| a.group.downcase <=> b.group.downcase }
+			result.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
 
 			result.each do |item|
 				if group != item.group
@@ -263,6 +264,12 @@ class Cli
 				Clipboard.copy(@mpw.get_otp_code(item.id))
 				puts I18n.t('form.clipboard.otp', time: @mpw.get_otp_remaining_time).yellow
 
+			when 'd', 'delete'
+				delete(item)
+
+			when 'u', 'update', 'e', 'edit'
+				update(item)
+
 			else
 				puts "----- #{I18n.t('form.clipboard.help.name')} -----".cyan
 				puts I18n.t('form.clipboard.help.login')
@@ -336,30 +343,41 @@ class Cli
 		puts "#{I18n.t('display.error')} #15: #{e}".red
 	end
 
-	# Form to add a new item
-	def add
-		options = {}
+	def text_editor(template_name, item=nil)
+		options       = {}
+		opts          = {}
+		template_file = "#{File.expand_path('../../../templates', __FILE__)}/#{template_name}.erb"
+		template      = ERB.new(IO.read(template_file))
 
-		puts I18n.t('form.add_item.title')
-		puts '--------------------'
-		options[:name]     = ask(I18n.t('form.add_item.name')).to_s
-		options[:group]    = ask(I18n.t('form.add_item.group')).to_s
-		options[:host]     = ask(I18n.t('form.add_item.server')).to_s
-		options[:protocol] = ask(I18n.t('form.add_item.protocol')).to_s
-		options[:user]     = ask(I18n.t('form.add_item.login')).to_s
-		password           = ask(I18n.t('form.add_item.password')).to_s
-		options[:port]     = ask(I18n.t('form.add_item.port')).to_s
-		options[:comment]  = ask(I18n.t('form.add_item.comment')).to_s
+		Dir.mktmpdir do |dir|
+			tmp_file = "#{dir}/#{template_name}.yml"
 
-		if @otp
-			otp_key = ask(I18n.t('form.add_item.otp_key')).to_s
+			File.open(tmp_file, 'w') do |f|
+				f << template.result(binding)
+			end
+
+			system("vim #{tmp_file}")
+
+			opts = YAML::load_file(tmp_file)
 		end
 
-		item = Item.new(options)
+		opts.delete_if { |k,v| v.to_s.empty? }
+
+		opts.each do |k,v|
+			options[k.to_sym] = v
+		end
+
+		return options
+	end
+
+	# Form to add a new item
+	def add
+		options = text_editor('add_form')	
+		item    = Item.new(options)
 
 		@mpw.add(item)
-		@mpw.set_password(item.id, password)
-		@mpw.set_otp_key(item.id, otp_key)
+		@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
+		@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
 		@mpw.write_data
 		@mpw.sync(true) if @sync
 
@@ -368,39 +386,16 @@ class Cli
 
 	# Update an item
 	# @args: id -> the item's id
-	def update(id)
-		item = @mpw.search_by_id(id)
+	def update(item)
+		options = text_editor('update_form', item)
 
-		if not item.nil?
-			options = {}
+		item.update(options)
+		@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
+		@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
+		@mpw.write_data
+		@mpw.sync(true) if @sync
 
-			puts I18n.t('form.update_item.title')
-			puts '--------------------'
-			options[:name]     = ask(I18n.t('form.update_item.name'    , name:     item.name)).to_s
-			options[:group]    = ask(I18n.t('form.update_item.group'   , group:    item.group)).to_s
-			options[:host]     = ask(I18n.t('form.update_item.server'  , server:   item.host)).to_s
-			options[:protocol] = ask(I18n.t('form.update_item.protocol', protocol: item.protocol)).to_s
-			options[:user]     = ask(I18n.t('form.update_item.login'   , login:    item.user)).to_s
-			password           = ask(I18n.t('form.update_item.password')).to_s
-			options[:port]     = ask(I18n.t('form.update_item.port'    , port:     item.port)).to_s
-			options[:comment]  = ask(I18n.t('form.update_item.comment' , comment:  item.comment)).to_s
-
-			if @otp
-				otp_key = ask(I18n.t('form.update_item.otp_key')).to_s
-			end
-
-			options.delete_if { |k,v| v.empty? }
-
-			item.update(options)
-			@mpw.set_password(item.id, password) if not password.empty?
-			@mpw.set_otp_key(item.id, otp_key)   if not otp_key.to_s.empty?
-			@mpw.write_data
-			@mpw.sync(true) if @sync
-
-			puts "#{I18n.t('form.update_item.valid')}".green
-		else
-			puts I18n.t('display.nothing')
-		end
+		puts "#{I18n.t('form.update_item.valid')}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #14: #{e}".red
 	end
@@ -408,29 +403,18 @@ class Cli
 	# Remove an item
 	# @args: id -> the item's id
 	#        force -> no resquest a validation
-	def delete(id, force=false)
-		@clipboard = false
-		item       = @mpw.search_by_id(id)
+	def delete(item)
+		confirm = ask("#{I18n.t('form.delete_item.ask')} (y/N) ").to_s
 
-		if item.nil?
-			puts I18n.t('form.delete_item.not_valid', id: id)
+		if not confirm =~ /^(y|yes|YES|Yes|Y)$/
 			return
-		end
-
-		if not force
-			display_item(item)
-
-			confirm = ask("#{I18n.t('form.delete_item.ask', id: id)} (y/N) ").to_s
-			if not confirm =~ /^(y|yes|YES|Yes|Y)$/
-				return
-			end
 		end
 
 		item.delete
 		@mpw.write_data
 		@mpw.sync(true) if @sync
 
-		puts "#{I18n.t('form.delete_item.valid', id: id)}".green
+		puts "#{I18n.t('form.delete_item.valid')}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #16: #{e}".red
 	end

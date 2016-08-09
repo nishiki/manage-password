@@ -10,8 +10,6 @@ fr:
         exception: "La création de la clé GPG n'a pas pu aboutir!"
         name: "Vous devez définir un nom pour votre clé GPG!"
         password: "Vous devez définir un mot de passe pour votre clé GPG!"
-    delete:
-      id_no_exist: "Impossible de supprimer l'élément %{id}, car il n'existe pas!"
     export: "Impossible d'exporter les données dans le fichier %{file}!"
     gpg_file: 
       decrypt: "Impossible de déchiffrer le fichier GPG!"
@@ -46,7 +44,6 @@ fr:
     generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères)"
     group: "Recherche les éléments appartenant au groupe spécifié"
     help: "Affiche ce message d'aide"
-    id: "Spécifie un identifiant, à utiliser avec les options [--delete | --update]"
     import: "Importe des éléments depuis un fichier yaml"
     key: "Spécifie le nom d'une clé, à utiliser avec les options [--add | --delete | --update]"
     no_sync: "Désactive la synchronisation avec le serveur"
@@ -56,8 +53,6 @@ fr:
     special_chars: "Utilise des charactères speciaux dans la génération d'un mot de passe"
     show: "Recherche et affiche les éléments"
     show_all: "Liste tous les éléments"
-    remove: "Supprime un élément"
-    update: "Met à jour un élément"
     usage: "Utilisation"
     wallet: "Spécifie le portefeuille à utiliser"
 
@@ -93,7 +88,6 @@ fr:
     delete_item:
       ask: "Êtes vous sûre de vouloir supprimer l'élément %{id} ?"
       valid: "L'élément %{id} a bien été supprimé!"
-      not_valid: "L'élément %{id} n'a pu être supprimé, car il n'existe pas!"
     import:
       ask: "Êtes vous sûre de vouloir importer le fichier %{file} ?"
       valid: "L'import est un succès!"

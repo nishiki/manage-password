@@ -10,8 +10,6 @@ en:
         exception: "Can't create the GPG key!"
         name: "You must define a name for your GPG key!"
         password: "You must define a password for your GPG key!"
-    delete:
-      id_no_exist: "Can't delete the item %{id}, it doesn't exist!"
     export: "Can't export, unable to write in %{file}!"
     gpg_file: 
       decrypt: "Can't decrypt file!"
@@ -46,7 +44,6 @@ en:
     generate_password: "Generate a random password (default 8 characters)"
     group: "Search the items with specified group"
     help: "Show this help message"
-    id: "Specify an id, to use with the options [--delete | --update]"
     import: "Import item since a yaml file"
     key: "Specify the key name, to use with the options [--add | --delete | --update]"
     no_sync: "Disable synchronization with the server"
@@ -56,8 +53,6 @@ en:
     special_chars: "Use special char to generate a password"
     show: "Search and show the items"
     show_all: "List all items"
-    remove: "Delete an item"
-    update: "Update an item"
     usage: "Usage"
     wallet: "Specify a wallet to use"
 
@@ -93,7 +88,6 @@ en:
     delete_item:
       ask: "Are you sure you want to remove the item %{id} ?"
       valid: "The item %{id} has been removed!"
-      not_valid: "The item %{id} hasn't been removed, because it doesn't exist!"
     import:
       ask: "Are you sure you want to import this file %{file} ?"
       valid: "The import is succesfull!"

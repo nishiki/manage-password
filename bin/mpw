@@ -75,10 +75,6 @@ OptionParser.new do |opts|
 		options[:clipboard] = false
 	end
 
-	opts.on('-d', '--delete', I18n.t('option.remove')) do
-		options[:delete] = true
-	end
-
 	opts.on('-e', '--export', I18n.t('option.export')) do
 		options[:export] = true
 	end
@@ -102,10 +98,6 @@ OptionParser.new do |opts|
 	opts.on('-h', '--help', I18n.t('option.help')) do
 		puts opts
 		exit 0
-	end
-
-	opts.on('-i', '--id ID', I18n.t('option.id')) do |id|
-		options[:id] = id
 	end
 
 	opts.on('-I', '--import', I18n.t('option.import')) do
@@ -134,10 +126,6 @@ OptionParser.new do |opts|
 
 	opts.on('-S', '--setup', I18n.t('option.setup')) do
 		options[:setup] = true
-	end
-
-	opts.on('-u', '--update', I18n.t('option.update')) do
-		options[:update] = true
 	end
 
 	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
@@ -191,14 +179,6 @@ begin
 	
 		cli.display(opts)
 	
-	# Remove an item
-	elsif not options[:delete].nil? and not options[:id].nil?
-		cli.delete(options[:id], options[:force])
-	
-	# Update an item
-	elsif not options[:update].nil? and not options[:id].nil?
-		cli.update(options[:id])
-	
 	# Add a new item
 	elsif not options[:add].nil? and options[:key].nil?
 		cli.add
@@ -215,7 +195,7 @@ begin
 	elsif not options[:export].nil? and not options[:file].nil?
 		cli.export(options[:file])
 	
-	# Add a new item
+	# Import
 	elsif not options[:import].nil? and not options[:file].nil?
 		cli.import(options[:file])
 	
