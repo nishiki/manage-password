@@ -344,6 +344,7 @@ class Cli
 	end
 
 	def text_editor(template_name, item=nil)
+		editor        = ENV['EDITOR'] || 'nano'
 		options       = {}
 		opts          = {}
 		template_file = "#{File.expand_path('../../../templates', __FILE__)}/#{template_name}.erb"
@@ -356,7 +357,7 @@ class Cli
 				f << template.result(binding)
 			end
 
-			system("vim #{tmp_file}")
+			system("#{editor} #{tmp_file}")
 
 			opts = YAML::load_file(tmp_file)
 		end
@@ -382,6 +383,8 @@ class Cli
 		@mpw.sync(true) if @sync
 
 		puts "#{I18n.t('form.add_item.valid')}".green
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #13: #{e}".red
 	end
 
 	# Update an item
