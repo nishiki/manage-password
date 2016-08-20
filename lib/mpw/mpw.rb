@@ -287,6 +287,7 @@ class MPW
 			                        'password'  => get_password(item.id),
 			                        'port'      => item.port,
 			                        'comment'   => item.comment,
+			                        'otp_key'   => get_otp_code(item.id),
 			                        'last_edit' => item.last_edit,
 			                        'created'   => item.created,
 			                       }
@@ -314,7 +315,8 @@ class MPW
 			raise 'Item is empty' if item.empty?
 
 			@data.push(item)
-			set_password(item.id, row['password'])
+			set_password(item.id, row['password']) if not row['password'].to_s.empty?
+			set_otp_code(item.id, row['otp_key'])  if not row['otp_key'].to_s.empty?
 		end
 	rescue Exception => e 
 		raise "#{I18n.t('error.import', file: file)}\n#{e}"
@@ -435,7 +437,7 @@ class MPW
 	# Get an otp code
 	# @args: id -> the item id
 	# @rtrn: an otp code
-	def	get_otp_code(id)
+	def get_otp_code(id)
 		if not @otp_keys.has_key?(id)
 			return 0
 		else
