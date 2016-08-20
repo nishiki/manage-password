@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "locale"
   spec.add_dependency "colorize"
   spec.add_dependency "net-ssh"
-  spec.add_dependency "net-scp"
+  spec.add_dependency "net-sftp"
   spec.add_dependency "clipboard"
   spec.add_dependency "rotp"
 end
