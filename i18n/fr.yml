@@ -82,11 +82,13 @@ fr:
          login: "Pressez <l> pour copier l'identifiant"
          password: "Pressez <p> pour copier le mot de passe"
          otp_code: "Pressez <o> pour copier le code OTP"
+         update: "Pressez <u> pour mettre à jour l'élément"
+         delete: "Pressez <d> pour supprimer l'élément"
     delete_key:
       valid: "La clé a bien été supprimée!"
     delete_item:
-      ask: "Êtes vous sûre de vouloir supprimer l'élément %{id} ?"
-      valid: "L'élément %{id} a bien été supprimé!"
+      ask: "Êtes vous sûre de vouloir supprimer l'élément ?"
+      valid: "L'élément a bien été supprimé!"
     import:
       ask: "Êtes vous sûre de vouloir importer le fichier %{file} ?"
       valid: "L'import est un succès!"

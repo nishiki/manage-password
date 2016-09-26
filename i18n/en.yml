@@ -82,11 +82,13 @@ en:
          login: "Press <l> to copy the login"
          password: "Press <p> to copy the password"
          otp_code: "Press <o> to copy the otp code"
+         update: "Press <u> to update the item"
+         delete: "Press <d> to delete the item"
     delete_key:
       valid: "Key has been deleted!"
     delete_item:
-      ask: "Are you sure you want to remove the item %{id} ?"
-      valid: "The item %{id} has been removed!"
+      ask: "Are you sure you want to remove the item ?"
+      valid: "The item has been removed!"
     import:
       ask: "Are you sure you want to import this file %{file} ?"
       valid: "The import is succesfull!"
