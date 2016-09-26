@@ -41,21 +41,16 @@ class Cli
 	end
 
 	# Create a new config file
-	# @args: lang -> the software language
-	def setup(lang)
-		puts I18n.t('form.setup_config.title')
-		puts '--------------------'
-		language   = ask(I18n.t('form.setup_config.lang', lang: lang)).to_s
-		key        = ask(I18n.t('form.setup_config.gpg_key')).to_s
-		wallet_dir = ask(I18n.t('form.setup_config.wallet_dir', home: "#{@config.config_dir}")).to_s
-		gpg_exe    = ask(I18n.t('form.setup_config.gpg_exe')).to_s
+	# @args: language -> the software language
+	def setup(language)
+		@config.is_valid?
 
-		if language.nil? or language.empty?
-			language = lang
-		end
+		options  = text_editor('setup_form', language)
+		language = options[:language] || language
+
 		I18n.locale = language.to_sym
 
-		@config.setup(key, lang, wallet_dir, gpg_exe)
+		@config.setup(options[:gpg_key], language, options[:wallet_dir], options[:gpg_exe])
 
 		raise I18n.t('error.config.check') if not @config.is_valid?
 
