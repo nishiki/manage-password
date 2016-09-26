@@ -260,7 +260,7 @@ class Cli
 				puts I18n.t('form.clipboard.otp', time: @mpw.get_otp_remaining_time).yellow
 
 			when 'd', 'delete'
-				delete(item)
+				break if delete(item)
 
 			when 'u', 'update', 'e', 'edit'
 				update(item)
@@ -270,6 +270,8 @@ class Cli
 				puts I18n.t('form.clipboard.help.login')
 				puts I18n.t('form.clipboard.help.password')
 				puts I18n.t('form.clipboard.help.otp_code')
+				puts I18n.t('form.clipboard.help.update')
+				puts I18n.t('form.clipboard.help.delete')
 				next
 			end
 		end
@@ -405,7 +407,7 @@ class Cli
 		confirm = ask("#{I18n.t('form.delete_item.ask')} (y/N) ").to_s
 
 		if not confirm =~ /^(y|yes|YES|Yes|Y)$/
-			return
+			return false
 		end
 
 		item.delete
@@ -413,8 +415,11 @@ class Cli
 		@mpw.sync(true) if @sync
 
 		puts "#{I18n.t('form.delete_item.valid')}".green
+
+		return true
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #16: #{e}".red
+		return false
 	end
 
 	# Export the items in a CSV file
