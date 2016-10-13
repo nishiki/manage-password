@@ -57,12 +57,11 @@ class Config
 	#        gpg_exe -> the  path of gpg executable
 	# @rtrn: true if le config file is create
 	def setup(key, lang, wallet_dir, gpg_exe)
-
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 			raise I18n.t('error.config.key_bad_format')
 		end
 
-		if wallet_dir.empty?
+		if wallet_dir.to_s.empty?
 			wallet_dir = "#{@config_dir}/wallets"
 		end
 

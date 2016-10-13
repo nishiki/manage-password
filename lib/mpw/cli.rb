@@ -17,6 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require 'readline'
+require 'locale'
 require 'i18n'
 require 'colorize'
 require 'highline/import'
@@ -40,17 +41,32 @@ class Cli
 		@otp       = otp
 	end
 
+	# Change a parameter int the config after init
+	# @args: options -> param to change
+	def set_config(options)
+		raise I18n.t('error.config.check') if not @config.is_valid?
+		
+		gpg_key    = options[:gpg_key]    || @config.key
+		lang       = options[:lang]       || @config.lang
+		wallet_dir = options[:wallet_dir] || @config.wallet_dir
+		gpg_exe    = options[:gpg_exe]    || @config.gpg_exe
+
+		@config.setup(gpg_key, lang, wallet_dir, gpg_exe)
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #15: #{e}".red
+		exit 2
+	end
+
 	# Create a new config file
 	# @args: language -> the software language
-	def setup(language)
+	def setup(options)
 		@config.is_valid?
 
-		options  = text_editor('setup_form', language)
-		language = options[:language] || language
+		lang = options[:lang] || Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
-		I18n.locale = language.to_sym
+		I18n.locale = lang.to_sym
 
-		@config.setup(options[:gpg_key], language, options[:wallet_dir], options[:gpg_exe])
+		@config.setup(options[:gpg_key], lang, options[:wallet_dir], options[:gpg_exe])
 
 		raise I18n.t('error.config.check') if not @config.is_valid?
 
@@ -61,16 +77,11 @@ class Cli
 	end
 	
 	# Setup a new GPG key
-	def setup_gpg_key
+	# @args: gpg_key -> the key name
+	def setup_gpg_key(gpg_key)
 		puts I18n.t('form.setup_gpg_key.title')
 		puts '--------------------'
 		ask      = ask(I18n.t('form.setup_gpg_key.ask')).to_s
-		
-		if not ['Y', 'y', 'O', 'o'].include?(ask)
-			raise I18n.t('form.setup_gpg_key.no_create')
-		end
-
-		name     = ask(I18n.t('form.setup_gpg_key.name')).to_s
 		password = ask(I18n.t('form.setup_gpg_key.password')) {|q| q.echo = false}
 		confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) {|q| q.echo = false}
 
@@ -78,16 +89,9 @@ class Cli
 			raise I18n.t('form.setup_gpg_key.error_password')
 		end
 
-		length   = ask(I18n.t('form.setup_gpg_key.length')).to_s
-		expire   = ask(I18n.t('form.setup_gpg_key.expire')).to_s
-		password = password.to_s
-
-		length = length.nil? or length.empty? ? 2048 : length.to_i
-		expire = expire.nil? or expire.empty? ? 0    : expire.to_i
-
 		puts I18n.t('form.setup_gpg_key.wait')
 		
-		@config.setup_gpg_key(password, name, length, expire)
+		@config.setup_gpg_key(password.to_s, gpg_key)
 
 		puts "#{I18n.t('form.setup_gpg_key.valid')}".green
 	rescue Exception => e

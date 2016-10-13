@@ -1,0 +1,91 @@
+#!/usr/bin/ruby
+# MPW is a software to crypt and manage your passwords
+# Copyright (C) 2016  Adrien Waksberg <mpw@yae.im>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+$: << File.expand_path('../../lib', __FILE__)
+
+require 'optparse'
+require 'locale'
+require 'set'
+require 'i18n'
+require 'mpw/config'
+require 'mpw/cli'
+
+# --------------------------------------------------------- #
+# Set local
+# --------------------------------------------------------- #
+
+lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
+
+if defined?(I18n.enforce_available_locales)
+	I18n.enforce_available_locales = true
+end
+
+I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+I18n.load_path      = Dir["#{File.expand_path('../../i18n', __FILE__)}/*.yml"]
+I18n.default_locale = :en
+I18n.locale         = lang.to_sym
+
+# --------------------------------------------------------- #
+# Options
+# --------------------------------------------------------- #
+
+options = {}
+
+OptionParser.new do |opts|
+	opts.banner = "#{I18n.t('option.usage')}: mpw [options]"
+
+	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
+		options[:config] = config
+	end
+
+	opts.on('-g', '--gpg-exe PATH', I18n.t('option.lang')) do |gpg_exe|
+		options[:gpg_exe] = gpg_exe
+	end
+
+	opts.on('-h', '--help', I18n.t('option.help')) do
+		puts opts
+		exit 0
+	end
+
+	opts.on('--init', I18n.t('option.init')) do
+		options[:init] = true
+	end
+
+	opts.on('-k', '--key GPG_KEY', I18n.t('option.lang')) do |gpg_key|
+		options[:gpg_key] = gpg_key
+	end
+
+	opts.on('-l', '--lang LANG', I18n.t('option.lang')) do |lang|
+		options[:lang] = lang
+	end
+
+	opts.on('-w', '--wallet-dir LANG', I18n.t('option.lang')) do |wallet_dir|
+		options[:wallet_dir] = wallet_dir
+	end
+end.parse!
+
+config = MPW::Config.new(options[:config])
+cli    = MPW::Cli.new(config, options[:clipboard], options[:sync], options[:otp])
+
+if not options[:init].nil?
+	cli.setup(options)
+	cli.setup_gpg_key(options[:gpg_key]) if not config.check_gpg_key?
+	exit 0
+end
+
+cli.set_config(options)
