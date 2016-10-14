@@ -89,9 +89,11 @@ class Cli
 			raise I18n.t('form.setup_gpg_key.error_password')
 		end
 
+		@password = password.to_s 
+
 		puts I18n.t('form.setup_gpg_key.wait')
 		
-		@config.setup_gpg_key(password.to_s, gpg_key)
+		@config.setup_gpg_key(@password, gpg_key)
 
 		puts "#{I18n.t('form.setup_gpg_key.valid')}".green
 	rescue Exception => e
@@ -100,23 +102,27 @@ class Cli
 	end
 
 	# Setup wallet config for sync
-	def setup_wallet_config
-		config         = {}
-		config['sync'] = {}
+	# @args: wallet -> the wallet name
+	def setup_wallet_config(wallet = nil)
+		#config         = {}
+		#config['sync'] = {}
 
-		puts I18n.t('form.setup_wallet.title')
-		puts '--------------------'
-		config['sync']['type']     = ask(I18n.t('form.setup_wallet.sync_type')).to_s
+		#puts '--------------------'
+		#config['sync']['type']     = ask(I18n.t('form.setup_wallet.sync_type')).to_s
 
-		if ['ftp', 'ssh'].include?(config['sync']['type'].downcase)
-			config['sync']['host']     = ask(I18n.t('form.setup_wallet.sync_host')).to_s
-			config['sync']['port']     = ask(I18n.t('form.setup_wallet.sync_port')).to_s
-			config['sync']['user']     = ask(I18n.t('form.setup_wallet.sync_user')).to_s
-			config['sync']['password'] = ask(I18n.t('form.setup_wallet.sync_pwd')).to_s
-			config['sync']['path']     = ask(I18n.t('form.setup_wallet.sync_path')).to_s
-		end
+		#if ['ftp', 'ssh'].include?(config['sync']['type'].downcase)
+		#	config['sync']['host']     = ask(I18n.t('form.setup_wallet.sync_host')).to_s
+		#	config['sync']['port']     = ask(I18n.t('form.setup_wallet.sync_port')).to_s
+		#	config['sync']['user']     = ask(I18n.t('form.setup_wallet.sync_user')).to_s
+		#	config['sync']['password'] = ask(I18n.t('form.setup_wallet.sync_pwd')).to_s
+		#	config['sync']['path']     = ask(I18n.t('form.setup_wallet.sync_path')).to_s
+		#end
 
-		@mpw.set_config(config)
+		wallet_file = wallet.nil? ? "#{@config.wallet_dir}/default.mpw" : "#{@config.wallet_dir}/#{wallet}.mpw"
+
+		@mpw = MPW.new(@config.key, wallet_file, @password, @config.gpg_exe)
+		@mpw.read_data
+		@mpw.set_config
 		@mpw.write_data
 
 		puts "#{I18n.t('form.setup_wallet.valid')}".green
@@ -384,7 +390,7 @@ class Cli
 		@mpw.sync(true) if @sync
 
 		puts "#{I18n.t('form.add_item.valid')}".green
-	rescue Exception => e
+	#rescue Exception => e
 		puts "#{I18n.t('display.error')} #13: #{e}".red
 	end
 

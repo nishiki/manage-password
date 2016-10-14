@@ -60,11 +60,12 @@ OptionParser.new do |opts|
 end.parse!
 
 config = MPW::Config.new(options[:config])
-cli    = MPW::Cli.new(config, options[:clipboard], options[:sync], options[:otp])
+cli    = MPW::Cli.new(config, nil, nil, nil)
 
 if not options[:init].nil?
 	cli.setup(options)
 	cli.setup_gpg_key(options[:gpg_key]) if not config.check_gpg_key?
+	cli.setup_wallet_config
 	exit 0
 end
 

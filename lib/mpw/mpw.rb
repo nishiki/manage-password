@@ -112,7 +112,7 @@ class MPW
 
 			data.merge!(item.id => {'id'        => item.id,
 			                        'name'      => item.name,
-		                            'group'     => item.group,
+			                        'group'     => item.group,
 			                        'host'      => item.host,
 			                        'protocol'  => item.protocol,
 			                        'user'      => item.user,
@@ -158,7 +158,7 @@ class MPW
 
 		File.rename(tmp_file, @wallet_file)
 	rescue Exception => e
-		File.unlink(tmp_file)
+		File.unlink(tmp_file) if File.exist?(tmp_file)
 
 		raise "#{I18n.t('error.mpw_file.write_data')}\n#{e}"
 	end
@@ -211,8 +211,11 @@ class MPW
 
 	# Set config
 	# args: config -> a hash with config options
-	def set_config(config)
+	def set_config(config=nil)
+		@config         = {} if @config.nil?
 		@config['sync'] = {} if @config['sync'].nil?
+
+		return if config.to_s.empty?
 
 		@config['sync']['type']      = config['sync']['type']
 		@config['sync']['host']      = config['sync']['host']
