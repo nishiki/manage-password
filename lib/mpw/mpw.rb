@@ -486,6 +486,8 @@ class MPW
 	# @args: data -> string to decrypt
 	private
 	def decrypt(data)
+		return nil if data.to_s.empty?
+
 		crypto = GPGME::Crypto.new(armor: true)
 		
 		return crypto.decrypt(data, password: @gpg_pass).read.force_encoding('utf-8')
