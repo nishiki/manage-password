@@ -82,9 +82,7 @@ class MPW
 
 		if not data.nil? and not data.empty?
 			YAML.load(data).each_value do |d|
-				@data.push(Item.new(id:        d['id'],
-				                    name:      d['name'],
-				                    group:     d['group'],
+				@data.push(Item.new(group:     d['group'],
 				                    host:      d['host'],
 				                    protocol:  d['protocol'],
 				                    user:      d['user'],
@@ -110,17 +108,15 @@ class MPW
 		@data.each do |item|
 			next if item.empty?
 
-			data.merge!(item.id => {'id'        => item.id,
-			                        'name'      => item.name,
-			                        'group'     => item.group,
-			                        'host'      => item.host,
-			                        'protocol'  => item.protocol,
-			                        'user'      => item.user,
-			                        'port'      => item.port,
-			                        'comment'   => item.comment,
-			                        'last_edit' => item.last_edit,
-			                        'created'   => item.created,
-			                       }
+			data.merge!("#{item.user}@#{item.host}" => {'group'     => item.group,
+			                                            'host'      => item.host,
+			                                            'protocol'  => item.protocol,
+			                                            'user'      => item.user,
+			                                            'port'      => item.port,
+			                                            'comment'   => item.comment,
+			                                            'last_edit' => item.last_edit,
+			                                            'created'   => item.created,
+			                                           }
 			           )
 		end
 
@@ -251,11 +247,10 @@ class MPW
 			next if item.empty?
 			next if not group.empty?    and not group.eql?(item.group.downcase)
 			
-			name    = item.name.to_s.downcase
 			host    = item.host.to_s.downcase
 			comment = item.comment.to_s.downcase
 
-			if not name =~ /^.*#{search}.*$/ and not host =~ /^.*#{search}.*$/ and not comment =~ /^.*#{search}.*$/ 
+			if not host =~ /^.*#{search}.*$/ and not comment =~ /^.*#{search}.*$/ 
 				next
 			end
 
@@ -281,19 +276,17 @@ class MPW
 	def export(file)
 		data = {}
 		@data.each do |item|
-			data.merge!(item.id => {'id'        => item.id,
-			                        'name'      => item.name,
-			                        'group'     => item.group,
-			                        'host'      => item.host,
-			                        'protocol'  => item.protocol,
-			                        'user'      => item.user,
-			                        'password'  => get_password(item.id),
-			                        'port'      => item.port,
-			                        'comment'   => item.comment,
-			                        'otp_key'   => get_otp_code(item.id),
-			                        'last_edit' => item.last_edit,
-			                        'created'   => item.created,
-			                       }
+			data.merge!("#{item.login}@#{item.host}" => {'group'     => item.group,
+			                                             'host'      => item.host,
+			                                             'protocol'  => item.protocol,
+			                                             'user'      => item.user,
+			                                             'password'  => get_password(item.id),
+			                                             'port'      => item.port,
+			                                             'comment'   => item.comment,
+			                                             'otp_key'   => get_otp_code(item.id),
+			                                             'last_edit' => item.last_edit,
+			                                             'created'   => item.created,
+			                                            }
 			            )
 		end
 
@@ -306,8 +299,7 @@ class MPW
 	# @args: file -> path to file import
 	def import(file)
 		YAML::load_file(file).each_value do |row| 
-			item = Item.new(name:     row['name'], 
-			                group:    row['group'],
+			item = Item.new(group:    row['group'],
 			                host:     row['host'],
 			                protocol: row['protocol'],
 			                user:     row['user'],
@@ -370,8 +362,7 @@ class MPW
 
 					# Update item
 					if item.last_edit < r.last_edit
-						item.update(name:      r.name,
-						            group:     r.group,
+						item.update(group:     r.group,
 						            host:      r.host,
 						            protocol:  r.protocol,
 						            user:      r.user,
@@ -398,9 +389,7 @@ class MPW
 		remote.list.each do |r|
 			next if r.last_edit <= get_last_sync
 
-			item = Item.new(id:        r.id,
-			                name:      r.name,
-			                group:     r.group,
+			item = Item.new(group:     r.group,
 			                host:      r.host,
 			                protocol:  r.protocol,
 			                user:      r.user,
