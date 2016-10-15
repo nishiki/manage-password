@@ -45,4 +45,7 @@ end.parse!
 
 config = MPW::Config.new(options[:config])
 cli    = MPW::Cli.new(config, nil, options[:sync], nil)
+
+cli.get_wallet(options[:wallet])
+cli.decrypt
 cli.add
