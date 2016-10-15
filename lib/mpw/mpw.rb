@@ -500,11 +500,11 @@ class MPW
 		recipients = []
 		crypto     = GPGME::Crypto.new(armor: true, always_trust: true)
 
+		recipients.push(@key)
 		@keys.each_key do |key|
+			next if key == @key
 			recipients.push(key)
 		end
-
-		recipients.push(@key) if not recipients.index(@key).nil?
 
 		return crypto.encrypt(data, recipients: recipients).read
 	rescue Exception => e 

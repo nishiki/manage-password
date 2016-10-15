@@ -79,9 +79,6 @@ class Cli
 	# Setup a new GPG key
 	# @args: gpg_key -> the key name
 	def setup_gpg_key(gpg_key)
-		puts I18n.t('form.setup_gpg_key.title')
-		puts '--------------------'
-		ask      = ask(I18n.t('form.setup_gpg_key.ask')).to_s
 		password = ask(I18n.t('form.setup_gpg_key.password')) {|q| q.echo = false}
 		confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) {|q| q.echo = false}
 
@@ -294,6 +291,8 @@ class Cli
 	# Display the wallet
 	# @args: wallet -> the wallet name
 	def get_wallet(wallet=nil)
+		@config.is_valid?
+
 		if wallet.to_s.empty?
 			wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
 
@@ -390,7 +389,7 @@ class Cli
 		@mpw.sync(true) if @sync
 
 		puts "#{I18n.t('form.add_item.valid')}".green
-	#rescue Exception => e
+	rescue Exception => e
 		puts "#{I18n.t('display.error')} #13: #{e}".red
 	end
 
