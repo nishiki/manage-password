@@ -1,0 +1,63 @@
+#!/usr/bin/ruby
+# MPW is a software to crypt and manage your passwords
+# Copyright (C) 2016  Adrien Waksberg <mpw@yae.im>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+require 'optparse'
+require 'mpw/config'
+require 'mpw/cli'
+
+# --------------------------------------------------------- #
+# Options
+# --------------------------------------------------------- #
+
+options = {}
+
+OptionParser.new do |opts|
+	opts.banner = "#{I18n.t('option.usage')}: mpw list [options]"
+
+	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
+		options[:config] = config
+	end
+
+	opts.on('-g', '--group GROUP', I18n.t('option.config')) do |group|
+		options[:group] = group
+	end
+
+	opts.on('-h', '--help', I18n.t('option.help')) do
+		puts opts
+		exit 0
+	end
+
+	opts.on('-p', '--pattern PATTERN', I18n.t('option.config')) do |pattern|
+		options[:pattern] = pattern
+	end
+
+	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
+		options[:wallet] = wallet
+	end
+end.parse!
+
+config = MPW::Config.new(options[:config])
+cli    = MPW::Cli.new(config, nil, options[:sync], nil)
+
+opts = { search: options[:pattern],
+         group:  options[:group],
+       }
+
+cli.get_wallet(options[:wallet])
+cli.decrypt
+cli.list(opts)

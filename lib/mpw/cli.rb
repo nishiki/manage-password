@@ -143,6 +143,38 @@ class Cli
 	end
 
 	# Display the query's result
+	# @args: options -> the option to search
+	def list(options={})
+		result = @mpw.list(options)
+
+		if result.length == 0
+			puts I18n.t('display.nothing')
+
+		else
+			group = '.'
+
+			result.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
+
+			result.each do |item|
+				if group != item.group
+					group = item.group
+
+					if group.to_s.empty?
+						puts I18n.t('display.no_group').yellow
+					else
+						puts "\n#{group}".yellow
+					end
+				end
+
+				print " |_ ".yellow
+				print "#{item.user}@#{item.host}"
+				print " -> #{item.comment}".magenta if not item.comment.to_s.empty?
+				print "\n"
+			end
+		end
+	end
+
+	# Display the query's result
 	# @args: search -> the string to search
 	#        protocol -> search from a particular protocol
 	def display(options={})
