@@ -154,23 +154,60 @@ class Cli
 			group = '.'
 
 			result.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
+			size  = {host: 10,
+			         user: 8,
+			         comment: 15,
+			         otp: 5,
+			        }
+
+			result.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
+
+			result.each do |item|
+				size[:host]    = item.host.length + 3    if item.host.to_s.length > size[:host]
+				size[:user]    = item.user.length + 3    if item.user.to_s.length > size[:user]
+				size[:comment] = item.comment.length + 3 if item.comment.to_s.length > size[:comment]
+			end
+			size[:max] = size[:host] + size[:user] + size[:comment] + size[:otp]
 
 			result.each do |item|
 				if group != item.group
 					group = item.group
 
 					if group.to_s.empty?
-						puts I18n.t('display.no_group').yellow
+						puts I18n.t('display.no_group').red
 					else
-						puts "\n#{group}".yellow
+						puts "\n#{group}".red
 					end
+
+					(size[:max] + 8).times { print '=' }
+					print "\n"
+					print '| Host'
+					(size[:host] - 'Host'.length).times { print ' ' }
+					print '| User'
+					(size[:user] - 'User'.length).times { print ' ' }
+					print '| OTP '
+					print '| Comment'
+					(size[:comment] - 'Comment'.length).times { print ' ' }
+					print "|\n"
+					(size[:max] + 8).times { print '=' }
+					print "\n"
 				end
 
-				print " |_ ".yellow
-				print "#{item.user}@#{item.host}"
-				print " -> #{item.comment}".magenta if not item.comment.to_s.empty?
-				print "\n"
+				print '| '
+				print "#{item.host}".yellow
+				(size[:host] - item.host.to_s.length).times { print ' ' }
+				print '| '
+				print "#{item.user}".green
+				(size[:user] - item.user.to_s.length).times { print ' ' }
+				print '| '
+				4.times { print ' ' }
+				print '| '
+				print "#{item.comment}".magenta
+				(size[:comment] - item.comment.to_s.length).times { print ' ' }
+				print "|\n"
 			end
+
+			print "\n"
 		end
 	end
 
