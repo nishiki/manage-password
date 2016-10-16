@@ -82,7 +82,8 @@ class MPW
 
 		if not data.nil? and not data.empty?
 			YAML.load(data).each_value do |d|
-				@data.push(Item.new(group:     d['group'],
+				@data.push(Item.new(id:        d['id'],
+				                    group:     d['group'],
 				                    host:      d['host'],
 				                    protocol:  d['protocol'],
 				                    user:      d['user'],
@@ -108,7 +109,8 @@ class MPW
 		@data.each do |item|
 			next if item.empty?
 
-			data.merge!("#{item.user}@#{item.host}" => {'group'     => item.group,
+			data.merge!("#{item.user}@#{item.host}" => {'id'        => item.id,
+			                                            'group'     => item.group,
 			                                            'host'      => item.host,
 			                                            'protocol'  => item.protocol,
 			                                            'user'      => item.user,
@@ -389,7 +391,8 @@ class MPW
 		remote.list.each do |r|
 			next if r.last_edit <= get_last_sync
 
-			item = Item.new(group:     r.group,
+			item = Item.new(id:        r.id,
+			                group:     r.group,
 			                host:      r.host,
 			                protocol:  r.protocol,
 			                user:      r.user,
