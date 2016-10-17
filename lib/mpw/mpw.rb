@@ -110,16 +110,16 @@ class MPW
 		@data.each do |item|
 			next if item.empty?
 
-			data.merge!("#{item.user}@#{item.host}" => {'id'        => item.id,
-			                                            'group'     => item.group,
-			                                            'host'      => item.host,
-			                                            'protocol'  => item.protocol,
-			                                            'user'      => item.user,
-			                                            'port'      => item.port,
-			                                            'comment'   => item.comment,
-			                                            'last_edit' => item.last_edit,
-			                                            'created'   => item.created,
-			                                           }
+			data.merge!(item.id => { 'id'        => item.id,
+			                         'group'     => item.group,
+			                         'host'      => item.host,
+			                         'protocol'  => item.protocol,
+			                         'user'      => item.user,
+			                         'port'      => item.port,
+			                         'comment'   => item.comment,
+			                         'last_edit' => item.last_edit,
+			                         'created'   => item.created,
+			                       }
 			           )
 		end
 
