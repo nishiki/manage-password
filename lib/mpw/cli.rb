@@ -142,6 +142,79 @@ class Cli
 		exit 2
 	end
 
+	# Format items on a table
+	def table(items=[])
+		group        = '.'
+		i            = 1
+		length_total = 10
+		length       = { id: 3,
+		                 host: 10,
+		                 user: 8,
+		                 comment: 15,
+		                 otp: 5,
+		               }
+
+		items.each do |item|
+			length[:host]    = item.host.length + 3    if item.host.to_s.length > length[:host]
+			length[:user]    = item.user.length + 3    if item.user.to_s.length > length[:user]
+			length[:comment] = item.comment.length + 3 if item.comment.to_s.length > length[:comment]
+		end
+		length[:id]  = items.length.to_s.length + 2 if items.length.to_s.length > length[:id]
+		
+		length.each_value { |v| length_total += v }
+		items.sort!       { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
+
+		items.each do |item|
+			if group != item.group
+				group = item.group
+
+				if group.to_s.empty?
+					puts "\n#{I18n.t('display.no_group')}".red
+				else
+					puts "\n#{group}".red
+				end
+
+				print ' '
+				length_total.times { print '=' }
+				print "\n "
+				print ' ID '
+				print '| Host'
+				(length[:host] - 'Host'.length).times { print ' ' }
+				print '| User'
+				(length[:user] - 'User'.length).times { print ' ' }
+				print '| OTP '
+				print '| Comment'
+				(length[:comment] - 'Comment'.length).times { print ' ' }
+				print "\n "
+				length_total.times { print '=' }
+				print "\n"
+			end
+
+			print "  #{i}".cyan
+			(length[:id] - i.to_s.length).times { print ' ' }
+			print '| '
+			print "#{item.host}".yellow
+			(length[:host] - item.host.to_s.length).times { print ' ' }
+			print '| '
+			print "#{item.user}".green
+			(length[:user] - item.user.to_s.length).times { print ' ' }
+			print '| '
+			if item.otp
+				print ' X  '
+			else
+				4.times { print ' ' }
+			end
+			print '| '
+			print "#{item.comment}".magenta
+			(length[:comment] - item.comment.to_s.length).times { print ' ' }
+			print "\n"
+
+			i += 1
+		end
+
+		print "\n"
+	end
+
 	# Display the query's result
 	# @args: options -> the option to search
 	def list(options={})
@@ -151,63 +224,7 @@ class Cli
 			puts I18n.t('display.nothing')
 
 		else
-			group = '.'
-
-			result.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
-			size  = {host: 10,
-			         user: 8,
-			         comment: 15,
-			         otp: 5,
-			        }
-
-			result.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
-
-			result.each do |item|
-				size[:host]    = item.host.length + 3    if item.host.to_s.length > size[:host]
-				size[:user]    = item.user.length + 3    if item.user.to_s.length > size[:user]
-				size[:comment] = item.comment.length + 3 if item.comment.to_s.length > size[:comment]
-			end
-			size[:max] = size[:host] + size[:user] + size[:comment] + size[:otp]
-
-			result.each do |item|
-				if group != item.group
-					group = item.group
-
-					if group.to_s.empty?
-						puts I18n.t('display.no_group').red
-					else
-						puts "\n#{group}".red
-					end
-
-					(size[:max] + 8).times { print '=' }
-					print "\n"
-					print '| Host'
-					(size[:host] - 'Host'.length).times { print ' ' }
-					print '| User'
-					(size[:user] - 'User'.length).times { print ' ' }
-					print '| OTP '
-					print '| Comment'
-					(size[:comment] - 'Comment'.length).times { print ' ' }
-					print "|\n"
-					(size[:max] + 8).times { print '=' }
-					print "\n"
-				end
-
-				print '| '
-				print "#{item.host}".yellow
-				(size[:host] - item.host.to_s.length).times { print ' ' }
-				print '| '
-				print "#{item.user}".green
-				(size[:user] - item.user.to_s.length).times { print ' ' }
-				print '| '
-				4.times { print ' ' }
-				print '| '
-				print "#{item.comment}".magenta
-				(size[:comment] - item.comment.to_s.length).times { print ' ' }
-				print "|\n"
-			end
-
-			print "\n"
+			table(result)
 		end
 	end
 
