@@ -242,12 +242,12 @@ class MPW
 	def list(options={})
 		result = []
 
-		search   = options[:search].to_s.downcase
-		group    = options[:group].to_s.downcase
+		search = options[:search].to_s.downcase
+		group  = options[:group].to_s.downcase
 
 		@data.each do |item|
 			next if item.empty?
-			next if not group.empty?    and not group.eql?(item.group.downcase)
+			next if not group.empty? and not group.eql?(item.group.to_s.downcase)
 			
 			host    = item.host.to_s.downcase
 			comment = item.comment.to_s.downcase
