@@ -27,6 +27,7 @@ class Item
 	attr_accessor :protocol
 	attr_accessor :user
 	attr_accessor :port
+	attr_accessor :otp
 	attr_accessor :comment
 	attr_accessor :last_edit
 	attr_accessor :last_sync
@@ -66,6 +67,7 @@ class Item
 		@protocol  = options[:protocol]   if options.has_key?(:protocol)
 		@user      = options[:user]       if options.has_key?(:user)
 		@port      = options[:port].to_i  if options.has_key?(:port) and not options[:port].to_s.empty?
+		@otp       = options[:otp]        if options.has_key?(:otp)
 		@comment   = options[:comment]    if options.has_key?(:comment)
 		@last_edit = Time.now.to_i        if not options.has_key?(:no_update_last_edit)
 	end
@@ -83,6 +85,7 @@ class Item
 		@protocol  = nil
 		@user      = nil
 		@port      = nil
+		@otp       = nil
 		@comment   = nil
 		@created   = nil
 		@last_edit = nil

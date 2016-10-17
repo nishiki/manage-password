@@ -88,6 +88,7 @@ class MPW
 				                    protocol:  d['protocol'],
 				                    user:      d['user'],
 				                    port:      d['port'],
+				                    otp:       @otp_keys.has_key?(d['id']),
 				                    comment:   d['comment'],
 				                    last_edit: d['last_edit'],
 				                    created:   d['created'],
@@ -277,19 +278,23 @@ class MPW
 	# @args: file -> file where you export the data
 	def export(file)
 		data = {}
+		i    = 1
+
 		@data.each do |item|
-			data.merge!("#{item.login}@#{item.host}" => {'group'     => item.group,
-			                                             'host'      => item.host,
-			                                             'protocol'  => item.protocol,
-			                                             'user'      => item.user,
-			                                             'password'  => get_password(item.id),
-			                                             'port'      => item.port,
-			                                             'comment'   => item.comment,
-			                                             'otp_key'   => get_otp_code(item.id),
-			                                             'last_edit' => item.last_edit,
-			                                             'created'   => item.created,
-			                                            }
+			data.merge!(i => { 'group'     => item.group,
+			                   'host'      => item.host,
+			                   'protocol'  => item.protocol,
+			                   'user'      => item.user,
+			                   'password'  => get_password(item.id),
+			                   'port'      => item.port,
+			                   'comment'   => item.comment,
+			                   'otp_key'   => get_otp_code(item.id),
+			                   'last_edit' => item.last_edit,
+			                   'created'   => item.created,
+			                 }
 			            )
+
+			i += 1
 		end
 
 		File.open(file, 'w') {|f| f << data.to_yaml}
