@@ -228,53 +228,19 @@ class Cli
 		end
 	end
 
-	# Display the query's result
-	# @args: search -> the string to search
-	#        protocol -> search from a particular protocol
-	def display(options={})
-		result = @mpw.list(options)
+	# Get an item when multiple choice
+	# @args: items -> array of items
+	# @rtrn: item
+	def get_item(items)
+		return items[0] if items.length == 1
 
-		case result.length
-		when 0
-			puts I18n.t('display.nothing')
+		items.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
+		choice = ask(I18n.t('form.select')).to_i
 
-		when 1
-			display_item(result.first)
-
+		if choice >= 1 and choice <= items.length
+			return items[choice-1]
 		else
-			group = nil
-			i     = 1
-
-			result.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
-
-			result.each do |item|
-				if group != item.group
-					group = item.group
-
-					if group.empty?
-						puts I18n.t('display.no_group').yellow
-					else
-						puts "\n#{group}".yellow
-					end
-				end
-
-				print " |_ ".yellow
-				print "#{i}: ".cyan
-				print item.name
-				print " -> #{item.comment}".magenta if not item.comment.to_s.empty?
-				print "\n"
-
-				i += 1
-			end
-
-			print "\n"
-			choice = ask(I18n.t('form.select')).to_i
-
-			if choice >= 1 and choice < i 
-				display_item(result[choice-1])
-			else
-				puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
-			end
+			return nil
 		end
 	end
 
@@ -480,17 +446,26 @@ class Cli
 	end
 
 	# Update an item
-	# @args: id -> the item's id
-	def update(item)
-		options = text_editor('update_form', item)
+	# @args: options -> the option to search
+	def update(options={})
+		items = @mpw.list(options)
+		
+		if items.length == 0
+			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+		else
+			table(items) if items.length > 1
 
-		item.update(options)
-		@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
-		@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
-		@mpw.write_data
-		@mpw.sync(true) if @sync
+			item    = get_item(items)
+			options = text_editor('update_form', item)
 
-		puts "#{I18n.t('form.update_item.valid')}".green
+			item.update(options)
+			@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
+			@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
+			@mpw.write_data
+			@mpw.sync(true) if @sync
+
+			puts "#{I18n.t('form.update_item.valid')}".green
+		end
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #14: #{e}".red
 	end
