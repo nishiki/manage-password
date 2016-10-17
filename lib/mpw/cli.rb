@@ -471,25 +471,30 @@ class Cli
 	end
 
 	# Remove an item
-	# @args: id -> the item's id
-	#        force -> no resquest a validation
-	def delete(item)
-		confirm = ask("#{I18n.t('form.delete_item.ask')} (y/N) ").to_s
+	# @args: options -> the option to search
+	def delete(options={})
+		items = @mpw.list(options)
+		
+		if items.length == 0
+			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+		else
+			table(items)
 
-		if not confirm =~ /^(y|yes|YES|Yes|Y)$/
-			return false
+			item    = get_item(items)
+			confirm = ask("#{I18n.t('form.delete_item.ask')} (y/N) ").to_s
+	
+			if not confirm =~ /^(y|yes|YES|Yes|Y)$/
+				return false
+			end
+	
+			item.delete
+			@mpw.write_data
+			@mpw.sync(true) if @sync
+	
+			puts "#{I18n.t('form.delete_item.valid')}".green
 		end
-
-		item.delete
-		@mpw.write_data
-		@mpw.sync(true) if @sync
-
-		puts "#{I18n.t('form.delete_item.valid')}".green
-
-		return true
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #16: #{e}".red
-		return false
 	end
 
 	# Export the items in a CSV file
