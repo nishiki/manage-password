@@ -509,7 +509,7 @@ class Cli
 			                   'password'  => @mpw.get_password(item.id),
 			                   'protocol'  => item.protocol,
 			                   'port'      => item.port,
-			                   'otp_key'   => @mpw.get_otp_code(item.id),
+			                   'otp_key'   => @mpw.get_otp_key(item.id),
 			                   'comment'   => item.comment,
 			                   'last_edit' => item.last_edit,
 			                   'created'   => item.created,
@@ -521,7 +521,7 @@ class Cli
 
 		File.open(file, 'w') {|f| f << data.to_yaml}
 
-		puts "#{I18n.t('export.export.valid', file)}".green
+		puts "#{I18n.t('export.valid', file)}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #17: #{e}".red
 	end

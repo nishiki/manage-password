@@ -403,8 +403,22 @@ class MPW
 	# args: id -> the item id
 	#       key -> the new key
 	def set_otp_key(id, key)
-		@otp_keys[id] = encrypt(key)
+		if not key.to_s.empty?
+			@otp_keys[id] = encrypt(key.to_s)
+		end
 	end
+
+	# Get an opt key
+	# args: id -> the item id
+	#       key -> the new key
+	def get_otp_key(id)
+		if @otp_keys.has_key?(id)
+			return decrypt(@otp_keys[id])
+		else
+			return nil
+		end
+	end
+
 
 	# Get an otp code
 	# @args: id -> the item id
