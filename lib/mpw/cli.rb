@@ -529,7 +529,26 @@ class Cli
 	# Import items from a YAML file
 	# @args: file -> the import file
 	def import(file)
-		@mpw.import(file)
+		raise I18n.t('import.file_empty')     if file.to_s.empty?
+		raise I18n.t('import.file_not_exist') if not File.exist?(file)
+
+		YAML::load_file(file).each_value do |row|
+
+			item = Item.new(group:    row['group'],
+			                host:     row['host'],
+			                protocol: row['protocol'],
+			                user:     row['user'],
+			                port:     row['port'],
+			                comment:  row['comment'],
+			               )
+
+			next if item.empty?
+
+			@mpw.add(item)
+			@mpw.set_password(item.id, row['password']) if not row['password'].to_s.empty?
+			@mpw.set_otp_key(item.id, row['otp_key'])   if not row['otp_key'].to_s.empty?
+		end
+
 		@mpw.write_data
 
 		puts "#{I18n.t('form.import.valid')}".green

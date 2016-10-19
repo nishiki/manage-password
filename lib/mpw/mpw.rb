@@ -274,28 +274,6 @@ class MPW
 		return nil
 	end
 
-	# Import to yaml
-	# @args: file -> path to file import
-	def import(file)
-		YAML::load_file(file).each_value do |row| 
-			item = Item.new(group:    row['group'],
-			                host:     row['host'],
-			                protocol: row['protocol'],
-			                user:     row['user'],
-			                port:     row['port'],
-			                comment:  row['comment'],
-			               )
-
-			raise 'Item is empty' if item.empty?
-
-			@data.push(item)
-			set_password(item.id, row['password']) if not row['password'].to_s.empty?
-			set_otp_code(item.id, row['otp_key'])  if not row['otp_key'].to_s.empty?
-		end
-	rescue Exception => e 
-		raise "#{I18n.t('error.import', file: file)}\n#{e}"
-	end
-
 	# Get last sync
 	def get_last_sync
 		return @config['sync']['last_sync'].to_i
