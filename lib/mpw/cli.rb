@@ -495,8 +495,31 @@ class Cli
 
 	# Export the items in a CSV file
 	# @args: file -> the destination file
-	def export(file)
-		@mpw.export(file)
+	#        options -> option to search
+	def export(file, options)
+		file  = 'export-mpw.yml' if file.to_s.empty?
+		items = @mpw.list(options)
+		data  = {}
+		i     = 1
+
+		items.each do |item|
+			data.merge!(i => { 'host'      => item.host,
+			                   'user'      => item.user,
+			                   'group'     => item.group,
+			                   'password'  => @mpw.get_password(item.id),
+			                   'protocol'  => item.protocol,
+			                   'port'      => item.port,
+			                   'otp_key'   => @mpw.get_otp_code(item.id),
+			                   'comment'   => item.comment,
+			                   'last_edit' => item.last_edit,
+			                   'created'   => item.created,
+			                 }
+			            )
+
+			i += 1
+		end
+
+		File.open(file, 'w') {|f| f << data.to_yaml}
 
 		puts "#{I18n.t('export.export.valid', file)}".green
 	rescue Exception => e

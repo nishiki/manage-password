@@ -274,34 +274,6 @@ class MPW
 		return nil
 	end
 
-	# Export to yaml
-	# @args: file -> file where you export the data
-	def export(file)
-		data = {}
-		i    = 1
-
-		@data.each do |item|
-			data.merge!(i => { 'group'     => item.group,
-			                   'host'      => item.host,
-			                   'protocol'  => item.protocol,
-			                   'user'      => item.user,
-			                   'password'  => get_password(item.id),
-			                   'port'      => item.port,
-			                   'comment'   => item.comment,
-			                   'otp_key'   => get_otp_code(item.id),
-			                   'last_edit' => item.last_edit,
-			                   'created'   => item.created,
-			                 }
-			            )
-
-			i += 1
-		end
-
-		File.open(file, 'w') {|f| f << data.to_yaml}
-	rescue Exception => e 
-		raise "#{I18n.t('error.export', file: file)}\n#{e}"
-	end
-
 	# Import to yaml
 	# @args: file -> path to file import
 	def import(file)
