@@ -340,6 +340,17 @@ class Cli
 		Clipboard.clear
 	end
 
+	# List all wallets
+	def list_wallet
+		@config.is_valid?
+
+		wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
+
+		wallets.each do |wallet|
+			puts File.basename(wallet, '.mpw')
+		end
+	end
+
 	# Display the wallet
 	# @args: wallet -> the wallet name
 	def get_wallet(wallet=nil)
@@ -354,22 +365,7 @@ class Cli
 			when 1
 				@wallet_file = wallets[0]
 			else
-				i = 1
-				wallets.each do |wallet|
-						print "#{i}: ".cyan
-						puts File.basename(wallet, '.mpw')
-
-						i += 1
-				end
-
-				choice = ask(I18n.t('form.select')).to_i
-
-				if choice >= 1 and choice < i
-					@wallet_file = wallets[choice-1]
-				else
-					puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
-					exit 2
-				end
+				@wallet_file = "#{@config.wallet_dir}/default.mpw"
 			end
 		else
 			@wallet_file = "#{@config.wallet_dir}/#{wallet}.mpw"
