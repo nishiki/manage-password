@@ -38,6 +38,10 @@ OptionParser.new do |opts|
 		exit 0
 	end
 
+	opts.on('-r', '--random', I18n.t('option.random_password')) do
+		options[:password] = true
+	end
+
 	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
 		options[:wallet] = wallet
 	end
@@ -48,4 +52,4 @@ cli    = MPW::Cli.new(config, options[:sync])
 
 cli.get_wallet(options[:wallet])
 cli.decrypt
-cli.add
+cli.add(options[:password])

@@ -368,7 +368,11 @@ class Cli
 		puts "#{I18n.t('display.error')} #15: #{e}".red
 	end
 
-	def text_editor(template_name, item=nil)
+	# Text editor interface
+	# @args: template -> template name
+	#        item -> the item to edit
+	#        password -> disable field password
+	def text_editor(template_name, item=nil, password=false)
 		editor        = ENV['EDITOR'] || 'nano'
 		options       = {}
 		opts          = {}
@@ -397,10 +401,15 @@ class Cli
 	end
 
 	# Form to add a new item
-	def add
-		options = text_editor('add_form')	
+	# @args: password -> generate a random password
+	def add(password=false)
+		options = text_editor('add_form', nil, password)	
 		item    = Item.new(options)
 
+		if password
+			options[:password] = MPW::password(length: 24)
+		end
+		
 		@mpw.add(item)
 		@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
 		@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
