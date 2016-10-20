@@ -27,9 +27,9 @@ require 'mpw/cli'
 options = {}
 
 OptionParser.new do |opts|
-	opts.banner = "#{I18n.t('option.usage')}: mpw [options]"
+	opts.banner = "#{I18n.t('option.usage')}: mpw add [options]"
 
-	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
+	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
 		options[:config] = config
 	end
 
@@ -38,7 +38,7 @@ OptionParser.new do |opts|
 		exit 0
 	end
 
-	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
+	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
 		options[:wallet] = wallet
 	end
 end.parse!

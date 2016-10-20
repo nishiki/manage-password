@@ -27,13 +27,13 @@ require 'mpw/cli'
 options = {}
 
 OptionParser.new do |opts|
-	opts.banner = "#{I18n.t('option.usage')}: mpw [options]"
+	opts.banner = "#{I18n.t('option.usage')}: mpw update [options]"
 
-	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
+	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
 		options[:config] = config
 	end
 
-	opts.on('-g', '--group GROUP', I18n.t('option.config')) do |group|
+	opts.on('-g', '--group NAME', I18n.t('option.group')) do |group|
 		options[:group] = group
 	end
 
@@ -42,11 +42,11 @@ OptionParser.new do |opts|
 		exit 0
 	end
 
-	opts.on('-p', '--pattern PATTERN', I18n.t('option.config')) do |pattern|
+	opts.on('-p', '--pattern PATTERN', I18n.t('option.pattern')) do |pattern|
 		options[:pattern] = pattern
 	end
 
-	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
+	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
 		options[:wallet] = wallet
 	end
 end.parse!

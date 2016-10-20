@@ -27,13 +27,13 @@ require 'mpw/cli'
 options = {}
 
 OptionParser.new do |opts|
-	opts.banner = "#{I18n.t('option.usage')}: mpw [options]"
+	opts.banner = "#{I18n.t('option.usage')}: mpw config [options]"
 
-	opts.on('-c', '--config CONFIG', I18n.t('option.config')) do |config|
+	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
 		options[:config] = config
 	end
 
-	opts.on('-g', '--gpg-exe PATH', I18n.t('option.lang')) do |gpg_exe|
+	opts.on('-g', '--gpg-exe PATH', I18n.t('option.gpg_exe')) do |gpg_exe|
 		options[:gpg_exe] = gpg_exe
 	end
 
@@ -42,11 +42,11 @@ OptionParser.new do |opts|
 		exit 0
 	end
 
-	opts.on('--init', I18n.t('option.init')) do
-		options[:init] = true
+	opts.on('-i', '--init GPG_KEY', I18n.t('option.init')) do |gpg_key|
+		options[:init] = gpg_key
 	end
 
-	opts.on('-k', '--key GPG_KEY', I18n.t('option.lang')) do |gpg_key|
+	opts.on('-k', '--key GPG_KEY', I18n.t('option.gpg_key')) do |gpg_key|
 		options[:gpg_key] = gpg_key
 	end
 
@@ -54,7 +54,7 @@ OptionParser.new do |opts|
 		options[:lang] = lang
 	end
 
-	opts.on('-w', '--wallet-dir LANG', I18n.t('option.lang')) do |wallet_dir|
+	opts.on('-w', '--wallet-dir PATH', I18n.t('option.wallet_dir')) do |wallet_dir|
 		options[:wallet_dir] = wallet_dir
 	end
 end.parse!
@@ -64,9 +64,8 @@ cli    = MPW::Cli.new(config, nil, nil, nil)
 
 if not options[:init].nil?
 	cli.setup(options)
-	cli.setup_gpg_key(options[:gpg_key]) if not config.check_gpg_key?
+	cli.setup_gpg_key(options[:init])
 	cli.setup_wallet_config
-	exit 0
+else
+	cli.set_config(options)
 end
-
-cli.set_config(options)

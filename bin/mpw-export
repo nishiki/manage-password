@@ -33,11 +33,11 @@ OptionParser.new do |opts|
 		options[:config] = config
 	end
 
-	opts.on('-f', '--file PATH', I18n.t('option.file')) do |file|
+	opts.on('-f', '--file PATH', I18n.t('option.file_export')) do |file|
 		options[:file] = file
 	end
 
-	opts.on('-g', '--group GROUP', I18n.t('option.config')) do |group|
+	opts.on('-g', '--group GROUP', I18n.t('option.group')) do |group|
 		options[:group] = group
 	end
 
@@ -46,11 +46,11 @@ OptionParser.new do |opts|
 		exit 0
 	end
 
-	opts.on('-p', '--pattern PATTERN', I18n.t('option.config')) do |pattern|
+	opts.on('-p', '--pattern PATTERN', I18n.t('option.pattern')) do |pattern|
 		options[:pattern] = pattern
 	end
 
-	opts.on('-w', '--wallet WALLET', I18n.t('option.wallet')) do |wallet|
+	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
 		options[:wallet] = wallet
 	end
 end.parse!

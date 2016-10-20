@@ -22,7 +22,7 @@ require 'mpw/mpw'
 options = {}
 
 OptionParser.new do |opts|
-	opts.banner = "#{I18n.t('option.usage')}: mpw-passwd [options]"
+	opts.banner = "#{I18n.t('option.usage')}: mpw passwd [options]"
 
 	opts.on('-h', '--help', I18n.t('option.help')) do
 		puts opts
