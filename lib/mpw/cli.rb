@@ -95,27 +95,17 @@ class Cli
 	end
 
 	# Setup wallet config for sync
-	# @args: wallet -> the wallet name
-	def setup_wallet_config(wallet = nil)
-		#config         = {}
-		#config['sync'] = {}
+	# @args: options -> value to change
+	def setup_wallet_config(options={})
+		if not options[:password].nil?
+			options[:password] = ask(I18n.t('form.setup_wallet.password')) {|q| q.echo = false}
+		end
 
-		#puts '--------------------'
-		#config['sync']['type']     = ask(I18n.t('form.setup_wallet.sync_type')).to_s
+		#wallet_file = wallet.nil? ? "#{@config.wallet_dir}/default.mpw" : "#{@config.wallet_dir}/#{wallet}.mpw"
 
-		#if ['ftp', 'ssh'].include?(config['sync']['type'].downcase)
-		#	config['sync']['host']     = ask(I18n.t('form.setup_wallet.sync_host')).to_s
-		#	config['sync']['port']     = ask(I18n.t('form.setup_wallet.sync_port')).to_s
-		#	config['sync']['user']     = ask(I18n.t('form.setup_wallet.sync_user')).to_s
-		#	config['sync']['password'] = ask(I18n.t('form.setup_wallet.sync_pwd')).to_s
-		#	config['sync']['path']     = ask(I18n.t('form.setup_wallet.sync_path')).to_s
-		#end
-
-		wallet_file = wallet.nil? ? "#{@config.wallet_dir}/default.mpw" : "#{@config.wallet_dir}/#{wallet}.mpw"
-
-		@mpw = MPW.new(@config.key, wallet_file, @password, @config.gpg_exe)
+		@mpw = MPW.new(@config.key, @wallet_file, @password, @config.gpg_exe)
 		@mpw.read_data
-		@mpw.set_config
+		@mpw.set_config(options)
 		@mpw.write_data
 
 		puts "#{I18n.t('form.setup_wallet.valid')}".green

@@ -25,6 +25,7 @@ require 'mpw/cli'
 # --------------------------------------------------------- #
 
 options = {}
+values  = {}
 
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw wallet [options]"
@@ -38,6 +39,34 @@ OptionParser.new do |opts|
 		exit 0
 	end
 
+	opts.on('--host NAME', I18n.t('option.host')) do |host|
+		values[:host] = host
+	end
+
+	opts.on('-l', '--list', I18n.t('option.list')) do |list|
+		options[:list] = true
+	end
+
+	opts.on('--password', I18n.t('option.password')) do
+		values[:password] = true
+	end
+
+	opts.on('--path PATH', I18n.t('option.path')) do |path|
+		values[:path] = path
+	end
+
+	opts.on('--port NUMBER', I18n.t('option.port')) do |port|
+		values[:port] = port
+	end
+
+	opts.on('--protocol NAME', I18n.t('option.protocol')) do |protocol|
+		values[:protocol] = protocol
+	end
+
+	opts.on('--user NAME', I18n.t('option.user')) do |user|
+		values[:user] = user
+	end
+
 	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
 		options[:wallet] = wallet
 	end
@@ -46,4 +75,10 @@ end.parse!
 config = MPW::Config.new(options[:config])
 cli    = MPW::Cli.new(config, options[:sync])
 
-cli.list_wallet
+if not options[:list].nil?
+	cli.list_wallet
+else
+	cli.get_wallet(options[:wallet])
+	cli.decrypt
+	cli.setup_wallet_config(values)
+end

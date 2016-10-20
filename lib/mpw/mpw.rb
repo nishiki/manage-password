@@ -210,19 +210,16 @@ class MPW
 
 	# Set config
 	# args: config -> a hash with config options
-	def set_config(config=nil)
-		@config         = {} if @config.nil?
-		@config['sync'] = {} if @config['sync'].nil?
+	def set_config(options={})
+		@config              = {} if @config.nil?
 
-		return if config.to_s.empty?
-
-		@config['sync']['type']      = config['sync']['type']
-		@config['sync']['host']      = config['sync']['host']
-		@config['sync']['port']      = config['sync']['port']
-		@config['sync']['user']      = config['sync']['user']
-		@config['sync']['password']  = config['sync']['password']
-		@config['sync']['path']      = config['sync']['path']
-		@config['sync']['last_sync'] = @config['sync']['last_sync'].nil? ? 0 : @config['sync']['last_sync']
+		@config['protocol']  = options[:protocol] if options.has_key?(:protocol)
+		@config['host']      = options[:host]     if options.has_key?(:host)
+		@config['port']      = options[:port]     if options.has_key?(:port)
+		@config['user']      = options[:user]     if options.has_key?(:user)
+		@config['password']  = options[:password] if options.has_key?(:password)
+		@config['path']      = options[:path]     if options.has_key?(:path)
+		@config['last_sync'] = @config['last_sync'].nil? ? 0 : @config['last_sync']
 	end
 
 	# Add a new item
@@ -276,7 +273,7 @@ class MPW
 
 	# Get last sync
 	def get_last_sync
-		return @config['sync']['last_sync'].to_i
+		return @config['last_sync'].to_i
 	rescue
 		return 0
 	end
@@ -284,12 +281,12 @@ class MPW
 	# Sync data with remote file
 	# @args: force -> force the sync
 	def sync(force=false)
-		return if @config.empty? or @config['sync']['type'].to_s.empty?
+		return if @config.empty? or @config['protocol'].to_s.empty?
 		return if get_last_sync + 300 > Time.now.to_i and not force
 
 		tmp_file  = "#{@wallet_file}.sync"
 		
-		case @config['sync']['type']
+		case @config['protocol']
 		when 'sftp', 'scp', 'ssh'
 			require "mpw/sync/ssh"
 			sync = SyncSSH.new(@config['sync'])
@@ -367,7 +364,7 @@ class MPW
 			item.set_last_sync
 		end
 
-		@config['sync']['last_sync'] = Time.now.to_i
+		@config['last_sync'] = Time.now.to_i
 
 		write_data
 		sync.update(@wallet_file)
