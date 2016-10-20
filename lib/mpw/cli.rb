@@ -314,19 +314,12 @@ class Cli
 				Clipboard.copy(@mpw.get_otp_code(item.id))
 				puts I18n.t('form.clipboard.otp', time: @mpw.get_otp_remaining_time).yellow
 
-			when 'd', 'delete'
-				break if delete(item)
-
-			when 'u', 'update', 'e', 'edit'
-				update(item)
-
 			else
 				puts "----- #{I18n.t('form.clipboard.help.name')} -----".cyan
 				puts I18n.t('form.clipboard.help.login')
 				puts I18n.t('form.clipboard.help.password')
 				puts I18n.t('form.clipboard.help.otp_code')
-				puts I18n.t('form.clipboard.help.update')
-				puts I18n.t('form.clipboard.help.delete')
+				puts I18n.t('form.clipboard.help.quit')
 				next
 			end
 		end
@@ -487,6 +480,23 @@ class Cli
 		end
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #16: #{e}".red
+	end
+
+	# Copy a password, otp, login
+	# @args: options -> the option to search
+	def copy(options={})
+		items = @mpw.list(options)
+		
+		if items.length == 0
+			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+		else
+			table(items)
+
+			item = get_item(items)
+			clipboard(item)
+		end
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #14: #{e}".red
 	end
 
 	# Export the items in a CSV file

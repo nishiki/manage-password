@@ -89,8 +89,7 @@ fr:
          login: "Pressez <l> pour copier l'identifiant"
          password: "Pressez <p> pour copier le mot de passe"
          otp_code: "Pressez <o> pour copier le code OTP"
-         update: "Pressez <u> pour mettre à jour l'élément"
-         delete: "Pressez <d> pour supprimer l'élément"
+         quit: "Pressez <q> pour quitter"
     delete_key:
       valid: "La clé a bien été supprimée!"
     delete_item:

@@ -89,8 +89,7 @@ en:
          login: "Press <l> to copy the login"
          password: "Press <p> to copy the password"
          otp_code: "Press <o> to copy the otp code"
-         update: "Press <u> to update the item"
-         delete: "Press <d> to delete the item"
+         quit: "Press <q> to quit"
     delete_key:
       valid: "Key has been deleted!"
     delete_item:
