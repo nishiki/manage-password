@@ -143,22 +143,26 @@ class Cli
 		group        = '.'
 		i            = 1
 		length_total = 10
-		length       = { id: 3,
-		                 host: 10,
-		                 user: 8,
-		                 comment: 15,
-		                 otp: 5,
+		data         = { id:       { length: 3,  color: 'cyan' },
+		                 host:     { length: 9, color: 'yellow' },
+		                 user:     { length: 7,  color: 'green' },
+		                 protocol: { length: 9,  color: 'white' },
+		                 port:     { length: 5,  color: 'white' },
+		                 otp:      { length: 4,  color: 'white' },
+		                 comment:  { length: 14, color: 'magenta' },
 		               }
 
 		items.each do |item|
-			length[:host]    = item.host.length + 3    if item.host.to_s.length > length[:host]
-			length[:user]    = item.user.length + 3    if item.user.to_s.length > length[:user]
-			length[:comment] = item.comment.length + 3 if item.comment.to_s.length > length[:comment]
+			data.each do |k, v|
+				next if k == :id or k == :otp
+
+				v[:length] = item.send(k.to_s).length + 3 if item.send(k.to_s).to_s.length > v[:length]
+			end
 		end
-		length[:id]  = items.length.to_s.length + 2 if items.length.to_s.length > length[:id]
+		data[:id][:length]  = items.length.to_s.length + 2 if items.length.to_s.length > data[:id][:length]
 		
-		length.each_value { |v| length_total += v }
-		items.sort!       { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
+		data.each_value { |v| length_total += v[:length] }
+		items.sort!     { |a, b| a.group.to_s.downcase <=> b.group.to_s.downcase }
 
 		items.each do |item|
 			if group != item.group
@@ -173,36 +177,39 @@ class Cli
 				print ' '
 				length_total.times { print '=' }
 				print "\n "
-				print ' ID '
-				print '| Host'
-				(length[:host] - 'Host'.length).times { print ' ' }
-				print '| User'
-				(length[:user] - 'User'.length).times { print ' ' }
-				print '| OTP '
-				print '| Comment'
-				(length[:comment] - 'Comment'.length).times { print ' ' }
+				data.each do |k, v|
+					case k
+					when :id
+						print ' ID'
+					when :otp
+						print '| OTP'
+					else
+						print "| #{k.to_s.capitalize}"
+					end
+
+					(v[:length] - k.to_s.length).times { print ' ' }
+				end
 				print "\n "
 				length_total.times { print '=' }
 				print "\n"
 			end
 
-			print "  #{i}".cyan
-			(length[:id] - i.to_s.length).times { print ' ' }
-			print '| '
-			print "#{item.host}".yellow
-			(length[:host] - item.host.to_s.length).times { print ' ' }
-			print '| '
-			print "#{item.user}".green
-			(length[:user] - item.user.to_s.length).times { print ' ' }
-			print '| '
-			if item.otp
-				print ' X  '
-			else
-				4.times { print ' ' }
+			print "  #{i}".send(data[:id][:color])
+			(data[:id][:length] - i.to_s.length).times { print ' ' }
+			data.each do |k, v|
+				next if k == :id
+
+				if k == :otp
+					print '| '
+					if item.otp;  print ' X  ' else 4.times { print ' ' } end
+
+					next
+				end
+
+				print '| '
+				print "#{item.send(k.to_s)}".send(v[:color])
+				(v[:length] - item.send(k.to_s).to_s.length).times { print ' ' }
 			end
-			print '| '
-			print "#{item.comment}".magenta
-			(length[:comment] - item.comment.to_s.length).times { print ' ' }
 			print "\n"
 
 			i += 1
