@@ -32,7 +32,7 @@ class Cli
 	# Constructor
 	# @args: config -> the config
 	#        sync -> boolean for sync or not
-	def initialize(config,sync=true)
+	def initialize(config, sync=true)
 		@config    = config
 		@sync      = sync
 	end
@@ -54,7 +54,7 @@ class Cli
 	end
 
 	# Create a new config file
-	# @args: language -> the software language
+	# @args: options -> set param
 	def setup(options)
 		@config.is_valid?
 
@@ -75,6 +75,8 @@ class Cli
 	# Setup a new GPG key
 	# @args: gpg_key -> the key name
 	def setup_gpg_key(gpg_key)
+		return if @config.check_gpg_key?
+
 		password = ask(I18n.t('form.setup_gpg_key.password')) {|q| q.echo = false}
 		confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) {|q| q.echo = false}
 
@@ -320,10 +322,7 @@ class Cli
 		if wallet.to_s.empty?
 			wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
 
-			case wallets.length
-			when 0
-				puts I18n.t('display.nothing')
-			when 1
+			if wallets.length == 1
 				@wallet_file = wallets[0]
 			else
 				@wallet_file = "#{@config.wallet_dir}/default.mpw"
