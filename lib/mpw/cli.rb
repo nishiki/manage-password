@@ -32,13 +32,9 @@ class Cli
 	# Constructor
 	# @args: config -> the config
 	#        sync -> boolean for sync or not
-	#        clipboard -> enable clopboard
-	#        otp -> enable otp
-	def initialize(config, clipboard=true, sync=true, otp=false)
+	def initialize(config,sync=true)
 		@config    = config
-		@clipboard = clipboard
 		@sync      = sync
-		@otp       = otp
 	end
 
 	# Change a parameter int the config after init

@@ -52,7 +52,7 @@ OptionParser.new do |opts|
 end.parse!
 
 config = MPW::Config.new(options[:config])
-cli    = MPW::Cli.new(config, nil, options[:sync], nil)
+cli    = MPW::Cli.new(config, options[:sync])
 
 opts = { search: options[:pattern],
          group:  options[:group],

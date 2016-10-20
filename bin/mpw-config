@@ -60,7 +60,7 @@ OptionParser.new do |opts|
 end.parse!
 
 config = MPW::Config.new(options[:config])
-cli    = MPW::Cli.new(config, nil, nil, nil)
+cli    = MPW::Cli.new(config, nil)
 
 if not options[:init].nil?
 	cli.setup(options)
