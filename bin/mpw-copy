@@ -25,12 +25,17 @@ require 'mpw/cli'
 # --------------------------------------------------------- #
 
 options = {}
+options[:clipboard] = true
 
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw copy [options]"
 
 	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
 		options[:config] = config
+	end
+
+	opts.on('-d', '--disable-clipboard', I18n.t('option.clipboard')) do
+		options[:clipboard] = false
 	end
 
 	opts.on('-g', '--group NAME', I18n.t('option.group')) do |group|
@@ -60,4 +65,4 @@ opts = { search: options[:pattern],
 
 cli.get_wallet(options[:wallet])
 cli.decrypt
-cli.copy(opts)
+cli.copy(options[:clipboard], opts)

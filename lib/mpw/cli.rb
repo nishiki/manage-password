@@ -287,7 +287,8 @@ class Cli
 
 	# Copy in clipboard the login and password
 	# @args: item -> the item
-	def clipboard(item)
+	#        clipboard -> enable clipboard
+	def clipboard(item, clipboard=true)
 		pid = nil
 
 		# Security: force quit after 90s
@@ -304,21 +305,33 @@ class Cli
 				break
 
 			when 'l', 'login'
-				Clipboard.copy(item.user)
-				puts I18n.t('form.clipboard.login').green
+				if clipboard
+					Clipboard.copy(item.user)
+					puts I18n.t('form.clipboard.login').green
+				else
+					puts item.user
+				end
 
 			when 'p', 'password'
-				Clipboard.copy(@mpw.get_password(item.id))
-				puts I18n.t('form.clipboard.password').yellow
+				if clipboard
+					Clipboard.copy(@mpw.get_password(item.id))
+					puts I18n.t('form.clipboard.password').yellow
 
-				Thread.new do
-					sleep 30
+					Thread.new do
+						sleep 30
 
-					Clipboard.clear
+						Clipboard.clear
+					end
+				else
+					puts @mpw.get_password(item.id)
 				end
 
 			when 'o', 'otp'
-				Clipboard.copy(@mpw.get_otp_code(item.id))
+				if clipboard
+					Clipboard.copy(@mpw.get_otp_code(item.id))
+				else
+					puts @mpw.get_otp_code(item.id)
+				end
 				puts I18n.t('form.clipboard.otp', time: @mpw.get_otp_remaining_time).yellow
 
 			else
@@ -490,8 +503,9 @@ class Cli
 	end
 
 	# Copy a password, otp, login
-	# @args: options -> the option to search
-	def copy(options={})
+	# @args: clipboard -> enable clipboard
+	#        options -> the option to search
+	def copy(clipboard=true, options={})
 		items = @mpw.list(options)
 		
 		if items.length == 0
@@ -500,7 +514,7 @@ class Cli
 			table(items)
 
 			item = get_item(items)
-			clipboard(item)
+			clipboard(item, clipboard)
 		end
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #14: #{e}".red
