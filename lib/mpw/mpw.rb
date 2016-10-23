@@ -240,7 +240,7 @@ class MPW
 	def list(options={})
 		result = []
 
-		search = options[:search].to_s.downcase
+		search = options[:pattern].to_s.downcase
 		group  = options[:group].to_s.downcase
 
 		@data.each do |item|

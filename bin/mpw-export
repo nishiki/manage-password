@@ -25,6 +25,7 @@ require 'mpw/cli'
 # --------------------------------------------------------- #
 
 options = {}
+values  = {}
 
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw wallet [options]"
@@ -38,7 +39,7 @@ OptionParser.new do |opts|
 	end
 
 	opts.on('-g', '--group GROUP', I18n.t('option.group')) do |group|
-		options[:group] = group
+		values[:group] = group
 	end
 
 	opts.on('-h', '--help', I18n.t('option.help')) do
@@ -47,7 +48,7 @@ OptionParser.new do |opts|
 	end
 
 	opts.on('-p', '--pattern PATTERN', I18n.t('option.pattern')) do |pattern|
-		options[:pattern] = pattern
+		values[:pattern] = pattern
 	end
 
 	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
@@ -58,11 +59,7 @@ end.parse!
 config = MPW::Config.new(options[:config])
 cli    = MPW::Cli.new(config, options[:sync])
 
-opts = { search: options[:pattern],
-         group:  options[:group],
-       }
-
 cli.load_config
 cli.get_wallet(options[:wallet])
 cli.decrypt
-cli.export(options[:file], opts)
+cli.export(options[:file], values)
