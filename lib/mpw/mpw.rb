@@ -289,10 +289,10 @@ class MPW
 		case @config['protocol']
 		when 'sftp', 'scp', 'ssh'
 			require "mpw/sync/ssh"
-			sync = SyncSSH.new(@config['sync'])
+			sync = SyncSSH.new(@config)
 		when 'ftp'
 			require 'mpw/sync/ftp'
-			sync = SyncFTP.new(@config['sync'])
+			sync = SyncFTP.new(@config)
 		else
 			raise I18n.t('error.sync.unknown_type')
 		end

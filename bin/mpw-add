@@ -24,7 +24,8 @@ require 'mpw/cli'
 # Options
 # --------------------------------------------------------- #
 
-options = {}
+options        = {}
+options[:sync] = true
 
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw add [options]"
@@ -36,6 +37,10 @@ OptionParser.new do |opts|
 	opts.on('-h', '--help', I18n.t('option.help')) do
 		puts opts
 		exit 0
+	end
+
+	opts.on('-n', '--no-sync', I18n.t('option.no_sync')) do
+		options[:sync] = false
 	end
 
 	opts.on('-r', '--random', I18n.t('option.random_password')) do

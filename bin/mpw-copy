@@ -24,7 +24,8 @@ require 'mpw/cli'
 # Options
 # --------------------------------------------------------- #
 
-options = {}
+options             = {}
+options[:sync]      = true
 options[:clipboard] = true
 values              = {}
 
