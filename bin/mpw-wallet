@@ -75,6 +75,8 @@ end.parse!
 config = MPW::Config.new(options[:config])
 cli    = MPW::Cli.new(config, options[:sync])
 
+cli.load_config
+
 if not options[:list].nil?
 	cli.list_wallet
 else

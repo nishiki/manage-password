@@ -3,7 +3,7 @@ fr:
   error:
     config:
       write: "Impossible d'écrire le fichier de configuration!"
-      check: "Le fichier de configuration est invalide!"
+      load: "Le fichier de configuration est invalide!"
       key_bad_format: "La clé GPG est invalide!"
       no_key_public: "Vous ne possédez pas la clé publique de %{key}!"
       genkey_gpg:

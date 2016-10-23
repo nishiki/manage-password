@@ -65,11 +65,10 @@ class Config
 			wallet_dir = "#{@config_dir}/wallets"
 		end
 
-		config = {'config' => {'key'        => key,
-		                       'lang'       => lang,
-		                       'wallet_dir' => wallet_dir,
-		                       'gpg_exe'    => gpg_exe,
-		                      }
+		config = { 'key'        => key,
+		           'lang'       => lang,
+		           'wallet_dir' => wallet_dir,
+		           'gpg_exe'    => gpg_exe,
 		         }
 
 		FileUtils.mkdir_p(wallet_dir, mode: 0700)
@@ -113,22 +112,20 @@ class Config
 		raise "#{I18n.t('error.config.genkey_gpg.exception')}\n#{e}"
 	end
 
-	# Check the config file
-	# @rtrn: true if the config file is correct
-	def is_valid?
+	# Load the config file
+	def load_config
 		config      = YAML::load_file(@config_file)
-		@key        = config['config']['key']
-		@lang       = config['config']['lang']
-		@wallet_dir = config['config']['wallet_dir']
-		@gpg_exe    = config['config']['gpg_exe']
+		@key        = config['key']
+		@lang       = config['lang']
+		@wallet_dir = config['wallet_dir']
+		@gpg_exe    = config['gpg_exe']
 
 		raise if @key.empty? or @wallet_dir.empty?
 			
 		I18n.locale = @lang.to_sym
 
-		return true
-	rescue
-		return false
+	rescue Exception => e
+		raise "#{I18n.t('error.config.load')}\n#{e}"
 	end
 
 	# Check if private key exist

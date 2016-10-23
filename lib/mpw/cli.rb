@@ -40,8 +40,6 @@ class Cli
 	# Change a parameter int the config after init
 	# @args: options -> param to change
 	def set_config(options)
-		raise I18n.t('error.config.check') if not @config.is_valid?
-		
 		gpg_key    = options[:gpg_key]    || @config.key
 		lang       = options[:lang]       || @config.lang
 		wallet_dir = options[:wallet_dir] || @config.wallet_dir
@@ -56,15 +54,13 @@ class Cli
 	# Create a new config file
 	# @args: options -> set param
 	def setup(options)
-		@config.is_valid?
-
 		lang = options[:lang] || Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
 		I18n.locale = lang.to_sym
 
 		@config.setup(options[:gpg_key], lang, options[:wallet_dir], options[:gpg_exe])
 
-		raise I18n.t('error.config.check') if not @config.is_valid?
+		load_config
 
 		puts "#{I18n.t('form.setup_config.valid')}".green
 	rescue Exception => e
@@ -116,6 +112,15 @@ class Cli
 		exit 2
 	end
 	
+	# Load config
+	def load_config
+		@config.load_config
+
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #10: #{e}".red
+		exit 2
+	end
+
 	# Request the GPG password and decrypt the file
 	def decrypt
 		if not defined?(@mpw)
@@ -305,8 +310,6 @@ class Cli
 
 	# List all wallets
 	def list_wallet
-		@config.is_valid?
-
 		wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
 
 		wallets.each do |wallet|
@@ -317,8 +320,6 @@ class Cli
 	# Display the wallet
 	# @args: wallet -> the wallet name
 	def get_wallet(wallet=nil)
-		@config.is_valid?
-
 		if wallet.to_s.empty?
 			wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
 

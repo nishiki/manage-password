@@ -65,6 +65,7 @@ config = MPW::Config.new(options[:config])
 cli    = MPW::Cli.new(config, nil)
 
 if not options[:init].nil?
+	cli.load_config
 	cli.get_wallet
 	cli.setup(values)
 	cli.setup_gpg_key(options[:init])

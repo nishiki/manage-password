@@ -62,6 +62,7 @@ opts = { search: options[:pattern],
          group:  options[:group],
        }
 
+cli.load_config
 cli.get_wallet(options[:wallet])
 cli.decrypt
 cli.export(options[:file], opts)

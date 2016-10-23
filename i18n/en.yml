@@ -3,7 +3,7 @@ en:
   error:
     config:
       write: "Can't write the config file!"
-      check: "Checkconfig failed!"
+      load: "Checkconfig failed!"
       key_bad_format: "The key string isn't in good format!"
       no_key_public: "You haven't the public key of %{key}!"
       genkey_gpg:
