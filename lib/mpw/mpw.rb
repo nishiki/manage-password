@@ -33,7 +33,7 @@ class MPW
 		@gpg_exe     = gpg_exe
 		@wallet_file = wallet_file
 
-		if @gpg_exe
+		if not @gpg_exe.to_s.empty?
 			GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg")
 		end
 	end
