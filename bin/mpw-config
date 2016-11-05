@@ -1,0 +1,75 @@
+#!/usr/bin/ruby
+# MPW is a software to crypt and manage your passwords
+# Copyright (C) 2016  Adrien Waksberg <mpw@yae.im>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+require 'optparse'
+require 'mpw/config'
+require 'mpw/cli'
+
+# --------------------------------------------------------- #
+# Options
+# --------------------------------------------------------- #
+
+options = {}
+values  = {}
+
+OptionParser.new do |opts|
+	opts.banner = "#{I18n.t('option.usage')}: mpw config [options]"
+
+	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
+		options[:config] = config
+	end
+
+	opts.on('-g', '--gpg-exe PATH', I18n.t('option.gpg_exe')) do |gpg_exe|
+		values[:gpg_exe] = gpg_exe
+	end
+
+	opts.on('-h', '--help', I18n.t('option.help')) do
+		puts opts
+		exit 0
+	end
+
+	opts.on('-i', '--init GPG_KEY', I18n.t('option.init')) do |gpg_key|
+		options[:init]   = true
+		values[:gpg_key] = gpg_key
+	end
+
+	opts.on('-k', '--key GPG_KEY', I18n.t('option.gpg_key')) do |gpg_key|
+		values[:gpg_key] = gpg_key
+	end
+
+	opts.on('-l', '--lang LANG', I18n.t('option.lang')) do |lang|
+		values[:lang] = lang
+	end
+
+	opts.on('-w', '--wallet-dir PATH', I18n.t('option.wallet_dir')) do |wallet_dir|
+		values[:wallet_dir] = wallet_dir
+	end
+end.parse!
+
+config = MPW::Config.new(options[:config])
+cli    = MPW::Cli.new(config, nil)
+
+if not options[:init].nil?
+	cli.setup(values)
+	cli.load_config
+	cli.get_wallet
+	cli.setup_gpg_key(options[:init])
+	cli.setup_wallet_config
+else
+	cli.set_config(values)
+end

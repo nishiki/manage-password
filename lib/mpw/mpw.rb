@@ -33,7 +33,7 @@ class MPW
 		@gpg_exe     = gpg_exe
 		@wallet_file = wallet_file
 
-		if @gpg_exe
+		if not @gpg_exe.to_s.empty?
 			GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg")
 		end
 	end
@@ -83,12 +83,12 @@ class MPW
 		if not data.nil? and not data.empty?
 			YAML.load(data).each_value do |d|
 				@data.push(Item.new(id:        d['id'],
-				                    name:      d['name'],
 				                    group:     d['group'],
 				                    host:      d['host'],
 				                    protocol:  d['protocol'],
 				                    user:      d['user'],
 				                    port:      d['port'],
+				                    otp:       @otp_keys.has_key?(d['id']),
 				                    comment:   d['comment'],
 				                    last_edit: d['last_edit'],
 				                    created:   d['created'],
@@ -110,16 +110,15 @@ class MPW
 		@data.each do |item|
 			next if item.empty?
 
-			data.merge!(item.id => {'id'        => item.id,
-			                        'name'      => item.name,
-		                            'group'     => item.group,
-			                        'host'      => item.host,
-			                        'protocol'  => item.protocol,
-			                        'user'      => item.user,
-			                        'port'      => item.port,
-			                        'comment'   => item.comment,
-			                        'last_edit' => item.last_edit,
-			                        'created'   => item.created,
+			data.merge!(item.id => { 'id'        => item.id,
+			                         'group'     => item.group,
+			                         'host'      => item.host,
+			                         'protocol'  => item.protocol,
+			                         'user'      => item.user,
+			                         'port'      => item.port,
+			                         'comment'   => item.comment,
+			                         'last_edit' => item.last_edit,
+			                         'created'   => item.created,
 			                       }
 			           )
 		end
@@ -158,7 +157,7 @@ class MPW
 
 		File.rename(tmp_file, @wallet_file)
 	rescue Exception => e
-		File.unlink(tmp_file)
+		File.unlink(tmp_file) if File.exist?(tmp_file)
 
 		raise "#{I18n.t('error.mpw_file.write_data')}\n#{e}"
 	end
@@ -211,16 +210,16 @@ class MPW
 
 	# Set config
 	# args: config -> a hash with config options
-	def set_config(config)
-		@config['sync'] = {} if @config['sync'].nil?
+	def set_config(options={})
+		@config              = {} if @config.nil?
 
-		@config['sync']['type']      = config['sync']['type']
-		@config['sync']['host']      = config['sync']['host']
-		@config['sync']['port']      = config['sync']['port']
-		@config['sync']['user']      = config['sync']['user']
-		@config['sync']['password']  = config['sync']['password']
-		@config['sync']['path']      = config['sync']['path']
-		@config['sync']['last_sync'] = @config['sync']['last_sync'].nil? ? 0 : @config['sync']['last_sync']
+		@config['protocol']  = options[:protocol] if options.has_key?(:protocol)
+		@config['host']      = options[:host]     if options.has_key?(:host)
+		@config['port']      = options[:port]     if options.has_key?(:port)
+		@config['user']      = options[:user]     if options.has_key?(:user)
+		@config['password']  = options[:password] if options.has_key?(:password)
+		@config['path']      = options[:path]     if options.has_key?(:path)
+		@config['last_sync'] = @config['last_sync'].nil? ? 0 : @config['last_sync']
 	end
 
 	# Add a new item
@@ -241,18 +240,17 @@ class MPW
 	def list(options={})
 		result = []
 
-		search   = options[:search].to_s.downcase
-		group    = options[:group].to_s.downcase
+		search = options[:pattern].to_s.downcase
+		group  = options[:group].to_s.downcase
 
 		@data.each do |item|
 			next if item.empty?
-			next if not group.empty?    and not group.eql?(item.group.downcase)
+			next if not group.empty? and not group.eql?(item.group.to_s.downcase)
 			
-			name    = item.name.to_s.downcase
 			host    = item.host.to_s.downcase
 			comment = item.comment.to_s.downcase
 
-			if not name =~ /^.*#{search}.*$/ and not host =~ /^.*#{search}.*$/ and not comment =~ /^.*#{search}.*$/ 
+			if not host =~ /^.*#{search}.*$/ and not comment =~ /^.*#{search}.*$/ 
 				next
 			end
 
@@ -273,56 +271,9 @@ class MPW
 		return nil
 	end
 
-	# Export to yaml
-	# @args: file -> file where you export the data
-	def export(file)
-		data = {}
-		@data.each do |item|
-			data.merge!(item.id => {'id'        => item.id,
-			                        'name'      => item.name,
-			                        'group'     => item.group,
-			                        'host'      => item.host,
-			                        'protocol'  => item.protocol,
-			                        'user'      => item.user,
-			                        'password'  => get_password(item.id),
-			                        'port'      => item.port,
-			                        'comment'   => item.comment,
-			                        'last_edit' => item.last_edit,
-			                        'created'   => item.created,
-			                       }
-			            )
-		end
-
-		File.open(file, 'w') {|f| f << data.to_yaml}
-	rescue Exception => e 
-		raise "#{I18n.t('error.export', file: file)}\n#{e}"
-	end
-
-	# Import to yaml
-	# @args: file -> path to file import
-	def import(file)
-		YAML::load_file(file).each_value do |row| 
-			item = Item.new(name:     row['name'], 
-			                group:    row['group'],
-			                host:     row['host'],
-			                protocol: row['protocol'],
-			                user:     row['user'],
-			                port:     row['port'],
-			                comment:  row['comment'],
-			               )
-
-			raise 'Item is empty' if item.empty?
-
-			@data.push(item)
-			set_password(item.id, row['password'])
-		end
-	rescue Exception => e 
-		raise "#{I18n.t('error.import', file: file)}\n#{e}"
-	end
-
 	# Get last sync
 	def get_last_sync
-		return @config['sync']['last_sync'].to_i
+		return @config['last_sync'].to_i
 	rescue
 		return 0
 	end
@@ -330,18 +281,18 @@ class MPW
 	# Sync data with remote file
 	# @args: force -> force the sync
 	def sync(force=false)
-		return if @config.empty? or @config['sync']['type'].to_s.empty?
+		return if @config.empty? or @config['protocol'].to_s.empty?
 		return if get_last_sync + 300 > Time.now.to_i and not force
 
 		tmp_file  = "#{@wallet_file}.sync"
 		
-		case @config['sync']['type']
+		case @config['protocol']
 		when 'sftp', 'scp', 'ssh'
 			require "mpw/sync/ssh"
-			sync = SyncSSH.new(@config['sync'])
+			sync = SyncSSH.new(@config)
 		when 'ftp'
 			require 'mpw/sync/ftp'
-			sync = SyncFTP.new(@config['sync'])
+			sync = SyncFTP.new(@config)
 		else
 			raise I18n.t('error.sync.unknown_type')
 		end
@@ -365,8 +316,7 @@ class MPW
 
 					# Update item
 					if item.last_edit < r.last_edit
-						item.update(name:      r.name,
-						            group:     r.group,
+						item.update(group:     r.group,
 						            host:      r.host,
 						            protocol:  r.protocol,
 						            user:      r.user,
@@ -394,7 +344,6 @@ class MPW
 			next if r.last_edit <= get_last_sync
 
 			item = Item.new(id:        r.id,
-			                name:      r.name,
 			                group:     r.group,
 			                host:      r.host,
 			                protocol:  r.protocol,
@@ -415,7 +364,7 @@ class MPW
 			item.set_last_sync
 		end
 
-		@config['sync']['last_sync'] = Time.now.to_i
+		@config['last_sync'] = Time.now.to_i
 
 		write_data
 		sync.update(@wallet_file)
@@ -429,13 +378,27 @@ class MPW
 	# args: id -> the item id
 	#       key -> the new key
 	def set_otp_key(id, key)
-		@otp_keys[id] = encrypt(key)
+		if not key.to_s.empty?
+			@otp_keys[id] = encrypt(key.to_s)
+		end
 	end
+
+	# Get an opt key
+	# args: id -> the item id
+	#       key -> the new key
+	def get_otp_key(id)
+		if @otp_keys.has_key?(id)
+			return decrypt(@otp_keys[id])
+		else
+			return nil
+		end
+	end
+
 
 	# Get an otp code
 	# @args: id -> the item id
 	# @rtrn: an otp code
-	def	get_otp_code(id)
+	def get_otp_code(id)
 		if not @otp_keys.has_key?(id)
 			return 0
 		else
@@ -481,6 +444,8 @@ class MPW
 	# @args: data -> string to decrypt
 	private
 	def decrypt(data)
+		return nil if data.to_s.empty?
+
 		crypto = GPGME::Crypto.new(armor: true)
 		
 		return crypto.decrypt(data, password: @gpg_pass).read.force_encoding('utf-8')
@@ -495,11 +460,11 @@ class MPW
 		recipients = []
 		crypto     = GPGME::Crypto.new(armor: true, always_trust: true)
 
+		recipients.push(@key)
 		@keys.each_key do |key|
+			next if key == @key
 			recipients.push(key)
 		end
-
-		recipients.push(@key) if not recipients.index(@key).nil?
 
 		return crypto.encrypt(data, recipients: recipients).read
 	rescue Exception => e 

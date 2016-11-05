@@ -1,0 +1,91 @@
+#!/usr/bin/ruby
+# MPW is a software to crypt and manage your passwords
+# Copyright (C) 2016  Adrien Waksberg <mpw@yae.im>
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+require 'optparse'
+require 'mpw/config'
+require 'mpw/cli'
+
+# --------------------------------------------------------- #
+# Options
+# --------------------------------------------------------- #
+
+options        = {}
+options[:sync] = {}
+values         = {}
+
+OptionParser.new do |opts|
+	opts.banner = "#{I18n.t('option.usage')}: mpw wallet [options]"
+
+	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
+		options[:config] = config
+	end
+
+	opts.on('-h', '--help', I18n.t('option.help')) do
+		puts opts
+		exit 0
+	end
+
+	opts.on('--host NAME', I18n.t('option.host')) do |host|
+		values[:host] = host
+	end
+
+	opts.on('-l', '--list', I18n.t('option.list')) do |list|
+		options[:list] = true
+	end
+
+	opts.on('-n', '--no-sync', I18n.t('option.no_sync')) do
+		options[:sync] = false
+	end
+
+	opts.on('--password', I18n.t('option.password')) do
+		values[:password] = true
+	end
+
+	opts.on('--path PATH', I18n.t('option.path')) do |path|
+		values[:path] = path
+	end
+
+	opts.on('--port NUMBER', I18n.t('option.port')) do |port|
+		values[:port] = port
+	end
+
+	opts.on('--protocol NAME', I18n.t('option.protocol')) do |protocol|
+		values[:protocol] = protocol
+	end
+
+	opts.on('--user NAME', I18n.t('option.user')) do |user|
+		values[:user] = user
+	end
+
+	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
+		options[:wallet] = wallet
+	end
+end.parse!
+
+config = MPW::Config.new(options[:config])
+cli    = MPW::Cli.new(config, options[:sync])
+
+cli.load_config
+
+if not options[:list].nil?
+	cli.list_wallet
+else
+	cli.get_wallet(options[:wallet])
+	cli.decrypt
+	cli.setup_wallet_config(values)
+end

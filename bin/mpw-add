@@ -16,34 +16,46 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-$: << File.expand_path('../../lib', __FILE__)
-
-require 'locale'
-require 'set'
-require 'i18n'
-
-# --------------------------------------------------------- #
-# Set local
-# --------------------------------------------------------- #
-
-lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
-
-if defined?(I18n.enforce_available_locales)
-	I18n.enforce_available_locales = true
-end
-
-I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-I18n.load_path      = Dir["#{File.expand_path('../../i18n', __FILE__)}/*.yml"]
-I18n.default_locale = :en
-I18n.locale         = lang.to_sym
+require 'optparse'
+require 'mpw/config'
+require 'mpw/cli'
 
 # --------------------------------------------------------- #
 # Options
 # --------------------------------------------------------- #
 
-bin_dir = File.dirname(__FILE__)
-command = "#{bin_dir}/mpw-#{ARGV[0]}"
+options        = {}
+options[:sync] = true
 
-if Dir.glob("#{bin_dir}/mpw-*").include?("#{command}")
-	Kernel.load(command)
-end
+OptionParser.new do |opts|
+	opts.banner = "#{I18n.t('option.usage')}: mpw add [options]"
+
+	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
+		options[:config] = config
+	end
+
+	opts.on('-h', '--help', I18n.t('option.help')) do
+		puts opts
+		exit 0
+	end
+
+	opts.on('-n', '--no-sync', I18n.t('option.no_sync')) do
+		options[:sync] = false
+	end
+
+	opts.on('-r', '--random', I18n.t('option.random_password')) do
+		options[:password] = true
+	end
+
+	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
+		options[:wallet] = wallet
+	end
+end.parse!
+
+config = MPW::Config.new(options[:config])
+cli    = MPW::Cli.new(config, options[:sync])
+
+cli.load_config
+cli.get_wallet(options[:wallet])
+cli.decrypt
+cli.add(options[:password])

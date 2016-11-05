@@ -17,10 +17,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require 'readline'
+require 'locale'
 require 'i18n'
 require 'colorize'
 require 'highline/import'
 require 'clipboard'
+require 'tmpdir'
 require 'mpw/item'
 require 'mpw/mpw'
 
@@ -30,33 +32,35 @@ class Cli
 	# Constructor
 	# @args: config -> the config
 	#        sync -> boolean for sync or not
-	#        clipboard -> enable clopboard
-	#        otp -> enable otp
-	def initialize(config, clipboard=true, sync=true, otp=false)
+	def initialize(config, sync=true)
 		@config    = config
-		@clipboard = clipboard
 		@sync      = sync
-		@otp       = otp
+	end
+
+	# Change a parameter int the config after init
+	# @args: options -> param to change
+	def set_config(options)
+		gpg_key    = options[:gpg_key]    || @config.key
+		lang       = options[:lang]       || @config.lang
+		wallet_dir = options[:wallet_dir] || @config.wallet_dir
+		gpg_exe    = options[:gpg_exe]    || @config.gpg_exe
+
+		@config.setup(gpg_key, lang, wallet_dir, gpg_exe)
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #15: #{e}".red
+		exit 2
 	end
 
 	# Create a new config file
-	# @args: lang -> the software language
-	def setup(lang)
-		puts I18n.t('form.setup_config.title')
-		puts '--------------------'
-		language   = ask(I18n.t('form.setup_config.lang', lang: lang)).to_s
-		key        = ask(I18n.t('form.setup_config.gpg_key')).to_s
-		wallet_dir = ask(I18n.t('form.setup_config.wallet_dir', home: "#{@config.config_dir}")).to_s
-		gpg_exe    = ask(I18n.t('form.setup_config.gpg_exe')).to_s
+	# @args: options -> set param
+	def setup(options)
+		lang = options[:lang] || Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
-		if language.nil? or language.empty?
-			language = lang
-		end
-		I18n.locale = language.to_sym
+		I18n.locale = lang.to_sym
 
-		@config.setup(key, lang, wallet_dir, gpg_exe)
+		@config.setup(options[:gpg_key], lang, options[:wallet_dir], options[:gpg_exe])
 
-		raise I18n.t('error.config.check') if not @config.is_valid?
+		load_config
 
 		puts "#{I18n.t('form.setup_config.valid')}".green
 	rescue Exception => e
@@ -65,16 +69,10 @@ class Cli
 	end
 	
 	# Setup a new GPG key
-	def setup_gpg_key
-		puts I18n.t('form.setup_gpg_key.title')
-		puts '--------------------'
-		ask      = ask(I18n.t('form.setup_gpg_key.ask')).to_s
-		
-		if not ['Y', 'y', 'O', 'o'].include?(ask)
-			raise I18n.t('form.setup_gpg_key.no_create')
-		end
+	# @args: gpg_key -> the key name
+	def setup_gpg_key(gpg_key)
+		return if @config.check_gpg_key?
 
-		name     = ask(I18n.t('form.setup_gpg_key.name')).to_s
 		password = ask(I18n.t('form.setup_gpg_key.password')) {|q| q.echo = false}
 		confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) {|q| q.echo = false}
 
@@ -82,16 +80,11 @@ class Cli
 			raise I18n.t('form.setup_gpg_key.error_password')
 		end
 
-		length   = ask(I18n.t('form.setup_gpg_key.length')).to_s
-		expire   = ask(I18n.t('form.setup_gpg_key.expire')).to_s
-		password = password.to_s
-
-		length = length.nil? or length.empty? ? 2048 : length.to_i
-		expire = expire.nil? or expire.empty? ? 0    : expire.to_i
+		@password = password.to_s 
 
 		puts I18n.t('form.setup_gpg_key.wait')
 		
-		@config.setup_gpg_key(password, name, length, expire)
+		@config.setup_gpg_key(@password, gpg_key)
 
 		puts "#{I18n.t('form.setup_gpg_key.valid')}".green
 	rescue Exception => e
@@ -100,23 +93,17 @@ class Cli
 	end
 
 	# Setup wallet config for sync
-	def setup_wallet_config
-		config         = {}
-		config['sync'] = {}
-
-		puts I18n.t('form.setup_wallet.title')
-		puts '--------------------'
-		config['sync']['type']     = ask(I18n.t('form.setup_wallet.sync_type')).to_s
-
-		if ['ftp', 'ssh'].include?(config['sync']['type'].downcase)
-			config['sync']['host']     = ask(I18n.t('form.setup_wallet.sync_host')).to_s
-			config['sync']['port']     = ask(I18n.t('form.setup_wallet.sync_port')).to_s
-			config['sync']['user']     = ask(I18n.t('form.setup_wallet.sync_user')).to_s
-			config['sync']['password'] = ask(I18n.t('form.setup_wallet.sync_pwd')).to_s
-			config['sync']['path']     = ask(I18n.t('form.setup_wallet.sync_path')).to_s
+	# @args: options -> value to change
+	def setup_wallet_config(options={})
+		if not options[:password].nil?
+			options[:password] = ask(I18n.t('form.setup_wallet.password')) {|q| q.echo = false}
 		end
 
-		@mpw.set_config(config)
+		#wallet_file = wallet.nil? ? "#{@config.wallet_dir}/default.mpw" : "#{@config.wallet_dir}/#{wallet}.mpw"
+
+		@mpw = MPW.new(@config.key, @wallet_file, @password, @config.gpg_exe)
+		@mpw.read_data
+		@mpw.set_config(options)
 		@mpw.write_data
 
 		puts "#{I18n.t('form.setup_wallet.valid')}".green
@@ -125,6 +112,15 @@ class Cli
 		exit 2
 	end
 	
+	# Load config
+	def load_config
+		@config.load_config
+
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #10: #{e}".red
+		exit 2
+	end
+
 	# Request the GPG password and decrypt the file
 	def decrypt
 		if not defined?(@mpw)
@@ -139,97 +135,119 @@ class Cli
 		exit 2
 	end
 
-	# Display the query's result
-	# @args: search -> the string to search
-	#        protocol -> search from a particular protocol
-	def display(options={})
-		result = @mpw.list(options)
+	# Format items on a table
+	def table(items=[])
+		group        = '.'
+		i            = 1
+		length_total = 10
+		data         = { id:       { length: 3,  color: 'cyan' },
+		                 host:     { length: 9,  color: 'yellow' },
+		                 user:     { length: 7,  color: 'green' },
+		                 protocol: { length: 9,  color: 'white' },
+		                 port:     { length: 5,  color: 'white' },
+		                 otp:      { length: 4,  color: 'white' },
+		                 comment:  { length: 14, color: 'magenta' },
+		               }
 
-		case result.length
-		when 0
-			puts I18n.t('display.nothing')
+		items.each do |item|
+			data.each do |k, v|
+				next if k == :id or k == :otp
 
-		when 1
-			display_item(result.first)
+				v[:length] = item.send(k.to_s).length + 3 if item.send(k.to_s).to_s.length >= v[:length]
+			end
+		end
+		data[:id][:length]  = items.length.to_s.length + 2 if items.length.to_s.length > data[:id][:length]
+		
+		data.each_value { |v| length_total += v[:length] }
+		items.sort!     { |a, b| a.group.to_s.downcase <=> b.group.to_s.downcase }
 
-		else
-			group = nil
-			i     = 1
+		items.each do |item|
+			if group != item.group
+				group = item.group
 
-			result.sort! { |a,b| a.group.downcase <=> b.group.downcase }
-
-			result.each do |item|
-				if group != item.group
-					group = item.group
-
-					if group.empty?
-						puts I18n.t('display.no_group').yellow
-					else
-						puts "\n#{group}".yellow
-					end
+				if group.to_s.empty?
+					puts "\n#{I18n.t('display.no_group')}".red
+				else
+					puts "\n#{group}".red
 				end
 
-				print " |_ ".yellow
-				print "#{i}: ".cyan
-				print item.name
-				print " -> #{item.comment}".magenta if not item.comment.to_s.empty?
+				print ' '
+				length_total.times { print '=' }
+				print "\n "
+				data.each do |k, v|
+					case k
+					when :id
+						print ' ID'
+					when :otp
+						print '| OTP'
+					else
+						print "| #{k.to_s.capitalize}"
+					end
+
+					(v[:length] - k.to_s.length).times { print ' ' }
+				end
+				print "\n "
+				length_total.times { print '=' }
 				print "\n"
-
-				i += 1
 			end
 
+			print "  #{i}".send(data[:id][:color])
+			(data[:id][:length] - i.to_s.length).times { print ' ' }
+			data.each do |k, v|
+				next if k == :id
+
+				if k == :otp
+					print '| '
+					if item.otp;  print ' X  ' else 4.times { print ' ' } end
+
+					next
+				end
+
+				print '| '
+				print "#{item.send(k.to_s)}".send(v[:color])
+				(v[:length] - item.send(k.to_s).to_s.length).times { print ' ' }
+			end
 			print "\n"
-			choice = ask(I18n.t('form.select')).to_i
 
-			if choice >= 1 and choice < i 
-				display_item(result[choice-1])
-			else
-				puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
-			end
+			i += 1
+		end
+
+		print "\n"
+	end
+
+	# Display the query's result
+	# @args: options -> the option to search
+	def list(options={})
+		result = @mpw.list(options)
+
+		if result.length == 0
+			puts I18n.t('display.nothing')
+
+		else
+			table(result)
 		end
 	end
 
-	# Display an item in the default format
-	# @args: item -> an array with the item information
-	def display_item(item)
-		puts '--------------------'.cyan
-		print 'Id: '.cyan
-		puts  item.id
-		print "#{I18n.t('display.name')}: ".cyan
-		puts  item.name
-		print "#{I18n.t('display.group')}: ".cyan
-		puts  item.group
-		print "#{I18n.t('display.server')}: ".cyan
-		puts  item.host
-		print "#{I18n.t('display.protocol')}: ".cyan
-		puts  item.protocol
-		print "#{I18n.t('display.login')}: ".cyan
-		puts  item.user
+	# Get an item when multiple choice
+	# @args: items -> array of items
+	# @rtrn: item
+	def get_item(items)
+		return items[0] if items.length == 1
 
-		if @clipboard
-			print "#{I18n.t('display.password')}: ".cyan
-			puts '***********'
+		items.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
+		choice = ask(I18n.t('form.select')).to_i
+
+		if choice >= 1 and choice <= items.length
+			return items[choice-1]
 		else
-			print "#{I18n.t('display.password')}: ".cyan
-			puts  @mpw.get_password(item.id)
-
-			if @mpw.get_otp_code(item.id) > 0
-				print "#{I18n.t('display.otp_code')}: ".cyan
-				puts "#{@mpw.get_otp_code(item.id)} (#{@mpw.get_otp_remaining_time}s)"
-			end
+			return nil
 		end
-
-		print "#{I18n.t('display.port')}: ".cyan
-		puts  item.port
-		print "#{I18n.t('display.comment')}: ".cyan
-		puts  item.comment
-
-		clipboard(item) if @clipboard
 	end
 
 	# Copy in clipboard the login and password
 	# @args: item -> the item
-	def clipboard(item)
+	#        clipboard -> enable clipboard
+	def clipboard(item, clipboard=true)
 		pid = nil
 
 		# Security: force quit after 90s
@@ -246,21 +264,33 @@ class Cli
 				break
 
 			when 'l', 'login'
-				Clipboard.copy(item.user)
-				puts I18n.t('form.clipboard.login').green
+				if clipboard
+					Clipboard.copy(item.user)
+					puts I18n.t('form.clipboard.login').green
+				else
+					puts item.user
+				end
 
 			when 'p', 'password'
-				Clipboard.copy(@mpw.get_password(item.id))
-				puts I18n.t('form.clipboard.password').yellow
+				if clipboard
+					Clipboard.copy(@mpw.get_password(item.id))
+					puts I18n.t('form.clipboard.password').yellow
 
-				Thread.new do
-					sleep 30
+					Thread.new do
+						sleep 30
 
-					Clipboard.clear
+						Clipboard.clear
+					end
+				else
+					puts @mpw.get_password(item.id)
 				end
 
 			when 'o', 'otp'
-				Clipboard.copy(@mpw.get_otp_code(item.id))
+				if clipboard
+					Clipboard.copy(@mpw.get_otp_code(item.id))
+				else
+					puts @mpw.get_otp_code(item.id)
+				end
 				puts I18n.t('form.clipboard.otp', time: @mpw.get_otp_remaining_time).yellow
 
 			else
@@ -268,6 +298,7 @@ class Cli
 				puts I18n.t('form.clipboard.help.login')
 				puts I18n.t('form.clipboard.help.password')
 				puts I18n.t('form.clipboard.help.otp_code')
+				puts I18n.t('form.clipboard.help.quit')
 				next
 			end
 		end
@@ -277,34 +308,25 @@ class Cli
 		Clipboard.clear
 	end
 
+	# List all wallets
+	def list_wallet
+		wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
+
+		wallets.each do |wallet|
+			puts File.basename(wallet, '.mpw')
+		end
+	end
+
 	# Display the wallet
 	# @args: wallet -> the wallet name
 	def get_wallet(wallet=nil)
 		if wallet.to_s.empty?
 			wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
 
-			case wallets.length
-			when 0
-				puts I18n.t('display.nothing')
-			when 1
+			if wallets.length == 1
 				@wallet_file = wallets[0]
 			else
-				i = 1
-				wallets.each do |wallet|
-						print "#{i}: ".cyan
-						puts File.basename(wallet, '.mpw')
-
-						i += 1
-				end
-
-				choice = ask(I18n.t('form.select')).to_i
-
-				if choice >= 1 and choice < i
-					@wallet_file = wallets[choice-1]
-				else
-					puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
-					exit 2
-				end
+				@wallet_file = "#{@config.wallet_dir}/default.mpw"
 			end
 		else
 			@wallet_file = "#{@config.wallet_dir}/#{wallet}.mpw"
@@ -336,111 +358,158 @@ class Cli
 		puts "#{I18n.t('display.error')} #15: #{e}".red
 	end
 
-	# Form to add a new item
-	def add
-		options = {}
+	# Text editor interface
+	# @args: template -> template name
+	#        item -> the item to edit
+	#        password -> disable field password
+	def text_editor(template_name, item=nil, password=false)
+		editor        = ENV['EDITOR'] || 'nano'
+		options       = {}
+		opts          = {}
+		template_file = "#{File.expand_path('../../../templates', __FILE__)}/#{template_name}.erb"
+		template      = ERB.new(IO.read(template_file))
 
-		puts I18n.t('form.add_item.title')
-		puts '--------------------'
-		options[:name]     = ask(I18n.t('form.add_item.name')).to_s
-		options[:group]    = ask(I18n.t('form.add_item.group')).to_s
-		options[:host]     = ask(I18n.t('form.add_item.server')).to_s
-		options[:protocol] = ask(I18n.t('form.add_item.protocol')).to_s
-		options[:user]     = ask(I18n.t('form.add_item.login')).to_s
-		password           = ask(I18n.t('form.add_item.password')).to_s
-		options[:port]     = ask(I18n.t('form.add_item.port')).to_s
-		options[:comment]  = ask(I18n.t('form.add_item.comment')).to_s
+		Dir.mktmpdir do |dir|
+			tmp_file = "#{dir}/#{template_name}.yml"
 
-		if @otp
-			otp_key = ask(I18n.t('form.add_item.otp_key')).to_s
+			File.open(tmp_file, 'w') do |f|
+				f << template.result(binding)
+			end
+
+			system("#{editor} #{tmp_file}")
+
+			opts = YAML::load_file(tmp_file)
 		end
 
-		item = Item.new(options)
+		opts.delete_if { |k,v| v.to_s.empty? }
 
+		opts.each do |k,v|
+			options[k.to_sym] = v
+		end
+
+		return options
+	end
+
+	# Form to add a new item
+	# @args: password -> generate a random password
+	def add(password=false)
+		options = text_editor('add_form', nil, password)	
+		item    = Item.new(options)
+
+		if password
+			options[:password] = MPW::password(length: 24)
+		end
+		
 		@mpw.add(item)
-		@mpw.set_password(item.id, password)
-		@mpw.set_otp_key(item.id, otp_key)
+		@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
+		@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
 		@mpw.write_data
 		@mpw.sync(true) if @sync
 
 		puts "#{I18n.t('form.add_item.valid')}".green
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #13: #{e}".red
 	end
 
 	# Update an item
-	# @args: id -> the item's id
-	def update(id)
-		item = @mpw.search_by_id(id)
+	# @args: options -> the option to search
+	def update(options={})
+		items = @mpw.list(options)
+		
+		if items.length == 0
+			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+		else
+			table(items) if items.length > 1
 
-		if not item.nil?
-			options = {}
-
-			puts I18n.t('form.update_item.title')
-			puts '--------------------'
-			options[:name]     = ask(I18n.t('form.update_item.name'    , name:     item.name)).to_s
-			options[:group]    = ask(I18n.t('form.update_item.group'   , group:    item.group)).to_s
-			options[:host]     = ask(I18n.t('form.update_item.server'  , server:   item.host)).to_s
-			options[:protocol] = ask(I18n.t('form.update_item.protocol', protocol: item.protocol)).to_s
-			options[:user]     = ask(I18n.t('form.update_item.login'   , login:    item.user)).to_s
-			password           = ask(I18n.t('form.update_item.password')).to_s
-			options[:port]     = ask(I18n.t('form.update_item.port'    , port:     item.port)).to_s
-			options[:comment]  = ask(I18n.t('form.update_item.comment' , comment:  item.comment)).to_s
-
-			if @otp
-				otp_key = ask(I18n.t('form.update_item.otp_key')).to_s
-			end
-
-			options.delete_if { |k,v| v.empty? }
+			item    = get_item(items)
+			options = text_editor('update_form', item)
 
 			item.update(options)
-			@mpw.set_password(item.id, password) if not password.empty?
-			@mpw.set_otp_key(item.id, otp_key)   if not otp_key.to_s.empty?
+			@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
+			@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
 			@mpw.write_data
 			@mpw.sync(true) if @sync
 
 			puts "#{I18n.t('form.update_item.valid')}".green
-		else
-			puts I18n.t('display.nothing')
 		end
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #14: #{e}".red
 	end
 
 	# Remove an item
-	# @args: id -> the item's id
-	#        force -> no resquest a validation
-	def delete(id, force=false)
-		@clipboard = false
-		item       = @mpw.search_by_id(id)
+	# @args: options -> the option to search
+	def delete(options={})
+		items = @mpw.list(options)
+		
+		if items.length == 0
+			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+		else
+			table(items)
 
-		if item.nil?
-			puts I18n.t('form.delete_item.not_valid', id: id)
-			return
-		end
-
-		if not force
-			display_item(item)
-
-			confirm = ask("#{I18n.t('form.delete_item.ask', id: id)} (y/N) ").to_s
+			item    = get_item(items)
+			confirm = ask("#{I18n.t('form.delete_item.ask')} (y/N) ").to_s
+	
 			if not confirm =~ /^(y|yes|YES|Yes|Y)$/
-				return
+				return false
 			end
+	
+			item.delete
+			@mpw.write_data
+			@mpw.sync(true) if @sync
+	
+			puts "#{I18n.t('form.delete_item.valid')}".green
 		end
-
-		item.delete
-		@mpw.write_data
-		@mpw.sync(true) if @sync
-
-		puts "#{I18n.t('form.delete_item.valid', id: id)}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #16: #{e}".red
 	end
 
+	# Copy a password, otp, login
+	# @args: clipboard -> enable clipboard
+	#        options -> the option to search
+	def copy(clipboard=true, options={})
+		items = @mpw.list(options)
+		
+		if items.length == 0
+			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+		else
+			table(items)
+
+			item = get_item(items)
+			clipboard(item, clipboard)
+		end
+	rescue Exception => e
+		puts "#{I18n.t('display.error')} #14: #{e}".red
+	end
+
 	# Export the items in a CSV file
 	# @args: file -> the destination file
-	def export(file)
-		@mpw.export(file)
+	#        options -> option to search
+	def export(file, options)
+		file  = 'export-mpw.yml' if file.to_s.empty?
+		items = @mpw.list(options)
+		data  = {}
+		i     = 1
 
-		puts "#{I18n.t('export.export.valid', file)}".green
+		items.each do |item|
+			data.merge!(i => { 'host'      => item.host,
+			                   'user'      => item.user,
+			                   'group'     => item.group,
+			                   'password'  => @mpw.get_password(item.id),
+			                   'protocol'  => item.protocol,
+			                   'port'      => item.port,
+			                   'otp_key'   => @mpw.get_otp_key(item.id),
+			                   'comment'   => item.comment,
+			                   'last_edit' => item.last_edit,
+			                   'created'   => item.created,
+			                 }
+			            )
+
+			i += 1
+		end
+
+		File.open(file, 'w') {|f| f << data.to_yaml}
+
+		puts "#{I18n.t('export.valid', file)}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #17: #{e}".red
 	end
@@ -448,7 +517,26 @@ class Cli
 	# Import items from a YAML file
 	# @args: file -> the import file
 	def import(file)
-		@mpw.import(file)
+		raise I18n.t('import.file_empty')     if file.to_s.empty?
+		raise I18n.t('import.file_not_exist') if not File.exist?(file)
+
+		YAML::load_file(file).each_value do |row|
+
+			item = Item.new(group:    row['group'],
+			                host:     row['host'],
+			                protocol: row['protocol'],
+			                user:     row['user'],
+			                port:     row['port'],
+			                comment:  row['comment'],
+			               )
+
+			next if item.empty?
+
+			@mpw.add(item)
+			@mpw.set_password(item.id, row['password']) if not row['password'].to_s.empty?
+			@mpw.set_otp_key(item.id, row['otp_key'])   if not row['otp_key'].to_s.empty?
+		end
+
 		@mpw.write_data
 
 		puts "#{I18n.t('form.import.valid')}".green

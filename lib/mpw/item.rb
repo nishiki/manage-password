@@ -22,12 +22,12 @@ module MPW
 class Item
 
 	attr_accessor :id
-	attr_accessor :name
 	attr_accessor :group
 	attr_accessor :host
 	attr_accessor :protocol
 	attr_accessor :user
 	attr_accessor :port
+	attr_accessor :otp
 	attr_accessor :comment
 	attr_accessor :last_edit
 	attr_accessor :last_sync
@@ -38,15 +38,15 @@ class Item
 	# @args: options -> a hash of parameter
 	# raise an error if the hash hasn't the key name 
 	def initialize(options={})
-		if not options.has_key?(:name) or options[:name].to_s.empty?
+		if not options.has_key?(:host) or options[:host].to_s.empty?
 			raise I18n.t('error.update.name_empty')
 		end
 
-		if not options.has_key?(:id) or options[:id].to_s.empty? or not options.has_key?(:created) or options[:created].to_s.empty?  
-			@id      = generate_id
+		if not options.has_key?(:id) or options[:id].to_s.empty? or not options.has_key?(:created) or options[:created].to_s.empty?
+			@id = generate_id
 			@created = Time.now.to_i
 		else
-			@id        = options[:id]
+			@id = options[:id]
 			@created   = options[:created]
 			@last_edit = options[:last_edit]
 			options[:no_update_last_edit] = true
@@ -58,16 +58,16 @@ class Item
 	# Update the item
 	# @args: options -> a hash of parameter
 	def update(options={})
-		if options.has_key?(:name) and options[:name].to_s.empty?
+		if options.has_key?(:host) and options[:host].to_s.empty?
 			raise I18n.t('error.update.name_empty')
 		end
 
-		@name      = options[:name]       if options.has_key?(:name)
 		@group     = options[:group]      if options.has_key?(:group)
 		@host      = options[:host]       if options.has_key?(:host)
 		@protocol  = options[:protocol]   if options.has_key?(:protocol)
 		@user      = options[:user]       if options.has_key?(:user)
 		@port      = options[:port].to_i  if options.has_key?(:port) and not options[:port].to_s.empty?
+		@otp       = options[:otp]        if options.has_key?(:otp)
 		@comment   = options[:comment]    if options.has_key?(:comment)
 		@last_edit = Time.now.to_i        if not options.has_key?(:no_update_last_edit)
 	end
@@ -80,12 +80,12 @@ class Item
 	# Delete all data
 	def delete
 		@id        = nil
-		@name      = nil
 		@group     = nil
 		@host      = nil
 		@protocol  = nil
 		@user      = nil
 		@port      = nil
+		@otp       = nil
 		@comment   = nil
 		@created   = nil
 		@last_edit = nil
@@ -93,7 +93,7 @@ class Item
 	end
 
 	def empty?
-		return @name.to_s.empty?
+		return @id.to_s.empty?
 	end
 
 	def nil?
@@ -104,6 +104,6 @@ class Item
 	private
 	def generate_id
 		return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(16).join
-	end
+	end 
 end
-end	
+end

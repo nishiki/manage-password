@@ -57,20 +57,18 @@ class Config
 	#        gpg_exe -> the  path of gpg executable
 	# @rtrn: true if le config file is create
 	def setup(key, lang, wallet_dir, gpg_exe)
-
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 			raise I18n.t('error.config.key_bad_format')
 		end
 
-		if wallet_dir.empty?
+		if wallet_dir.to_s.empty?
 			wallet_dir = "#{@config_dir}/wallets"
 		end
 
-		config = {'config' => {'key'        => key,
-		                       'lang'       => lang,
-		                       'wallet_dir' => wallet_dir,
-		                       'gpg_exe'    => gpg_exe,
-		                      }
+		config = { 'key'        => key,
+		           'lang'       => lang,
+		           'wallet_dir' => wallet_dir,
+		           'gpg_exe'    => gpg_exe,
 		         }
 
 		FileUtils.mkdir_p(wallet_dir, mode: 0700)
@@ -89,9 +87,9 @@ class Config
 	#        expire -> the time of expire to GPG key
 	# @rtrn: true if the GPG key is create, else false
 	def setup_gpg_key(password, name, length = 4096, expire = 0)
-		if name.nil? or name.empty?
+		if name.to_s.empty?
 			raise "#{I18n.t('error.config.genkey_gpg.name')}"
-		elsif password.nil? or password.empty?
+		elsif password.to_s.empty?
 			raise "#{I18n.t('error.config.genkey_gpg.password')}"
 		end
 
@@ -114,22 +112,20 @@ class Config
 		raise "#{I18n.t('error.config.genkey_gpg.exception')}\n#{e}"
 	end
 
-	# Check the config file
-	# @rtrn: true if the config file is correct
-	def is_valid?
+	# Load the config file
+	def load_config
 		config      = YAML::load_file(@config_file)
-		@key        = config['config']['key']
-		@lang       = config['config']['lang']
-		@wallet_dir = config['config']['wallet_dir']
-		@gpg_exe    = config['config']['gpg_exe']
+		@key        = config['key']
+		@lang       = config['lang']
+		@wallet_dir = config['wallet_dir']
+		@gpg_exe    = config['gpg_exe']
 
 		raise if @key.empty? or @wallet_dir.empty?
 			
 		I18n.locale = @lang.to_sym
 
-		return true
-	rescue
-		return false
+	rescue Exception => e
+		raise "#{I18n.t('error.config.load')}\n#{e}"
 	end
 
 	# Check if private key exist
