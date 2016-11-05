@@ -141,7 +141,7 @@ class Cli
 		i            = 1
 		length_total = 10
 		data         = { id:       { length: 3,  color: 'cyan' },
-		                 host:     { length: 9, color: 'yellow' },
+		                 host:     { length: 9,  color: 'yellow' },
 		                 user:     { length: 7,  color: 'green' },
 		                 protocol: { length: 9,  color: 'white' },
 		                 port:     { length: 5,  color: 'white' },
@@ -153,7 +153,7 @@ class Cli
 			data.each do |k, v|
 				next if k == :id or k == :otp
 
-				v[:length] = item.send(k.to_s).length + 3 if item.send(k.to_s).to_s.length > v[:length]
+				v[:length] = item.send(k.to_s).length + 3 if item.send(k.to_s).to_s.length >= v[:length]
 			end
 		end
 		data[:id][:length]  = items.length.to_s.length + 2 if items.length.to_s.length > data[:id][:length]
