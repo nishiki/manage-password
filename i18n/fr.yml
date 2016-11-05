@@ -33,6 +33,18 @@ fr:
   warning:
     select: "Votre choix n'est pas un élément valide!"
 
+  command:
+    add: "Ajoute un nouvel élément"
+    config: "Gère la configuration générale"
+    copy: "Copie un identifiant,  un mot de passe ou un code OTP"
+    delete: "Supprimer un élément d'un portefeuille"
+    export: "Exporte les données"
+    genpwd: "Génére un mot de passe"
+    import: "Importe des données"
+    list: "Liste les éléments d'un portefeuille"
+    update: "Met à jour un élément"
+    wallet: "Gére la configuration d'un portefeuille"
+
   option:
     add: "Ajoute un élément ou une clé"
     alpha: "Utilise des lettres dans la génération d'un mot de passe"

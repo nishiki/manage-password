@@ -46,4 +46,19 @@ command = "#{bin_dir}/mpw-#{ARGV[0]}"
 
 if Dir.glob("#{bin_dir}/mpw-*").include?("#{command}")
 	Kernel.load(command)
+else
+	puts "#{I18n.t('option.usage')}: mpw COMMAND [options]\n\n"
+	puts 'Commands:'
+	puts "  add       #{I18n.t('command.add')}"
+	puts "  config    #{I18n.t('command.config')}"
+	puts "  copy      #{I18n.t('command.copy')}"
+	puts "  delete    #{I18n.t('command.delete')}"
+	puts "  export    #{I18n.t('command.export')}"
+	puts "  genpwd    #{I18n.t('command.genpwd')}"
+	puts "  import    #{I18n.t('command.import')}"
+	puts "  list      #{I18n.t('command.list')}"
+	puts "  update    #{I18n.t('command.update')}"
+	puts "  wallet    #{I18n.t('command.wallet')}"
+
+	exit 3
 end

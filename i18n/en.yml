@@ -33,6 +33,18 @@ en:
   warning:
     select: 'Your choice is not a valid element!'
 
+  command:
+    add: "Add a new item"
+    config: "Manage the general config"
+    copy: "Copy a login, password or OTP code"
+    delete: "Delete an item"
+    export: "Export the data in plain text"
+    genpwd: "Generate a password"
+    import: "Import data from a file"
+    list: "Print the items"
+    update: "Update an item"
+    wallet: "Manage the wallet config"
+
   option:
     add: "Add an item or key"
     alpha: "Use letter to generate a password"
