@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
-gem 'highline'
-gem 'i18n'
-gem 'locale'
-gem 'gpgme'
-gem 'colorize'
-gem 'net-ssh'
-gem 'net-scp'
-gem 'clipboard'
-gem 'rotp'
+gem "i18n",      "~> 0.7", ">= 0.7.0"
+gem "gpgme",     "~> 2.0", ">= 2.0.12"
+gem "highline",  "~> 1.7", ">= 1.7.8"
+gem "locale",    "~> 2.1", ">= 2.1.2"
+gem "colorize",  "~> 0.8", ">= 0.8.1"
+gem "net-ssh",   "~> 3.2", ">= 3.2.0"
+gem "net-sftp",  "~> 2.1", ">= 2.1.2"
+gem "clipboard", "~> 1.1", ">= 1.1.1"
+gem "rotp",      "~> 3.1", ">= 3.1.0"

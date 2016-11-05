@@ -17,13 +17,13 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency "i18n"
-  spec.add_dependency "gpgme"
-  spec.add_dependency "highline"
-  spec.add_dependency "locale"
-  spec.add_dependency "colorize"
-  spec.add_dependency "net-ssh"
-  spec.add_dependency "net-sftp"
-  spec.add_dependency "clipboard"
-  spec.add_dependency "rotp"
+  spec.add_dependency "i18n",      "~> 0.7", ">= 0.7.0"
+  spec.add_dependency "gpgme",     "~> 2.0", ">= 2.0.12"
+  spec.add_dependency "highline",  "~> 1.7", ">= 1.7.8"
+  spec.add_dependency "locale",    "~> 2.1", ">= 2.1.2"
+  spec.add_dependency "colorize",  "~> 0.8", ">= 0.8.1"
+  spec.add_dependency "net-ssh",   "~> 3.2", ">= 3.2.0"
+  spec.add_dependency "net-sftp",  "~> 2.1", ">= 2.1.2"
+  spec.add_dependency "clipboard", "~> 1.1", ">= 1.1.1"
+  spec.add_dependency "rotp",      "~> 3.1", ">= 3.1.0"
 end
