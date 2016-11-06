@@ -71,7 +71,9 @@ class Config
 		           'gpg_exe'    => gpg_exe,
 		         }
 
-		FileUtils.mkdir_p(wallet_dir, mode: 0700)
+		FileUtils.mkdir_p(@config_dir, mode: 0700)
+		FileUtils.mkdir_p(wallet_dir,  mode: 0700)
+
 		File.open(@config_file, 'w') do |file|
 			file << config.to_yaml
 		end
