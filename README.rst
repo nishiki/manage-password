@@ -1,7 +1,8 @@
 MPW: Manage your passwords!
 *******************************************************
+|Build Status| |License|
 
-mpw is a little software which stores your passwords in `GnuPG <http://www.gnupg.org/>` encrypted files.
+mpw is a little software which stores your passwords in `GnuPG <http://www.gnupg.org/>`_ encrypted files.
 
 Features
 ========
@@ -48,6 +49,8 @@ Output::
 Licence |License|
 =================
 
-Full license here: `LICENSE <https://github.com/nishiki/manage-password/blob/master/LICENSE>`
+Full license here: `LICENSE <https://github.com/nishiki/manage-password/blob/master/LICENSE>`_
 
 .. |License| image:: https://img.shields.io/badge/license-GPL--2.0-blue.svg
+.. |Build Status| image:: https://travis-ci.org/nishiki/manage-password.svg?branch=master
+   :target: https://travis-ci.org/nishiki/manage-password

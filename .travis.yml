@@ -1,0 +1,13 @@
+language: ruby
+rvm:
+  - 2.3.1
+  - 2.2.5
+  - 2.1.10
+install:
+  - bundle install
+  - gem install 'test-unit'
+  - echo 9999 > VERSION
+  - gem build mpw.gemspec
+  - gem install mpw-9999.gem
+script:
+  - ruby ./test/tests.rb 

@@ -1,3 +1,0 @@
-name,group,protocol,host,user,password,port,comment
-test_name,test_group,test_protocol,test_host,test_user,test_password,42,test_comment
-test_name_update,test_group_update,test_protocol_update,test_host_update,test_user_update,test_password_update,43,test_comment_update
