@@ -228,7 +228,7 @@ class MPW
 		if not item.instance_of?(Item)
 			raise I18n.t('error.bad_class')
 		elsif item.empty?
-			raise I18n.t('error.add.empty')
+			raise I18n.t('error.empty')
 		else
 			@data.push(item)
 		end

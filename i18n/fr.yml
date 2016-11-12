@@ -1,6 +1,7 @@
 ---
 fr:
   error:
+    bad_class: "La classe de l'objet n'est pas celle attendue!"
     config:
       write: "Impossible d'écrire le fichier de configuration!"
       load: "Le fichier de configuration est invalide!"
@@ -10,7 +11,9 @@ fr:
         exception: "La création de la clé GPG n'a pas pu aboutir!"
         name: "Vous devez définir un nom pour votre clé GPG!"
         password: "Vous devez définir un mot de passe pour votre clé GPG!"
+    empty: "La classe est vide"
     export: "Impossible d'exporter les données dans le fichier %{file}!"
+    export_key: "Impossible d'exporter la clé GPG"
     gpg_file: 
       decrypt: "Impossible de déchiffrer le fichier GPG!"
       encrypt: "Impossible de chiffrer le fichier GPG!"
@@ -64,6 +67,7 @@ fr:
     init: "Initialise mpw"
     key: "Spécifie le nom d'une clé"
     lang: "Spécifie la langue du logiciel (ex: fr)"
+    length: "Taille du mot de passe"
     list: "Liste les portefeuilles"
     no_sync: "Désactive la synchronisation avec le serveur"
     numeric: "Utilise des chiffre dans la génération d'un mot de passe"
@@ -72,6 +76,7 @@ fr:
     pattern: "Motif de donnée à chercher"
     port: "Spécifie le port de connexion"
     protocol: "Spécifie le protocol utilisé pour la connexion"
+    random_password: "Génére un mot de passe aléatoire"
     setup: "Création d'un nouveau fichier de configuration"
     setup_wallet: "Création d'un nouveau fichier de configuration pour un portefeuille"
     special_chars: "Utilise des charactères speciaux dans la génération d'un mot de passe"
@@ -116,6 +121,8 @@ fr:
       valid: "L'élément a bien été supprimé!"
     import:
       ask: "Êtes vous sûre de vouloir importer le fichier %{file} ?"
+      file_empty: "Le fichier d'import est vide!"
+      file_not_exist: "Le fichier d'import n'existe pas"
       valid: "L'import est un succès!"
       not_valid: "Aucune donnée à importer!"
     setup_config:
@@ -126,6 +133,7 @@ fr:
       wallet_dir: "Entrez le chemin du répertoire qui contiendra les porte-feuilles de mot de passe [défaut=%{home}/wallets]: "
       valid: "Le fichier de configuration a bien été créé!"
     setup_wallet:
+      password: "Mot de passe de synchronisation: "
       title: "Configuration du porte-feuille"
       sync_type: "Type de synchronisation (ssh, ftp): "
       sync_host: "Serveur: "

@@ -1,6 +1,7 @@
 ---
 en:
   error:
+    bad_class: "The object class isn't valid!"
     config:
       write: "Can't write the config file!"
       load: "Checkconfig failed!"
@@ -10,7 +11,9 @@ en:
         exception: "Can't create the GPG key!"
         name: "You must define a name for your GPG key!"
         password: "You must define a password for your GPG key!"
+    empty: "The class is void"
     export: "Can't export, unable to write in %{file}!"
+    export_key: "Can't export the GPG key"
     gpg_file: 
       decrypt: "Can't decrypt file!"
       encrypt: "Can't encrypt the GPG file!"
@@ -64,6 +67,7 @@ en:
     import: "Import item since a yaml file"
     key: "Specify the key name"
     lang: "Set the software language"
+    length: "Size of the password"
     list: "List the wallets"
     no_sync: "Disable synchronization with the server"
     numeric: "Use number to generate a password"
@@ -72,6 +76,7 @@ en:
     pattern: "Given search pattern"
     port: "Specify the connection port"
     protocol: "Specify the protocol for the connection"
+    random_password: "Generate a random password"
     setup: "Create a new configuration file" 
     setup_wallet: "Create a new configuration file for a wallet"
     special_chars: "Use special char to generate a password"
@@ -116,6 +121,8 @@ en:
       valid: "The item has been removed!"
     import:
       ask: "Are you sure you want to import this file %{file} ?"
+      file_empty: "The import file is empty!"
+      file_not_exist: "The import file doesn't exist!"
       valid: "The import is succesfull!"
       not_valid: "No data to import!"
     setup_config:
@@ -126,6 +133,7 @@ en:
       wallet_dir: "Enter the wallets's folder path [default=%{home}/wallets]: "
       valid: "The config file has been created!"
     setup_wallet:
+      password: "Sync password: " 
       title: "Wallet setup"
       sync_type: "Synchronization type (ssh, ftp): "
       sync_host: "Synchronization server: "
