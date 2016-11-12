@@ -517,8 +517,8 @@ class Cli
 	# Import items from a YAML file
 	# @args: file -> the import file
 	def import(file)
-		raise I18n.t('import.file_empty')     if file.to_s.empty?
-		raise I18n.t('import.file_not_exist') if not File.exist?(file)
+		raise I18n.t('form.import.file_empty')     if file.to_s.empty?
+		raise I18n.t('form.import.file_not_exist') if not File.exist?(file)
 
 		YAML::load_file(file).each_value do |row|
 
