@@ -50,6 +50,7 @@ en:
 
   option:
     add: "Add an item or key"
+    add_gpg_key: "Share the wallet with an other GPG key (name or file path)"
     alpha: "Use letter to generate a password"
     config: "Specify the configuration file to use"
     clipboard: "Disable the clipboard feature"

@@ -31,6 +31,10 @@ values         = {}
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw wallet [options]"
 
+	opts.on('-a', '--add-gpg-key NAME', I18n.t('option.add_gpg_key')) do |gpg_key|
+		options[:gpg_key] = gpg_key
+	end
+
 	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
 		options[:config] = config
 	end
@@ -84,6 +88,8 @@ cli.load_config
 
 if not options[:list].nil?
 	cli.list_wallet
+elsif not options[:gpg_key].nil?
+	cli.add_key(options[:gpg_key])
 else
 	cli.get_wallet(options[:wallet])
 	cli.decrypt

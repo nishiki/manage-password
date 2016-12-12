@@ -50,6 +50,7 @@ fr:
 
   option:
     add: "Ajoute un élément ou une clé"
+    add_gpg_key: "Partage le portefeuille avec une autre clé GPG (nom ou fichier)"
     alpha: "Utilise des lettres dans la génération d'un mot de passe"
     config: "Spécifie le fichier de configuration à utiliser"
     clipboard: "Désactive la fonction presse papier"
