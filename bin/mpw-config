@@ -68,7 +68,7 @@ if not options[:init].nil?
 	cli.setup(values)
 	cli.load_config
 	cli.get_wallet
-	cli.setup_gpg_key(options[:init])
+	cli.setup_gpg_key(values[:gpg_key])
 	cli.setup_wallet_config
 else
 	cli.set_config(values)
