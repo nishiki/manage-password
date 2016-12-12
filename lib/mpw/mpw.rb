@@ -185,12 +185,12 @@ class MPW
 	end
 
 	# Add a public key
-	# args: key ->  new public key
-	#       file -> public gpg file to import
-	def add_key(key, file=nil)
-		if not file.nil? and File.exists?(file)
-			data = File.open(file).read
-			GPGME::Key.import(data, armor: true)
+	# args: key ->  new public key file or name
+	def add_key(key)
+		if File.exists?(key)
+			data       = File.open(key).read
+			key_import = GPGME::Key.import(data, armor: true)
+			key        = GPGME::Key.get(key_import.imports[0].fpr).uids[0].email
 		else
 			data = GPGME::Key.export(key, armor: true).read
 		end

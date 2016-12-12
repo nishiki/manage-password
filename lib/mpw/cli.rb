@@ -334,10 +334,9 @@ class Cli
 	end
 
 	# Add a new public key
-	# args: key -> the key name to add
-	#       file -> gpg public file to import
-	def add_key(key, file=nil)
-		@mpw.add_key(key, file)
+	# args: key -> the key name or key file to add
+	def add_key(key)
+		@mpw.add_key(key)
 		@mpw.write_data
 		@mpw.sync(true) if @sync
 
