@@ -153,7 +153,7 @@ class Cli
 			data.each do |k, v|
 				next if k == :id or k == :otp
 
-				v[:length] = item.send(k.to_s).length + 3 if item.send(k.to_s).to_s.length >= v[:length]
+				v[:length] = item.send(k.to_s).to_s.length + 3 if item.send(k.to_s).to_s.length >= v[:length]
 			end
 		end
 		data[:id][:length]  = items.length.to_s.length + 2 if items.length.to_s.length > data[:id][:length]
