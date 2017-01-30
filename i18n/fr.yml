@@ -22,7 +22,7 @@ fr:
       write_data: "Impossible d'écrire le fichier MPW!"
     import: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
     update:
-      name_empty: "Vous devez définir un nom!"
+      host_empty: "Vous devez définir un host!"
     sync: 
       general: "Une erreur est survenue durant la synchronisation"
       connection: "La connexion n'a pu être établie!"

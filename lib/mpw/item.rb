@@ -39,7 +39,7 @@ class Item
 	# raise an error if the hash hasn't the key name 
 	def initialize(options={})
 		if not options.has_key?(:host) or options[:host].to_s.empty?
-			raise I18n.t('error.update.name_empty')
+			raise I18n.t('error.update.host_empty')
 		end
 
 		if not options.has_key?(:id) or options[:id].to_s.empty? or not options.has_key?(:created) or options[:created].to_s.empty?
@@ -59,7 +59,7 @@ class Item
 	# @args: options -> a hash of parameter
 	def update(options={})
 		if options.has_key?(:host) and options[:host].to_s.empty?
-			raise I18n.t('error.update.name_empty')
+			raise I18n.t('error.update.host_empty')
 		end
 
 		@group     = options[:group]      if options.has_key?(:group)

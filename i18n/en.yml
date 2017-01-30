@@ -22,7 +22,7 @@ en:
       write_data: "Can't to write the MPW file!"
     import: "Can't import, unable to read %{file}!"
     update:
-      name_empty: "You must define a name!"
+      host_empty: "You must define a host!"
     sync: 
       general: "An error has appeared during the sync"
       connection: "Connection fail!"
