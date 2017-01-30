@@ -21,6 +21,7 @@ $: << File.expand_path('../../lib', __FILE__)
 require 'locale'
 require 'set'
 require 'i18n'
+require 'colorize'
 
 # --------------------------------------------------------- #
 # Set local
@@ -45,7 +46,11 @@ bin_dir = File.dirname(__FILE__)
 command = "#{bin_dir}/mpw-#{ARGV[0]}"
 
 if Dir.glob("#{bin_dir}/mpw-*").include?("#{command}")
-	Kernel.load(command)
+	begin
+		Kernel.load(command)
+	rescue Exception => e
+		puts "#{I18n.t('display.error')}: #{e}".red
+	end
 else
 	puts "#{I18n.t('option.usage')}: mpw COMMAND [options]\n\n"
 	puts 'Commands:'
