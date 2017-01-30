@@ -50,10 +50,11 @@ en:
 
   option:
     add: "Add an item or key"
-    add_gpg_key: "Share the wallet with an other GPG key (name or file path)"
+    add_gpg_key: "Share the wallet with an other GPG key"
     alpha: "Use letter to generate a password"
     config: "Specify the configuration file to use"
     clipboard: "Disable the clipboard feature"
+    add_gpg_key: "Delete the wallet's share with an other GPG key"
     export: "Export a wallet in an yaml file"
     file_export: "Specify the file where export data"
     file_import: "Specify the file to import"

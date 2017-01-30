@@ -50,10 +50,11 @@ fr:
 
   option:
     add: "Ajoute un élément ou une clé"
-    add_gpg_key: "Partage le portefeuille avec une autre clé GPG (nom ou fichier)"
+    add_gpg_key: "Partage le portefeuille avec une autre clé GPG"
     alpha: "Utilise des lettres dans la génération d'un mot de passe"
     config: "Spécifie le fichier de configuration à utiliser"
     clipboard: "Désactive la fonction presse papier"
+    delete_gpg_key: "Supprime le partage le portefeuille avec une autre clé GPG"
     export: "Exporte un portefeuille dans un fichier yaml"
     file_export: "Spécifie le fichier où exporter les données"
     file_import: "Spécifie le fichier à importer"

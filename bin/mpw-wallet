@@ -24,9 +24,10 @@ require 'mpw/cli'
 # Options
 # --------------------------------------------------------- #
 
-options        = {}
-options[:sync] = {}
-values         = {}
+options          = {}
+options[:sync]   = {}
+options[:delete] = false
+values           = {}
 
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw wallet [options]"
@@ -37,6 +38,11 @@ OptionParser.new do |opts|
 
 	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
 		options[:config] = config
+	end
+
+	opts.on('-d', '--delete-gpg-key NAME', I18n.t('option.delete_gpg_key')) do |gpg_key|
+		options[:gpg_key] = gpg_key
+		options[:delete]  = true
 	end
 
 	opts.on('-h', '--help', I18n.t('option.help')) do
@@ -89,7 +95,11 @@ cli.load_config
 if not options[:list].nil?
 	cli.list_wallet
 elsif not options[:gpg_key].nil?
-	cli.add_key(options[:gpg_key])
+	if options[:delete]
+		cli.delete_key(options[:gpg_key])
+	else
+		cli.add_key(options[:gpg_key])
+	end
 else
 	cli.get_wallet(options[:wallet])
 	cli.decrypt
