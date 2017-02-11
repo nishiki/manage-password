@@ -123,17 +123,17 @@ class TestMPW < Test::Unit::TestCase
 		@mpw.read_data
 
 		@mpw.add_key('test2@example.com')
-		assert_equal(2, @mpw.keys.length)
+		assert_equal(2, @mpw.list_keys.length)
 
 		@mpw.write_data
 	end
 
 	def test_07_delete_gpg_key
 		@mpw.read_data
-		assert_equal(2, @mpw.keys.length)
+		assert_equal(2, @mpw.list_keys.length)
 
 		@mpw.delete_key('test2@example.com')
-		assert_equal(1, @mpw.keys.length)
+		assert_equal(1, @mpw.list_keys.length)
 
 		@mpw.write_data
 	end
