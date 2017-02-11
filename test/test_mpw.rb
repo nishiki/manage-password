@@ -118,4 +118,26 @@ class TestMPW < Test::Unit::TestCase
 		assert_equal(1, @mpw.list(pattern:  'existing').length)
 		assert_equal(2, @mpw.list(pattern:  'host_[eu]').length)
 	end
+
+	def test_06_add_gpg_key
+		@config = MPW::Config.new
+		@config.setup_gpg_key('password', 'test2@example.com', 2048)
+
+		@mpw.read_data
+
+		@mpw.add_key('test2@example.com')
+		assert_equal(2, @mpw.keys.length)
+
+		@mpw.write_data
+	end
+
+	def test07_delete_gpg_key
+		@mpw.read_data
+		assert_equal(2, @mpw.keys.length)
+
+		@mpw.delete_key('test2@example.com')
+		assert_equal(1, @mpw.keys.length)
+
+		@mpw.write_data
+	end
 end
