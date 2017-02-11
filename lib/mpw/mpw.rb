@@ -184,6 +184,12 @@ class MPW
 		@passwords[id] = encrypt(password)
 	end
 
+	# Return the list of all gpg keys
+	# rtrn: an array with the gpg keys name
+	def list_keys
+		return @keys.keys
+	end
+
 	# Add a public key
 	# args: key ->  new public key file or name
 	def add_key(key)
