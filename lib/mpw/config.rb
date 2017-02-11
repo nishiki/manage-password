@@ -97,7 +97,7 @@ class Config
 
 		param = ''
 		param << '<GnupgKeyParms format="internal">' + "\n"
-		param << "Key-Type: DSA\n"  
+		param << "Key-Type: RSA\n"  
 		param << "Key-Length: #{length}\n"
 		param << "Subkey-Type: ELG-E\n"
 		param << "Subkey-Length: #{length}\n"
