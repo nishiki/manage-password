@@ -94,14 +94,17 @@ cli.load_config
 
 if not options[:list].nil?
 	cli.list_wallet
-elsif not options[:gpg_key].nil?
-	if options[:delete]
-		cli.delete_key(options[:gpg_key])
-	else
-		cli.add_key(options[:gpg_key])
-	end
 else
 	cli.get_wallet(options[:wallet])
 	cli.decrypt
-	cli.setup_wallet_config(values)
+
+        if not options[:gpg_key].nil?
+		if options[:delete]
+			cli.delete_key(options[:gpg_key])
+		else
+			cli.add_key(options[:gpg_key])
+		end
+	else
+		cli.setup_wallet_config(values)
+	end
 end
