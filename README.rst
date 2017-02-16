@@ -46,7 +46,7 @@ Output::
 	  2  | linuxfr.org   | example   | https    |      |     | Da Linux French Site
 
 
-.. |Version| image:: https://img.shields.io/badge/latest_version-4.0.0--beta-yellow.svg
+.. |Version| image:: https://img.shields.io/badge/latest_version-4.0.0--beta1-yellow.svg
    :target: https://github.com/nishiki/manage-password/releases
 .. |License| image:: https://img.shields.io/badge/license-GPL--2.0-blue.svg
    :target: https://github.com/nishiki/manage-password/blob/master/LICENSE
