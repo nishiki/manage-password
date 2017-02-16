@@ -1,10 +1,16 @@
 = CHANGELOG =
-== v4.0.0 (beta) ==
+== v4.0.0-beta1 ==
+
+* add manage share key with new interface
+
+== v4.0.0-beta ==
 
 * new interface with a table
 * new command line interface
 * use text editor for add or update an item
+* fix generate gpg key with RSA
 * several bugs fix
+* add unit tests
 
 == v3.2.1 ==
 
