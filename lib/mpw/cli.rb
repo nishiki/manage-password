@@ -112,6 +112,30 @@ class Cli
 		exit 2
 	end
 	
+	# List gpg keys in wallet
+	def list_keys
+		i      = 1
+		length = 0
+
+		@mpw.list_keys.each do |key|
+			length = key.length if length < key.length
+		end
+		length += 7
+
+		puts "\n#{I18n.t('display.keys')}".red
+		length.times { print '=' }
+		print "\n"
+
+		@mpw.list_keys.each do |key|
+			print " #{i}".cyan
+			(3 - i.to_s.length).times { print ' ' }
+			puts "| #{key}"
+			i += 1
+		end
+
+		print "\n"
+	end
+
 	# Load config
 	def load_config
 		@config.load_config

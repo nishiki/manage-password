@@ -54,8 +54,12 @@ OptionParser.new do |opts|
 		values[:host] = host
 	end
 
-	opts.on('-l', '--list', I18n.t('option.list')) do |list|
+	opts.on('-l', '--list', I18n.t('option.list')) do
 		options[:list] = true
+	end
+
+	opts.on('-L', '--list-keys', I18n.t('option.list_keys')) do
+		options[:list_keys] = true
 	end
 
 	opts.on('-n', '--no-sync', I18n.t('option.no_sync')) do
@@ -98,7 +102,9 @@ else
 	cli.get_wallet(options[:wallet])
 	cli.decrypt
 
-        if not options[:gpg_key].nil?
+	if not options[:list_keys].nil?
+		cli.list_keys
+	elsif not options[:gpg_key].nil?
 		if options[:delete]
 			cli.delete_key(options[:gpg_key])
 		else

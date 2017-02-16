@@ -71,6 +71,7 @@ en:
     lang: "Set the software language"
     length: "Size of the password"
     list: "List the wallets"
+    list_keys: "List the GPG keys in wallet"
     no_sync: "Disable synchronization with the server"
     numeric: "Use number to generate a password"
     password: "Change the password for the synchronization"
@@ -173,6 +174,7 @@ en:
   display:
     comment: "Comment"
     error: "ERROR"
+    keys: "GPG keys"
     gpg_password: "GPG passphrase: "
     group: "Group"
     login: "Login"

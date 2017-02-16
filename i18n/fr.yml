@@ -71,6 +71,7 @@ fr:
     lang: "Spécifie la langue du logiciel (ex: fr)"
     length: "Taille du mot de passe"
     list: "Liste les portefeuilles"
+    list_keys: "Liste les clés GPG dans le portefeuille"
     no_sync: "Désactive la synchronisation avec le serveur"
     numeric: "Utilise des chiffre dans la génération d'un mot de passe"
     password: "Changer le mot de passe de connexion"
@@ -173,6 +174,7 @@ fr:
   display:
     comment: "Commentaire"
     error: "ERREUR"
+    keys: "Clés GPG"
     gpg_password: "Mot de passe GPG: "
     group: "Groupe"
     login: "Identifiant"
