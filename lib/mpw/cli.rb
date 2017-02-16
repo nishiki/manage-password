@@ -123,11 +123,12 @@ class Cli
 		length += 7
 
 		puts "\n#{I18n.t('display.keys')}".red
+		print ' '
 		length.times { print '=' }
 		print "\n"
 
 		@mpw.list_keys.each do |key|
-			print " #{i}".cyan
+			print "  #{i}".cyan
 			(3 - i.to_s.length).times { print ' ' }
 			puts "| #{key}"
 			i += 1
