@@ -247,7 +247,6 @@ class Cli
 
 		if result.length == 0
 			puts I18n.t('display.nothing')
-
 		else
 			table(result)
 		end
@@ -494,7 +493,7 @@ class Cli
 		items = @mpw.list(options)
 		
 		if items.length == 0
-			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+			puts I18n.t('display.nothing')
 		else
 			table(items)
 
