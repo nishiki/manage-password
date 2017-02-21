@@ -186,6 +186,7 @@ en:
     port: "Port"
     protocol: "Protocol"
     server: "Server"
+    wallets: "Wallets"
     warning: "Warning"
 
   formats:

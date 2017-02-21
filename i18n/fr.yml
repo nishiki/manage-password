@@ -186,6 +186,7 @@ fr:
     port: "Port"
     protocol: "Protocol"
     server: "Serveur"
+    wallets: "Porte-feuilles"
     warning: "Warning"
 
   formats:

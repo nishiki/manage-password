@@ -114,27 +114,7 @@ class Cli
 	
 	# List gpg keys in wallet
 	def list_keys
-		i      = 1
-		length = 0
-
-		@mpw.list_keys.each do |key|
-			length = key.length if length < key.length
-		end
-		length += 7
-
-		puts "\n#{I18n.t('display.keys')}".red
-		print ' '
-		length.times { print '=' }
-		print "\n"
-
-		@mpw.list_keys.each do |key|
-			print "  #{i}".cyan
-			(3 - i.to_s.length).times { print ' ' }
-			puts "| #{key}"
-			i += 1
-		end
-
-		print "\n"
+		table_list('keys', @mpw.list_keys)
 	end
 
 	# Load config
@@ -160,8 +140,33 @@ class Cli
 		exit 2
 	end
 
+	# Format list on a table
+	def table_list(title, list)
+		i      = 1
+		length = 0
+
+		list.each do |item|
+			length = item.length if length < item.length
+		end
+		length += 7
+
+		puts "\n#{I18n.t("display.#{title}")}".red
+		print ' '
+		length.times { print '=' }
+		print "\n"
+
+		list.each do |item|
+			print "  #{i}".cyan
+			(3 - i.to_s.length).times { print ' ' }
+			puts "| #{item}"
+			i += 1
+		end
+
+		print "\n"
+	end
+
 	# Format items on a table
-	def table(items=[])
+	def table_items(items=[])
 		group        = '.'
 		i            = 1
 		length_total = 10
@@ -248,7 +253,7 @@ class Cli
 		if result.length == 0
 			puts I18n.t('display.nothing')
 		else
-			table(result)
+			table_items(result)
 		end
 	end
 
@@ -334,11 +339,12 @@ class Cli
 
 	# List all wallets
 	def list_wallet
-		wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
-
-		wallets.each do |wallet|
-			puts File.basename(wallet, '.mpw')
+		wallets = []
+		Dir.glob("#{@config.wallet_dir}/*.mpw").each do |f| 
+			wallets << File.basename(f, '.mpw')
 		end
+
+		table_list('wallets', wallets)
 	end
 
 	# Display the wallet
@@ -442,7 +448,7 @@ class Cli
 		if items.length == 0
 			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
 		else
-			table(items) if items.length > 1
+			table_items(items) if items.length > 1
 
 			item    = get_item(items)
 			options = text_editor('update_form', item)
@@ -467,7 +473,7 @@ class Cli
 		if items.length == 0
 			puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
 		else
-			table(items)
+			table_items(items)
 
 			item    = get_item(items)
 			confirm = ask("#{I18n.t('form.delete_item.ask')} (y/N) ").to_s
@@ -495,7 +501,7 @@ class Cli
 		if items.length == 0
 			puts I18n.t('display.nothing')
 		else
-			table(items)
+			table_items(items)
 
 			item = get_item(items)
 			clipboard(item, clipboard)
