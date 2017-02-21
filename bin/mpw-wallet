@@ -110,7 +110,7 @@ else
 		else
 			cli.add_key(options[:gpg_key])
 		end
-	else
+	elsif not values.empty?
 		cli.setup_wallet_config(values)
 	end
 end
