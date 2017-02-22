@@ -61,7 +61,7 @@ class Cli
 
 		I18n.locale = lang.to_sym
 
-		@config.setup(options[:gpg_key], lang, options[:wallet_dir], options[:gpg_exe])
+		@config.setup(options[:gpg_key], lang, options[:wallet_dir], options[:default_wallet], options[:gpg_exe])
 
 		load_config
 

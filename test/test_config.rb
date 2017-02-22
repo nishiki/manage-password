@@ -27,7 +27,7 @@ class TestConfig < Test::Unit::TestCase
 		       }
 
 		@config = MPW::Config.new
-		@config.setup(data[:key], data[:lang], data[:wallet_dir], data[:gpg_exe])
+		@config.setup(data[:key], data[:lang], data[:wallet_dir], nil, data[:gpg_exe])
 		@config.load_config
 
 		data.each do |k,v|
