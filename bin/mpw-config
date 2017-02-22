@@ -34,6 +34,10 @@ OptionParser.new do |opts|
 		options[:config] = config
 	end
 
+	opts.on('-d', '--default-wallet NAME', I18n.t('option.default_wallet')) do |default_wallet|
+		values[:default_wallet] = default_wallet
+	end
+
 	opts.on('-g', '--gpg-exe PATH', I18n.t('option.gpg_exe')) do |gpg_exe|
 		values[:gpg_exe] = gpg_exe
 	end
@@ -64,12 +68,13 @@ end.parse!
 config = MPW::Config.new(options[:config])
 cli    = MPW::Cli.new(config, nil)
 
-if not options[:init].nil?
+if options.has_key?(:init)
 	cli.setup(values)
 	cli.load_config
 	cli.get_wallet
 	cli.setup_gpg_key(values[:gpg_key])
 	cli.setup_wallet_config
 else
+	cli.load_config
 	cli.set_config(values)
 end

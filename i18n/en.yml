@@ -54,6 +54,7 @@ en:
     alpha: "Use letter to generate a password"
     config: "Specify the configuration file to use"
     clipboard: "Disable the clipboard feature"
+    default_wallet: "Specify the default wallet to use"
     delete_gpg_key: "Delete the wallet's share with an other GPG key"
     export: "Export a wallet in an yaml file"
     file_export: "Specify the file where export data"
@@ -128,6 +129,8 @@ en:
       file_not_exist: "The import file doesn't exist!"
       valid: "The import is succesfull!"
       not_valid: "No data to import!"
+    set_config:
+      valid: "The config file has been edited!"
     setup_config:
       title: "Setup a new config file"
       lang: "Choose your language (en, fr, ...) [default=%{lang}]: "

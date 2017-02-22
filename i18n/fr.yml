@@ -54,6 +54,7 @@ fr:
     alpha: "Utilise des lettres dans la génération d'un mot de passe"
     config: "Spécifie le fichier de configuration à utiliser"
     clipboard: "Désactive la fonction presse papier"
+    default_wallet: "Spécifie le porte-feuille à utiliser par défaut"
     delete_gpg_key: "Supprime le partage le portefeuille avec une autre clé GPG"
     export: "Exporte un portefeuille dans un fichier yaml"
     file_export: "Spécifie le fichier où exporter les données"
@@ -128,6 +129,8 @@ fr:
       file_not_exist: "Le fichier d'import n'existe pas"
       valid: "L'import est un succès!"
       not_valid: "Aucune donnée à importer!"
+    set_config:
+      valid: "Le fichier de configuration a bien été modifié!"
     setup_config:
       title: "Création d'un nouveau fichier de configuration"
       lang: "Choisissez votre langue (en, fr, ...) [défaut=%{lang}]: "

@@ -29,6 +29,7 @@ class Config
 	attr_accessor :key
 	attr_accessor :lang
 	attr_accessor :config_dir
+	attr_accessor :default_wallet
 	attr_accessor :wallet_dir
 	attr_accessor :gpg_exe
 
@@ -45,31 +46,28 @@ class Config
 			@config_dir = "#{Dir.home}/.config/mpw"
 		end
 		
-		if @config_file.nil? or @config_file.empty?
-			@config_file = "#{@config_dir}/mpw.cfg"
-		end
+		@config_file = "#{@config_dir}/mpw.cfg" if @config_file.nil? or @config_file.empty?
 	end
 
 	# Create a new config file
 	# @args: key -> the gpg key to encrypt
 	#        lang -> the software language
-	#        wallet_dir -> the  directory where are the wallets password
-	#        gpg_exe -> the  path of gpg executable
+	#        wallet_dir -> the directory where are the wallets password
+	#        default_wallet -> the default wallet
+	#        gpg_exe -> the path of gpg executable
 	# @rtrn: true if le config file is create
-	def setup(key, lang, wallet_dir, gpg_exe)
+	def setup(key, lang, wallet_dir, default_wallet, gpg_exe)
 		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 			raise I18n.t('error.config.key_bad_format')
 		end
 
-		if wallet_dir.to_s.empty?
-			wallet_dir = "#{@config_dir}/wallets"
-		end
-
-		config = { 'key'        => key,
-		           'lang'       => lang,
-		           'wallet_dir' => wallet_dir,
-		           'gpg_exe'    => gpg_exe,
-		         }
+		wallet_dir = "#{@config_dir}/wallets" if wallet_dir.to_s.empty?
+		config     = { 'key'            => key,
+		               'lang'           => lang,
+		               'wallet_dir'     => wallet_dir,
+		               'default_wallet' => default_wallet,
+		               'gpg_exe'        => gpg_exe,
+		             }
 
 		FileUtils.mkdir_p(@config_dir, mode: 0700)
 		FileUtils.mkdir_p(wallet_dir,  mode: 0700)
@@ -77,7 +75,6 @@ class Config
 		File.open(@config_file, 'w') do |file|
 			file << config.to_yaml
 		end
-		
 	rescue Exception => e 
 		raise "#{I18n.t('error.config.write')}\n#{e}"
 	end
@@ -116,16 +113,16 @@ class Config
 
 	# Load the config file
 	def load_config
-		config      = YAML::load_file(@config_file)
-		@key        = config['key']
-		@lang       = config['lang']
-		@wallet_dir = config['wallet_dir']
-		@gpg_exe    = config['gpg_exe']
+		config          = YAML::load_file(@config_file)
+		@key            = config['key']
+		@lang           = config['lang']
+		@wallet_dir     = config['wallet_dir']
+		@default_wallet = config['default_wallet']
+		@gpg_exe        = config['gpg_exe']
 
 		raise if @key.empty? or @wallet_dir.empty?
 			
 		I18n.locale = @lang.to_sym
-
 	rescue Exception => e
 		raise "#{I18n.t('error.config.load')}\n#{e}"
 	end

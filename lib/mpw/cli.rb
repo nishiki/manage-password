@@ -40,12 +40,15 @@ class Cli
 	# Change a parameter int the config after init
 	# @args: options -> param to change
 	def set_config(options)
-		gpg_key    = options[:gpg_key]    || @config.key
-		lang       = options[:lang]       || @config.lang
-		wallet_dir = options[:wallet_dir] || @config.wallet_dir
-		gpg_exe    = options[:gpg_exe]    || @config.gpg_exe
+		gpg_key        = options[:gpg_key]        || @config.key
+		lang           = options[:lang]           || @config.lang
+		wallet_dir     = options[:wallet_dir]     || @config.wallet_dir
+		default_wallet = options[:default_wallet] || @config.default_wallet
+		gpg_exe        = options[:gpg_exe]        || @config.gpg_exe
 
-		@config.setup(gpg_key, lang, wallet_dir, gpg_exe)
+		@config.setup(gpg_key, lang, wallet_dir, default_wallet, gpg_exe)
+
+		puts "#{I18n.t('form.set_config.valid')}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #15: #{e}".red
 		exit 2
@@ -341,7 +344,9 @@ class Cli
 	def list_wallet
 		wallets = []
 		Dir.glob("#{@config.wallet_dir}/*.mpw").each do |f| 
-			wallets << File.basename(f, '.mpw')
+			wallet = File.basename(f, '.mpw')
+			wallet += ' *'.green if wallet == @config.default_wallet
+			wallets << wallet
 		end
 
 		table_list('wallets', wallets)
@@ -355,6 +360,8 @@ class Cli
 
 			if wallets.length == 1
 				@wallet_file = wallets[0]
+			elsif not @config.default_wallet.to_s.empty?
+				@wallet_file = "#{@config.wallet_dir}/#{@config.default_wallet}.mpw"
 			else
 				@wallet_file = "#{@config.wallet_dir}/default.mpw"
 			end
