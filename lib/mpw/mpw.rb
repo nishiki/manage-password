@@ -431,9 +431,9 @@ class MPW
 		end
 
 		chars = []
-		chars += [*('!'..'?')] - [*('0'..'9')]        if options.include?(:special)
-		chars += [*('A'..'Z'),*('a'..'z')]            if options.include?(:alpha)
-		chars += [*('0'..'9')]                        if options.include?(:numeric)
+		chars += [*('!'..'?')] - [*('0'..'9')]        if options[:special]
+		chars += [*('A'..'Z'),*('a'..'z')]            if options[:alpha]
+		chars += [*('0'..'9')]                        if options[:numeric]
 		chars = [*('A'..'Z'),*('a'..'z'),*('0'..'9')] if chars.empty?
 
 		result = ''

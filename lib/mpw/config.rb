@@ -32,6 +32,7 @@ class Config
 	attr_accessor :default_wallet
 	attr_accessor :wallet_dir
 	attr_accessor :gpg_exe
+	attr_accessor :password
 
 	# Constructor
 	# @args: config_file -> the specify config file
@@ -50,23 +51,39 @@ class Config
 	end
 
 	# Create a new config file
-	# @args: key -> the gpg key to encrypt
-	#        lang -> the software language
-	#        wallet_dir -> the directory where are the wallets password
-	#        default_wallet -> the default wallet
-	#        gpg_exe -> the path of gpg executable
+	# @args: options -> hash with values
 	# @rtrn: true if le config file is create
-	def setup(key, lang, wallet_dir, default_wallet, gpg_exe)
-		if not key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
+	def setup(options)
+		gpg_key        = options[:gpg_key]        || @key
+		lang           = options[:lang]           || @lang
+		wallet_dir     = options[:wallet_dir]     || @wallet_dir
+		default_wallet = options[:default_wallet] || @default_wallet
+		gpg_exe        = options[:gpg_exe]        || @gpg_exe
+		password       = { numeric: true,
+		                   alpha:   true,
+		                   special: false,
+		                   length:  16,
+		                 }
+
+		['numeric', 'special', 'alpha', 'length'].each do |k|
+			if options.has_key?("pwd_#{k}".to_sym)
+				password[k.to_sym] = options["pwd_#{k}".to_sym]
+			elsif not @password.nil? and @password.has_key?(k.to_sym)
+				password[k.to_sym] = @password[k.to_sym]
+			end
+		end
+
+		if not gpg_key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
 			raise I18n.t('error.config.key_bad_format')
 		end
 
 		wallet_dir = "#{@config_dir}/wallets" if wallet_dir.to_s.empty?
-		config     = { 'key'            => key,
+		config     = { 'key'            => gpg_key,
 		               'lang'           => lang,
 		               'wallet_dir'     => wallet_dir,
 		               'default_wallet' => default_wallet,
 		               'gpg_exe'        => gpg_exe,
+		               'password'       => password,
 		             }
 
 		FileUtils.mkdir_p(@config_dir, mode: 0700)
@@ -119,6 +136,7 @@ class Config
 		@wallet_dir     = config['wallet_dir']
 		@default_wallet = config['default_wallet']
 		@gpg_exe        = config['gpg_exe']
+		@password       = config['password']
 
 		raise if @key.empty? or @wallet_dir.empty?
 			

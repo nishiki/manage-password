@@ -40,13 +40,7 @@ class Cli
 	# Change a parameter int the config after init
 	# @args: options -> param to change
 	def set_config(options)
-		gpg_key        = options[:gpg_key]        || @config.key
-		lang           = options[:lang]           || @config.lang
-		wallet_dir     = options[:wallet_dir]     || @config.wallet_dir
-		default_wallet = options[:default_wallet] || @config.default_wallet
-		gpg_exe        = options[:gpg_exe]        || @config.gpg_exe
-
-		@config.setup(gpg_key, lang, wallet_dir, default_wallet, gpg_exe)
+		@config.setup(options)
 
 		puts "#{I18n.t('form.set_config.valid')}".green
 	rescue Exception => e
@@ -433,7 +427,7 @@ class Cli
 		item    = Item.new(options)
 
 		if password
-			options[:password] = MPW::password(length: 24)
+			options[:password] = MPW::password(@config.password)
 		end
 		
 		@mpw.add(item)
