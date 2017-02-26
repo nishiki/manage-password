@@ -206,16 +206,16 @@ class MPW
 		end
 
 		@keys[key] = data
-		@passwords.each_keys { |id| set_password(id, get_password(id)) }
-		@otp_keys.each_keys { |id| set_otp_key(id, get_otp_key(id)) }
+		@passwords.each_key { |id| set_password(id, get_password(id)) }
+		@otp_keys.each_key { |id| set_otp_key(id, get_otp_key(id)) }
 	end
 
 	# Delete a public key
 	# args: key ->  public key to delete
 	def delete_key(key)
 		@keys.delete(key)
-		@password.each_keys { |id| set_password(id, get_password(id)) }
-		@otp_keys.each_keys { |id| set_otp_key(id, get_otp_key(id)) }
+		@passwords.each_key { |id| set_password(id, get_password(id)) }
+		@otp_keys.each_key { |id| set_otp_key(id, get_otp_key(id)) }
 	end
 
 	# Set config
