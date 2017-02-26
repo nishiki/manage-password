@@ -51,11 +51,11 @@ class Cli
 	# Create a new config file
 	# @args: options -> set param
 	def setup(options)
-		lang = options[:lang] || Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
+		options[:lang] = options[:lang] || Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
 		I18n.locale = lang.to_sym
 
-		@config.setup(options[:gpg_key], lang, options[:wallet_dir], options[:default_wallet], options[:gpg_exe])
+		@config.setup(options)
 
 		load_config
 
