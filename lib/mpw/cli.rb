@@ -53,7 +53,7 @@ class Cli
 	def setup(options)
 		options[:lang] = options[:lang] || Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
-		I18n.locale = lang.to_sym
+		I18n.locale = options[:lang].to_sym
 
 		@config.setup(options)
 
