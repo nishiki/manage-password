@@ -26,7 +26,7 @@ class Config
 	
 	attr_accessor :error_msg
 
-	attr_accessor :key
+	attr_accessor :gpg_key
 	attr_accessor :lang
 	attr_accessor :config_dir
 	attr_accessor :default_wallet
@@ -54,7 +54,7 @@ class Config
 	# @args: options -> hash with values
 	# @rtrn: true if le config file is create
 	def setup(options)
-		gpg_key        = options[:gpg_key]        || @key
+		gpg_key        = options[:gpg_key]        || @gpg_key
 		lang           = options[:lang]           || @lang
 		wallet_dir     = options[:wallet_dir]     || @wallet_dir
 		default_wallet = options[:default_wallet] || @default_wallet
@@ -78,7 +78,7 @@ class Config
 		end
 
 		wallet_dir = "#{@config_dir}/wallets" if wallet_dir.to_s.empty?
-		config     = { 'key'            => gpg_key,
+		config     = { 'gpg_key'        => gpg_key,
 		               'lang'           => lang,
 		               'wallet_dir'     => wallet_dir,
 		               'default_wallet' => default_wallet,
@@ -117,7 +117,7 @@ class Config
 		param << "Subkey-Length: #{length}\n"
 		param << "Name-Real: #{name}\n"
 		param << "Name-Comment: #{name}\n"
-		param << "Name-Email: #{@key}\n"
+		param << "Name-Email: #{@gpg_key}\n"
 		param << "Expire-Date: #{expire}\n"
 		param << "Passphrase: #{password}\n"
 		param << "</GnupgKeyParms>\n"
@@ -131,14 +131,14 @@ class Config
 	# Load the config file
 	def load_config
 		config          = YAML::load_file(@config_file)
-		@key            = config['key']
+		@gpg_key        = config['gpg_key']
 		@lang           = config['lang']
 		@wallet_dir     = config['wallet_dir']
 		@default_wallet = config['default_wallet']
 		@gpg_exe        = config['gpg_exe']
 		@password       = config['password']
 
-		raise if @key.empty? or @wallet_dir.empty?
+		raise if @gpg_key.empty? or @wallet_dir.empty?
 			
 		I18n.locale = @lang.to_sym
 	rescue Exception => e
@@ -149,7 +149,7 @@ class Config
 	# @rtrn: true if the key exist, else false
 	def check_gpg_key?
 		ctx = GPGME::Ctx.new
-		ctx.each_key(@key, true) do
+		ctx.each_key(@gpg_key, true) do
 			return true
 		end
 

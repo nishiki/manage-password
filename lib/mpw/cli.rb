@@ -98,7 +98,7 @@ class Cli
 
 		#wallet_file = wallet.nil? ? "#{@config.wallet_dir}/default.mpw" : "#{@config.wallet_dir}/#{wallet}.mpw"
 
-		@mpw = MPW.new(@config.key, @wallet_file, @password, @config.gpg_exe)
+		@mpw = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe)
 		@mpw.read_data
 		@mpw.set_config(options)
 		@mpw.write_data
@@ -127,7 +127,7 @@ class Cli
 	def decrypt
 		if not defined?(@mpw)
 			@password = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
-			@mpw      = MPW.new(@config.key, @wallet_file, @password, @config.gpg_exe)
+			@mpw      = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe)
 		end
 
 		@mpw.read_data
