@@ -46,6 +46,7 @@ class TestConfig < Test::Unit::TestCase
 		                   }
 		       }
 
+		@config = MPW::Config.new
 		@config.load_config
 
 		assert_equal(@config.password[:length], 16)
