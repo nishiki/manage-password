@@ -20,7 +20,7 @@ class TestConfig < Test::Unit::TestCase
 	end
 
 	def test_00_config
-		data = { key: 'test@example.com',
+		data = { gpg_key: 'test@example.com',
 		         lang: 'en',
 		         wallet_dir: '/tmp/test',
 		         gpg_exe: '',
