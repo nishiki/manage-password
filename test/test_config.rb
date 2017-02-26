@@ -27,7 +27,7 @@ class TestConfig < Test::Unit::TestCase
 		       }
 
 		@config = MPW::Config.new
-		@config.setup(data[:key], data[:lang], data[:wallet_dir], nil, data[:gpg_exe])
+		@config.setup(data)
 		@config.load_config
 
 		data.each do |k,v|
@@ -36,5 +36,29 @@ class TestConfig < Test::Unit::TestCase
 
 		@config.setup_gpg_key('password', 'test@example.com', 2048)
 		assert(@config.check_gpg_key?)
+	end
+
+	def test_01_password
+		data = { password: { alpha: false,
+		                     numeric: false,
+		                     special: true,
+		                     length: 32,
+		                   }
+		       }
+
+		@config.load_config
+
+		assert_equal(@config.password[:length], 16)
+		assert(@config.password[:alpha])
+		assert(@config.password[:numeric])
+		assert(!@config.password[:special])
+
+		@config.setup(data)
+		@config.load_config
+
+		assert_equal(@config.password[:length], 32)
+		assert(!@config.password[:alpha])
+		assert(!@config.password[:numeric])
+		assert(@config.password[:special])
 	end
 end
