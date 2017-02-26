@@ -39,11 +39,10 @@ class TestConfig < Test::Unit::TestCase
 	end
 
 	def test_01_password
-		data = { password: { alpha: false,
-		                     numeric: false,
-		                     special: true,
-		                     length: 32,
-		                   }
+		data = { pwd_alpha: false,
+		         pwd_numeric: false,
+		         pwd_special: true,
+		         pwd_length: 32,
 		       }
 
 		@config = MPW::Config.new
@@ -57,7 +56,7 @@ class TestConfig < Test::Unit::TestCase
 		@config.setup(data)
 		@config.load_config
 
-		assert_equal(@config.password[:length], 32)
+		assert_equal(@config.password[:length], data[:pwd_length])
 		assert(!@config.password[:alpha])
 		assert(!@config.password[:numeric])
 		assert(@config.password[:special])
