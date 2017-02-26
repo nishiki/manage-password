@@ -136,7 +136,7 @@ class Config
 		@wallet_dir     = config['wallet_dir']
 		@default_wallet = config['default_wallet']
 		@gpg_exe        = config['gpg_exe']
-		@password       = config['password']
+		@password       = config['password'] || {}
 
 		raise if @gpg_key.empty? or @wallet_dir.empty?
 			
