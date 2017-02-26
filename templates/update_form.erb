@@ -2,9 +2,9 @@
 # <%= I18n.t('form.update_item.host') %>
 host: <%= item.host %>
 # <%= I18n.t('form.update_item.login') %>
-user: <%= item.user %>
+user: <%= item.user %><% if not password %>
 # <%= I18n.t('form.update_item.password') %>
-password: 
+password: <% end %>
 # <%= I18n.t('form.update_item.group') %>
 group: <%= item.group %>
 # <%= I18n.t('form.update_item.protocol') %>

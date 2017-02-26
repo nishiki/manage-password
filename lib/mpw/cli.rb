@@ -423,12 +423,9 @@ class Cli
 	# Form to add a new item
 	# @args: password -> generate a random password
 	def add(password=false)
-		options = text_editor('add_form', nil, password)	
-		item    = Item.new(options)
-
-		if password
-			options[:password] = MPW::password(@config.password)
-		end
+		options            = text_editor('add_form', nil, password)
+		item               = Item.new(options)
+		options[:password] = MPW::password(@config.password) if password
 		
 		@mpw.add(item)
 		@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
@@ -442,8 +439,9 @@ class Cli
 	end
 
 	# Update an item
-	# @args: options -> the option to search
-	def update(options={})
+	# @args: password -> generate a random password
+	#        options -> the option to search
+	def update(password=false, options={})
 		items = @mpw.list(options)
 		
 		if items.length == 0
@@ -451,8 +449,9 @@ class Cli
 		else
 			table_items(items) if items.length > 1
 
-			item    = get_item(items)
-			options = text_editor('update_form', item)
+			item               = get_item(items)
+			options            = text_editor('update_form', item, password)
+		        options[:password] = MPW::password(@config.password) if password
 
 			item.update(options)
 			@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)

@@ -52,6 +52,10 @@ OptionParser.new do |opts|
 		values[:pattern] = pattern
 	end
 
+	opts.on('-r', '--random', I18n.t('option.random_password')) do
+		options[:password] = true
+	end
+
 	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
 		options[:wallet] = wallet
 	end
@@ -63,4 +67,4 @@ cli    = MPW::Cli.new(config, options[:sync])
 cli.load_config
 cli.get_wallet(options[:wallet])
 cli.decrypt
-cli.update(values)
+cli.update(options[:password], values)
