@@ -517,23 +517,20 @@ class Cli
 		file  = 'export-mpw.yml' if file.to_s.empty?
 		items = @mpw.list(options)
 		data  = {}
-		i     = 1
 
 		items.each do |item|
-			data.merge!(i => { 'host'      => item.host,
-			                   'user'      => item.user,
-			                   'group'     => item.group,
-			                   'password'  => @mpw.get_password(item.id),
-			                   'protocol'  => item.protocol,
-			                   'port'      => item.port,
-			                   'otp_key'   => @mpw.get_otp_key(item.id),
-			                   'comment'   => item.comment,
-			                   'last_edit' => item.last_edit,
-			                   'created'   => item.created,
-			                 }
+			data.merge!(item.id => { 'host'      => item.host,
+			                         'user'      => item.user,
+			                         'group'     => item.group,
+			                         'password'  => @mpw.get_password(item.id),
+			                         'protocol'  => item.protocol,
+			                         'port'      => item.port,
+			                         'otp_key'   => @mpw.get_otp_key(item.id),
+			                         'comment'   => item.comment,
+			                         'last_edit' => item.last_edit,
+			                         'created'   => item.created,
+			                       }
 			            )
-
-			i += 1
 		end
 
 		File.open(file, 'w') {|f| f << data.to_yaml}
@@ -550,7 +547,6 @@ class Cli
 		raise I18n.t('form.import.file_not_exist') if not File.exist?(file)
 
 		YAML::load_file(file).each_value do |row|
-
 			item = Item.new(group:    row['group'],
 			                host:     row['host'],
 			                protocol: row['protocol'],
