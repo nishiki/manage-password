@@ -7,10 +7,11 @@ mpw is a little software which stores your passwords in [GnuPG](http://www.gnupg
 
 ## Features
 
+ * generate random password
  * generate OTP code
- * synchronize your passwords with SSH or FTP.
  * copy your login, password or otp in clipboard
  * manage many wallets
+ * synchronize your passwords with SSH or FTP.
  * share a wallet with others GPG keys
 
 ## Install
@@ -107,4 +108,40 @@ mpw wallet --delete-gpg-key test42@localhost.com
 Add synchronize:
 ```
 mpw wallet --protocol ssh --host example.com --user test --path /remote/path --password
+```
+
+### Export and import data
+
+You can export your data in yaml file with your passwords in clear text:
+```
+mpw export --file export.yml
+```
+
+Import data from an yaml file:
+```
+mpw import --file import.yml
+```
+
+Example yaml file for mpw:
+
+```
+---
+1:
+  host: bank.com
+  user: 123456
+  group: Bank
+  password: secret
+  protocol: https
+  port: 
+  otp_key: 1afg34
+  comment: 
+2:
+  host: linuxfr.org
+  user: example
+  group: 
+  password: 'complex %- password'
+  protocol: https
+  port: 
+  otp_key: 
+  comment: Da Linux French Site
 ```
