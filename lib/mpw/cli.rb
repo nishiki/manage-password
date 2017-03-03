@@ -538,7 +538,7 @@ class Cli
 
 		File.open(file, 'w') {|f| f << data.to_yaml}
 
-		puts "#{I18n.t('form.export.valid', file)}".green
+		puts "#{I18n.t('form.export.valid', file: file)}".green
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #17: #{e}".red
 	end
