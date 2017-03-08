@@ -319,6 +319,8 @@ class MPW
 
 		if not remote.to_s.empty?
 			@data.each do |item|
+				next if item.empty?
+
 				update = false
 
 				remote.list.each do |r|
