@@ -1,4 +1,11 @@
 # CHANGELOG
+## v4.0.0
+
+ * feature: set default wallet
+ * add option for generate a random password when you update an item
+ * fix encryption when you share an existing wallet
+ * several bugs fix
+
 ## v4.0.0-beta1
 
  * add manage share key with new interface
