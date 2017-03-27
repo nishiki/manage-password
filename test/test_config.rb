@@ -6,59 +6,59 @@ require 'locale'
 require 'i18n'
 
 class TestConfig < Test::Unit::TestCase
-	def setup
-		lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
-		
-		if defined?(I18n.enforce_available_locales)
-			I18n.enforce_available_locales = true
-		end
-		
-		I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
-		I18n.load_path      = Dir["#{File.expand_path('../../i18n', __FILE__)}/*.yml"]
-		I18n.default_locale = :en
-		I18n.locale         = lang.to_sym
-	end
+  def setup
+    lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
-	def test_00_config
-		data = { gpg_key: 'test@example.com',
-		         lang: 'en',
-		         wallet_dir: '/tmp/test',
-		         gpg_exe: '',
-		       }
+    if defined?(I18n.enforce_available_locales)
+      I18n.enforce_available_locales = true
+    end
 
-		@config = MPW::Config.new
-		@config.setup(data)
-		@config.load_config
+    I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+    I18n.load_path      = Dir["#{File.expand_path('../../i18n', __FILE__)}/*.yml"]
+    I18n.default_locale = :en
+    I18n.locale         = lang.to_sym
+  end
 
-		data.each do |k,v|
-			assert_equal(v, @config.send(k))
-		end
+  def test_00_config
+    data = { gpg_key: 'test@example.com',
+             lang: 'en',
+             wallet_dir: '/tmp/test',
+             gpg_exe: '',
+           }
 
-		@config.setup_gpg_key('password', 'test@example.com', 2048)
-		assert(@config.check_gpg_key?)
-	end
+    @config = MPW::Config.new
+    @config.setup(data)
+    @config.load_config
 
-	def test_01_password
-		data = { pwd_alpha: false,
-		         pwd_numeric: false,
-		         pwd_special: true,
-		         pwd_length: 32,
-		       }
+    data.each do |k,v|
+      assert_equal(v, @config.send(k))
+    end
 
-		@config = MPW::Config.new
-		@config.load_config
+    @config.setup_gpg_key('password', 'test@example.com', 2048)
+    assert(@config.check_gpg_key?)
+  end
 
-		assert_equal(@config.password[:length], 16)
-		assert(@config.password[:alpha])
-		assert(@config.password[:numeric])
-		assert(!@config.password[:special])
+  def test_01_password
+    data = { pwd_alpha: false,
+             pwd_numeric: false,
+             pwd_special: true,
+             pwd_length: 32,
+           }
 
-		@config.setup(data)
-		@config.load_config
+    @config = MPW::Config.new
+    @config.load_config
 
-		assert_equal(@config.password[:length], data[:pwd_length])
-		assert(!@config.password[:alpha])
-		assert(!@config.password[:numeric])
-		assert(@config.password[:special])
-	end
+    assert_equal(@config.password[:length], 16)
+    assert(@config.password[:alpha])
+    assert(@config.password[:numeric])
+    assert(!@config.password[:special])
+
+    @config.setup(data)
+    @config.load_config
+
+    assert_equal(@config.password[:length], data[:pwd_length])
+    assert(!@config.password[:alpha])
+    assert(!@config.password[:numeric])
+    assert(@config.password[:special])
+  end
 end

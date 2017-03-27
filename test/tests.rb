@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
- 
+
 require_relative 'init.rb'
 require_relative 'test_config.rb'
 require_relative 'test_item.rb'

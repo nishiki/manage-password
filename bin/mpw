@@ -1,17 +1,17 @@
 #!/usr/bin/ruby
 # MPW is a software to crypt and manage your passwords
 # Copyright (C) 2016  Adrien Waksberg <mpw@yae.im>
-# 
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -30,7 +30,7 @@ require 'colorize'
 lang = Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
 if defined?(I18n.enforce_available_locales)
-	I18n.enforce_available_locales = true
+  I18n.enforce_available_locales = true
 end
 
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
@@ -46,24 +46,24 @@ bin_dir = File.dirname(__FILE__)
 command = "#{bin_dir}/mpw-#{ARGV[0]}"
 
 if Dir.glob("#{bin_dir}/mpw-*").include?("#{command}")
-	begin
-		Kernel.load(command)
-	rescue OptionParser::ParseError => e
-		puts "#{I18n.t('display.error')}: #{e}".red
-	end
+  begin
+    Kernel.load(command)
+  rescue OptionParser::ParseError => e
+    puts "#{I18n.t('display.error')}: #{e}".red
+  end
 else
-	puts "#{I18n.t('option.usage')}: mpw COMMAND [options]\n\n"
-	puts 'Commands:'
-	puts "  add       #{I18n.t('command.add')}"
-	puts "  config    #{I18n.t('command.config')}"
-	puts "  copy      #{I18n.t('command.copy')}"
-	puts "  delete    #{I18n.t('command.delete')}"
-	puts "  export    #{I18n.t('command.export')}"
-	puts "  genpwd    #{I18n.t('command.genpwd')}"
-	puts "  import    #{I18n.t('command.import')}"
-	puts "  list      #{I18n.t('command.list')}"
-	puts "  update    #{I18n.t('command.update')}"
-	puts "  wallet    #{I18n.t('command.wallet')}"
+  puts "#{I18n.t('option.usage')}: mpw COMMAND [options]\n\n"
+  puts 'Commands:'
+  puts "  add       #{I18n.t('command.add')}"
+  puts "  config    #{I18n.t('command.config')}"
+  puts "  copy      #{I18n.t('command.copy')}"
+  puts "  delete    #{I18n.t('command.delete')}"
+  puts "  export    #{I18n.t('command.export')}"
+  puts "  genpwd    #{I18n.t('command.genpwd')}"
+  puts "  import    #{I18n.t('command.import')}"
+  puts "  list      #{I18n.t('command.list')}"
+  puts "  update    #{I18n.t('command.update')}"
+  puts "  wallet    #{I18n.t('command.wallet')}"
 
-	exit 3
+  exit 3
 end

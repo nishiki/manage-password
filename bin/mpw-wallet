@@ -1,17 +1,17 @@
 #!/usr/bin/ruby
 # MPW is a software to crypt and manage your passwords
 # Copyright (C) 2016  Adrien Waksberg <mpw@yae.im>
-# 
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -28,37 +28,37 @@ options          = {}
 options[:delete] = false
 
 OptionParser.new do |opts|
-	opts.banner = "#{I18n.t('option.usage')}: mpw wallet [options]"
+  opts.banner = "#{I18n.t('option.usage')}: mpw wallet [options]"
 
-	opts.on('-a', '--add-gpg-key NAME', I18n.t('option.add_gpg_key')) do |gpg_key|
-		options[:gpg_key] = gpg_key
-	end
+  opts.on('-a', '--add-gpg-key NAME', I18n.t('option.add_gpg_key')) do |gpg_key|
+    options[:gpg_key] = gpg_key
+  end
 
-	opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
-		options[:config] = config
-	end
+  opts.on('-c', '--config PATH', I18n.t('option.config')) do |config|
+    options[:config] = config
+  end
 
-	opts.on('-d', '--delete-gpg-key NAME', I18n.t('option.delete_gpg_key')) do |gpg_key|
-		options[:gpg_key] = gpg_key
-		options[:delete]  = true
-	end
+  opts.on('-d', '--delete-gpg-key NAME', I18n.t('option.delete_gpg_key')) do |gpg_key|
+    options[:gpg_key] = gpg_key
+    options[:delete]  = true
+  end
 
-	opts.on('-h', '--help', I18n.t('option.help')) do
-		puts opts
-		exit 0
-	end
+  opts.on('-h', '--help', I18n.t('option.help')) do
+    puts opts
+    exit 0
+  end
 
-	opts.on('-l', '--list', I18n.t('option.list')) do
-		options[:list] = true
-	end
+  opts.on('-l', '--list', I18n.t('option.list')) do
+    options[:list] = true
+  end
 
-	opts.on('-L', '--list-keys', I18n.t('option.list_keys')) do
-		options[:list_keys] = true
-	end
+  opts.on('-L', '--list-keys', I18n.t('option.list_keys')) do
+    options[:list_keys] = true
+  end
 
-	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
-		options[:wallet] = wallet
-	end
+  opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
+    options[:wallet] = wallet
+  end
 end.parse!
 
 config = MPW::Config.new(options[:config])
@@ -67,18 +67,18 @@ cli    = MPW::Cli.new(config)
 cli.load_config
 
 if not options[:list].nil?
-	cli.list_wallet
+  cli.list_wallet
 else
-	cli.get_wallet(options[:wallet])
-	cli.decrypt
+  cli.get_wallet(options[:wallet])
+  cli.decrypt
 
-	if not options[:list_keys].nil?
-		cli.list_keys
-	elsif not options[:gpg_key].nil?
-		if options[:delete]
-			cli.delete_key(options[:gpg_key])
-		else
-			cli.add_key(options[:gpg_key])
-		end
-	end
+  if not options[:list_keys].nil?
+    cli.list_keys
+  elsif not options[:gpg_key].nil?
+    if options[:delete]
+      cli.delete_key(options[:gpg_key])
+    else
+      cli.add_key(options[:gpg_key])
+    end
+  end
 end

@@ -1,17 +1,17 @@
 #!/usr/bin/ruby
 # MPW is a software to crypt and manage your passwords
 # Copyright (C) 2016  Adrien Waksberg <mpw@yae.im>
-# 
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -22,28 +22,28 @@ require 'mpw/mpw'
 options = {}
 
 OptionParser.new do |opts|
-	opts.banner = "#{I18n.t('option.usage')}: mpw passwd [options]"
+  opts.banner = "#{I18n.t('option.usage')}: mpw passwd [options]"
 
-	opts.on('-h', '--help', I18n.t('option.help')) do
-		puts opts
-		exit 0
-	end
+  opts.on('-h', '--help', I18n.t('option.help')) do
+    puts opts
+    exit 0
+  end
 
-	opts.on('-l', '--length NUMBER', I18n.t('option.length')) do |length|
-		options[:length] = length.to_i
-	end
+  opts.on('-l', '--length NUMBER', I18n.t('option.length')) do |length|
+    options[:length] = length.to_i
+  end
 
-	opts.on('-n', '--numeric', I18n.t('option.numeric')) do
-		options[:numeric] = true
-	end
+  opts.on('-n', '--numeric', I18n.t('option.numeric')) do
+    options[:numeric] = true
+  end
 
-	opts.on('-s', '--special-chars', I18n.t('option.special_chars')) do
-		options[:special] = true
-	end
+  opts.on('-s', '--special-chars', I18n.t('option.special_chars')) do
+    options[:special] = true
+  end
 
-	opts.on('-a', '--alpha', I18n.t('option.alpha')) do
-		options[:alpha] = true
-	end
+  opts.on('-a', '--alpha', I18n.t('option.alpha')) do
+    options[:alpha] = true
+  end
 end.parse!
 
 puts MPW::MPW::password(options)
