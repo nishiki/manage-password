@@ -30,7 +30,6 @@ class Item
 	attr_accessor :otp
 	attr_accessor :comment
 	attr_accessor :last_edit
-	attr_accessor :last_sync
 	attr_accessor :created
 
 	# Constructor
@@ -72,11 +71,6 @@ class Item
 		@last_edit = Time.now.to_i        if not options.has_key?(:no_update_last_edit)
 	end
 
-	# Update last_sync
-	def set_last_sync
-		@last_sync = Time.now.to_i
-	end
-
 	# Delete all data
 	def delete
 		@id        = nil
@@ -89,7 +83,6 @@ class Item
 		@comment   = nil
 		@created   = nil
 		@last_edit = nil
-		@last_sync = nil
 	end
 
 	def empty?

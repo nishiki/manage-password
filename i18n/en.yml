@@ -23,15 +23,6 @@ en:
     import: "Can't import, unable to read %{file}!"
     update:
       host_empty: "You must define a host!"
-    sync: 
-      general: "An error has appeared during the sync"
-      connection: "Connection fail!"
-      communication: "A communication problem with the server is appeared!"
-      download: "Can't download the file!"
-      not_authorized: "You haven't the access to remote file!"
-      upload: "Can't upload the file on the server!"
-      unknown: "An unknown error is occured!"
-      unknown_type: "The sync type is unknown"
 
   warning:
     select: 'Your choice is not a valid element!'
@@ -68,7 +59,6 @@ en:
     gpg_key: "Specify a GPG key (ex: user@example.com)"
     group: "Search the items with specified group"
     help: "Show this help message"
-    host: "Specify the server for the synchronization"
     init: "Initialize mpw"
     import: "Import item since a yaml file"
     key: "Specify the key name"
@@ -76,13 +66,8 @@ en:
     length: "Size of the password"
     list: "List the wallets"
     list_keys: "List the GPG keys in wallet"
-    no_sync: "Disable synchronization with the server"
     numeric: "Use number to generate a password"
-    password: "Change the password for the synchronization"
-    path: "Specify the remote path"
     pattern: "Given search pattern"
-    port: "Specify the connection port"
-    protocol: "Specify the protocol for the connection"
     random_password: "Generate a random password"
     setup: "Create a new configuration file" 
     setup_wallet: "Create a new configuration file for a wallet"
@@ -90,7 +75,6 @@ en:
     show: "Search and show the items"
     show_all: "List all items"
     usage: "Usage"
-    user: "Specify the user for the connection"
     wallet: "Specify a wallet to use"
     wallet_dir: "Set the wallets folder"
 
@@ -141,16 +125,6 @@ en:
       gpg_exe: "Enter the executable GPG path (optional): "
       wallet_dir: "Enter the wallets's folder path [default=%{home}/wallets]: "
       valid: "The config file has been created!"
-    setup_wallet:
-      password: "Sync password: " 
-      title: "Wallet setup"
-      sync_type: "Synchronization type (ssh, ftp): "
-      sync_host: "Synchronization server: "
-      sync_port: "Port of the synchronization server: "
-      sync_user: "Username for the synchronization: "
-      sync_pwd: "Password for the synchronization: "
-      sync_path: "File path for the synchronization : "
-      valid: "The wallet config file has been created!"
     setup_gpg_key:
       title: "Setup a GPG key"
       ask: "Do you want create your GPG key ? (Y/n)"

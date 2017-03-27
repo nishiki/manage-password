@@ -31,10 +31,8 @@ class Cli
 
 	# Constructor
 	# @args: config -> the config
-	#        sync -> boolean for sync or not
-	def initialize(config, sync=true)
-		@config    = config
-		@sync      = sync
+	def initialize(config)
+		@config = config
 	end
 
 	# Change a parameter int the config after init
@@ -89,26 +87,6 @@ class Cli
 		exit 2
 	end
 
-	# Setup wallet config for sync
-	# @args: options -> value to change
-	def setup_wallet_config(options={})
-		if not options[:password].nil?
-			options[:password] = ask(I18n.t('form.setup_wallet.password')) {|q| q.echo = false}
-		end
-
-		#wallet_file = wallet.nil? ? "#{@config.wallet_dir}/default.mpw" : "#{@config.wallet_dir}/#{wallet}.mpw"
-
-		@mpw = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe)
-		@mpw.read_data
-		@mpw.set_config(options)
-		@mpw.write_data
-
-		puts "#{I18n.t('form.setup_wallet.valid')}".green
-	rescue Exception => e
-		puts "#{I18n.t('display.error')} #10: #{e}".red
-		exit 2
-	end
-	
 	# List gpg keys in wallet
 	def list_keys
 		table_list('keys', @mpw.list_keys)
@@ -131,7 +109,6 @@ class Cli
 		end
 
 		@mpw.read_data
-		@mpw.sync if @sync
 	rescue Exception => e
 		puts "#{I18n.t('display.error')} #11: #{e}".red
 		exit 2
@@ -369,7 +346,6 @@ class Cli
 	def add_key(key)
 		@mpw.add_key(key)
 		@mpw.write_data
-		@mpw.sync(true) if @sync
 
 		puts "#{I18n.t('form.add_key.valid')}".green
 	rescue Exception => e
@@ -381,7 +357,6 @@ class Cli
 	def delete_key(key)
 		@mpw.delete_key(key)
 		@mpw.write_data
-		@mpw.sync(true) if @sync
 
 		puts "#{I18n.t('form.delete_key.valid')}".green
 	rescue Exception => e
@@ -431,7 +406,6 @@ class Cli
 		@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
 		@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
 		@mpw.write_data
-		@mpw.sync(true) if @sync
 
 		puts "#{I18n.t('form.add_item.valid')}".green
 	rescue Exception => e
@@ -457,7 +431,6 @@ class Cli
 			@mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
 			@mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
 			@mpw.write_data
-			@mpw.sync(true) if @sync
 
 			puts "#{I18n.t('form.update_item.valid')}".green
 		end
@@ -484,7 +457,6 @@ class Cli
 	
 			item.delete
 			@mpw.write_data
-			@mpw.sync(true) if @sync
 	
 			puts "#{I18n.t('form.delete_item.valid')}".green
 		end

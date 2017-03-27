@@ -229,7 +229,6 @@ class MPW
 		@config['user']      = options[:user]     if options.has_key?(:user)
 		@config['password']  = options[:password] if options.has_key?(:password)
 		@config['path']      = options[:path]     if options.has_key?(:path)
-		@config['last_sync'] = @config['last_sync'].nil? ? 0 : @config['last_sync']
 	end
 
 	# Add a new item
@@ -279,111 +278,6 @@ class MPW
 		end
 
 		return nil
-	end
-
-	# Get last sync
-	def get_last_sync
-		return @config['last_sync'].to_i
-	rescue
-		return 0
-	end
-
-	# Sync data with remote file
-	# @args: force -> force the sync
-	def sync(force=false)
-		return if @config.empty? or @config['protocol'].to_s.empty?
-		return if get_last_sync + 300 > Time.now.to_i and not force
-
-		tmp_file  = "#{@wallet_file}.sync"
-		
-		case @config['protocol']
-		when 'sftp', 'scp', 'ssh'
-			require "mpw/sync/ssh"
-			sync = SyncSSH.new(@config)
-		when 'ftp'
-			require 'mpw/sync/ftp'
-			sync = SyncFTP.new(@config)
-		else
-			raise I18n.t('error.sync.unknown_type')
-		end
-
-		sync.connect
-		sync.get(tmp_file)
-
-		remote = MPW.new(@key, tmp_file, @gpg_pass, @gpg_exe)
-		remote.read_data
-
-		File.unlink(tmp_file) if File.exist?(tmp_file)
-
-		return if remote.get_last_sync == @config['last_update']
-
-		if not remote.to_s.empty?
-			@data.each do |item|
-				next if item.empty?
-
-				update = false
-
-				remote.list.each do |r|
-					next if item.id != r.id
-
-					# Update item
-					if item.last_edit < r.last_edit
-						item.update(group:     r.group,
-						            host:      r.host,
-						            protocol:  r.protocol,
-						            user:      r.user,
-						            port:      r.port,
-						            comment:   r.comment
-						           )
-						set_password(item.id, remote.get_password(item.id))
-					end
-
-					r.delete
-					update = true
-
-					break
-				end
-
-				# Remove an old item
-				if not update and item.last_sync.to_i < get_last_sync and item.last_edit < get_last_sync
-					item.delete
-				end
-			end
-		end
-
-		# Add item
-		remote.list.each do |r|
-			next if r.last_edit <= get_last_sync
-
-			item = Item.new(id:        r.id,
-			                group:     r.group,
-			                host:      r.host,
-			                protocol:  r.protocol,
-			                user:      r.user,
-			                port:      r.port,
-			                comment:   r.comment,
-			                created:   r.created,
-			                last_edit: r.last_edit
-			               )
-
-			set_password(item.id, remote.get_password(item.id))
-			add(item)
-		end
-
-		remote = nil
-
-		@data.each do |item|
-			item.set_last_sync
-		end
-
-		@config['last_sync'] = Time.now.to_i
-
-		write_data
-		sync.update(@wallet_file)
-	rescue Exception => e
-		File.unlink(tmp_file) if File.exist?(tmp_file)
-
-		raise "#{I18n.t('error.sync.general')}\n#{e}"
 	end
 
 	# Set an opt key

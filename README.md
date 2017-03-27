@@ -11,7 +11,6 @@ mpw is a little software which stores your passwords in [GnuPG](http://www.gnupg
  * generate OTP code
  * copy your login, password or otp in clipboard
  * manage many wallets
- * synchronize your passwords with SSH or FTP.
  * share a wallet with others GPG keys
 
 ## Install
@@ -103,11 +102,6 @@ mpw wallet --add-gpg-key /path/to/file
 Remove a GPG key:
 ```
 mpw wallet --delete-gpg-key test42@localhost.com
-```
-
-Add synchronize:
-```
-mpw wallet --protocol ssh --host example.com --user test --path /remote/path --password
 ```
 
 ### Export and import data

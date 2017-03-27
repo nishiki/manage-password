@@ -24,9 +24,8 @@ require 'mpw/cli'
 # Options
 # --------------------------------------------------------- #
 
-options        = {}
-options[:sync] = true
-values         = {}
+options = {}
+values  = {}
 
 OptionParser.new do |opts|
 	opts.banner = "#{I18n.t('option.usage')}: mpw list [options]"
@@ -48,17 +47,13 @@ OptionParser.new do |opts|
 		values[:pattern] = pattern
 	end
 
-	opts.on('-n', '--no-sync', I18n.t('option.no_sync')) do
-		options[:sync] = false
-	end
-
 	opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
 		options[:wallet] = wallet
 	end
 end.parse!
 
 config = MPW::Config.new(options[:config])
-cli    = MPW::Cli.new(config, options[:sync])
+cli    = MPW::Cli.new(config)
 
 cli.load_config
 cli.get_wallet(options[:wallet])

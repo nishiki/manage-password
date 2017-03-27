@@ -23,15 +23,6 @@ fr:
     import: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
     update:
       host_empty: "Vous devez définir un host!"
-    sync: 
-      general: "Une erreur est survenue durant la synchronisation"
-      connection: "La connexion n'a pu être établie!"
-      communication: "Un problème de communication avec le serveur est apparu!"
-      download: "Impossible de télécharger le fichier!"
-      not_authorized: "Vous n'avez pas les autorisations d'accès au fichier distant!"
-      upload: "Impossible d'envoyer le fichier sur le serveur!"
-      unknown: "Une erreur inconnue est survenue!"
-      unknown_type: "Le type de synchronisation est inconnu"
 
   warning:
     select: "Votre choix n'est pas un élément valide!"
@@ -68,7 +59,6 @@ fr:
     gpg_key: "Spécifie une clé GPG (ex: user@example.com)"
     group: "Recherche les éléments appartenant au groupe spécifié"
     help: "Affiche ce message d'aide"
-    host: "Spécifie le serveur pour la synchronisation"
     import: "Importe des éléments depuis un fichier yaml"
     init: "Initialise mpw"
     key: "Spécifie le nom d'une clé"
@@ -76,13 +66,8 @@ fr:
     length: "Taille du mot de passe"
     list: "Liste les portefeuilles"
     list_keys: "Liste les clés GPG dans le portefeuille"
-    no_sync: "Désactive la synchronisation avec le serveur"
     numeric: "Utilise des chiffre dans la génération d'un mot de passe"
-    password: "Changer le mot de passe de connexion"
-    path: "Spécifie le chemin distant"
     pattern: "Motif de donnée à chercher"
-    port: "Spécifie le port de connexion"
-    protocol: "Spécifie le protocol utilisé pour la connexion"
     random_password: "Génére un mot de passe aléatoire"
     setup: "Création d'un nouveau fichier de configuration"
     setup_wallet: "Création d'un nouveau fichier de configuration pour un portefeuille"
@@ -90,7 +75,6 @@ fr:
     show: "Recherche et affiche les éléments"
     show_all: "Liste tous les éléments"
     usage: "Utilisation"
-    user: "Spécifie l'identifiant de connection"
     wallet: "Spécifie le portefeuille à utiliser"
     wallet_dir: "Spécifie le répertoire des portefeuilles"
 
@@ -141,16 +125,6 @@ fr:
       gpg_exe: "Entrez le chemin de l'exécutable GPG (optionnel): "
       wallet_dir: "Entrez le chemin du répertoire qui contiendra les porte-feuilles de mot de passe [défaut=%{home}/wallets]: "
       valid: "Le fichier de configuration a bien été créé!"
-    setup_wallet:
-      password: "Mot de passe de synchronisation: "
-      title: "Configuration du porte-feuille"
-      sync_type: "Type de synchronisation (ssh, ftp): "
-      sync_host: "Serveur: "
-      sync_port: "Port: "
-      sync_user: "Utilisateur: "
-      sync_pwd: "Mot de passe: "
-      sync_path: "Chemin du fichier: "
-      valid: "Le fichier de configuration du porte-feuille a bien été créé!"
     setup_gpg_key:
       title: "Configuration d'une nouvelle clé GPG"
       ask: "Voulez vous créer votre clé GPG ? (O/n)"

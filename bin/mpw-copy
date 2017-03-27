@@ -25,7 +25,6 @@ require 'mpw/cli'
 # --------------------------------------------------------- #
 
 options             = {}
-options[:sync]      = true
 options[:clipboard] = true
 values              = {}
 
@@ -49,10 +48,6 @@ OptionParser.new do |opts|
 		exit 0
 	end
 
-	opts.on('-n', '--no-sync', I18n.t('option.no_sync')) do
-		options[:sync] = false
-	end
-
 	opts.on('-p', '--pattern PATTERN', I18n.t('option.pattern')) do |pattern|
 		values[:pattern] = pattern
 	end
@@ -63,7 +58,7 @@ OptionParser.new do |opts|
 end.parse!
 
 config = MPW::Config.new(options[:config])
-cli    = MPW::Cli.new(config, options[:sync])
+cli    = MPW::Cli.new(config)
 
 cli.load_config
 cli.get_wallet(options[:wallet])
