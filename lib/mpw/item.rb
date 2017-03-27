@@ -68,7 +68,7 @@ class Item
     @port      = options[:port].to_i  if options.has_key?(:port) and not options[:port].to_s.empty?
     @otp       = options[:otp]        if options.has_key?(:otp)
     @comment   = options[:comment]    if options.has_key?(:comment)
-    @last_edit = Time.now.to_i        if not options.has_key?(:no_update_last_edit)
+    @last_edit = Time.now.to_i        unless options.has_key?(:no_update_last_edit)
   end
 
   # Delete all data

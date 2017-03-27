@@ -33,7 +33,7 @@ class MPW
     @gpg_exe     = gpg_exe
     @wallet_file = wallet_file
 
-    if not @gpg_exe.to_s.empty?
+    unless @gpg_exe.to_s.empty?
       GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg")
     end
   end
@@ -48,7 +48,7 @@ class MPW
 
     data       = nil
 
-    return if not File.exists?(@wallet_file)
+    return unless File.exists?(@wallet_file)
 
     Gem::Package::TarReader.new(File.open(@wallet_file)) do |tar|
       tar.each do |f|
@@ -80,7 +80,7 @@ class MPW
       end
     end
 
-    if not data.nil? and not data.empty?
+    unless data.to_s.empty?
       YAML.load(data).each_value do |d|
         @data.push(Item.new(id:        d['id'],
                             group:     d['group'],
@@ -254,14 +254,12 @@ class MPW
 
     @data.each do |item|
       next if item.empty?
-      next if not group.empty? and not group.eql?(item.group.to_s.downcase)
+      next unless group.empty? or group.eql?(item.group.to_s.downcase)
 
       host    = item.host.to_s.downcase
       comment = item.comment.to_s.downcase
 
-      if not host =~ /^.*#{search}.*$/ and not comment =~ /^.*#{search}.*$/
-        next
-      end
+      next unless host =~ /^.*#{search}.*$/ or comment =~ /^.*#{search}.*$/
 
       result.push(item)
     end
@@ -284,9 +282,7 @@ class MPW
   # args: id -> the item id
   #       key -> the new key
   def set_otp_key(id, key)
-    if not key.to_s.empty?
-      @otp_keys[id] = encrypt(key.to_s)
-    end
+    @otp_keys[id] = encrypt(key.to_s) unless key.to_s.empty?
   end
 
   # Get an opt key
@@ -305,7 +301,7 @@ class MPW
   # @args: id -> the item id
   # @rtrn: an otp code
   def get_otp_code(id)
-    if not @otp_keys.has_key?(id)
+    unless @otp_keys.has_key?(id)
       return 0
     else
       return ROTP::TOTP.new(decrypt(@otp_keys[id])).now

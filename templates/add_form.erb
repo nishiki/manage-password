@@ -2,7 +2,7 @@
 host:           # <%= I18n.t('form.add_item.host') %>
 user:           # <%= I18n.t('form.add_item.login') %>
 group:          # <%= I18n.t('form.add_item.group') %> 
-protocol:       # <%= I18n.t('form.add_item.protocol') %><% if not password %>
+protocol:       # <%= I18n.t('form.add_item.protocol') %><% unless password %>
 password:       # <%= I18n.t('form.add_item.password') %><% end %>
 port:           # <%= I18n.t('form.add_item.port') %>
 comment:        # <%= I18n.t('form.add_item.comment') %>

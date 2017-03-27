@@ -73,7 +73,7 @@ class Config
       end
     end
 
-    if not gpg_key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
+    unless gpg_key =~ /[a-zA-Z0-9.-_]+\@[a-zA-Z0-9]+\.[a-zA-Z]+/
       raise I18n.t('error.config.key_bad_format')
     end
 

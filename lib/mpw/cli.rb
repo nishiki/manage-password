@@ -103,7 +103,7 @@ class Cli
 
   # Request the GPG password and decrypt the file
   def decrypt
-    if not defined?(@mpw)
+    unless defined?(@mpw)
       @password = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
       @mpw      = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe)
     end
@@ -451,9 +451,7 @@ class Cli
       item    = get_item(items)
       confirm = ask("#{I18n.t('form.delete_item.ask')} (y/N) ").to_s
 
-      if not confirm =~ /^(y|yes|YES|Yes|Y)$/
-        return false
-      end
+      return false unless confirm =~ /^(y|yes|YES|Yes|Y)$/
 
       item.delete
       @mpw.write_data
@@ -516,7 +514,7 @@ class Cli
   # @args: file -> the import file
   def import(file)
     raise I18n.t('form.import.file_empty')     if file.to_s.empty?
-    raise I18n.t('form.import.file_not_exist') if not File.exist?(file)
+    raise I18n.t('form.import.file_not_exist') unless File.exist?(file)
 
     YAML::load_file(file).each_value do |row|
       item = Item.new(group:    row['group'],
@@ -530,8 +528,8 @@ class Cli
       next if item.empty?
 
       @mpw.add(item)
-      @mpw.set_password(item.id, row['password']) if not row['password'].to_s.empty?
-      @mpw.set_otp_key(item.id, row['otp_key'])   if not row['otp_key'].to_s.empty?
+      @mpw.set_password(item.id, row['password']) unless row['password'].to_s.empty?
+      @mpw.set_otp_key(item.id, row['otp_key'])   unless row['otp_key'].to_s.empty?
     end
 
     @mpw.write_data
