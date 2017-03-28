@@ -54,7 +54,7 @@ class MPW
       tar.each do |f|
         case f.full_name
           when 'wallet/config.gpg'
-            @config = YAML.load(decrypt(f.read))
+            @config = YAML.safe_load(decrypt(f.read))
 
           when 'wallet/meta.gpg'
             data = decrypt(f.read)
@@ -81,7 +81,7 @@ class MPW
     end
 
     unless data.to_s.empty?
-      YAML.load(data).each_value do |d|
+      YAML.safe_load(data).each_value do |d|
         @data.push(Item.new(id:        d['id'],
                             group:     d['group'],
                             host:      d['host'],
@@ -178,7 +178,7 @@ class MPW
   # args: id -> the item id
   #       password -> the new password
   def set_password(id, password)
-    salt     = MPW::password(length: Random.rand(4..9))
+    salt     = MPW.password(length: Random.rand(4..9))
     password = "$#{salt}::#{password}"
 
     @passwords[id] = encrypt(password)

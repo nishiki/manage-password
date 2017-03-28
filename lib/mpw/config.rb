@@ -130,7 +130,7 @@ class Config
 
   # Load the config file
   def load_config
-    config          = YAML::load_file(@config_file)
+    config          = YAML.load_file(@config_file)
     @gpg_key        = config['gpg_key']
     @lang           = config['lang']
     @wallet_dir     = config['wallet_dir']

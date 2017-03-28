@@ -46,5 +46,5 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-puts MPW::MPW::password(options)
+puts MPW::MPW.password(options)
 exit 0

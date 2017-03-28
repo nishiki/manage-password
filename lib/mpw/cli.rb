@@ -379,7 +379,7 @@ class Cli
 
       system("#{editor} #{tmp_file}")
 
-      opts = YAML::load_file(tmp_file)
+      opts = YAML.load_file(tmp_file)
     end
 
     opts.delete_if { |k,v| v.to_s.empty? }
@@ -396,7 +396,7 @@ class Cli
   def add(password=false)
     options            = text_editor('add_form', nil, password)
     item               = Item.new(options)
-    options[:password] = MPW::password(@config.password) if password
+    options[:password] = MPW.password(@config.password) if password
 
     @mpw.add(item)
     @mpw.set_password(item.id, options[:password]) if options.key?(:password)
@@ -421,7 +421,7 @@ class Cli
 
       item               = get_item(items)
       options            = text_editor('update_form', item, password)
-            options[:password] = MPW::password(@config.password) if password
+            options[:password] = MPW.password(@config.password) if password
 
       item.update(options)
       @mpw.set_password(item.id, options[:password]) if options.key?(:password)
@@ -512,7 +512,7 @@ class Cli
     raise I18n.t('form.import.file_empty')     if file.to_s.empty?
     raise I18n.t('form.import.file_not_exist') unless File.exist?(file)
 
-    YAML::load_file(file).each_value do |row|
+    YAML.load_file(file).each_value do |row|
       item = Item.new(group:    row['group'],
                       host:     row['host'],
                       protocol: row['protocol'],
