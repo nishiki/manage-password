@@ -62,7 +62,7 @@ class MPW
           when /^wallet\/keys\/(?<key>.+)\.pub$/
             key = Regexp.last_match('key')
 
-            if GPGME::Key.find(:public, key).length == 0
+            if GPGME::Key.find(:public, key).empty?
               GPGME::Key.import(f.read, armor: true)
             end
 

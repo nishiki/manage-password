@@ -224,7 +224,7 @@ class Cli
   def list(options={})
     result = @mpw.list(options)
 
-    if result.length == 0
+    if result.empty?
       puts I18n.t('display.nothing')
     else
       table_items(result)
@@ -414,7 +414,7 @@ class Cli
   def update(password=false, options={})
     items = @mpw.list(options)
 
-    if items.length == 0
+    if items.empty?
       puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
     else
       table_items(items) if items.length > 1
@@ -439,7 +439,7 @@ class Cli
   def delete(options={})
     items = @mpw.list(options)
 
-    if items.length == 0
+    if items.empty?
       puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
     else
       table_items(items)
@@ -464,7 +464,7 @@ class Cli
   def copy(clipboard=true, options={})
     items = @mpw.list(options)
 
-    if items.length == 0
+    if items.empty?
       puts I18n.t('display.nothing')
     else
       table_items(items)
