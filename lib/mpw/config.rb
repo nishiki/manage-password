@@ -36,7 +36,7 @@ class Config
 
   # Constructor
   # @args: config_file -> the specify config file
-  def initialize(config_file=nil)
+  def initialize(config_file = nil)
     @config_file = config_file
 
     if /darwin/ =~ RUBY_PLATFORM

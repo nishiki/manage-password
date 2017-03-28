@@ -68,8 +68,8 @@ class Cli
   def setup_gpg_key(gpg_key)
     return if @config.check_gpg_key?
 
-    password = ask(I18n.t('form.setup_gpg_key.password')) {|q| q.echo = false}
-    confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) {|q| q.echo = false}
+    password = ask(I18n.t('form.setup_gpg_key.password')) { |q| q.echo = false }
+    confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) { |q| q.echo = false }
 
     if password != confirm
       raise I18n.t('form.setup_gpg_key.error_password')
@@ -104,7 +104,7 @@ class Cli
   # Request the GPG password and decrypt the file
   def decrypt
     unless defined?(@mpw)
-      @password = ask(I18n.t('display.gpg_password')) {|q| q.echo = false}
+      @password = ask(I18n.t('display.gpg_password')) { |q| q.echo = false }
       @mpw      = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe)
     end
 
@@ -140,7 +140,7 @@ class Cli
   end
 
   # Format items on a table
-  def table_items(items=[])
+  def table_items(items = [])
     group        = '.'
     i            = 1
     length_total = 10
@@ -160,7 +160,7 @@ class Cli
         v[:length] = item.send(k.to_s).to_s.length + 3 if item.send(k.to_s).to_s.length >= v[:length]
       end
     end
-    data[:id][:length]  = items.length.to_s.length + 2 if items.length.to_s.length > data[:id][:length]
+    data[:id][:length] = items.length.to_s.length + 2 if items.length.to_s.length > data[:id][:length]
 
     data.each_value { |v| length_total += v[:length] }
     items.sort!     { |a, b| a.group.to_s.downcase <=> b.group.to_s.downcase }
@@ -221,7 +221,7 @@ class Cli
 
   # Display the query's result
   # @args: options -> the option to search
-  def list(options={})
+  def list(options = {})
     result = @mpw.list(options)
 
     if result.empty?
@@ -237,16 +237,16 @@ class Cli
   def get_item(items)
     return items[0] if items.length == 1
 
-    items.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
+    items.sort! { |a, b| a.group.to_s.downcase <=> b.group.to_s.downcase }
     choice = ask(I18n.t('form.select')).to_i
 
-    choice >= 1 && choice <= items.length ? items[choice-1] : nil
+    choice >= 1 && choice <= items.length ? items[choice - 1] : nil
   end
 
   # Copy in clipboard the login and password
   # @args: item -> the item
   #        clipboard -> enable clipboard
-  def clipboard(item, clipboard=true)
+  def clipboard(item, clipboard = true)
     pid = nil
 
     # Security: force quit after 90s
@@ -321,7 +321,7 @@ class Cli
 
   # Display the wallet
   # @args: wallet -> the wallet name
-  def get_wallet(wallet=nil)
+  def get_wallet(wallet = nil)
     if wallet.to_s.empty?
       wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
 
@@ -363,7 +363,7 @@ class Cli
   # @args: template -> template name
   #        item -> the item to edit
   #        password -> disable field password
-  def text_editor(template_name, item=nil, password=false)
+  def text_editor(template_name, item = nil, password = false)
     editor        = ENV['EDITOR'] || 'nano'
     options       = {}
     opts          = {}
@@ -382,9 +382,9 @@ class Cli
       opts = YAML.load_file(tmp_file)
     end
 
-    opts.delete_if { |k,v| v.to_s.empty? }
+    opts.delete_if { |k, v| v.to_s.empty? }
 
-    opts.each do |k,v|
+    opts.each do |k, v|
       options[k.to_sym] = v
     end
 
@@ -393,7 +393,7 @@ class Cli
 
   # Form to add a new item
   # @args: password -> generate a random password
-  def add(password=false)
+  def add(password = false)
     options            = text_editor('add_form', nil, password)
     item               = Item.new(options)
     options[:password] = MPW.password(@config.password) if password
@@ -411,7 +411,7 @@ class Cli
   # Update an item
   # @args: password -> generate a random password
   #        options -> the option to search
-  def update(password=false, options={})
+  def update(password = false, options = {})
     items = @mpw.list(options)
 
     if items.empty?
@@ -421,7 +421,7 @@ class Cli
 
       item               = get_item(items)
       options            = text_editor('update_form', item, password)
-            options[:password] = MPW.password(@config.password) if password
+      options[:password] = MPW.password(@config.password) if password
 
       item.update(options)
       @mpw.set_password(item.id, options[:password]) if options.key?(:password)
@@ -436,7 +436,7 @@ class Cli
 
   # Remove an item
   # @args: options -> the option to search
-  def delete(options={})
+  def delete(options = {})
     items = @mpw.list(options)
 
     if items.empty?
@@ -461,7 +461,7 @@ class Cli
   # Copy a password, otp, login
   # @args: clipboard -> enable clipboard
   #        options -> the option to search
-  def copy(clipboard=true, options={})
+  def copy(clipboard = true, options = {})
     items = @mpw.list(options)
 
     if items.empty?
@@ -499,7 +499,7 @@ class Cli
                   )
     end
 
-    File.open(file, 'w') {|f| f << data.to_yaml}
+    File.open(file, 'w') { |f| f << data.to_yaml }
 
     puts I18n.t('form.export.valid', file: file).to_s.green
   rescue Exception => e

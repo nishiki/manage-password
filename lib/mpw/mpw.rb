@@ -27,7 +27,7 @@ module MPW
 class MPW
 
   # Constructor
-  def initialize(key, wallet_file, gpg_pass=nil, gpg_exe=nil)
+  def initialize(key, wallet_file, gpg_pass = nil, gpg_exe = nil)
     @key         = key
     @gpg_pass    = gpg_pass
     @gpg_exe     = gpg_exe
@@ -53,29 +53,29 @@ class MPW
     Gem::Package::TarReader.new(File.open(@wallet_file)) do |tar|
       tar.each do |f|
         case f.full_name
-          when 'wallet/config.gpg'
-            @config = YAML.safe_load(decrypt(f.read))
+        when 'wallet/config.gpg'
+          @config = YAML.safe_load(decrypt(f.read))
 
-          when 'wallet/meta.gpg'
-            data = decrypt(f.read)
+        when 'wallet/meta.gpg'
+          data = decrypt(f.read)
 
-          when /^wallet\/keys\/(?<key>.+)\.pub$/
-            key = Regexp.last_match('key')
+        when /^wallet\/keys\/(?<key>.+)\.pub$/
+          key = Regexp.last_match('key')
 
-            if GPGME::Key.find(:public, key).empty?
-              GPGME::Key.import(f.read, armor: true)
-            end
+          if GPGME::Key.find(:public, key).empty?
+            GPGME::Key.import(f.read, armor: true)
+          end
 
-            @keys[key] = f.read
+          @keys[key] = f.read
 
-          when /^wallet\/passwords\/(?<id>[a-zA-Z0-9]+)\.gpg$/
-            @passwords[Regexp.last_match('id')] = f.read
+        when /^wallet\/passwords\/(?<id>[a-zA-Z0-9]+)\.gpg$/
+          @passwords[Regexp.last_match('id')] = f.read
 
-          when /^wallet\/otp_keys\/(?<id>[a-zA-Z0-9]+)\.gpg$/
-            @otp_keys[Regexp.last_match('id')] = f.read
+        when /^wallet\/otp_keys\/(?<id>[a-zA-Z0-9]+)\.gpg$/
+          @otp_keys[Regexp.last_match('id')] = f.read
 
-          else
-            next
+        else
+          next
         end
       end
     end
@@ -220,7 +220,7 @@ class MPW
 
   # Set config
   # args: config -> a hash with config options
-  def set_config(options={})
+  def set_config(options = {})
     @config              = {} if @config.nil?
 
     @config['protocol']  = options[:protocol] if options.key?(:protocol)
@@ -243,7 +243,7 @@ class MPW
   # Search in some csv data
   # @args: options -> a hash with paramaters
   # @rtrn: a list with the resultat of the search
-  def list(options={})
+  def list(options = {})
     result = []
 
     search = options[:pattern].to_s.downcase
@@ -305,7 +305,7 @@ class MPW
   # Generate a random password
   # @args: options -> :length, :special, :alpha, :numeric
   # @rtrn: a random string
-  def self.password(options={})
+  def self.password(options = {})
     if !options.include?(:length) || options[:length].to_i <= 0
       length = 8
     elsif options[:length].to_i >= 32768
@@ -315,10 +315,10 @@ class MPW
     end
 
     chars = []
-    chars += [*('!'..'?')] - [*('0'..'9')]        if options[:special]
-    chars += [*('A'..'Z'),*('a'..'z')]            if options[:alpha]
-    chars += [*('0'..'9')]                        if options[:numeric]
-    chars = [*('A'..'Z'),*('a'..'z'),*('0'..'9')] if chars.empty?
+    chars += [*('!'..'?')] - [*('0'..'9')]          if options[:special]
+    chars += [*('A'..'Z'), *('a'..'z')]             if options[:alpha]
+    chars += [*('0'..'9')]                          if options[:numeric]
+    chars = [*('A'..'Z'), *('a'..'z'), *('0'..'9')] if chars.empty?
 
     result = ''
     while length > 62 do

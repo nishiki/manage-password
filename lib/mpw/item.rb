@@ -36,7 +36,7 @@ class Item
   # Create a new item
   # @args: options -> a hash of parameter
   # raise an error if the hash hasn't the key name
-  def initialize(options={})
+  def initialize(options = {})
     if !options.key?(:host) || options[:host].to_s.empty?
       raise I18n.t('error.update.host_empty')
     end
@@ -56,7 +56,7 @@ class Item
 
   # Update the item
   # @args: options -> a hash of parameter
-  def update(options={})
+  def update(options = {})
     if options.key?(:host) && options[:host].to_s.empty?
       raise I18n.t('error.update.host_empty')
     end
@@ -96,7 +96,7 @@ class Item
   # Generate an random id
   private
   def generate_id
-    ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(16).join
+    ([*('A'..'Z'), *('a'..'z'), *('0'..'9')]).sample(16).join
   end
 end
 end
