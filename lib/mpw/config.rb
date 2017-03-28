@@ -104,9 +104,9 @@ class Config
   # @rtrn: true if the GPG key is create, else false
   def setup_gpg_key(password, name, length = 4096, expire = 0)
     if name.to_s.empty?
-      raise "#{I18n.t('error.config.genkey_gpg.name')}"
+      raise I18n.t('error.config.genkey_gpg.name')
     elsif password.to_s.empty?
-      raise "#{I18n.t('error.config.genkey_gpg.password')}"
+      raise I18n.t('error.config.genkey_gpg.password')
     end
 
     param = ''

@@ -40,7 +40,7 @@ class Cli
   def set_config(options)
     @config.setup(options)
 
-    puts "#{I18n.t('form.set_config.valid')}".green
+    puts I18n.t('form.set_config.valid').to_s.green
   rescue Exception => e
     puts "#{I18n.t('display.error')} #15: #{e}".red
     exit 2
@@ -57,7 +57,7 @@ class Cli
 
     load_config
 
-    puts "#{I18n.t('form.setup_config.valid')}".green
+    puts I18n.t('form.setup_config.valid').to_s.green
   rescue Exception => e
     puts "#{I18n.t('display.error')} #8: #{e}".red
     exit 2
@@ -81,7 +81,7 @@ class Cli
 
     @config.setup_gpg_key(@password, gpg_key)
 
-    puts "#{I18n.t('form.setup_gpg_key.valid')}".green
+    puts I18n.t('form.setup_gpg_key.valid').to_s.green
   rescue Exception => e
     puts "#{I18n.t('display.error')} #8: #{e}".red
     exit 2
@@ -208,7 +208,7 @@ class Cli
         end
 
         print '| '
-        print "#{item.send(k.to_s)}".send(v[:color])
+        print item.send(k.to_s).to_s.send(v[:color])
         (v[:length] - item.send(k.to_s).to_s.length).times { print ' ' }
       end
       print "\n"
@@ -343,7 +343,7 @@ class Cli
     @mpw.add_key(key)
     @mpw.write_data
 
-    puts "#{I18n.t('form.add_key.valid')}".green
+    puts I18n.t('form.add_key.valid').to_s.green
   rescue Exception => e
     puts "#{I18n.t('display.error')} #13: #{e}".red
   end
@@ -354,7 +354,7 @@ class Cli
     @mpw.delete_key(key)
     @mpw.write_data
 
-    puts "#{I18n.t('form.delete_key.valid')}".green
+    puts I18n.t('form.delete_key.valid').to_s.green
   rescue Exception => e
     puts "#{I18n.t('display.error')} #15: #{e}".red
   end
@@ -403,7 +403,7 @@ class Cli
     @mpw.set_otp_key(item.id, options[:otp_key])   if options.key?(:otp_key)
     @mpw.write_data
 
-    puts "#{I18n.t('form.add_item.valid')}".green
+    puts I18n.t('form.add_item.valid').to_s.green
   rescue Exception => e
     puts "#{I18n.t('display.error')} #13: #{e}".red
   end
@@ -428,7 +428,7 @@ class Cli
       @mpw.set_otp_key(item.id, options[:otp_key])   if options.key?(:otp_key)
       @mpw.write_data
 
-      puts "#{I18n.t('form.update_item.valid')}".green
+      puts I18n.t('form.update_item.valid').to_s.green
     end
   rescue Exception => e
     puts "#{I18n.t('display.error')} #14: #{e}".red
@@ -452,7 +452,7 @@ class Cli
       item.delete
       @mpw.write_data
 
-      puts "#{I18n.t('form.delete_item.valid')}".green
+      puts I18n.t('form.delete_item.valid').to_s.green
     end
   rescue Exception => e
     puts "#{I18n.t('display.error')} #16: #{e}".red
@@ -501,7 +501,7 @@ class Cli
 
     File.open(file, 'w') {|f| f << data.to_yaml}
 
-    puts "#{I18n.t('form.export.valid', file: file)}".green
+    puts I18n.t('form.export.valid', file: file).to_s.green
   rescue Exception => e
     puts "#{I18n.t('display.error')} #17: #{e}".red
   end
@@ -530,7 +530,7 @@ class Cli
 
     @mpw.write_data
 
-    puts "#{I18n.t('form.import.valid')}".green
+    puts I18n.t('form.import.valid').to_s.green
   rescue Exception => e
     puts "#{I18n.t('display.error')} #18: #{e}".red
   end
