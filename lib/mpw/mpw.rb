@@ -48,7 +48,7 @@ class MPW
 
     data       = nil
 
-    return unless File.exists?(@wallet_file)
+    return unless File.exist?(@wallet_file)
 
     Gem::Package::TarReader.new(File.open(@wallet_file)) do |tar|
       tar.each do |f|
@@ -193,7 +193,7 @@ class MPW
   # Add a public key
   # args: key ->  new public key file or name
   def add_key(key)
-    if File.exists?(key)
+    if File.exist?(key)
       data       = File.open(key).read
       key_import = GPGME::Key.import(data, armor: true)
       key        = GPGME::Key.get(key_import.imports[0].fpr).uids[0].email
