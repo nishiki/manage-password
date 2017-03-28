@@ -88,7 +88,7 @@ class MPW
                             protocol:  d['protocol'],
                             user:      d['user'],
                             port:      d['port'],
-                            otp:       @otp_keys.has_key?(d['id']),
+                            otp:       @otp_keys.key?(d['id']),
                             comment:   d['comment'],
                             last_edit: d['last_edit'],
                             created:   d['created'],
@@ -223,12 +223,12 @@ class MPW
   def set_config(options={})
     @config              = {} if @config.nil?
 
-    @config['protocol']  = options[:protocol] if options.has_key?(:protocol)
-    @config['host']      = options[:host]     if options.has_key?(:host)
-    @config['port']      = options[:port]     if options.has_key?(:port)
-    @config['user']      = options[:user]     if options.has_key?(:user)
-    @config['password']  = options[:password] if options.has_key?(:password)
-    @config['path']      = options[:path]     if options.has_key?(:path)
+    @config['protocol']  = options[:protocol] if options.key?(:protocol)
+    @config['host']      = options[:host]     if options.key?(:host)
+    @config['port']      = options[:port]     if options.key?(:port)
+    @config['user']      = options[:user]     if options.key?(:user)
+    @config['password']  = options[:password] if options.key?(:password)
+    @config['path']      = options[:path]     if options.key?(:path)
   end
 
   # Add a new item
@@ -286,14 +286,14 @@ class MPW
   # args: id -> the item id
   #       key -> the new key
   def get_otp_key(id)
-    @otp_keys.has_key?(id) ? decrypt(@otp_keys[id]) : nil
+    @otp_keys.key?(id) ? decrypt(@otp_keys[id]) : nil
   end
 
   # Get an otp code
   # @args: id -> the item id
   # @rtrn: an otp code
   def get_otp_code(id)
-    @otp_keys.has_key?(id) ? 0 : ROTP::TOTP.new(decrypt(@otp_keys[id])).now
+    @otp_keys.key?(id) ? 0 : ROTP::TOTP.new(decrypt(@otp_keys[id])).now
   end
 
   # Get remaining time before expire otp code

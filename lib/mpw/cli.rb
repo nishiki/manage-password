@@ -399,8 +399,8 @@ class Cli
     options[:password] = MPW::password(@config.password) if password
 
     @mpw.add(item)
-    @mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
-    @mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
+    @mpw.set_password(item.id, options[:password]) if options.key?(:password)
+    @mpw.set_otp_key(item.id, options[:otp_key])   if options.key?(:otp_key)
     @mpw.write_data
 
     puts "#{I18n.t('form.add_item.valid')}".green
@@ -424,8 +424,8 @@ class Cli
             options[:password] = MPW::password(@config.password) if password
 
       item.update(options)
-      @mpw.set_password(item.id, options[:password]) if options.has_key?(:password)
-      @mpw.set_otp_key(item.id, options[:otp_key])   if options.has_key?(:otp_key)
+      @mpw.set_password(item.id, options[:password]) if options.key?(:password)
+      @mpw.set_otp_key(item.id, options[:otp_key])   if options.key?(:otp_key)
       @mpw.write_data
 
       puts "#{I18n.t('form.update_item.valid')}".green

@@ -66,9 +66,9 @@ class Config
                      }
 
     ['numeric', 'special', 'alpha', 'length'].each do |k|
-      if options.has_key?("pwd_#{k}".to_sym)
+      if options.key?("pwd_#{k}".to_sym)
         password[k.to_sym] = options["pwd_#{k}".to_sym]
-      elsif !@password.nil? && @password.has_key?(k.to_sym)
+      elsif !@password.nil? && @password.key?(k.to_sym)
         password[k.to_sym] = @password[k.to_sym]
       end
     end

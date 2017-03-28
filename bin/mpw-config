@@ -96,7 +96,7 @@ end.parse!
 config = MPW::Config.new(options[:config])
 cli    = MPW::Cli.new(config, nil)
 
-if options.has_key?(:init)
+if options.key?(:init)
   cli.setup(values)
   cli.load_config
   cli.get_wallet

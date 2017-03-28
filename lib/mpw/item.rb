@@ -37,11 +37,11 @@ class Item
   # @args: options -> a hash of parameter
   # raise an error if the hash hasn't the key name
   def initialize(options={})
-    if !options.has_key?(:host) || options[:host].to_s.empty?
+    if !options.key?(:host) || options[:host].to_s.empty?
       raise I18n.t('error.update.host_empty')
     end
 
-    if !options.has_key?(:id) || options[:id].to_s.empty? || !options.has_key?(:created) || options[:created].to_s.empty?
+    if !options.key?(:id) || options[:id].to_s.empty? || !options.key?(:created) || options[:created].to_s.empty?
       @id = generate_id
       @created = Time.now.to_i
     else
@@ -57,18 +57,18 @@ class Item
   # Update the item
   # @args: options -> a hash of parameter
   def update(options={})
-    if options.has_key?(:host) && options[:host].to_s.empty?
+    if options.key?(:host) && options[:host].to_s.empty?
       raise I18n.t('error.update.host_empty')
     end
 
-    @group     = options[:group]      if options.has_key?(:group)
-    @host      = options[:host]       if options.has_key?(:host)
-    @protocol  = options[:protocol]   if options.has_key?(:protocol)
-    @user      = options[:user]       if options.has_key?(:user)
-    @port      = options[:port].to_i  if options.has_key?(:port) && !options[:port].to_s.empty?
-    @otp       = options[:otp]        if options.has_key?(:otp)
-    @comment   = options[:comment]    if options.has_key?(:comment)
-    @last_edit = Time.now.to_i        unless options.has_key?(:no_update_last_edit)
+    @group     = options[:group]      if options.key?(:group)
+    @host      = options[:host]       if options.key?(:host)
+    @protocol  = options[:protocol]   if options.key?(:protocol)
+    @user      = options[:user]       if options.key?(:user)
+    @port      = options[:port].to_i  if options.key?(:port) && !options[:port].to_s.empty?
+    @otp       = options[:otp]        if options.key?(:otp)
+    @comment   = options[:comment]    if options.key?(:comment)
+    @last_edit = Time.now.to_i        unless options.key?(:no_update_last_edit)
   end
 
   # Delete all data
