@@ -153,7 +153,7 @@ class Config
       return true
     end
 
-    return false
+    false
   end
 end
 end

@@ -240,11 +240,7 @@ class Cli
     items.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
     choice = ask(I18n.t('form.select')).to_i
 
-    if choice >= 1 && choice <= items.length
-      return items[choice-1]
-    else
-      return nil
-    end
+    choice >= 1 && choice <= items.length ? items[choice-1] : nil
   end
 
   # Copy in clipboard the login and password
@@ -392,7 +388,7 @@ class Cli
       options[k.to_sym] = v
     end
 
-    return options
+    options
   end
 
   # Form to add a new item
@@ -451,7 +447,7 @@ class Cli
       item    = get_item(items)
       confirm = ask("#{I18n.t('form.delete_item.ask')} (y/N) ").to_s
 
-      return false unless confirm =~ /^(y|yes|YES|Yes|Y)$/
+      return unless confirm =~ /^(y|yes|YES|Yes|Y)$/
 
       item.delete
       @mpw.write_data

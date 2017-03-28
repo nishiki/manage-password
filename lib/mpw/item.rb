@@ -86,17 +86,17 @@ class Item
   end
 
   def empty?
-    return @id.to_s.empty?
+    @id.to_s.empty?
   end
 
   def nil?
-    return false
+    false
   end
 
   # Generate an random id
   private
   def generate_id
-    return ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(16).join
+    ([*('A'..'Z'),*('a'..'z'),*('0'..'9')]).sample(16).join
   end
 end
 end

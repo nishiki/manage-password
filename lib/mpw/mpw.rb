@@ -168,9 +168,9 @@ class MPW
     password = decrypt(@passwords[id])
 
     if /^\$[a-zA-Z0-9]{4,9}::(?<password>.+)$/ =~ password
-      return Regexp.last_match('password')
+      Regexp.last_match('password')
     else
-      return password
+      password
     end
   end
 
@@ -187,7 +187,7 @@ class MPW
   # Return the list of all gpg keys
   # rtrn: an array with the gpg keys name
   def list_keys
-    return @keys.keys
+    @keys.keys
   end
 
   # Add a public key
@@ -261,7 +261,7 @@ class MPW
       result.push(item)
     end
 
-    return result
+    result
   end
 
   # Search in some csv data
@@ -272,7 +272,7 @@ class MPW
       return item if item.id == id
     end
 
-    return nil
+    nil
   end
 
   # Set an opt key
@@ -286,29 +286,20 @@ class MPW
   # args: id -> the item id
   #       key -> the new key
   def get_otp_key(id)
-    if @otp_keys.has_key?(id)
-      return decrypt(@otp_keys[id])
-    else
-      return nil
-    end
+    @otp_keys.has_key?(id) ? decrypt(@otp_keys[id]) : nil
   end
-
 
   # Get an otp code
   # @args: id -> the item id
   # @rtrn: an otp code
   def get_otp_code(id)
-    unless @otp_keys.has_key?(id)
-      return 0
-    else
-      return ROTP::TOTP.new(decrypt(@otp_keys[id])).now
-    end
+    @otp_keys.has_key?(id) ? 0 : ROTP::TOTP.new(decrypt(@otp_keys[id])).now
   end
 
   # Get remaining time before expire otp code
   # @rtrn: return time in seconde
   def get_otp_remaining_time
-    return (Time.now.utc.to_i / 30 + 1) * 30 - Time.now.utc.to_i
+    (Time.now.utc.to_i / 30 + 1) * 30 - Time.now.utc.to_i
   end
 
   # Generate a random password
@@ -336,7 +327,7 @@ class MPW
     end
     result << chars.sample(length).join
 
-    return result
+    result
   end
 
   # Decrypt a gpg file
@@ -347,7 +338,7 @@ class MPW
 
     crypto = GPGME::Crypto.new(armor: true)
 
-    return crypto.decrypt(data, password: @gpg_pass).read.force_encoding('utf-8')
+    crypto.decrypt(data, password: @gpg_pass).read.force_encoding('utf-8')
   rescue Exception => e
     raise "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
   end
@@ -365,10 +356,9 @@ class MPW
       recipients.push(key)
     end
 
-    return crypto.encrypt(data, recipients: recipients).read
+    crypto.encrypt(data, recipients: recipients).read
   rescue Exception => e
     raise "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
   end
-
 end
 end
