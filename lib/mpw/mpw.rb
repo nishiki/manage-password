@@ -330,9 +330,10 @@ class MPW
     result
   end
 
+  private
+
   # Decrypt a gpg file
   # @args: data -> string to decrypt
-  private
   def decrypt(data)
     return nil if data.to_s.empty?
 
@@ -345,7 +346,6 @@ class MPW
 
   # Encrypt a file
   # args: data -> string to encrypt
-  private
   def encrypt(data)
     recipients = []
     crypto     = GPGME::Crypto.new(armor: true, always_trust: true)

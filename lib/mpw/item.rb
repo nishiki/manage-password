@@ -93,8 +93,9 @@ class Item
     false
   end
 
-  # Generate an random id
   private
+
+  # Generate an random id
   def generate_id
     ([*('A'..'Z'), *('a'..'z'), *('0'..'9')]).sample(16).join
   end
