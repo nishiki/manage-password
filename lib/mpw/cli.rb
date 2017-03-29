@@ -202,7 +202,7 @@ class Cli
 
         if k == :otp
           print '| '
-          if item.otp;  print ' X  ' else 4.times { print ' ' } end
+          item.otp ? (print ' X  ') : 4.times { print ' ' }
 
           next
         end
