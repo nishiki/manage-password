@@ -59,7 +59,7 @@ class MPW
         when 'wallet/meta.gpg'
           data = decrypt(f.read)
 
-        when /^wallet\/keys\/(?<key>.+)\.pub$/
+        when %r{^wallet/keys/(?<key>.+)\.pub$}
           key = Regexp.last_match('key')
 
           if GPGME::Key.find(:public, key).empty?
@@ -68,10 +68,10 @@ class MPW
 
           @keys[key] = f.read
 
-        when /^wallet\/passwords\/(?<id>[a-zA-Z0-9]+)\.gpg$/
+        when %r{^wallet/passwords/(?<id>[a-zA-Z0-9]+)\.gpg$}
           @passwords[Regexp.last_match('id')] = f.read
 
-        when /^wallet\/otp_keys\/(?<id>[a-zA-Z0-9]+)\.gpg$/
+        when %r{^wallet/otp_keys/(?<id>[a-zA-Z0-9]+)\.gpg$}
           @otp_keys[Regexp.last_match('id')] = f.read
 
         else
