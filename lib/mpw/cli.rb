@@ -26,7 +26,8 @@ require 'tmpdir'
 require 'mpw/item'
 require 'mpw/mpw'
 
-class MPW::Cli
+module MPW
+class Cli
   # Constructor
   # @args: config -> the config
   def initialize(config)
@@ -530,4 +531,5 @@ class MPW::Cli
   rescue Exception => e
     puts "#{I18n.t('display.error')} #18: #{e}".red
   end
+end
 end

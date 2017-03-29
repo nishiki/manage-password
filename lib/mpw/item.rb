@@ -18,7 +18,8 @@
 
 require 'i18n'
 
-class MPW::Item
+module MPW
+class Item
   attr_accessor :id
   attr_accessor :group
   attr_accessor :host
@@ -97,4 +98,5 @@ class MPW::Item
   def generate_id
     ([*('A'..'Z'), *('a'..'z'), *('0'..'9')]).sample(16).join
   end
+end
 end

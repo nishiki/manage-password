@@ -23,7 +23,8 @@ require 'yaml'
 require 'rotp'
 require 'mpw/item'
 
-class MPW::MPW
+module MPW
+class MPW
   # Constructor
   def initialize(key, wallet_file, gpg_pass = nil, gpg_exe = nil)
     @key         = key
@@ -362,4 +363,5 @@ class MPW::MPW
   rescue Exception => e
     raise "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
   end
+end
 end
