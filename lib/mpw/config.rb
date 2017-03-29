@@ -22,7 +22,6 @@ require 'i18n'
 require 'fileutils'
 
 class MPW::Config
-
   attr_accessor :error_msg
 
   attr_accessor :gpg_key

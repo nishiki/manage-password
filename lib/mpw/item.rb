@@ -19,7 +19,6 @@
 require 'i18n'
 
 class MPW::Item
-
   attr_accessor :id
   attr_accessor :group
   attr_accessor :host

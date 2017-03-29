@@ -27,7 +27,6 @@ require 'mpw/item'
 require 'mpw/mpw'
 
 class MPW::Cli
-
   # Constructor
   # @args: config -> the config
   def initialize(config)

@@ -24,7 +24,6 @@ require 'rotp'
 require 'mpw/item'
 
 class MPW::MPW
-
   # Constructor
   def initialize(key, wallet_file, gpg_pass = nil, gpg_exe = nil)
     @key         = key
