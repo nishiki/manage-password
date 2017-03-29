@@ -47,7 +47,7 @@ class Config
       @config_dir = "#{Dir.home}/.config/mpw"
     end
 
-    @config_file = "#{@config_dir}/mpw.cfg" if @config_file.nil? or @config_file.empty?
+    @config_file = "#{@config_dir}/mpw.cfg" if @config_file.nil? || @config_file.empty?
   end
 
   # Create a new config file
@@ -68,7 +68,7 @@ class Config
     ['numeric', 'special', 'alpha', 'length'].each do |k|
       if options.has_key?("pwd_#{k}".to_sym)
         password[k.to_sym] = options["pwd_#{k}".to_sym]
-      elsif not @password.nil? and @password.has_key?(k.to_sym)
+      elsif !@password.nil? && @password.has_key?(k.to_sym)
         password[k.to_sym] = @password[k.to_sym]
       end
     end
@@ -138,7 +138,7 @@ class Config
     @gpg_exe        = config['gpg_exe']
     @password       = config['password'] || {}
 
-    raise if @gpg_key.empty? or @wallet_dir.empty?
+    raise if @gpg_key.empty? || @wallet_dir.empty?
 
     I18n.locale = @lang.to_sym
   rescue Exception => e

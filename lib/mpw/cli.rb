@@ -155,7 +155,7 @@ class Cli
 
     items.each do |item|
       data.each do |k, v|
-        next if k == :id or k == :otp
+        next if k == :id || k == :otp
 
         v[:length] = item.send(k.to_s).to_s.length + 3 if item.send(k.to_s).to_s.length >= v[:length]
       end
@@ -240,7 +240,7 @@ class Cli
     items.sort! { |a,b| a.group.to_s.downcase <=> b.group.to_s.downcase }
     choice = ask(I18n.t('form.select')).to_i
 
-    if choice >= 1 and choice <= items.length
+    if choice >= 1 && choice <= items.length
       return items[choice-1]
     else
       return nil
@@ -331,7 +331,7 @@ class Cli
 
       if wallets.length == 1
         @wallet_file = wallets[0]
-      elsif not @config.default_wallet.to_s.empty?
+      elsif !@config.default_wallet.to_s.empty?
         @wallet_file = "#{@config.wallet_dir}/#{@config.default_wallet}.mpw"
       else
         @wallet_file = "#{@config.wallet_dir}/default.mpw"

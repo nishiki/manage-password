@@ -72,9 +72,9 @@ else
   cli.get_wallet(options[:wallet])
   cli.decrypt
 
-  if not options[:list_keys].nil?
+  if !options[:list_keys].nil?
     cli.list_keys
-  elsif not options[:gpg_key].nil?
+  elsif !options[:gpg_key].nil?
     if options[:delete]
       cli.delete_key(options[:gpg_key])
     else

@@ -237,7 +237,7 @@ class MPW
     raise I18n.t('error.bad_class') unless item.instance_of?(Item)
     raise I18n.t('error.empty')     if item.empty?
 
-    return @data.push(item)
+    @data.push(item)
   end
 
   # Search in some csv data
@@ -251,12 +251,12 @@ class MPW
 
     @data.each do |item|
       next if item.empty?
-      next unless group.empty? or group.eql?(item.group.to_s.downcase)
+      next unless group.empty? || group.eql?(item.group.to_s.downcase)
 
       host    = item.host.to_s.downcase
       comment = item.comment.to_s.downcase
 
-      next unless host =~ /^.*#{search}.*$/ or comment =~ /^.*#{search}.*$/
+      next unless host =~ /^.*#{search}.*$/ || comment =~ /^.*#{search}.*$/
 
       result.push(item)
     end
@@ -315,7 +315,7 @@ class MPW
   # @args: options -> :length, :special, :alpha, :numeric
   # @rtrn: a random string
   def self.password(options={})
-    if not options.include?(:length) or options[:length].to_i <= 0
+    if !options.include?(:length) || options[:length].to_i <= 0
       length = 8
     elsif options[:length].to_i >= 32768
       length = 32768
