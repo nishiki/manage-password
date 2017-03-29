@@ -234,13 +234,10 @@ class MPW
   # Add a new item
   # @args: item -> Object MPW::Item
   def add(item)
-    if not item.instance_of?(Item)
-      raise I18n.t('error.bad_class')
-    elsif item.empty?
-      raise I18n.t('error.empty')
-    else
-      @data.push(item)
-    end
+    raise I18n.t('error.bad_class') unless item.instance_of?(Item)
+    raise I18n.t('error.empty')     if item.empty?
+
+    return @data.push(item)
   end
 
   # Search in some csv data
