@@ -21,8 +21,7 @@ require 'yaml'
 require 'i18n'
 require 'fileutils'
 
-module MPW
-class Config
+class MPW::Config
 
   attr_accessor :error_msg
 
@@ -155,5 +154,4 @@ class Config
 
     false
   end
-end
 end
