@@ -253,7 +253,7 @@ class Cli
       exit
     end
 
-    while true
+    Kernel.loop do
       choice = ask(I18n.t('form.clipboard.choice')).to_s
 
       case choice
