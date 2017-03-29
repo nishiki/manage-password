@@ -148,8 +148,7 @@ class MPW::Cli
                      protocol: { length: 9,  color: 'white' },
                      port:     { length: 5,  color: 'white' },
                      otp:      { length: 4,  color: 'white' },
-                     comment:  { length: 14, color: 'magenta' },
-                   }
+                     comment:  { length: 14, color: 'magenta' } }
 
     items.each do |item|
       data.each do |k, v|
@@ -481,18 +480,20 @@ class MPW::Cli
     data  = {}
 
     items.each do |item|
-      data.merge!(item.id => { 'host'      => item.host,
-                               'user'      => item.user,
-                               'group'     => item.group,
-                               'password'  => @mpw.get_password(item.id),
-                               'protocol'  => item.protocol,
-                               'port'      => item.port,
-                               'otp_key'   => @mpw.get_otp_key(item.id),
-                               'comment'   => item.comment,
-                               'last_edit' => item.last_edit,
-                               'created'   => item.created,
-                             }
-                  )
+      data.merge!(
+        item.id => {
+          'host'      => item.host,
+          'user'      => item.user,
+          'group'     => item.group,
+          'password'  => @mpw.get_password(item.id),
+          'protocol'  => item.protocol,
+          'port'      => item.port,
+          'otp_key'   => @mpw.get_otp_key(item.id),
+          'comment'   => item.comment,
+          'last_edit' => item.last_edit,
+          'created'   => item.created,
+        }
+      )
     end
 
     File.open(file, 'w') { |f| f << data.to_yaml }
@@ -514,8 +515,7 @@ class MPW::Cli
                       protocol: row['protocol'],
                       user:     row['user'],
                       port:     row['port'],
-                      comment:  row['comment'],
-                     )
+                      comment:  row['comment'])
 
       next if item.empty?
 

@@ -80,18 +80,20 @@ class MPW::MPW
 
     unless data.to_s.empty?
       YAML.safe_load(data).each_value do |d|
-        @data.push(Item.new(id:        d['id'],
-                            group:     d['group'],
-                            host:      d['host'],
-                            protocol:  d['protocol'],
-                            user:      d['user'],
-                            port:      d['port'],
-                            otp:       @otp_keys.key?(d['id']),
-                            comment:   d['comment'],
-                            last_edit: d['last_edit'],
-                            created:   d['created'],
-                           )
-                  )
+        @data.push(
+          Item.new(
+            id:        d['id'],
+            group:     d['group'],
+            host:      d['host'],
+            protocol:  d['protocol'],
+            user:      d['user'],
+            port:      d['port'],
+            otp:       @otp_keys.key?(d['id']),
+            comment:   d['comment'],
+            last_edit: d['last_edit'],
+            created:   d['created'],
+          )
+        )
       end
     end
 
@@ -108,17 +110,19 @@ class MPW::MPW
     @data.each do |item|
       next if item.empty?
 
-      data.merge!(item.id => { 'id'        => item.id,
-                               'group'     => item.group,
-                               'host'      => item.host,
-                               'protocol'  => item.protocol,
-                               'user'      => item.user,
-                               'port'      => item.port,
-                               'comment'   => item.comment,
-                               'last_edit' => item.last_edit,
-                               'created'   => item.created,
-                             }
-                 )
+      data.merge!(
+        item.id => {
+          'id'        => item.id,
+          'group'     => item.group,
+          'host'      => item.host,
+          'protocol'  => item.protocol,
+          'user'      => item.user,
+          'port'      => item.port,
+          'comment'   => item.comment,
+          'last_edit' => item.last_edit,
+          'created'   => item.created,
+        }
+      )
     end
 
     @config['last_update'] = Time.now.to_i

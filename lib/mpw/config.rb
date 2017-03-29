@@ -60,8 +60,7 @@ class MPW::Config
     password       = { numeric: true,
                        alpha:   true,
                        special: false,
-                       length:  16,
-                     }
+                       length:  16 }
 
     %w(numeric special alpha length).each do |k|
       if options.key?("pwd_#{k}".to_sym)
@@ -81,8 +80,7 @@ class MPW::Config
                    'wallet_dir'     => wallet_dir,
                    'default_wallet' => default_wallet,
                    'gpg_exe'        => gpg_exe,
-                   'password'       => password,
-                 }
+                   'password'       => password }
 
     FileUtils.mkdir_p(@config_dir, mode: 0700)
     FileUtils.mkdir_p(wallet_dir,  mode: 0700)
