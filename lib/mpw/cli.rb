@@ -247,8 +247,6 @@ class Cli
   # @args: item -> the item
   #        clipboard -> enable clipboard
   def clipboard(item, clipboard = true)
-    pid = nil
-
     # Security: force quit after 90s
     Thread.new do
       sleep 90
