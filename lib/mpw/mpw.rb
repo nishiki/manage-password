@@ -99,7 +99,7 @@ class MPW
     end
 
     add_key(@key) if @keys[@key].nil?
-  rescue Exception => e
+  rescue => e
     raise "#{I18n.t('error.mpw_file.read_data')}\n#{e}"
   end
 
@@ -159,7 +159,7 @@ class MPW
     end
 
     File.rename(tmp_file, @wallet_file)
-  rescue Exception => e
+  rescue => e
     File.unlink(tmp_file) if File.exist?(tmp_file)
 
     raise "#{I18n.t('error.mpw_file.write_data')}\n#{e}"
@@ -343,7 +343,7 @@ class MPW
     crypto = GPGME::Crypto.new(armor: true)
 
     crypto.decrypt(data, password: @gpg_pass).read.force_encoding('utf-8')
-  rescue Exception => e
+  rescue => e
     raise "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
   end
 
@@ -360,7 +360,7 @@ class MPW
     end
 
     crypto.encrypt(data, recipients: recipients).read
-  rescue Exception => e
+  rescue => e
     raise "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
   end
 end

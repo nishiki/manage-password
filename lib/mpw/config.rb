@@ -89,7 +89,7 @@ class Config
     File.open(@config_file, 'w') do |file|
       file << config.to_yaml
     end
-  rescue Exception => e
+  rescue => e
     raise "#{I18n.t('error.config.write')}\n#{e}"
   end
 
@@ -121,7 +121,7 @@ class Config
 
     ctx = GPGME::Ctx.new
     ctx.genkey(param, nil, nil)
-  rescue Exception => e
+  rescue => e
     raise "#{I18n.t('error.config.genkey_gpg.exception')}\n#{e}"
   end
 
@@ -138,7 +138,7 @@ class Config
     raise if @gpg_key.empty? || @wallet_dir.empty?
 
     I18n.locale = @lang.to_sym
-  rescue Exception => e
+  rescue => e
     raise "#{I18n.t('error.config.load')}\n#{e}"
   end
 
