@@ -23,8 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'highline',  '~> 1.7', '>= 1.7.8'
   spec.add_dependency 'locale',    '~> 2.1', '>= 2.1.2'
   spec.add_dependency 'colorize',  '~> 0.8', '>= 0.8.1'
-  spec.add_dependency 'net-ssh',   '~> 3.2', '>= 3.2.0'
-  spec.add_dependency 'net-sftp',  '~> 2.1', '>= 2.1.2'
   spec.add_dependency 'clipboard', '~> 1.1', '>= 1.1.1'
   spec.add_dependency 'rotp',      '~> 3.1', '>= 3.1.0'
 end
