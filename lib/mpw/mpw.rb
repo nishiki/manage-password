@@ -32,9 +32,7 @@ class MPW
     @gpg_exe     = gpg_exe
     @wallet_file = wallet_file
 
-    unless @gpg_exe.to_s.empty?
-      GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg")
-    end
+    GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg") unless @gpg_exe.to_s.empty?
   end
 
   # Read mpw file
@@ -204,9 +202,7 @@ class MPW
       data = GPGME::Key.export(key, armor: true).read
     end
 
-    if data.to_s.empty?
-      raise I18n.t('error.export_key')
-    end
+    raise I18n.t('error.export_key') if data.to_s.empty?
 
     @keys[key] = data
     @passwords.each_key { |id| set_password(id, get_password(id)) }

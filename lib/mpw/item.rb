@@ -96,7 +96,7 @@ class Item
 
   # Generate an random id
   def generate_id
-    ([*('A'..'Z'), *('a'..'z'), *('0'..'9')]).sample(16).join
+    [*('A'..'Z'), *('a'..'z'), *('0'..'9')].sample(16).join
   end
 end
 end

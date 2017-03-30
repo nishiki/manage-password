@@ -70,9 +70,7 @@ class Cli
     password = ask(I18n.t('form.setup_gpg_key.password')) { |q| q.echo = false }
     confirm  = ask(I18n.t('form.setup_gpg_key.confirm_password')) { |q| q.echo = false }
 
-    if password != confirm
-      raise I18n.t('form.setup_gpg_key.error_password')
-    end
+    raise I18n.t('form.setup_gpg_key.error_password') if password != confirm
 
     @password = password.to_s
 
@@ -378,7 +376,7 @@ class Cli
       opts = YAML.load_file(tmp_file)
     end
 
-    opts.delete_if { |k, v| v.to_s.empty? }
+    opts.delete_if { |_, v| v.to_s.empty? }
 
     opts.each do |k, v|
       options[k.to_sym] = v
