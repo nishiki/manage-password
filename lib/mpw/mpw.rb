@@ -308,14 +308,15 @@ class MPW
   # Generate a random password
   # @args: options -> :length, :special, :alpha, :numeric
   # @rtrn: a random string
-  def self.password(options = {})
-    if !options.include?(:length) || options[:length].to_i <= 0
-      length = 8
-    elsif options[:length].to_i >= 32768
-      length = 32768
-    else
-      length = options[:length].to_i
-    end
+  def self.password(**options)
+    length =
+      if !options.include?(:length) || options[:length].to_i <= 0
+        8
+      elsif options[:length].to_i >= 32_768
+        32_768
+      else
+        options[:length].to_i
+      end
 
     chars = []
     chars += [*('!'..'?')] - [*('0'..'9')]          if options[:special]

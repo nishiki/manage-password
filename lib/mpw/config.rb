@@ -38,13 +38,14 @@ class Config
   def initialize(config_file = nil)
     @config_file = config_file
 
-    if /darwin/ =~ RUBY_PLATFORM
-      @config_dir = "#{Dir.home}/Library/Preferences/mpw"
-    elsif /cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM
-      @config_dir = "#{Dir.home}/AppData/Local/mpw"
-    else
-      @config_dir = "#{Dir.home}/.config/mpw"
-    end
+    @config_dir =
+      if /darwin/ =~ RUBY_PLATFORM
+        "#{Dir.home}/Library/Preferences/mpw"
+      elsif /cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM
+        "#{Dir.home}/AppData/Local/mpw"
+      else
+        "#{Dir.home}/.config/mpw"
+      end
 
     @config_file = "#{@config_dir}/mpw.cfg" if @config_file.nil? || @config_file.empty?
   end

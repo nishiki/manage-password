@@ -317,19 +317,20 @@ class Cli
   # Display the wallet
   # @args: wallet -> the wallet name
   def get_wallet(wallet = nil)
-    if wallet.to_s.empty?
-      wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
+    @wallet_file =
+      if wallet.to_s.empty?
+        wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
 
-      if wallets.length == 1
-        @wallet_file = wallets[0]
-      elsif !@config.default_wallet.to_s.empty?
-        @wallet_file = "#{@config.wallet_dir}/#{@config.default_wallet}.mpw"
+        if wallets.length == 1
+          wallets[0]
+        elsif !@config.default_wallet.to_s.empty?
+          "#{@config.wallet_dir}/#{@config.default_wallet}.mpw"
+        else
+          "#{@config.wallet_dir}/default.mpw"
+        end
       else
-        @wallet_file = "#{@config.wallet_dir}/default.mpw"
+        "#{@config.wallet_dir}/#{wallet}.mpw"
       end
-    else
-      @wallet_file = "#{@config.wallet_dir}/#{wallet}.mpw"
-    end
   end
 
   # Add a new public key
