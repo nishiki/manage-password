@@ -7,8 +7,10 @@ rvm:
 install:
   - bundle install
   - gem install 'test-unit'
+  - gem install rubocop
   - echo 9999 > VERSION
   - gem build mpw.gemspec
   - gem install mpw-9999.gem
 script:
+  - rubocop
   - ruby ./test/tests.rb 
