@@ -223,7 +223,7 @@ class MPW
 
   # Set config
   # args: config -> a hash with config options
-  def set_config(options = {})
+  def set_config(**options)
     @config              = {} if @config.nil?
 
     @config['protocol']  = options[:protocol] if options.key?(:protocol)
@@ -246,7 +246,7 @@ class MPW
   # Search in some csv data
   # @args: options -> a hash with paramaters
   # @rtrn: a list with the resultat of the search
-  def list(options = {})
+  def list(**options)
     result = []
 
     search = options[:pattern].to_s.downcase

@@ -218,7 +218,7 @@ class Cli
 
   # Display the query's result
   # @args: options -> the option to search
-  def list(options = {})
+  def list(**options)
     result = @mpw.list(options)
 
     if result.empty?
@@ -406,7 +406,7 @@ class Cli
   # Update an item
   # @args: password -> generate a random password
   #        options -> the option to search
-  def update(password = false, options = {})
+  def update(password = false, **options)
     items = @mpw.list(options)
 
     if items.empty?
@@ -431,7 +431,7 @@ class Cli
 
   # Remove an item
   # @args: options -> the option to search
-  def delete(options = {})
+  def delete(**options)
     items = @mpw.list(options)
 
     if items.empty?
@@ -456,7 +456,7 @@ class Cli
   # Copy a password, otp, login
   # @args: clipboard -> enable clipboard
   #        options -> the option to search
-  def copy(clipboard = true, options = {})
+  def copy(clipboard = true, **options)
     items = @mpw.list(options)
 
     if items.empty?
