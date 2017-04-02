@@ -339,7 +339,7 @@ module MPW
 
       crypto = GPGME::Crypto.new(armor: true)
 
-      crypto.decrypt(data, password: @gpg_pass).read.force_encoding('utf-8')
+      crypto.decrypt(data, password: @gpg_pass, pinentry_mode: GPGME::PINENTRY_MODE_LOOPBACK).read.force_encoding('utf-8')
     rescue => e
       raise "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
     end
