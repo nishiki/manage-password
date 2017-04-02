@@ -37,7 +37,6 @@ module MPW
 
     # Read mpw file
     def read_data
-      @config    = {}
       @data      = []
       @keys      = {}
       @passwords = {}
@@ -50,9 +49,6 @@ module MPW
       Gem::Package::TarReader.new(File.open(@wallet_file)) do |tar|
         tar.each do |f|
           case f.full_name
-          when 'wallet/config.gpg'
-            @config = YAML.safe_load(decrypt(f.read))
-
           when 'wallet/meta.gpg'
             data = decrypt(f.read)
 
@@ -124,17 +120,10 @@ module MPW
         )
       end
 
-      @config['last_update'] = Time.now.to_i
-
       Gem::Package::TarWriter.new(File.open(tmp_file, 'w+')) do |tar|
         data_encrypt = encrypt(data.to_yaml)
         tar.add_file_simple('wallet/meta.gpg', 0400, data_encrypt.length) do |io|
           io.write(data_encrypt)
-        end
-
-        config = encrypt(@config.to_yaml)
-        tar.add_file_simple('wallet/config.gpg', 0400, config.length) do |io|
-          io.write(config)
         end
 
         @passwords.each do |id, password|
@@ -215,19 +204,6 @@ module MPW
       @keys.delete(key)
       @passwords.each_key { |id| set_password(id, get_password(id)) }
       @otp_keys.each_key { |id| set_otp_key(id, get_otp_key(id)) }
-    end
-
-    # Set config
-    # args: config -> a hash with config options
-    def set_config(**options)
-      @config              = {} if @config.nil?
-
-      @config['protocol']  = options[:protocol] if options.key?(:protocol)
-      @config['host']      = options[:host]     if options.key?(:host)
-      @config['port']      = options[:port]     if options.key?(:port)
-      @config['user']      = options[:user]     if options.key?(:user)
-      @config['password']  = options[:password] if options.key?(:password)
-      @config['path']      = options[:path]     if options.key?(:path)
     end
 
     # Add a new item
