@@ -337,9 +337,18 @@ module MPW
     def decrypt(data)
       return nil if data.to_s.empty?
 
-      crypto = GPGME::Crypto.new(armor: true)
+      password =
+        if /^1\.[0-9.]+$/ =~ GPGME::Engine.info.first.version
+          { password: @gpg_pass }
+        else
+          { password: @gpg_pass,
+            pinentry_mode: GPGME::PINENTRY_MODE_LOOPBACK }
+        end
 
-      crypto.decrypt(data, password: @gpg_pass, pinentry_mode: GPGME::PINENTRY_MODE_LOOPBACK).read.force_encoding('utf-8')
+      crypto = GPGME::Crypto.new(armor: true)
+      crypto
+        .decrypt(data, password)
+        .read.force_encoding('utf-8')
     rescue => e
       raise "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
     end
