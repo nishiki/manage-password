@@ -66,7 +66,7 @@ module MPW
                          special: false,
                          length:  16 }
 
-      %w(numeric special alpha length).each do |k|
+      %w[numeric special alpha length].each do |k|
         if options.key?("pwd_#{k}".to_sym)
           password[k.to_sym] = options["pwd_#{k}".to_sym]
         elsif !@password.nil? && @password.key?(k.to_sym)
