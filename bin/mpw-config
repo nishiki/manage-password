@@ -60,6 +60,10 @@ OptionParser.new do |opts|
     values[:lang] = lang
   end
 
+  opts.on('-P', '--pinmode', I18n.t('option.pinmode')) do
+    values[:pinmode] = true
+  end
+
   opts.on('-w', '--wallet-dir PATH', I18n.t('option.wallet_dir')) do |wallet_dir|
     values[:wallet_dir] = wallet_dir
   end
@@ -94,7 +98,7 @@ OptionParser.new do |opts|
 end.parse!
 
 config = MPW::Config.new(options[:config])
-cli    = MPW::Cli.new(config, nil)
+cli    = MPW::Cli.new(config)
 
 if options.key?(:init)
   cli.setup(values)

@@ -26,11 +26,12 @@ require 'mpw/item'
 module MPW
   class MPW
     # Constructor
-    def initialize(key, wallet_file, gpg_pass = nil, gpg_exe = nil)
+    def initialize(key, wallet_file, gpg_pass = nil, gpg_exe = nil, pinmode = false)
       @key         = key
       @gpg_pass    = gpg_pass
       @gpg_exe     = gpg_exe
       @wallet_file = wallet_file
+      @pinmode     = pinmode
 
       GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg") unless @gpg_exe.to_s.empty?
     end
@@ -338,7 +339,7 @@ module MPW
       return nil if data.to_s.empty?
 
       password =
-        if /^1\.[0-9.]+$/ =~ GPGME::Engine.info.first.version
+        if /^1\.[0-9.]+$/ =~ GPGME::Engine.info.first.version || @pinmode
           { password: @gpg_pass }
         else
           { password: @gpg_pass,

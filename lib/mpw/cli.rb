@@ -101,7 +101,7 @@ module MPW
     def decrypt
       unless defined?(@mpw)
         @password = ask(I18n.t('display.gpg_password')) { |q| q.echo = false }
-        @mpw      = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe)
+        @mpw      = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe, @config.pinmode)
       end
 
       @mpw.read_data

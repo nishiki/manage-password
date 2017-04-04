@@ -32,6 +32,7 @@ module MPW
     attr_accessor :wallet_dir
     attr_accessor :gpg_exe
     attr_accessor :password
+    attr_accessor :pinmode
 
     # Constructor
     # @args: config_file -> the specify config file
@@ -59,6 +60,7 @@ module MPW
       wallet_dir     = options[:wallet_dir]     || @wallet_dir
       default_wallet = options[:default_wallet] || @default_wallet
       gpg_exe        = options[:gpg_exe]        || @gpg_exe
+      pinmode        = options[:pinmode]        || @pinmode
       password       = { numeric: true,
                          alpha:   true,
                          special: false,
@@ -82,7 +84,8 @@ module MPW
                      'wallet_dir'     => wallet_dir,
                      'default_wallet' => default_wallet,
                      'gpg_exe'        => gpg_exe,
-                     'password'       => password }
+                     'password'       => password,
+                     'pinmode'        => pinmode }
 
       FileUtils.mkdir_p(@config_dir, mode: 0700)
       FileUtils.mkdir_p(wallet_dir,  mode: 0700)
@@ -132,6 +135,7 @@ module MPW
       @default_wallet = config['default_wallet']
       @gpg_exe        = config['gpg_exe']
       @password       = config['password'] || {}
+      @pinmode        = config['pinmode']
 
       raise if @gpg_key.empty? || @wallet_dir.empty?
 
