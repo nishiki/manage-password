@@ -339,7 +339,7 @@ module MPW
       return nil if data.to_s.empty?
 
       password =
-        if /^1\.[0-9.]+$/ =~ GPGME::Engine.info.first.version || @pinmode
+        if /^(1\.[0-9.]+|2\.0)(\.[0-9]+)?/ =~ GPGME::Engine.info.first.version || @pinmode
           { password: @gpg_pass }
         else
           { password: @gpg_pass,
