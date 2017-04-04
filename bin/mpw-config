@@ -60,8 +60,12 @@ OptionParser.new do |opts|
     values[:lang] = lang
   end
 
-  opts.on('-P', '--pinmode', I18n.t('option.pinmode')) do
+  opts.on('-P', '--enable-pinmode', I18n.t('option.pinmode')) do
     values[:pinmode] = true
+  end
+
+  opts.on('-p', '--disable-pinmode', I18n.t('option.disable_pinmode')) do
+    values[:pinmode] = false
   end
 
   opts.on('-w', '--wallet-dir PATH', I18n.t('option.wallet_dir')) do |wallet_dir|
