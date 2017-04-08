@@ -45,6 +45,7 @@ en:
     alpha: "Use letter to generate a password"
     config: "Specify the configuration file to use"
     clipboard: "Disable the clipboard feature"
+    default_path: "Move the wallet in default directory"
     default_wallet: "Specify the default wallet to use"
     delete_gpg_key: "Delete the wallet's share with an other GPG key"
     disable_alpha: "Don't use letter to generate a password"
@@ -68,6 +69,7 @@ en:
     list: "List the wallets"
     list_keys: "List the GPG keys in wallet"
     numeric: "Use number to generate a password"
+    path: "Move the wallet in new specify directory"
     pattern: "Given search pattern"
     pinmode: "Enable pinentry mode (available with gpg >= 2.1)"
     random_password: "Generate a random password"
@@ -120,6 +122,8 @@ en:
       not_valid: "No data to import!"
     set_config:
       valid: "The config file has been edited!"
+    set_wallet_path:
+      valid: "The wallet has well moved!"
     setup_config:
       title: "Setup a new config file"
       lang: "Choose your language (en, fr, ...) [default=%{lang}]: "

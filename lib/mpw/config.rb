@@ -30,6 +30,7 @@ module MPW
     attr_accessor :config_dir
     attr_accessor :default_wallet
     attr_accessor :wallet_dir
+    attr_accessor :wallet_paths
     attr_accessor :gpg_exe
     attr_accessor :password
     attr_accessor :pinmode
@@ -38,8 +39,7 @@ module MPW
     # @args: config_file -> the specify config file
     def initialize(config_file = nil)
       @config_file = config_file
-
-      @config_dir =
+      @config_dir  =
         if /darwin/ =~ RUBY_PLATFORM
           "#{Dir.home}/Library/Preferences/mpw"
         elsif /cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM
@@ -48,7 +48,7 @@ module MPW
           "#{Dir.home}/.config/mpw"
         end
 
-      @config_file = "#{@config_dir}/mpw.cfg" if @config_file.nil? || @config_file.empty?
+      @config_file = "#{@config_dir}/mpw.cfg" if @config_file.to_s.empty?
     end
 
     # Create a new config file
@@ -85,7 +85,8 @@ module MPW
                      'default_wallet' => default_wallet,
                      'gpg_exe'        => gpg_exe,
                      'password'       => password,
-                     'pinmode'        => pinmode }
+                     'pinmode'        => pinmode,
+                     'wallet_paths'   => @wallet_paths }
 
       FileUtils.mkdir_p(@config_dir, mode: 0700)
       FileUtils.mkdir_p(wallet_dir,  mode: 0700)
@@ -132,6 +133,7 @@ module MPW
       @gpg_key        = config['gpg_key']
       @lang           = config['lang']
       @wallet_dir     = config['wallet_dir']
+      @wallet_paths   = config['wallet_paths'] || {}
       @default_wallet = config['default_wallet']
       @gpg_exe        = config['gpg_exe']
       @password       = config['password'] || {}
@@ -153,6 +155,34 @@ module MPW
       end
 
       false
+    end
+
+    # Change the path of one wallet
+    # @args: path -> the new directory path
+    #        wallet -> the wallet name
+    def set_wallet_path(path, wallet)
+      path = @wallet_dir if path == 'default'
+
+      return if path == @wallet_dir && File.exist?("#{@wallet_dir}/#{wallet}.mpw")
+      return if path == @wallet_paths[wallet]
+
+      old_wallet_file =
+        if @wallet_paths.key?(wallet)
+          "#{@wallet_paths[wallet]}/#{wallet}.mpw"
+        else
+          "#{@wallet_dir}/#{wallet}.mpw"
+        end
+
+      FileUtils.mkdir_p(path) unless Dir.exist?(path)
+      FileUtils.mv(old_wallet_file, "#{path}/#{wallet}.mpw") if File.exist?(old_wallet_file)
+
+      if path == @wallet_dir
+        @wallet_paths.delete(wallet)
+      else
+        @wallet_paths[wallet] = path
+      end
+
+      setup
     end
   end
 end

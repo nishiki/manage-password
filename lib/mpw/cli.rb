@@ -45,6 +45,17 @@ module MPW
       exit 2
     end
 
+    # Change the wallet path
+    # @args: path -> the new path
+    def set_wallet_path(path)
+      @config.set_wallet_path(path, @wallet)
+
+      puts I18n.t('form.set_wallet_path.valid').to_s.green
+    rescue => e
+      puts "#{I18n.t('display.error')} #19: #{e}".red
+      exit 2
+    end
+
     # Create a new config file
     # @args: options -> set param
     def setup(options)
@@ -315,19 +326,25 @@ module MPW
     # Display the wallet
     # @args: wallet -> the wallet name
     def get_wallet(wallet = nil)
-      @wallet_file =
+      @wallet =
         if wallet.to_s.empty?
           wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
-
           if wallets.length == 1
-            wallets[0]
+            File.basename(wallets[0], '.mpw')
           elsif !@config.default_wallet.to_s.empty?
-            "#{@config.wallet_dir}/#{@config.default_wallet}.mpw"
+            @config.default_wallet
           else
-            "#{@config.wallet_dir}/default.mpw"
+            'default'
           end
         else
-          "#{@config.wallet_dir}/#{wallet}.mpw"
+          wallet
+        end
+
+      @wallet_file =
+        if @config.wallet_paths.key?(@wallet)
+          "#{@config.wallet_paths[@wallet]}/#{@wallet}.mpw"
+        else
+          "#{@config.wallet_dir}/#{@wallet}.mpw"
         end
     end
 
