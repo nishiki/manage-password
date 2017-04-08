@@ -66,19 +66,15 @@ cli    = MPW::Cli.new(config)
 
 cli.load_config
 
-if !options[:list].nil?
+if options.key?(:list)
   cli.list_wallet
 else
   cli.get_wallet(options[:wallet])
   cli.decrypt
 
-  if !options[:list_keys].nil?
+  if options.key?(:list_keys)
     cli.list_keys
-  elsif !options[:gpg_key].nil?
-    if options[:delete]
-      cli.delete_key(options[:gpg_key])
-    else
-      cli.add_key(options[:gpg_key])
-    end
+  elsif options.key?(:gpg_key)
+    options[:delete] ? cli.delete_key(options[:gpg_key]) : cli.add_key(options[:gpg_key])
   end
 end
