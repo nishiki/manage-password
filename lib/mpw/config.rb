@@ -54,7 +54,7 @@ module MPW
     # Create a new config file
     # @args: options -> hash with values
     # @rtrn: true if le config file is create
-    def setup(options)
+    def setup(**options)
       gpg_key        = options[:gpg_key]        || @gpg_key
       lang           = options[:lang]           || @lang
       wallet_dir     = options[:wallet_dir]     || @wallet_dir
