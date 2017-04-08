@@ -61,4 +61,19 @@ class TestConfig < Test::Unit::TestCase
     assert(!@config.password[:numeric])
     assert(@config.password[:special])
   end
+
+  def test_02_wallet_paths
+    new_path = '/tmp/mpw-test'
+
+    @config = MPW::Config.new
+    @config.load_config
+
+    assert(!@config.wallet_paths['default'])
+
+    @config.set_wallet_path(new_path, 'default')
+    assert_equal(@config.wallet_paths['default'], new_path)
+
+    @config.set_wallet_path('default', 'default')
+    assert(!@config.wallet_paths['default'])
+  end
 end
