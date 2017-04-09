@@ -100,6 +100,21 @@ module MPW
       table_list('keys', @mpw.list_keys)
     end
 
+    # List config
+    def list_config
+      config = {
+        'lang'       => @config.lang,
+        'gpg_key'    => @config.gpg_key,
+        'config_dir' => @config.config_dir,
+        'pinmode'    => @config.pinmode,
+        'gpg_exe'    => @config.gpg_exe
+      }
+
+      @config.password.each { |k, v| config["password_#{k}"] = v }
+
+      table_list('config', config)
+    end
+
     # Load config
     def load_config
       @config.load_config
@@ -122,31 +137,40 @@ module MPW
     end
 
     # Format list on a table
+    # @args: title -> the name of table
+    #        list -> array or hash
     def table_list(title, list)
-      i      = 1
-      length = 0
+      length = { k: 0, v: 0 }
 
-      list.each do |item|
-        length = item.length if length < item.length
+      if list.is_a?(Array)
+        i    = 0
+        list = list.map do |item|
+          i += 1
+          [i, item]
+        end.to_h
       end
-      length += 7
+
+      list.each do |k, v|
+        length[:k] = k.to_s.length if length[:k] < k.to_s.length
+        length[:v] = v.to_s.length if length[:v] < v.to_s.length
+      end
 
       puts "\n#{I18n.t("display.#{title}")}".red
       print ' '
-      length.times { print '=' }
+      (length[:k] + length[:v] + 5).times { print '=' }
       print "\n"
 
-      list.each do |item|
-        print "  #{i}".cyan
-        (3 - i.to_s.length).times { print ' ' }
-        puts "| #{item}"
-        i += 1
+      list.each do |k, v|
+        print "  #{k}".cyan
+        (length[:k] - k.to_s.length + 1).times { print ' ' }
+        puts "| #{v}"
       end
 
       print "\n"
     end
 
     # Format items on a table
+    # @args: items -> an aray items
     def table_items(items = [])
       group        = '.'
       i            = 1

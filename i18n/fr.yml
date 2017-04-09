@@ -159,6 +159,7 @@ fr:
 
   display:
     comment: "Commentaire"
+    config: "Configuration"
     error: "ERREUR"
     keys: "Clés GPG"
     gpg_password: "Mot de passe GPG: "

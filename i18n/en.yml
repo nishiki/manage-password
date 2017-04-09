@@ -159,6 +159,7 @@ en:
 
   display:
     comment: "Comment"
+    config: "Configuration"
     error: "ERROR"
     keys: "GPG keys"
     gpg_password: "GPG passphrase: "

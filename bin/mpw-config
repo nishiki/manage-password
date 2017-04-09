@@ -112,5 +112,9 @@ if options.key?(:init)
   cli.setup_wallet_config
 else
   cli.load_config
-  cli.set_config(values)
+  if values.empty?
+    cli.list_config
+  else
+    cli.set_config(values)
+  end
 end
