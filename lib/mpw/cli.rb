@@ -103,14 +103,16 @@ module MPW
     # List config
     def list_config
       config = {
-        'lang'       => @config.lang,
-        'gpg_key'    => @config.gpg_key,
-        'config_dir' => @config.config_dir,
-        'pinmode'    => @config.pinmode,
-        'gpg_exe'    => @config.gpg_exe
+        'lang'           => @config.lang,
+        'gpg_key'        => @config.gpg_key,
+        'default_wallet' => @config.default_wallet,
+        'config_dir'     => @config.config_dir,
+        'pinmode'        => @config.pinmode,
+        'gpg_exe'        => @config.gpg_exe
       }
 
-      @config.password.each { |k, v| config["password_#{k}"] = v }
+      @config.wallet_paths.each { |k, v| config["path_wallet_#{k}"] = "#{v}/#{k}.mpw" }
+      @config.password.each     { |k, v| config["password_#{k}"] = v }
 
       table_list('config', config)
     end
