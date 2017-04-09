@@ -93,7 +93,7 @@ module MPW
         end
       end
 
-      add_key(@key) if @keys[@key].nil?
+      add_key(@key) unless @keys.key?(@key)
     rescue => e
       raise "#{I18n.t('error.mpw_file.read_data')}\n#{e}"
     end
