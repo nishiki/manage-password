@@ -24,7 +24,9 @@ require 'mpw/cli'
 # Options
 # --------------------------------------------------------- #
 
-options = {}
+values                = {}
+options               = {}
+options[:text_editor] = true
 
 OptionParser.new do |opts|
   opts.banner = "#{I18n.t('option.usage')}: mpw add [options]"
@@ -33,13 +35,45 @@ OptionParser.new do |opts|
     options[:config] = config
   end
 
+  opts.on('-C', '--comment COMMENT', I18n.t('option.comment')) do |comment|
+    values[:comment] = comment
+  end
+
+  opts.on('-G', '--group NAME', I18n.t('option.new_group')) do |group|
+    values[:group] = group
+  end
+
   opts.on('-h', '--help', I18n.t('option.help')) do
     puts opts
     exit 0
   end
 
+  opts.on('-H', '--host HOST', I18n.t('option.host')) do |host|
+    values[:host] = host
+  end
+
+  opts.on('-o', '--otp-code CODE', I18n.t('option.otp_code')) do |otp|
+    values[:otp_key] = otp
+  end
+
+  opts.on('-O', '--protocol PROTOCOL', I18n.t('option.protocol')) do |protocol|
+    values[:protocol] = protocol
+  end
+
+  opts.on('-P', '--port NUMBER', I18n.t('option.port')) do |port|
+    values[:port] = port
+  end
+
   opts.on('-r', '--random', I18n.t('option.random_password')) do
     options[:password] = true
+  end
+
+  opts.on('-t', '--text-editor', I18n.t('option.text_editor')) do
+    options[:text_editor] = true
+  end
+
+  opts.on('-u', '--user USER', I18n.t('option.user')) do |user|
+    values[:user] = user
   end
 
   opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
@@ -53,4 +87,4 @@ cli    = MPW::Cli.new(config)
 cli.load_config
 cli.get_wallet(options[:wallet])
 cli.decrypt
-cli.add(options[:password])
+cli.add(options[:password], options[:text_editor], values)

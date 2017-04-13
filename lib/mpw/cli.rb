@@ -400,9 +400,9 @@ module MPW
     # @args: template -> template name
     #        item -> the item to edit
     #        password -> disable field password
-    def text_editor(template_name, item = nil, password = false)
+    # @rtrn: a hash with the value for an item
+    def text_editor(template_name, password = false, item = nil, **options)
       editor        = ENV['EDITOR'] || 'nano'
-      options       = {}
       opts          = {}
       template_file = "#{File.expand_path('../../../templates', __FILE__)}/#{template_name}.erb"
       template      = ERB.new(IO.read(template_file))
@@ -430,8 +430,10 @@ module MPW
 
     # Form to add a new item
     # @args: password -> generate a random password
-    def add(password = false)
-      options            = text_editor('add_form', nil, password)
+    #        text_editor -> enable text editor mode
+    #        values -> hash with multiples value to set the item
+    def add(password = false, text_editor = false, **values)
+      options            = text_editor('add_form', password, nil, values) if text_editor
       item               = Item.new(options)
       options[:password] = MPW.password(@config.password) if password
 
@@ -447,8 +449,10 @@ module MPW
 
     # Update an item
     # @args: password -> generate a random password
+    #        text_editor -> enable text editor mode
     #        options -> the option to search
-    def update(password = false, **options)
+    #        values -> hash with multiples value to set the item
+    def update(password = false, text_editor = false, options = {}, **values)
       items = @mpw.list(options)
 
       if items.empty?
@@ -456,13 +460,13 @@ module MPW
       else
         table_items(items) if items.length > 1
 
-        item               = get_item(items)
-        options            = text_editor('update_form', item, password)
-        options[:password] = MPW.password(@config.password) if password
+        item              = get_item(items)
+        values            = text_editor('update_form', password, item, values) if text_editor
+        values[:password] = MPW.password(@config.password) if password
 
-        item.update(options)
-        @mpw.set_password(item.id, options[:password]) if options.key?(:password)
-        @mpw.set_otp_key(item.id, options[:otp_key])   if options.key?(:otp_key)
+        item.update(values)
+        @mpw.set_password(item.id, values[:password]) if values.key?(:password)
+        @mpw.set_otp_key(item.id, values[:otp_key])   if values.key?(:otp_key)
         @mpw.write_data
 
         puts I18n.t('form.update_item.valid').to_s.green

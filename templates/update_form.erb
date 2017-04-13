@@ -1,17 +1,17 @@
 ---
 # <%= I18n.t('form.update_item.host') %>
-host: <%= item.host %>
+host: <%  if options[:host] %><%= options[:host] %><% else %><%= item.host %><% end %>
 # <%= I18n.t('form.update_item.login') %>
-user: <%= item.user %><% unless password %>
+user: <%  if options[:user] %><%= options[:user] %><% else %><%= item.user %><% end %><% unless password %>
 # <%= I18n.t('form.update_item.password') %>
 password: <% end %>
 # <%= I18n.t('form.update_item.group') %>
-group: <%= item.group %>
+group: <%  if options[:group] %><%= options[:group] %><% else %><%= item.group %><% end %>
 # <%= I18n.t('form.update_item.protocol') %>
-protocol: <%= item.protocol %>
+protocol: <%  if options[:protocol] %><%= options[:protocol] %><% else %><%= item.protocol %><% end %>
 # <%= I18n.t('form.update_item.port') %>
-port: <%= item.port %>
+port: <%  if options[:port] %><%= options[:port] %><% else %><%= item.port %><% end %>
 # <%= I18n.t('form.update_item.otp_key') %>
-otp_key: 
+otp_key: <%  if options[:otp_key] %><%= options[:otp_key] %><% end %>
 # <%= I18n.t('form.update_item.comment') %>
-comment: <%= item.comment %>
+comment: <%  if options[:comment] %><%= options[:comment] %><% else %><%= item.comment %><% end %>

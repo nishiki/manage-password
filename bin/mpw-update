@@ -24,8 +24,10 @@ require 'mpw/cli'
 # Options
 # --------------------------------------------------------- #
 
-options = {}
-values  = {}
+values                = {}
+search                = {}
+options               = {}
+options[:text_editor] = false
 
 OptionParser.new do |opts|
   opts.banner = "#{I18n.t('option.usage')}: mpw update [options]"
@@ -34,7 +36,15 @@ OptionParser.new do |opts|
     options[:config] = config
   end
 
+  opts.on('-C', '--comment COMMENT', I18n.t('option.comment')) do |comment|
+    values[:comment] = comment
+  end
+
   opts.on('-g', '--group NAME', I18n.t('option.group')) do |group|
+    search[:group] = group
+  end
+
+  opts.on('-G', '--new-group NAME', I18n.t('option.new_group')) do |group|
     values[:group] = group
   end
 
@@ -43,12 +53,36 @@ OptionParser.new do |opts|
     exit 0
   end
 
+  opts.on('-H', '--host HOST', I18n.t('option.host')) do |host|
+    values[:host] = host
+  end
+
+  opts.on('-o', '--otp-code CODE', I18n.t('option.otp_code')) do |otp|
+    values[:otp_key] = otp
+  end
+
+  opts.on('-O', '--protocol PROTOCOL', I18n.t('option.protocol')) do |protocol|
+    values[:protocol] = protocol
+  end
+
   opts.on('-p', '--pattern PATTERN', I18n.t('option.pattern')) do |pattern|
-    values[:pattern] = pattern
+    search[:pattern] = pattern
+  end
+
+  opts.on('-P', '--port NUMBER', I18n.t('option.port')) do |port|
+    values[:port] = port
   end
 
   opts.on('-r', '--random', I18n.t('option.random_password')) do
     options[:password] = true
+  end
+
+  opts.on('-t', '--text-editor', I18n.t('option.text_editor')) do
+    options[:text_editor] = true
+  end
+
+  opts.on('-u', '--user USER', I18n.t('option.user')) do |user|
+    values[:user] = user
   end
 
   opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
@@ -62,4 +96,4 @@ cli    = MPW::Cli.new(config)
 cli.load_config
 cli.get_wallet(options[:wallet])
 cli.decrypt
-cli.update(options[:password], values)
+cli.update(options[:password], options[:text_editor], search, values)
