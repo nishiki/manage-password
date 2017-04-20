@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # MPW is a software to crypt and manage your passwords
-# Copyright (C) 2016  Adrien Waksberg <mpw@yae.im>
+# Copyright (C) 2017  Adrien Waksberg <mpw@yae.im>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
