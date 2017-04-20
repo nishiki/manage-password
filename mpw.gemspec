@@ -18,6 +18,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
+  spec.required_ruby_version = '>= 2.1'
+
   spec.add_dependency 'i18n',      '~> 0.7', '>= 0.7.0'
   spec.add_dependency 'gpgme',     '~> 2.0', '>= 2.0.12'
   spec.add_dependency 'highline',  '~> 1.7', '>= 1.7.8'
