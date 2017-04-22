@@ -1,4 +1,13 @@
 # CHANGELOG
+## v4.1.0
+
+ * feat: add options to update or add an item in command line
+ * feat: print config
+ * feat: add a specific path for a wallet
+ * feat: add rubocop to fix syntax
+ * fix: pinentry mode with gpg >= 2.1
+ * remove SSH and FTP synchronization
+
 ## v4.0.0
 
  * feature: set default wallet

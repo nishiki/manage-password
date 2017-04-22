@@ -1,5 +1,5 @@
 # MPW: Manage your passwords!
-[![Version](https://img.shields.io/badge/latest_version-4.0.0-green.svg)](https://github.com/nishiki/manage-password/releases)
+[![Version](https://img.shields.io/badge/latest_version-4.1.0-green.svg)](https://github.com/nishiki/manage-password/releases)
 [![Build Status](https://travis-ci.org/nishiki/manage-password.svg?branch=master)](https://travis-ci.org/nishiki/manage-password)
 [![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)](https://github.com/nishiki/manage-password/blob/master/LICENSE)
 
@@ -82,11 +82,6 @@ List all available wallets:
 mpw wallet --list
 ```
 
-Create an other wallet:
-```
-mpw config --wallet work --init user@host.com
-```
-
 List all GPG keys in wallet:
 ```
 mpw wallet --list-keys [--wallet NAME]
@@ -138,4 +133,30 @@ Example yaml file for mpw:
   port: 
   otp_key: 
   comment: Da Linux French Site
+```
+
+### Config
+
+Print the current config
+```
+mpw config
+```
+
+Output:
+
+```
+Configuration
+ ==============================================
+  lang             | fr
+  gpg_key          | mpw@yae.im
+  default_wallet   |
+  config_dir       | /home/mpw/.config/mpw
+  pinmode          | true
+  gpg_exe          |
+  path_wallet_test | /tmp/test.mpw
+  password_numeric | true
+  password_alpha   | true
+  password_special | false
+  password_length  | 16
+
 ```
