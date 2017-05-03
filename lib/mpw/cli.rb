@@ -28,14 +28,13 @@ require 'mpw/mpw'
 
 module MPW
   class Cli
-    # Constructor
-    # @args: config -> the config
+    # @param config [Config]
     def initialize(config)
       @config = config
     end
 
     # Change a parameter int the config after init
-    # @args: options -> param to change
+    # @param options [Hash] param to change
     def set_config(options)
       @config.setup(options)
 
@@ -46,7 +45,7 @@ module MPW
     end
 
     # Change the wallet path
-    # @args: path -> the new path
+    # @param path [String] new path
     def set_wallet_path(path)
       @config.set_wallet_path(path, @wallet)
 
@@ -57,7 +56,7 @@ module MPW
     end
 
     # Create a new config file
-    # @args: options -> set param
+    # @param options [Hash]
     def setup(options)
       options[:lang] = options[:lang] || Locale::Tag.parse(ENV['LANG']).to_simple.to_s[0..1]
 
@@ -74,7 +73,7 @@ module MPW
     end
 
     # Setup a new GPG key
-    # @args: gpg_key -> the key name
+    # @param gpg_key [String] gpg key name
     def setup_gpg_key(gpg_key)
       return if @config.check_gpg_key?
 
@@ -139,8 +138,8 @@ module MPW
     end
 
     # Format list on a table
-    # @args: title -> the name of table
-    #        list -> array or hash
+    # @param title [String] name of table
+    # @param list  an array or hash
     def table_list(title, list)
       length = { k: 0, v: 0 }
 
@@ -172,7 +171,7 @@ module MPW
     end
 
     # Format items on a table
-    # @args: items -> an aray items
+    # @param items [Array]
     def table_items(items = [])
       group        = '.'
       i            = 1
@@ -252,7 +251,7 @@ module MPW
     end
 
     # Display the query's result
-    # @args: options -> the option to search
+    # @param options [Hash] the options to search
     def list(**options)
       result = @mpw.list(options)
 
@@ -264,8 +263,8 @@ module MPW
     end
 
     # Get an item when multiple choice
-    # @args: items -> array of items
-    # @rtrn: item
+    # @param items [Array] list of items
+    # @return item [Item]
     def get_item(items)
       return items[0] if items.length == 1
 
@@ -276,8 +275,8 @@ module MPW
     end
 
     # Copy in clipboard the login and password
-    # @args: item -> the item
-    #        clipboard -> enable clipboard
+    # @param item [Item]
+    # @param clipboard [Boolean] enable clipboard
     def clipboard(item, clipboard = true)
       # Security: force quit after 90s
       Thread.new do
@@ -350,7 +349,7 @@ module MPW
     end
 
     # Display the wallet
-    # @args: wallet -> the wallet name
+    # @param wallet [String] wallet name
     def get_wallet(wallet = nil)
       @wallet =
         if wallet.to_s.empty?
@@ -375,7 +374,7 @@ module MPW
     end
 
     # Add a new public key
-    # args: key -> the key name or key file to add
+    # @param key [String] key name or key file to add
     def add_key(key)
       @mpw.add_key(key)
       @mpw.write_data
@@ -386,7 +385,7 @@ module MPW
     end
 
     # Add new public key
-    # args: key -> the key name to delete
+    # @param key [String] key name to delete
     def delete_key(key)
       @mpw.delete_key(key)
       @mpw.write_data
@@ -397,10 +396,10 @@ module MPW
     end
 
     # Text editor interface
-    # @args: template -> template name
-    #        item -> the item to edit
-    #        password -> disable field password
-    # @rtrn: a hash with the value for an item
+    # @param template [String] template name
+    # @param item [Item] the item to edit
+    # @param password [Boolean] disable field password
+    # @return [Hash] the values for an item
     def text_editor(template_name, password = false, item = nil, **options)
       editor        = ENV['EDITOR'] || 'nano'
       opts          = {}
@@ -429,9 +428,9 @@ module MPW
     end
 
     # Form to add a new item
-    # @args: password -> generate a random password
-    #        text_editor -> enable text editor mode
-    #        values -> hash with multiples value to set the item
+    # @param password [Boolean] generate a random password
+    # @param text_editor [Boolean] enable text editor mode
+    # @param values [Hash] multiples value to set the item
     def add(password = false, text_editor = false, **values)
       options            = text_editor('add_form', password, nil, values) if text_editor
       item               = Item.new(options)
@@ -448,10 +447,10 @@ module MPW
     end
 
     # Update an item
-    # @args: password -> generate a random password
-    #        text_editor -> enable text editor mode
-    #        options -> the option to search
-    #        values -> hash with multiples value to set the item
+    # @param password [Boolean] generate a random password
+    # @param text_editor [Boolean] enable text editor mode
+    # @param options [Hash] the options to search
+    # @param values [Hash] multiples value to set the item
     def update(password = false, text_editor = false, options = {}, **values)
       items = @mpw.list(options)
 
@@ -476,7 +475,7 @@ module MPW
     end
 
     # Remove an item
-    # @args: options -> the option to search
+    # @param options [Hash] the options to search
     def delete(**options)
       items = @mpw.list(options)
 
@@ -500,8 +499,8 @@ module MPW
     end
 
     # Copy a password, otp, login
-    # @args: clipboard -> enable clipboard
-    #        options -> the option to search
+    # @param clipboard [Boolean] enable clipboard
+    # @param options [Hash] the options to search
     def copy(clipboard = true, **options)
       items = @mpw.list(options)
 
@@ -517,9 +516,9 @@ module MPW
       puts "#{I18n.t('display.error')} #14: #{e}".red
     end
 
-    # Export the items in a CSV file
-    # @args: file -> the destination file
-    #        options -> option to search
+    # Export the items in an yaml file
+    # @param file [String] the path of destination file
+    # @param options [Hash] options to search
     def export(file, options)
       file  = 'export-mpw.yml' if file.to_s.empty?
       items = @mpw.list(options)
@@ -549,8 +548,8 @@ module MPW
       puts "#{I18n.t('display.error')} #17: #{e}".red
     end
 
-    # Import items from a YAML file
-    # @args: file -> the import file
+    # Import items from an yaml file
+    # @param file [String] path of import file
     def import(file)
       raise I18n.t('form.import.file_empty')     if file.to_s.empty?
       raise I18n.t('form.import.file_not_exist') unless File.exist?(file)

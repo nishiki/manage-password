@@ -31,10 +31,7 @@ module MPW
     attr_accessor :last_edit
     attr_accessor :created
 
-    # Constructor
-    # Create a new item
-    # @args: options -> a hash of parameter
-    # raise an error if the hash hasn't the key name
+    # @param options [Hash] the option :host is required
     def initialize(**options)
       if !options.key?(:host) || options[:host].to_s.empty?
         raise I18n.t('error.update.host_empty')
@@ -54,7 +51,7 @@ module MPW
     end
 
     # Update the item
-    # @args: options -> a hash of parameter
+    # @param options [Hash]
     def update(**options)
       if options.key?(:host) && options[:host].to_s.empty?
         raise I18n.t('error.update.host_empty')
@@ -95,6 +92,7 @@ module MPW
     private
 
     # Generate an random id
+    # @return [String] random string
     def generate_id
       [*('A'..'Z'), *('a'..'z'), *('0'..'9')].sample(16).join
     end

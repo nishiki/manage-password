@@ -25,7 +25,11 @@ require 'mpw/item'
 
 module MPW
   class MPW
-    # Constructor
+    # @param key [String] gpg key name
+    # @param wallet_file [String] path of the wallet file
+    # @param gpg_pass [String] password of the gpg key
+    # @param gpg_exe [String] path of the gpg executable
+    # @param pinmode [Boolean] enable the gpg pinmode
     def initialize(key, wallet_file, gpg_pass = nil, gpg_exe = nil, pinmode = false)
       @key         = key
       @gpg_pass    = gpg_pass
@@ -98,7 +102,7 @@ module MPW
       raise "#{I18n.t('error.mpw_file.read_data')}\n#{e}"
     end
 
-    # Encrypt a file
+    # Encrypt all data in tarball
     def write_data
       data     = {}
       tmp_file = "#{@wallet_file}.tmp"
@@ -154,7 +158,7 @@ module MPW
     end
 
     # Get a password
-    # args: id -> the item id
+    # @param id [String] the item id
     def get_password(id)
       password = decrypt(@passwords[id])
 
@@ -165,9 +169,9 @@ module MPW
       end
     end
 
-    # Set a password
-    # args: id -> the item id
-    #       password -> the new password
+    # Set a new password for an item
+    # @param id [String] the item id
+    # @param password [String] the new password
     def set_password(id, password)
       salt     = MPW.password(length: Random.rand(4..9))
       password = "$#{salt}::#{password}"
@@ -176,13 +180,13 @@ module MPW
     end
 
     # Return the list of all gpg keys
-    # rtrn: an array with the gpg keys name
+    # @return [Array] the gpg keys name
     def list_keys
       @keys.keys
     end
 
     # Add a public key
-    # args: key ->  new public key file or name
+    # @param key [String] new public key file or name
     def add_key(key)
       if File.exist?(key)
         data       = File.open(key).read
@@ -200,7 +204,7 @@ module MPW
     end
 
     # Delete a public key
-    # args: key ->  public key to delete
+    # @param key [String] public key to delete
     def delete_key(key)
       @keys.delete(key)
       @passwords.each_key { |id| set_password(id, get_password(id)) }
@@ -208,7 +212,7 @@ module MPW
     end
 
     # Add a new item
-    # @args: item -> Object MPW::Item
+    # @param item [Item]
     def add(item)
       raise I18n.t('error.bad_class') unless item.instance_of?(Item)
       raise I18n.t('error.empty')     if item.empty?
@@ -217,8 +221,8 @@ module MPW
     end
 
     # Search in some csv data
-    # @args: options -> a hash with paramaters
-    # @rtrn: a list with the resultat of the search
+    # @params options [Hash]
+    # @return [Array] a list with the resultat of the search
     def list(**options)
       result = []
 
@@ -240,9 +244,9 @@ module MPW
       result
     end
 
-    # Search in some csv data
-    # @args: id -> the id item
-    # @rtrn: a row with the result of the search
+    # Search an item with an id
+    # @param id [String]the id item
+    # @return [Item] an item or nil
     def search_by_id(id)
       @data.each do |item|
         return item if item.id == id
@@ -251,36 +255,35 @@ module MPW
       nil
     end
 
-    # Set an opt key
-    # args: id -> the item id
-    #       key -> the new key
+    # Set a new opt key
+    # @param id [String] the item id
+    # @param key [String] the new key
     def set_otp_key(id, key)
       @otp_keys[id] = encrypt(key.to_s) unless key.to_s.empty?
     end
 
     # Get an opt key
-    # args: id -> the item id
-    #       key -> the new key
+    # @param id [String] the item id
     def get_otp_key(id)
       @otp_keys.key?(id) ? decrypt(@otp_keys[id]) : nil
     end
 
     # Get an otp code
-    # @args: id -> the item id
-    # @rtrn: an otp code
+    # @param id [String] the item id
+    # @return [String] an otp code
     def get_otp_code(id)
       @otp_keys.key?(id) ? 0 : ROTP::TOTP.new(decrypt(@otp_keys[id])).now
     end
 
     # Get remaining time before expire otp code
-    # @rtrn: return time in seconde
+    # @return [Integer] time in seconde
     def get_otp_remaining_time
       (Time.now.utc.to_i / 30 + 1) * 30 - Time.now.utc.to_i
     end
 
     # Generate a random password
-    # @args: options -> :length, :special, :alpha, :numeric
-    # @rtrn: a random string
+    # @param options [Hash] :length, :special, :alpha, :numeric
+    # @return [String] a random string
     def self.password(**options)
       length =
         if !options.include?(:length) || options[:length].to_i <= 0
@@ -310,7 +313,8 @@ module MPW
     private
 
     # Decrypt a gpg file
-    # @args: data -> string to decrypt
+    # @param data [String] data to decrypt
+    # @return [String] data decrypted
     def decrypt(data)
       return nil if data.to_s.empty?
 
@@ -331,7 +335,8 @@ module MPW
     end
 
     # Encrypt a file
-    # args: data -> string to encrypt
+    # @param data [String] data to encrypt
+    # @return [String] data encrypted
     def encrypt(data)
       recipients = []
       crypto     = GPGME::Crypto.new(armor: true, always_trust: true)

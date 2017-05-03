@@ -35,8 +35,7 @@ module MPW
     attr_accessor :password
     attr_accessor :pinmode
 
-    # Constructor
-    # @args: config_file -> the specify config file
+    # @param config_file [String] path of config file
     def initialize(config_file = nil)
       @config_file = config_file
       @config_dir  =
@@ -52,8 +51,7 @@ module MPW
     end
 
     # Create a new config file
-    # @args: options -> hash with values
-    # @rtrn: true if le config file is create
+    # @param options [Hash] the value to set the config file
     def setup(**options)
       gpg_key        = options[:gpg_key]        || @gpg_key
       lang           = options[:lang]           || @lang
@@ -99,11 +97,10 @@ module MPW
     end
 
     # Setup a new gpg key
-    # @args: password -> the GPG key password
-    #        name -> the name of user
-    #        length -> length of the GPG key
-    #        expire -> the time of expire to GPG key
-    # @rtrn: true if the GPG key is create, else false
+    # @param password [String] gpg key password
+    # @param name [String] the name of user
+    # @param length [Integer] length of the gpg key
+    # @param expire [Integer] time of expire to gpg key
     def setup_gpg_key(password, name, length = 4096, expire = 0)
       raise I18n.t('error.config.genkey_gpg.name') if name.to_s.empty?
       raise I18n.t('error.config.genkey_gpg.password') if password.to_s.empty?
@@ -147,7 +144,7 @@ module MPW
     end
 
     # Check if private key exist
-    # @rtrn: true if the key exist, else false
+    # @return [Boolean] true if the key exist, else false
     def check_gpg_key?
       ctx = GPGME::Ctx.new
       ctx.each_key(@gpg_key, true) do
@@ -158,8 +155,8 @@ module MPW
     end
 
     # Change the path of one wallet
-    # @args: path -> the new directory path
-    #        wallet -> the wallet name
+    # @param path [String]new directory path
+    # @param wallet [String] wallet name
     def set_wallet_path(path, wallet)
       path = @wallet_dir if path == 'default'
 
