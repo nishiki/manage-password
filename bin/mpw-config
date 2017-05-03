@@ -109,7 +109,6 @@ if options.key?(:init)
   cli.load_config
   cli.get_wallet
   cli.setup_gpg_key(values[:gpg_key])
-  cli.setup_wallet_config
 else
   cli.load_config
   if values.empty?
