@@ -1,4 +1,8 @@
 # CHANGELOG
+## v4.1.1
+
+ * fix bug in init
+
 ## v4.1.0
 
  * feat: add options to update or add an item in command line
