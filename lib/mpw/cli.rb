@@ -179,16 +179,19 @@ module MPW
       data         = { id:       { length: 3,  color: 'cyan' },
                        host:     { length: 9,  color: 'yellow' },
                        user:     { length: 7,  color: 'green' },
-                       protocol: { length: 9,  color: 'white' },
-                       port:     { length: 5,  color: 'white' },
                        otp:      { length: 4,  color: 'white' },
                        comment:  { length: 14, color: 'magenta' } }
 
       items.each do |item|
         data.each do |k, v|
-          next if k == :id || k == :otp
-
-          v[:length] = item.send(k.to_s).to_s.length + 3 if item.send(k.to_s).to_s.length >= v[:length]
+          case k
+          when :id, :otp
+            next
+          when :host
+            v[:length] = item.url.length + 3 if item.url.length >= v[:length]
+          else
+            v[:length] = item.send(k.to_s).to_s.length + 3 if item.send(k.to_s).to_s.length >= v[:length]
+          end
         end
       end
       data[:id][:length] = items.length.to_s.length + 2 if items.length.to_s.length > data[:id][:length]
@@ -231,16 +234,22 @@ module MPW
         data.each do |k, v|
           next if k == :id
 
-          if k == :otp
-            print '| '
+          print '| '
+
+          case k
+          when :otp
             item.otp ? (print ' X  ') : 4.times { print ' ' }
 
-            next
-          end
+          when :host
+            print "#{item.protocol}://" if item.protocol
+            print item.host.send(v[:color])
+            print ":#{item.port}" if item.port
+            (v[:length] - item.url.to_s.length).times { print ' ' }
 
-          print '| '
-          print item.send(k.to_s).to_s.send(v[:color])
-          (v[:length] - item.send(k.to_s).to_s.length).times { print ' ' }
+          else
+            print item.send(k.to_s).to_s.send(v[:color])
+            (v[:length] - item.send(k.to_s).to_s.length).times { print ' ' }
+          end
         end
         print "\n"
 
