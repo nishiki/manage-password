@@ -81,6 +81,17 @@ module MPW
       @last_edit = nil
     end
 
+    # Return data on url format
+    # @return [String] an url
+    def url
+      url = ''
+      url += "#{@protocol}://" if @protocol
+      url += @host
+      url += ":#{@port}" if @port
+
+      url
+    end
+
     def empty?
       @id.to_s.empty?
     end
