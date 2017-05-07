@@ -13,4 +13,9 @@ install:
   - gem install mpw-9999.gem
 script:
   - rubocop
-  - ruby ./test/tests.rb 
+  - ruby ./test/init.rb
+  - ruby ./test/test_config.rb
+  - ruby ./test/test_item.rb
+  - ruby ./test/test_mpw.rb
+  - ruby ./test/test_translate.rb
+  - ruby ./test/test_cli.rb
