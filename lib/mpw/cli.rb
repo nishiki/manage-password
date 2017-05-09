@@ -241,9 +241,9 @@ module MPW
             item.otp ? (print ' X  ') : 4.times { print ' ' }
 
           when :host
-            print "#{item.protocol}://" if item.protocol
+            print "#{item.protocol}://".light_black if item.protocol
             print item.host.send(v[:color])
-            print ":#{item.port}" if item.port
+            print ":#{item.port}".light_black if item.port
             (v[:length] - item.url.to_s.length).times { print ' ' }
 
           else
