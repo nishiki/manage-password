@@ -6,9 +6,6 @@ require 'yaml'
 
 class TestItem < Test::Unit::TestCase
   def setup
-    @fixture_file = 'test/files/fixtures.yml'
-    @fixtures = YAML.load_file(@fixture_file)
-
     if defined?(I18n.enforce_available_locales)
       I18n.enforce_available_locales = false
     end
@@ -16,7 +13,7 @@ class TestItem < Test::Unit::TestCase
     I18n.load_path      = Dir['./i18n/cli/*.yml']
     I18n.default_locale = :en
 
-    puts
+    @fixtures = YAML.load_file('./test/files/fixtures.yml')
   end
 
   def test_00_add_without_name

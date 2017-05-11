@@ -8,8 +8,6 @@ require 'csv'
 
 class TestMPW < Test::Unit::TestCase
   def setup
-    fixture_file = './test/files/fixtures.yml'
-
     wallet_file = 'default.gpg'
     key         = 'test@example.com'
     password    = 'password'
@@ -19,7 +17,7 @@ class TestMPW < Test::Unit::TestCase
     end
 
     @mpw      = MPW::MPW.new(key, wallet_file, password)
-    @fixtures = YAML.load_file(fixture_file)
+    @fixtures = YAML.load_file('./test/files/fixtures.yml')
   end
 
   def test_00_decrypt_empty_file
