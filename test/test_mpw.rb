@@ -33,13 +33,14 @@ class TestMPW < Test::Unit::TestCase
   end
 
   def test_02_add_item
-    data = { group:    @fixtures['add_new']['group'],
-             host:     @fixtures['add_new']['host'],
-             protocol: @fixtures['add_new']['protocol'],
-             user:     @fixtures['add_new']['user'],
-             port:     @fixtures['add_new']['port'],
-             comment:  @fixtures['add_new']['comment'],
-           }
+    data = {
+      group:    @fixtures['add_new']['group'],
+      host:     @fixtures['add_new']['host'],
+      protocol: @fixtures['add_new']['protocol'],
+      user:     @fixtures['add_new']['user'],
+      port:     @fixtures['add_new']['port'],
+      comment:  @fixtures['add_new']['comment']
+    }
 
     item = MPW::Item.new(data)
 
@@ -53,7 +54,7 @@ class TestMPW < Test::Unit::TestCase
     assert_equal(1, @mpw.list.length)
 
     item = @mpw.list[0]
-    @fixtures['add_new'].each do |k,v|
+    @fixtures['add_new'].each do |k, v|
       if k == 'password'
         assert_equal(v, @mpw.get_password(item.id))
       else
@@ -69,7 +70,7 @@ class TestMPW < Test::Unit::TestCase
     assert_equal(1, @mpw.list.length)
 
     item = @mpw.list[0]
-    @fixtures['add_new'].each do |k,v|
+    @fixtures['add_new'].each do |k, v|
       if k == 'password'
         assert_equal(v, @mpw.get_password(item.id))
       else
@@ -80,13 +81,9 @@ class TestMPW < Test::Unit::TestCase
 
   def test_04_delete_item
     @mpw.read_data
-
     assert_equal(1, @mpw.list.length)
 
-    @mpw.list.each do |item|
-      item.delete
-    end
-
+    @mpw.list.each(&:delete)
     assert_equal(0, @mpw.list.length)
 
     @mpw.write_data
@@ -96,13 +93,14 @@ class TestMPW < Test::Unit::TestCase
     @mpw.read_data
 
     @fixtures.each_value do |v|
-      data = { group:    v['group'],
-               host:     v['host'],
-               protocol: v['protocol'],
-               user:     v['user'],
-               port:     v['port'],
-               comment:  v['comment'],
-             }
+      data = {
+        group:    v['group'],
+        host:     v['host'],
+        protocol: v['protocol'],
+        user:     v['user'],
+        port:     v['port'],
+        comment:  v['comment']
+      }
 
       item = MPW::Item.new(data)
 

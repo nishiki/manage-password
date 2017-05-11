@@ -3,7 +3,6 @@ AllCops:
   Exclude:
     - db/**/*
     - config/**/*
-    - test/*
     - Vagrantfile
   TargetRubyVersion: 2.3
 

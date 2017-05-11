@@ -11,7 +11,7 @@ class TestTranslate < Test::Unit::TestCase
       lang      = File.basename(yaml, '.yml')
       translate = YAML.load_file(yaml)
 
-      `grep -r -o "I18n.t('.*)" bin/ lib/ | cut -d"'" -f2`.each_line do |line|
+      %x(grep -r -o "I18n.t('.*)" bin/ lib/ | cut -d"'" -f2).each_line do |line|
         begin
           t = translate[lang]
           line.strip.split('.').each do |v|

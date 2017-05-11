@@ -20,17 +20,18 @@ class TestConfig < Test::Unit::TestCase
   end
 
   def test_00_config
-    data = { gpg_key: 'test@example.com',
-             lang: 'en',
-             wallet_dir: '/tmp/test',
-             gpg_exe: '',
-           }
+    data = {
+      gpg_key: 'test@example.com',
+      lang: 'en',
+      wallet_dir: '/tmp/test',
+      gpg_exe: ''
+    }
 
     @config = MPW::Config.new
     @config.setup(data)
     @config.load_config
 
-    data.each do |k,v|
+    data.each do |k, v|
       assert_equal(v, @config.send(k))
     end
 
@@ -39,11 +40,12 @@ class TestConfig < Test::Unit::TestCase
   end
 
   def test_01_password
-    data = { pwd_alpha: false,
-             pwd_numeric: false,
-             pwd_special: true,
-             pwd_length: 32,
-           }
+    data = {
+      pwd_alpha: false,
+      pwd_numeric: false,
+      pwd_special: true,
+      pwd_length: 32
+    }
 
     @config = MPW::Config.new
     @config.load_config
