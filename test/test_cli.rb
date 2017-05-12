@@ -1,10 +1,19 @@
 #!/usr/bin/ruby
 
 require 'fileutils'
+require 'i18n'
 require 'test/unit'
 
 class TestConfig < Test::Unit::TestCase
   def setup
+    if defined?(I18n.enforce_available_locales)
+      I18n.enforce_available_locales = true
+    end
+
+    I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+    I18n.load_path = ["#{File.expand_path('../../i18n', __FILE__)}/en.yml"]
+    I18n.locale    = :en
+
     @password = 'password'
   end
 
@@ -13,8 +22,8 @@ class TestConfig < Test::Unit::TestCase
     FileUtils.rm_rf("#{Dir.home}/.gnupg")
 
     output = %x(echo "#{@password}\n#{@password}" | mpw config --init test@example.com)
-    assert_match('The config file has been created', output)
-    assert_match('Your GPG key has been created ;-)', output)
+    assert_match(I18n.t('form.setup_config.valid'), output)
+    assert_match(I18n.t('form.setup_gpg_key.valid'), output)
   end
 
   def test_01_add_item
@@ -35,7 +44,7 @@ class TestConfig < Test::Unit::TestCase
       --group #{group} \
       --random)
     puts output
-    assert_match('Item has been added!', output)
+    assert_match(I18n.t('form.add_item.valid'), output)
 
     output = %x(echo #{@password} | mpw list)
     puts output
@@ -65,7 +74,7 @@ class TestConfig < Test::Unit::TestCase
       --new-group #{group_new}
     )
     puts output
-    assert_match('Item has been updated!', output)
+    assert_match(I18n.t('form.update_item.valid'), output)
 
     output = %x(echo #{@password} | mpw list)
     puts output
@@ -80,7 +89,7 @@ class TestConfig < Test::Unit::TestCase
 
     output = %x(echo "#{@password}\ny" | mpw delete -p #{host})
     puts output
-    assert_match('The item has been removed!', output)
+    assert_match(I18n.t('form.delete_item.valid'), output)
 
     output = %x(echo #{@password} | mpw list)
     puts output
