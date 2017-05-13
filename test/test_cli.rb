@@ -15,7 +15,7 @@ class TestConfig < Test::Unit::TestCase
     I18n.locale    = :en
 
     @password = 'password'
-    @fixtures = YAML.load_file(fixture_file)
+    @fixtures = YAML.load_file('./test/files/fixtures.yml')
   end
 
   def test_00_init_config
@@ -50,7 +50,26 @@ class TestConfig < Test::Unit::TestCase
     assert_match(data['group'], output)
   end
 
-  def test_02_update_item
+  def test_02_search
+    data = @fixtures['add']
+
+    output = %x(echo #{@password} | mpw list --group #{data['group']})
+    assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
+
+    output = %x(echo #{@password} | mpw list --pattern #{data['host']})
+    assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
+
+    output = %x(echo #{@password} | mpw list --pattern #{data['comment']})
+    assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
+
+    output = %x(echo #{@password} | mpw list --group R1Pmfbp626TFpjlr)
+    assert_match(I18n.t('display.nothing'), output)
+
+    output = %x(echo #{@password} | mpw list --pattern h1IfnKqamaGM9oEX)
+    assert_match(I18n.t('display.nothing'), output)
+  end
+
+  def test_03_update_item
     data = @fixtures['update']
 
     output = %x(
@@ -74,15 +93,13 @@ class TestConfig < Test::Unit::TestCase
     assert_match(data['group'], output)
   end
 
-  def test_03_delete_item
-    host = @fixtures['update']['host']
-
-    output = %x(echo "#{@password}\ny" | mpw delete -p #{host})
+  def test_04_delete_item
+    output = %x(echo "#{@password}\ny" | mpw delete -p #{@fixtures['update']['host']})
     puts output
     assert_match(I18n.t('form.delete_item.valid'), output)
 
     output = %x(echo #{@password} | mpw list)
     puts output
-    assert_no_match(/#{host}/, output)
+    assert_match(I18n.t('display.nothing'), output)
   end
 end

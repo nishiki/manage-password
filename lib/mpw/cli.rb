@@ -464,7 +464,7 @@ module MPW
       items = @mpw.list(options)
 
       if items.empty?
-        puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+        puts I18n.t('display.nothing')
       else
         table_items(items) if items.length > 1
 
@@ -489,7 +489,7 @@ module MPW
       items = @mpw.list(options)
 
       if items.empty?
-        puts "#{I18n.t('display.warning')}: #{I18n.t('warning.select')}".yellow
+        puts I18n.t('display.nothing')
       else
         table_items(items)
 
