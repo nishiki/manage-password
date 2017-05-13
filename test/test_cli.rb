@@ -15,6 +15,7 @@ class TestConfig < Test::Unit::TestCase
     I18n.locale    = :en
 
     @password = 'password'
+    @fixtures = YAML.load_file(fixture_file)
   end
 
   def test_00_init_config
@@ -27,65 +28,54 @@ class TestConfig < Test::Unit::TestCase
   end
 
   def test_01_add_item
-    host    = 'example.com'
-    port    = 1234
-    proto   = 'http'
-    user    = 'root'
-    comment = 'the super website'
-    group   = 'Bank'
+    data = @fixtures['add']
 
     output = %x(
       echo #{@password} | mpw add \
-      --host #{host} \
-      --port #{port} \
-      --protocol #{proto} \
-      --user #{user} \
-      --comment '#{comment}' \
-      --group #{group} \
+      --host #{data['host']} \
+      --port #{data['port']} \
+      --protocol #{data['protocol']} \
+      --user #{data['user']} \
+      --comment '#{data['comment']}' \
+      --group #{data['group']} \
       --random)
     puts output
     assert_match(I18n.t('form.add_item.valid'), output)
 
     output = %x(echo #{@password} | mpw list)
     puts output
-    assert_match(%r{#{proto}://.+#{host}.+:#{port}}, output)
-    assert_match(user, output)
-    assert_match(comment, output)
-    assert_match(group, output)
+    assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
+    assert_match(data['user'], output)
+    assert_match(data['comment'], output)
+    assert_match(data['group'], output)
   end
 
   def test_02_update_item
-    host_old    = 'example.com'
-    host_new    = 'example2.com'
-    port_new    = 4321
-    proto_new   = 'ssh'
-    user_new    = 'tortue'
-    comment_new = 'my account'
-    group_new   = 'Assurance'
+    data = @fixtures['update']
 
     output = %x(
       echo #{@password} | mpw update \
-      -p #{host_old} \
-      --host #{host_new} \
-      --port #{port_new} \
-      --protocol #{proto_new} \
-      --user #{user_new} \
-      --comment '#{comment_new}' \
-      --new-group #{group_new}
+      -p #{@fixtures['add']['host']} \
+      --host #{data['host']} \
+      --port #{data['port']} \
+      --protocol #{data['protocol']} \
+      --user #{data['user']} \
+      --comment '#{data['comment']}' \
+      --new-group #{data['group']}
     )
     puts output
     assert_match(I18n.t('form.update_item.valid'), output)
 
     output = %x(echo #{@password} | mpw list)
     puts output
-    assert_match(%r{#{proto_new}://.+#{host_new}.+:#{port_new}}, output)
-    assert_match(user_new, output)
-    assert_match(comment_new, output)
-    assert_match(group_new, output)
+    assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
+    assert_match(data['user'], output)
+    assert_match(data['comment'], output)
+    assert_match(data['group'], output)
   end
 
   def test_03_delete_item
-    host = 'example2.com'
+    host = @fixtures['update']['host']
 
     output = %x(echo "#{@password}\ny" | mpw delete -p #{host})
     puts output

@@ -20,14 +20,14 @@ class TestItem < Test::Unit::TestCase
     assert_raise(RuntimeError) { MPW::Item.new }
   end
 
-  def test_01_add_new
+  def test_01_add
     data = {
-      group:    @fixtures['add_new']['group'],
-      host:     @fixtures['add_new']['host'],
-      protocol: @fixtures['add_new']['protocol'],
-      user:     @fixtures['add_new']['user'],
-      port:     @fixtures['add_new']['port'],
-      comment:  @fixtures['add_new']['comment']
+      group:    @fixtures['add']['group'],
+      host:     @fixtures['add']['host'],
+      protocol: @fixtures['add']['protocol'],
+      user:     @fixtures['add']['user'],
+      port:     @fixtures['add']['port'],
+      comment:  @fixtures['add']['comment']
     }
 
     item = MPW::Item.new(data)
@@ -35,24 +35,24 @@ class TestItem < Test::Unit::TestCase
     assert(!item.nil?)
     assert(!item.empty?)
 
-    assert_equal(@fixtures['add_new']['group'],     item.group)
-    assert_equal(@fixtures['add_new']['host'],      item.host)
-    assert_equal(@fixtures['add_new']['protocol'],  item.protocol)
-    assert_equal(@fixtures['add_new']['user'],      item.user)
-    assert_equal(@fixtures['add_new']['port'].to_i, item.port)
-    assert_equal(@fixtures['add_new']['comment'],   item.comment)
+    assert_equal(@fixtures['add']['group'],     item.group)
+    assert_equal(@fixtures['add']['host'],      item.host)
+    assert_equal(@fixtures['add']['protocol'],  item.protocol)
+    assert_equal(@fixtures['add']['user'],      item.user)
+    assert_equal(@fixtures['add']['port'].to_i, item.port)
+    assert_equal(@fixtures['add']['comment'],   item.comment)
   end
 
-  def test_02_add_existing
+  def test_02_import
     data = {
-      id:       @fixtures['add_existing']['id'],
-      group:    @fixtures['add_existing']['group'],
-      host:     @fixtures['add_existing']['host'],
-      protocol: @fixtures['add_existing']['protocol'],
-      user:     @fixtures['add_existing']['user'],
-      port:     @fixtures['add_existing']['port'],
-      comment:  @fixtures['add_existing']['comment'],
-      created:  @fixtures['add_existing']['created']
+      id:       @fixtures['import']['id'],
+      group:    @fixtures['import']['group'],
+      host:     @fixtures['import']['host'],
+      protocol: @fixtures['import']['protocol'],
+      user:     @fixtures['import']['user'],
+      port:     @fixtures['import']['port'],
+      comment:  @fixtures['import']['comment'],
+      created:  @fixtures['import']['created']
     }
 
     item = MPW::Item.new(data)
@@ -60,24 +60,24 @@ class TestItem < Test::Unit::TestCase
     assert(!item.nil?)
     assert(!item.empty?)
 
-    assert_equal(@fixtures['add_existing']['id'],        item.id)
-    assert_equal(@fixtures['add_existing']['group'],     item.group)
-    assert_equal(@fixtures['add_existing']['host'],      item.host)
-    assert_equal(@fixtures['add_existing']['protocol'],  item.protocol)
-    assert_equal(@fixtures['add_existing']['user'],      item.user)
-    assert_equal(@fixtures['add_existing']['port'].to_i, item.port)
-    assert_equal(@fixtures['add_existing']['comment'],   item.comment)
-    assert_equal(@fixtures['add_existing']['created'],   item.created)
+    assert_equal(@fixtures['import']['id'],        item.id)
+    assert_equal(@fixtures['import']['group'],     item.group)
+    assert_equal(@fixtures['import']['host'],      item.host)
+    assert_equal(@fixtures['import']['protocol'],  item.protocol)
+    assert_equal(@fixtures['import']['user'],      item.user)
+    assert_equal(@fixtures['import']['port'].to_i, item.port)
+    assert_equal(@fixtures['import']['comment'],   item.comment)
+    assert_equal(@fixtures['import']['created'],   item.created)
   end
 
   def test_03_update
     data = {
-      group:    @fixtures['add_new']['group'],
-      host:     @fixtures['add_new']['host'],
-      protocol: @fixtures['add_new']['protocol'],
-      user:     @fixtures['add_new']['user'],
-      port:     @fixtures['add_new']['port'],
-      comment:  @fixtures['add_new']['comment']
+      group:    @fixtures['add']['group'],
+      host:     @fixtures['add']['host'],
+      protocol: @fixtures['add']['protocol'],
+      user:     @fixtures['add']['user'],
+      port:     @fixtures['add']['port'],
+      comment:  @fixtures['add']['comment']
     }
 
     item = MPW::Item.new(data)
@@ -115,12 +115,12 @@ class TestItem < Test::Unit::TestCase
 
   def test_05_update_one_element
     data = {
-      group:    @fixtures['add_new']['group'],
-      host:     @fixtures['add_new']['host'],
-      protocol: @fixtures['add_new']['protocol'],
-      user:     @fixtures['add_new']['user'],
-      port:     @fixtures['add_new']['port'],
-      comment:  @fixtures['add_new']['comment']
+      group:    @fixtures['add']['group'],
+      host:     @fixtures['add']['host'],
+      protocol: @fixtures['add']['protocol'],
+      user:     @fixtures['add']['user'],
+      port:     @fixtures['add']['port'],
+      comment:  @fixtures['add']['comment']
     }
 
     item = MPW::Item.new(data)
@@ -133,24 +133,24 @@ class TestItem < Test::Unit::TestCase
     sleep(1)
     assert(item.update(comment: @fixtures['update']['comment']))
 
-    assert_equal(@fixtures['add_new']['group'],     item.group)
-    assert_equal(@fixtures['add_new']['host'],      item.host)
-    assert_equal(@fixtures['add_new']['protocol'],  item.protocol)
-    assert_equal(@fixtures['add_new']['user'],      item.user)
-    assert_equal(@fixtures['add_new']['port'].to_i, item.port)
-    assert_equal(@fixtures['update']['comment'],    item.comment)
+    assert_equal(@fixtures['add']['group'],      item.group)
+    assert_equal(@fixtures['add']['host'],       item.host)
+    assert_equal(@fixtures['add']['protocol'],   item.protocol)
+    assert_equal(@fixtures['add']['user'],       item.user)
+    assert_equal(@fixtures['add']['port'].to_i,  item.port)
+    assert_equal(@fixtures['update']['comment'], item.comment)
 
     assert_not_equal(last_edit, item.last_edit)
   end
 
   def test_05_delete
     data = {
-      group:    @fixtures['add_new']['group'],
-      host:     @fixtures['add_new']['host'],
-      protocol: @fixtures['add_new']['protocol'],
-      user:     @fixtures['add_new']['user'],
-      port:     @fixtures['add_new']['port'],
-      comment:  @fixtures['add_new']['comment']
+      group:    @fixtures['add']['group'],
+      host:     @fixtures['add']['host'],
+      protocol: @fixtures['add']['protocol'],
+      user:     @fixtures['add']['user'],
+      port:     @fixtures['add']['port'],
+      comment:  @fixtures['add']['comment']
     }
 
     item = MPW::Item.new(data)

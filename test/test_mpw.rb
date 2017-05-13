@@ -32,12 +32,12 @@ class TestMPW < Test::Unit::TestCase
 
   def test_02_add_item
     data = {
-      group:    @fixtures['add_new']['group'],
-      host:     @fixtures['add_new']['host'],
-      protocol: @fixtures['add_new']['protocol'],
-      user:     @fixtures['add_new']['user'],
-      port:     @fixtures['add_new']['port'],
-      comment:  @fixtures['add_new']['comment']
+      group:    @fixtures['add']['group'],
+      host:     @fixtures['add']['host'],
+      protocol: @fixtures['add']['protocol'],
+      user:     @fixtures['add']['user'],
+      port:     @fixtures['add']['port'],
+      comment:  @fixtures['add']['comment']
     }
 
     item = MPW::Item.new(data)
@@ -47,12 +47,12 @@ class TestMPW < Test::Unit::TestCase
 
     @mpw.read_data
     @mpw.add(item)
-    @mpw.set_password(item.id, @fixtures['add_new']['password'])
+    @mpw.set_password(item.id, @fixtures['add']['password'])
 
     assert_equal(1, @mpw.list.length)
 
     item = @mpw.list[0]
-    @fixtures['add_new'].each do |k, v|
+    @fixtures['add'].each do |k, v|
       if k == 'password'
         assert_equal(v, @mpw.get_password(item.id))
       else
@@ -68,7 +68,7 @@ class TestMPW < Test::Unit::TestCase
     assert_equal(1, @mpw.list.length)
 
     item = @mpw.list[0]
-    @fixtures['add_new'].each do |k, v|
+    @fixtures['add'].each do |k, v|
       if k == 'password'
         assert_equal(v, @mpw.get_password(item.id))
       else
@@ -110,9 +110,9 @@ class TestMPW < Test::Unit::TestCase
     end
 
     assert_equal(3, @mpw.list.length)
-    assert_equal(1, @mpw.list(group:    @fixtures['add_new']['group']).length)
-    assert_equal(1, @mpw.list(pattern:  'existing').length)
-    assert_equal(2, @mpw.list(pattern:  'host_[eu]').length)
+    assert_equal(1, @mpw.list(group:   @fixtures['add']['group']).length)
+    assert_equal(1, @mpw.list(pattern: 'gogole').length)
+    assert_equal(2, @mpw.list(pattern: 'example[2\.]').length)
   end
 
   def test_06_add_gpg_key
