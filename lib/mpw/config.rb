@@ -58,11 +58,13 @@ module MPW
       wallet_dir     = options[:wallet_dir]     || @wallet_dir
       default_wallet = options[:default_wallet] || @default_wallet
       gpg_exe        = options[:gpg_exe]        || @gpg_exe
-      pinmode        = options[:pinmode]        || @pinmode
-      password       = { numeric: true,
-                         alpha:   true,
-                         special: false,
-                         length:  16 }
+      pinmode        = options.key?(:pinmode) ? options[:pinmode] : @pinmode
+      password       = {
+        numeric: true,
+        alpha:   true,
+        special: false,
+        length:  16
+      }
 
       %w[numeric special alpha length].each do |k|
         if options.key?("pwd_#{k}".to_sym)
@@ -134,7 +136,7 @@ module MPW
       @default_wallet = config['default_wallet']
       @gpg_exe        = config['gpg_exe']
       @password       = config['password'] || {}
-      @pinmode        = config['pinmode']
+      @pinmode        = config['pinmode'] || false
 
       raise if @gpg_key.empty? || @wallet_dir.empty?
 

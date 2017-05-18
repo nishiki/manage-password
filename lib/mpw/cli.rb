@@ -105,7 +105,7 @@ module MPW
         'lang'           => @config.lang,
         'gpg_key'        => @config.gpg_key,
         'default_wallet' => @config.default_wallet,
-        'config_dir'     => @config.config_dir,
+        'wallet_dir'     => @config.wallet_dir,
         'pinmode'        => @config.pinmode,
         'gpg_exe'        => @config.gpg_exe
       }
