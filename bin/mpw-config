@@ -88,7 +88,7 @@ OptionParser.new do |opts|
     values[:pwd_special] = true
   end
 
-  opts.on('-S', '--disable_special-chars', I18n.t('option.special_chars')) do
+  opts.on('-S', '--disable-special-chars', I18n.t('option.special_chars')) do
     values[:pwd_special] = false
   end
 

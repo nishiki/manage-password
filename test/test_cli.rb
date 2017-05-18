@@ -16,13 +16,14 @@ class TestConfig < Test::Unit::TestCase
 
     @password = 'password'
     @fixtures = YAML.load_file('./test/files/fixtures.yml')
+    @gpg_key  = 'test@example.com'
   end
 
   def test_00_init_config
     FileUtils.rm_rf("#{Dir.home}/.config/mpw")
     FileUtils.rm_rf("#{Dir.home}/.gnupg")
 
-    output = %x(echo "#{@password}\n#{@password}" | mpw config --init test@example.com)
+    output = %x(echo "#{@password}\n#{@password}" | mpw config --init #{@gpg_key})
     assert_match(I18n.t('form.setup_config.valid'), output)
     assert_match(I18n.t('form.setup_gpg_key.valid'), output)
   end
@@ -38,7 +39,8 @@ class TestConfig < Test::Unit::TestCase
       --user #{data['user']} \
       --comment '#{data['comment']}' \
       --group #{data['group']} \
-      --random)
+      --random
+    )
     puts output
     assert_match(I18n.t('form.add_item.valid'), output)
 
@@ -101,5 +103,58 @@ class TestConfig < Test::Unit::TestCase
     output = %x(echo #{@password} | mpw list)
     puts output
     assert_match(I18n.t('display.nothing'), output)
+  end
+
+  def test_05_setup_config
+    gpg_key    = 'user@example2.com'
+    gpg_exe    = '/usr/bin/gpg2'
+    wallet_dir = '/tmp/mpw'
+    length     = 24
+    wallet     = 'work'
+
+    output = %x(
+      mpw config \
+      --gpg-exe #{gpg_exe} \
+      --enable-pinmode \
+      --disable-alpha \
+      --disable-special-chars \
+      --disable-numeric \
+      --length #{length} \
+      --wallet-dir #{wallet_dir} \
+      --default-wallet #{wallet}
+    )
+    puts output
+    assert_match(I18n.t('form.set_config.valid'), output)
+
+    output = %x(mpw config)
+    puts output
+    assert_match(/gpg_key.+\| #{@gpg_key}/, output)
+    assert_match(/gpg_exe.+\| #{gpg_exe}/, output)
+    assert_match(/pinmode.+\| true/, output)
+    assert_match(/default_wallet.+\| #{wallet}/, output)
+    assert_match(/wallet_dir.+\| #{wallet_dir}/, output)
+    assert_match(/password_length.+\| #{length}/, output)
+    %w[numeric alpha special].each do |k|
+      assert_match(/password_#{k}.+\| false/, output)
+    end
+
+    output = %x(
+      mpw config \
+      --key #{gpg_key} \
+      --alpha \
+      --special-chars \
+      --numeric \
+      --disable-pinmode
+    )
+    puts output
+    assert_match(I18n.t('form.set_config.valid'), output)
+
+    output = %x(mpw config)
+    puts output
+    assert_match(/gpg_key.+\| #{gpg_key}/, output)
+    assert_match(/pinmode.+\| false/, output)
+    %w[numeric alpha special].each do |k|
+      assert_match(/password_#{k}.+\| true/, output)
+    end
   end
 end
