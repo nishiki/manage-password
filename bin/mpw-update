@@ -93,6 +93,8 @@ end.parse!
 config = MPW::Config.new(options[:config])
 cli    = MPW::Cli.new(config)
 
+options[:text_editor] = true if values.empty?
+
 cli.load_config
 cli.get_wallet(options[:wallet])
 cli.decrypt
