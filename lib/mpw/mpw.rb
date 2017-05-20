@@ -301,11 +301,9 @@ module MPW
       chars = [*('A'..'Z'), *('a'..'z'), *('0'..'9')] if chars.empty?
 
       result = ''
-      while length > 62
-        result << chars.sample(62).join
-        length -= 62
+      length.times do
+        result << chars.sample
       end
-      result << chars.sample(length).join
 
       result
     end
