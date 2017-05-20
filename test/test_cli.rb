@@ -197,4 +197,29 @@ class TestConfig < Test::Unit::TestCase
       assert_match(/password_#{k}.+\| true/, output)
     end
   end
+
+  def test_07_generate_password
+    length = 24
+
+    output = %x(
+      mpw genpwd \
+      --length #{length} \
+      --alpha
+    )
+    assert_match(/[a-zA-Z]{#{length}}/, output)
+
+    output = %x(
+      mpw genpwd \
+      --length #{length} \
+      --numeric
+    )
+    assert_match(/[0-9]{#{length}}/, output)
+
+    output = %x(
+      mpw genpwd \
+      --length #{length} \
+      --special-chars
+    )
+    assert_no_match(/[a-zA-Z0-9]/, output)
+  end
 end
