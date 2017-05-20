@@ -1,6 +1,5 @@
 #!/usr/bin/ruby
 
-require 'fileutils'
 require 'i18n'
 require 'test/unit'
 
@@ -20,9 +19,6 @@ class TestConfig < Test::Unit::TestCase
   end
 
   def test_00_init_config
-    FileUtils.rm_rf("#{Dir.home}/.config/mpw")
-    FileUtils.rm_rf("#{Dir.home}/.gnupg")
-
     output = %x(echo "#{@password}\n#{@password}" | mpw config --init #{@gpg_key})
     assert_match(I18n.t('form.setup_config.valid'), output)
     assert_match(I18n.t('form.setup_gpg_key.valid'), output)
@@ -105,7 +101,51 @@ class TestConfig < Test::Unit::TestCase
     assert_match(I18n.t('display.nothing'), output)
   end
 
-  def test_05_setup_config
+  def test_05_setup_wallet
+    path    = '/tmp/'
+    gpg_key = 'test2@example.com'
+
+    output = %x(echo #{@password} | mpw wallet --add-gpg-key #{gpg_key})
+    puts output
+    assert_match(I18n.t('form.add_key.valid'), output)
+
+    output = %x(echo #{@password} | mpw wallet --list-keys)
+    puts output
+    assert_match("| #{@gpg_key}", output)
+    assert_match("| #{gpg_key}", output)
+
+    output = %x(echo #{@password} | mpw wallet --delete-gpg-key #{gpg_key})
+    puts output
+    assert_match(I18n.t('form.delete_key.valid'), output)
+
+    output = %x(echo #{@password} | mpw wallet --list-keys)
+    puts output
+    assert_match("| #{@gpg_key}", output)
+    assert_no_match(/\| #{gpg_key}/, output)
+
+    output = %x(mpw wallet)
+    puts output
+    assert_match('| default', output)
+
+    output = %x(mpw wallet --path #{path})
+    puts output
+    assert_match(I18n.t('form.set_wallet_path.valid'), output)
+
+    output = %x(mpw config)
+    puts output
+    assert_match(%r{path_wallet_default.+\| #{path}/default.mpw}, output)
+    assert(File.exist?("#{path}/default.mpw"))
+
+    output = %x(mpw wallet --default-path)
+    puts output
+    assert_match(I18n.t('form.set_wallet_path.valid'), output)
+
+    output = %x(mpw config)
+    puts output
+    assert_no_match(/path_wallet_default/, output)
+  end
+
+  def test_06_setup_config
     gpg_key    = 'user@example2.com'
     gpg_exe    = '/usr/bin/gpg2'
     wallet_dir = '/tmp/mpw'
