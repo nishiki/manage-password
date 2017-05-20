@@ -1,0 +1,19 @@
+---
+1:
+  host: fric.com
+  user: 230403
+  group: Bank
+  password: 5XdiTQOubRDw9B0aJoMlcEyL
+  protocol: https
+  port:
+  otp_key: 330223432
+  comment: I love my bank
+2:
+  host: assurance.com
+  user: user_2132
+  group: Assurance
+  password: DMyK6B3v4bWO52VzU7aTHIem
+  protocol: https
+  port: 443 
+  otp_key: 
+  comment: 

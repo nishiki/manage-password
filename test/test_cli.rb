@@ -101,7 +101,35 @@ class TestConfig < Test::Unit::TestCase
     assert_match(I18n.t('display.nothing'), output)
   end
 
-  def test_05_setup_wallet
+  def test_05_import_export
+    file_import = './test/files/fixtures-import.yml'
+    file_export = '/tmp/test-mpw.yml'
+
+    output = %x(echo #{@password} | mpw import --file #{file_import})
+    assert_match(I18n.t('form.import.valid', file: file_import), output)
+
+    output = %x(echo #{@password} | mpw export --file #{file_export})
+    assert_match(I18n.t('form.export.valid', file: file_export), output)
+    assert(File.exist?(file_export))
+    assert_equal(YAML.load_file(file_export).length, 2)
+
+    YAML.load_file(file_import).each_value do |import|
+      error = true
+
+      YAML.load_file(file_export).each_value do |export|
+        next if import['host'] != export['host']
+
+        %w[user group password protocol port otp_key comment].each do |key|
+          assert_equal(import[key].to_s, export[key].to_s)
+        end
+
+        error = false
+      end
+      assert(!error)
+    end
+  end
+
+  def test_06_setup_wallet
     path    = '/tmp/'
     gpg_key = 'test2@example.com'
 
@@ -145,7 +173,7 @@ class TestConfig < Test::Unit::TestCase
     assert_no_match(/path_wallet_default/, output)
   end
 
-  def test_06_setup_config
+  def test_07_setup_config
     gpg_key    = 'user@example2.com'
     gpg_exe    = '/usr/bin/gpg2'
     wallet_dir = '/tmp/mpw'
@@ -198,7 +226,7 @@ class TestConfig < Test::Unit::TestCase
     end
   end
 
-  def test_07_generate_password
+  def test_08_generate_password
     length = 24
 
     output = %x(
