@@ -31,7 +31,9 @@ mpw config --init user@host.com
 
 Add your first item:
 ```
-mpw add
+mpw add --host assurance.com --port 443 --user user_2132 --protocol https --random
+mpw add --host fric.com --user 230403 --otp-code 23434113 --protocol https --comment 'I love my bank' --random
+
 ```
 
 And list your items:
@@ -40,46 +42,45 @@ mpw list
 ```
 or search an item with
 ```
-mpw list --pattern Da
+mpw list --pattern love
 mpw list --group bank
 ```
 
 Output:
 ```
+Assurance
+ ==========================================================================
+  ID | Host                        | User        | OTP | Comment          
+ ==========================================================================
+  1  | https://assurance.com:443   | user_2132   |     |                  
+
 Bank
- ==============================================================================
-  ID | Host          | User      | Protocol | Port | OTP | Comment                
- ==============================================================================
-  1  | bank.com      | 1234456   | https    |      |  X  |                        
-
-Linux
- ==============================================================================
-  ID | Host          | User      | Protocol | Port | OTP | Comment                
- ==============================================================================
-  2  | linuxfr.org   | example   | https    |      |     | Da Linux French Site
-
+ ==========================================================================
+  ID | Host                        | User        | OTP | Comment          
+ ==========================================================================
+  3  | https://fric.com            | 230403      |  X  | I love my bank   
 ```
 
 Copy a password, login or OTP code:
 ```
-mpw copy -p linuxfr
+mpw copy -p assurance.com
 ```
 
 Update an item:
 ```
-mpw update -p linuxfr
+mpw update -p assurance.com
 ```
 
 Delete an item:
 ```
-mpw delete -p linuxfr
+mpw delete -p assurance.com
 ```
 
 ### Manage wallets
 
 List all available wallets:
 ```
-mpw wallet --list
+mpw wallet
 ```
 
 List all GPG keys in wallet:
@@ -116,23 +117,23 @@ Example yaml file for mpw:
 ```
 ---
 1:
-  host: bank.com
-  user: 123456
+  host: fric.com
+  user: 230403
   group: Bank
-  password: secret
+  password: 5XdiTQOubRDw9B0aJoMlcEyL
   protocol: https
-  port: 
-  otp_key: 1afg34
-  comment: 
+  port:
+  otp_key: 330223432
+  comment: I love my bank
 2:
-  host: linuxfr.org
-  user: example
-  group: 
-  password: 'complex %- password'
+  host: assurance.com
+  user: user_2132
+  group: Assurance
+  password: DMyK6B3v4bWO52VzU7aTHIem
   protocol: https
-  port: 
-  otp_key: 
-  comment: Da Linux French Site
+  port: 443
+  otp_key:
+  comment:
 ```
 
 ### Config
