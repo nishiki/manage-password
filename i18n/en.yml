@@ -111,8 +111,10 @@ en:
       login: "The login has been copied in clipboard."
       password: "The password has been copied in clipboard for 30s!"
       otp: "The OTP code has been copied for %{time}s!"
+      url: "The URL has been copied in clipboard."
       help:
          name: "Help"
+         url: "Press <u> to copy URL"
          login: "Press <l> to copy the login"
          password: "Press <p> to copy the password"
          otp_code: "Press <o> to copy the otp code"

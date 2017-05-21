@@ -111,8 +111,10 @@ fr:
       login: "L'identifiant a été copié dans le presse papier"
       password: "Le mot de passe a été copié dans le presse papier pour 30s!"
       otp: "Le code OTP a été copié dans le presse papier il est valable %{time}s!"
+      url: "L'URL a été copié dans le presse papier"
       help:
          name: "Aide"
+         url: "Pressez <u> pour copier l'URL"
          login: "Pressez <l> pour copier l'identifiant"
          password: "Pressez <p> pour copier le mot de passe"
          otp_code: "Pressez <o> pour copier le code OTP"

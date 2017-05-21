@@ -300,6 +300,14 @@ module MPW
         when 'q', 'quit'
           break
 
+        when 'u', 'url'
+          if clipboard
+            Clipboard.copy(item.url)
+            puts I18n.t('form.clipboard.url').green
+          else
+            puts item.url
+          end
+
         when 'l', 'login'
           if clipboard
             Clipboard.copy(item.user)
@@ -332,6 +340,7 @@ module MPW
 
         else
           puts "----- #{I18n.t('form.clipboard.help.name')} -----".cyan
+          puts I18n.t('form.clipboard.help.url')
           puts I18n.t('form.clipboard.help.login')
           puts I18n.t('form.clipboard.help.password')
           puts I18n.t('form.clipboard.help.otp_code')
