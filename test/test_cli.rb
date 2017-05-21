@@ -129,7 +129,19 @@ class TestConfig < Test::Unit::TestCase
     end
   end
 
-  def test_06_setup_wallet
+  def test_06_copy
+    data = YAML.load_file('./test/files/fixtures-import.yml')[1]
+
+    output = %x(
+      echo "#{@password}\np\nq" | mpw copy \
+      --disable-clipboard \
+      -p #{data['host']}
+    )
+    puts output
+    assert_match(data['password'], output)
+  end
+
+  def test_07_setup_wallet
     path    = '/tmp/'
     gpg_key = 'test2@example.com'
 
@@ -173,7 +185,7 @@ class TestConfig < Test::Unit::TestCase
     assert_no_match(/path_wallet_default/, output)
   end
 
-  def test_07_setup_config
+  def test_08_setup_config
     gpg_key    = 'user@example2.com'
     gpg_exe    = '/usr/bin/gpg2'
     wallet_dir = '/tmp/mpw'
@@ -226,7 +238,7 @@ class TestConfig < Test::Unit::TestCase
     end
   end
 
-  def test_08_generate_password
+  def test_09_generate_password
     length = 24
 
     output = %x(
