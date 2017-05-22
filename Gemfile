@@ -6,3 +6,8 @@ gem 'highline',  '~> 1.7', '>= 1.7.8'
 gem 'i18n',      '~> 0.7', '>= 0.7.0'
 gem 'locale',    '~> 2.1', '>= 2.1.2'
 gem 'rotp',      '~> 3.1', '>= 3.1.0'
+
+group :development do
+  gem 'rubocop'
+  gem 'yard'
+end
