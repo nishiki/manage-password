@@ -126,12 +126,20 @@ module MPW
 
     # Request the GPG password and decrypt the file
     def decrypt
-      unless defined?(@mpw)
-        @password = ask(I18n.t('display.gpg_password')) { |q| q.echo = false }
-        @mpw      = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe, @config.pinmode)
-      end
+      if defined?(@mpw)
+        @mpw.read_data
+      else
+        begin
+          @mpw = MPW.new(@config.gpg_key, @wallet_file, nil, @config.gpg_exe, @config.pinmode)
 
-      @mpw.read_data
+          @mpw.read_data
+        rescue
+          @password = ask(I18n.t('display.gpg_password')) { |q| q.echo = false }
+          @mpw      = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe, @config.pinmode)
+
+          @mpw.read_data
+        end
+      end
     rescue => e
       puts "#{I18n.t('display.error')} #11: #{e}".red
       exit 2
