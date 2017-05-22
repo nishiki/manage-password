@@ -273,7 +273,7 @@ module MPW
 
     # Get an item when multiple choice
     # @param items [Array] list of items
-    # @return item [Item]
+    # @return [Item] an item
     def get_item(items)
       return items[0] if items.length == 1
 
@@ -414,7 +414,7 @@ module MPW
     end
 
     # Text editor interface
-    # @param template [String] template name
+    # @param template_name [String] template name
     # @param item [Item] the item to edit
     # @param password [Boolean] disable field password
     # @return [Hash] the values for an item

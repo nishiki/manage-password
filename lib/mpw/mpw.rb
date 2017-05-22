@@ -221,7 +221,7 @@ module MPW
     end
 
     # Search in some csv data
-    # @params options [Hash]
+    # @param options [Hash]
     # @return [Array] a list with the resultat of the search
     def list(**options)
       result = []
