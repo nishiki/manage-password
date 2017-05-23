@@ -9,5 +9,6 @@ gem 'rotp',      '~> 3.1', '>= 3.1.0'
 
 group :development do
   gem 'rubocop'
+  gem 'test-unit'
   gem 'yard'
 end
