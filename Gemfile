@@ -8,7 +8,7 @@ gem 'locale',    '~> 2.1', '>= 2.1.2'
 gem 'rotp',      '~> 3.1', '>= 3.1.0'
 
 group :development do
-  gem 'rubocop'
+  gem 'rubocop', '0.48.1'
   gem 'test-unit'
   gem 'yard'
 end
