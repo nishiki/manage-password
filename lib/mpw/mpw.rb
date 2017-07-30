@@ -272,7 +272,7 @@ module MPW
     # @param id [String] the item id
     # @return [String] an otp code
     def get_otp_code(id)
-      @otp_keys.key?(id) ? 0 : ROTP::TOTP.new(decrypt(@otp_keys[id])).now
+      @otp_keys.key?(id) ? ROTP::TOTP.new(decrypt(@otp_keys[id])).now : 0
     end
 
     # Get remaining time before expire otp code

@@ -1,4 +1,8 @@
 # CHANGELOG
+## v4.2.1 (2017-07-30)
+
+  * fix bug in otp generator
+
 ## v4.2.0 (2017-06-06)
 
  * feat: improve the interface

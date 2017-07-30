@@ -1,5 +1,5 @@
 # MPW: Manage your passwords!
-[![Version](https://img.shields.io/badge/latest_version-4.2.0-green.svg)](https://github.com/nishiki/manage-password/releases)
+[![Version](https://img.shields.io/badge/latest_version-4.2.1-green.svg)](https://github.com/nishiki/manage-password/releases)
 [![Build Status](https://travis-ci.org/nishiki/manage-password.svg?branch=master)](https://travis-ci.org/nishiki/manage-password)
 [![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)](https://github.com/nishiki/manage-password/blob/master/LICENSE)
 
