@@ -291,6 +291,17 @@ module MPW
       choice >= 1 && choice <= items.length ? items[choice - 1] : nil
     end
 
+    # Print help message for clipboard mode
+    # @param item [Item]
+    def clipboard_help(item)
+      puts "----- #{I18n.t('form.clipboard.help.name')} -----".cyan
+      puts I18n.t('form.clipboard.help.url')
+      puts I18n.t('form.clipboard.help.login')
+      puts I18n.t('form.clipboard.help.password')
+      puts I18n.t('form.clipboard.help.otp_code') if item.otp
+      puts I18n.t('form.clipboard.help.quit')
+    end
+
     # Copy in clipboard the login and password
     # @param item [Item]
     # @param clipboard [Boolean] enable clipboard
@@ -339,7 +350,10 @@ module MPW
           end
 
         when 'o', 'otp'
-          if clipboard
+          if !item.otp
+            clipboard_help(item)
+            next
+          elsif clipboard
             Clipboard.copy(@mpw.get_otp_code(item.id))
           else
             puts @mpw.get_otp_code(item.id)
@@ -347,13 +361,7 @@ module MPW
           puts I18n.t('form.clipboard.otp', time: @mpw.get_otp_remaining_time).yellow
 
         else
-          puts "----- #{I18n.t('form.clipboard.help.name')} -----".cyan
-          puts I18n.t('form.clipboard.help.url')
-          puts I18n.t('form.clipboard.help.login')
-          puts I18n.t('form.clipboard.help.password')
-          puts I18n.t('form.clipboard.help.otp_code')
-          puts I18n.t('form.clipboard.help.quit')
-          next
+          clipboard_help(item)
         end
       end
 
