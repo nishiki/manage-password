@@ -286,9 +286,11 @@ module MPW
       return items[0] if items.length == 1
 
       items.sort! { |a, b| a.group.to_s.downcase <=> b.group.to_s.downcase }
-      choice = ask(I18n.t('form.select')).to_i
+      choice = ask(I18n.t('form.select.choice')).to_i
 
-      choice >= 1 && choice <= items.length ? items[choice - 1] : nil
+      raise I18n.t('form.select.error') unless choice >= 1 && choice <= items.length
+
+      items[choice - 1]
     end
 
     # Print help message for clipboard mode

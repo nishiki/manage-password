@@ -91,7 +91,9 @@ fr:
     wallet_dir: "Spécifie le répertoire des portefeuilles"
 
   form:
-    select: "Sélectionner l'élément: "
+    select:
+      choice: "Sélectionner l'élément: "
+      error: "Aucun élément sélectionné"
     add_key:
       valid: "La clé a bien été ajoutée!"
     add_item:

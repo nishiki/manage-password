@@ -91,7 +91,9 @@ en:
     wallet_dir: "Set the wallets folder"
 
   form:
-    select: "Select the item: "
+    select:
+      choice: "Select the item: "
+      error: "No item selected"
     add_key:
       valid: "Key has been added!"
     add_item:
