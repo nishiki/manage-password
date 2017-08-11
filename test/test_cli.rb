@@ -142,7 +142,6 @@ class TestConfig < Test::Unit::TestCase
   end
 
   def test_07_setup_wallet
-    path    = '/tmp/'
     gpg_key = 'test2@example.com'
 
     output = %x(echo #{@password} | mpw wallet --add-gpg-key #{gpg_key})
@@ -167,14 +166,14 @@ class TestConfig < Test::Unit::TestCase
     puts output
     assert_match('| default', output)
 
-    output = %x(mpw wallet --path #{path})
+    output = %x(mpw wallet --path '.')
     puts output
     assert_match(I18n.t('form.set_wallet_path.valid'), output)
 
     output = %x(mpw config)
     puts output
-    assert_match(%r{path_wallet_default.+\| #{path}/default.mpw}, output)
-    assert(File.exist?("#{path}/default.mpw"))
+    assert_match(%r{path_wallet_default.+\| #{Dir.pwd}/default.mpw}, output)
+    assert(File.exist?("#{Dir.pwd}/default.mpw"))
 
     output = %x(mpw wallet --default-path)
     puts output

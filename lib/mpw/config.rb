@@ -161,6 +161,7 @@ module MPW
     # @param wallet [String] wallet name
     def set_wallet_path(path, wallet)
       path = @wallet_dir if path == 'default'
+      path = File.absolute_path(path)
 
       return if path == @wallet_dir && File.exist?("#{@wallet_dir}/#{wallet}.mpw")
       return if path == @wallet_paths[wallet]
