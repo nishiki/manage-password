@@ -1,0 +1,4 @@
+uuid,group,title,url,user,password,notes
+49627979-e393-48c4-49ca-1cf66603238e,Bank,Fric,http://fric.com,12345,secret,money money
+49627979-e393-48c4-49ca-1cf66603238f,,My little server,server.com,secret2,
+49627979-e393-48c4-49ca-1cf66603238g,Cloud,,ssh://fric.com:4333,username,secret,bastion

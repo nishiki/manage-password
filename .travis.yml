@@ -19,3 +19,4 @@ script:
   - ruby ./test/test_translate.rb
   - ruby ./test/init.rb
   - ruby ./test/test_cli.rb
+  - ruby ./test/test_import.rb

@@ -185,15 +185,16 @@ class TestConfig < Test::Unit::TestCase
   end
 
   def test_08_setup_config
-    gpg_key    = 'user@example2.com'
+    gpg_key    = 'test2@example.com'
     gpg_exe    = '/usr/bin/gpg2'
-    wallet_dir = '/tmp/mpw'
+    wallet_dir = '/tmp'
     length     = 24
     wallet     = 'work'
 
     output = %x(
       mpw config \
       --gpg-exe #{gpg_exe} \
+      --key #{gpg_key} \
       --enable-pinmode \
       --disable-alpha \
       --disable-special-chars \
@@ -207,7 +208,7 @@ class TestConfig < Test::Unit::TestCase
 
     output = %x(mpw config)
     puts output
-    assert_match(/gpg_key.+\| #{@gpg_key}/, output)
+    assert_match(/gpg_key.+\| #{gpg_key}/, output)
     assert_match(/gpg_exe.+\| #{gpg_exe}/, output)
     assert_match(/pinmode.+\| true/, output)
     assert_match(/default_wallet.+\| #{wallet}/, output)
@@ -219,7 +220,8 @@ class TestConfig < Test::Unit::TestCase
 
     output = %x(
       mpw config \
-      --key #{gpg_key} \
+      --gpg-exe '' \
+      --key #{@gpg_key} \
       --alpha \
       --special-chars \
       --numeric \
@@ -230,7 +232,7 @@ class TestConfig < Test::Unit::TestCase
 
     output = %x(mpw config)
     puts output
-    assert_match(/gpg_key.+\| #{gpg_key}/, output)
+    assert_match(/gpg_key.+\| #{@gpg_key}/, output)
     assert_match(/pinmode.+\| false/, output)
     %w[numeric alpha special].each do |k|
       assert_match(/password_#{k}.+\| true/, output)
