@@ -33,9 +33,7 @@ module MPW
 
     # @param options [Hash] the option :host is required
     def initialize(**options)
-      if !options.key?(:host) || options[:host].to_s.empty?
-        raise I18n.t('error.update.host_empty')
-      end
+      @host = ''
 
       if !options.key?(:id) || options[:id].to_s.empty? || !options.key?(:created) || options[:created].to_s.empty?
         @id = generate_id
@@ -53,12 +51,12 @@ module MPW
     # Update the item
     # @param options [Hash]
     def update(**options)
-      if options.key?(:host) && options[:host].to_s.empty?
-        raise I18n.t('error.update.host_empty')
+      unless options[:host] || options[:comment]
+        raise I18n.t('error.update.host_and_comment_empty')
       end
 
       @group     = options[:group]      if options.key?(:group)
-      @host      = options[:host]       if options.key?(:host)
+      @host      = options[:host]       if options.key?(:host) && !options[:host].nil?
       @protocol  = options[:protocol]   if options.key?(:protocol)
       @user      = options[:user]       if options.key?(:user)
       @port      = options[:port].to_i  if options.key?(:port) && !options[:port].to_s.empty?
@@ -86,7 +84,7 @@ module MPW
     def url
       url = ''
       url += "#{@protocol}://" if @protocol
-      url += @host
+      url += @host if @host
       url += ":#{@port}" if @port
 
       url

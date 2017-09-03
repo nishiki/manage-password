@@ -22,7 +22,7 @@ fr:
       write_data: "Impossible d'écrire le fichier MPW!"
     import: "Impossible d'importer le fichier %{file}, car il n'est pas lisible!"
     update:
-      host_empty: "Vous devez définir un host!"
+      host_and_comment_empty: "Vous devez définir un host ou un commentaire!"
 
   warning:
     select: "Votre choix n'est pas un élément valide!"
@@ -55,6 +55,7 @@ fr:
     disable_special_chars: "Désactive l'utilisation des charactères speciaux dans la génération d'un mot de passe"
     export: "Exporte un portefeuille dans un fichier yaml"
     file_export: "Spécifie le fichier où exporter les données"
+    file_format: "Format du fichier d'import (défault: mpw; disponible: %{formats})"
     file_import: "Spécifie le fichier à importer"
     force: "Ne demande pas de confirmation pour la suppression d'un élément"
     generate_password: "Génére un mot de passe aléatoire (défaut 8 caractères)"
@@ -130,6 +131,7 @@ fr:
       ask: "Êtes vous sûre de vouloir importer le fichier %{file} ?"
       file_empty: "Le fichier d'import est vide!"
       file_not_exist: "Le fichier d'import n'existe pas"
+      format_unknown: "Le format d'import '%{file_format}' est inconnu!"
       valid: "L'import est un succès!"
       not_valid: "Aucune donnée à importer!"
     set_config:

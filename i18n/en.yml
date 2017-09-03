@@ -22,7 +22,7 @@ en:
       write_data: "Can't write the MPW file!"
     import: "Can't import, unable to read %{file}!"
     update:
-      host_empty: "You must define a host!"
+      host_and_comment_empty: "You must define a host or a comment!"
 
   warning:
     select: 'Your choice is not a valid item!'
@@ -55,6 +55,7 @@ en:
     disable_special_chars: "Don't use special char to create a password"
     export: "Export a wallet in an yaml file"
     file_export: "Specify the file to export data"
+    file_format: "Format of import file (default: mpw; available: %{formats})"
     file_import: "Specify the file to import"
     force: "Do not ask confirmation when deleting an item"
     generate_password: "Create a random password (default 8 characters)"
@@ -130,6 +131,7 @@ en:
       ask: "Are you sure you want to import this file %{file} ?"
       file_empty: "The import file is empty!"
       file_not_exist: "The import file doesn't exist!"
+      format_unknown: "The import format '%{file_format} is unknown!"
       valid: "The import is successful!"
       not_valid: "No data to import!"
     set_config:

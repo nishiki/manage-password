@@ -24,7 +24,13 @@ require 'mpw/cli'
 # Options
 # --------------------------------------------------------- #
 
-options = {}
+formats =
+  Dir["#{File.expand_path('../../lib/mpw/import', __FILE__)}/*.rb"]
+    .map { |v| File.basename(v, '.rb') }
+    .join(', ')
+options = {
+  format: 'mpw'
+}
 
 OptionParser.new do |opts|
   opts.banner = "#{I18n.t('option.usage')}: mpw import [options]"
@@ -35,6 +41,10 @@ OptionParser.new do |opts|
 
   opts.on('-f', '--file PATH', I18n.t('option.file_import')) do |file|
     options[:file] = file
+  end
+
+  opts.on('-F', '--format STRING', I18n.t('option.file_format', formats: formats)) do |format|
+    options[:format] = format
   end
 
   opts.on('-h', '--help', I18n.t('option.help')) do
@@ -53,4 +63,4 @@ cli    = MPW::Cli.new(config)
 cli.load_config
 cli.get_wallet(options[:wallet])
 cli.decrypt
-cli.import(options[:file])
+cli.import(options[:file], options[:format])

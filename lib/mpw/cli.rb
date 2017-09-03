@@ -586,17 +586,26 @@ module MPW
 
     # Import items from an yaml file
     # @param file [String] path of import file
-    def import(file)
+    # @param format [String] the software import file format
+    def import(file, format = 'mpw')
       raise I18n.t('form.import.file_empty')     if file.to_s.empty?
       raise I18n.t('form.import.file_not_exist') unless File.exist?(file)
 
-      YAML.load_file(file).each_value do |row|
-        item = Item.new(group:    row['group'],
-                        host:     row['host'],
-                        protocol: row['protocol'],
-                        user:     row['user'],
-                        port:     row['port'],
-                        comment:  row['comment'])
+      begin
+        require "mpw/import/#{format}"
+      rescue LoadError
+        raise I18n.t('form.import.format_unknown', file_format: format)
+      end
+
+      Import.send(format, file).each_value do |row|
+        item = Item.new(
+          group:    row['group'],
+          host:     row['host'],
+          protocol: row['protocol'],
+          user:     row['user'],
+          port:     row['port'],
+          comment:  row['comment']
+        )
 
         next if item.empty?
 
