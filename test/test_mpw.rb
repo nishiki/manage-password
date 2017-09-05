@@ -33,10 +33,8 @@ class TestMPW < Test::Unit::TestCase
   def test_02_add_item
     data = {
       group:    @fixtures['add']['group'],
-      host:     @fixtures['add']['host'],
-      protocol: @fixtures['add']['protocol'],
       user:     @fixtures['add']['user'],
-      port:     @fixtures['add']['port'],
+      url:      @fixtures['add']['url'],
       comment:  @fixtures['add']['comment']
     }
 
@@ -93,10 +91,8 @@ class TestMPW < Test::Unit::TestCase
     @fixtures.each_value do |v|
       data = {
         group:    v['group'],
-        host:     v['host'],
-        protocol: v['protocol'],
         user:     v['user'],
-        port:     v['port'],
+        url:      v['url'],
         comment:  v['comment']
       }
 

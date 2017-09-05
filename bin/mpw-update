@@ -53,24 +53,12 @@ OptionParser.new do |opts|
     exit 0
   end
 
-  opts.on('-H', '--host HOST', I18n.t('option.host')) do |host|
-    values[:host] = host
-  end
-
   opts.on('-o', '--otp-code CODE', I18n.t('option.otp_code')) do |otp|
     values[:otp_key] = otp
   end
 
-  opts.on('-O', '--protocol PROTOCOL', I18n.t('option.protocol')) do |protocol|
-    values[:protocol] = protocol
-  end
-
   opts.on('-p', '--pattern PATTERN', I18n.t('option.pattern')) do |pattern|
     search[:pattern] = pattern
-  end
-
-  opts.on('-P', '--port NUMBER', I18n.t('option.port')) do |port|
-    values[:port] = port
   end
 
   opts.on('-r', '--random', I18n.t('option.random_password')) do
@@ -81,7 +69,11 @@ OptionParser.new do |opts|
     options[:text_editor] = true
   end
 
-  opts.on('-u', '--user USER', I18n.t('option.user')) do |user|
+  opts.on('-u', '--url URL', I18n.t('option.url')) do |url|
+    values[:url] = url
+  end
+
+  opts.on('-U', '--user USER', I18n.t('option.user')) do |user|
     values[:user] = user
   end
 

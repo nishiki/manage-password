@@ -563,16 +563,14 @@ module MPW
       items.each do |item|
         data.merge!(
           item.id => {
-            'host'      => item.host,
-            'user'      => item.user,
-            'group'     => item.group,
-            'password'  => @mpw.get_password(item.id),
-            'protocol'  => item.protocol,
-            'port'      => item.port,
-            'otp_key'   => @mpw.get_otp_key(item.id),
             'comment'   => item.comment,
-            'last_edit' => item.last_edit,
             'created'   => item.created,
+            'group'     => item.group,
+            'last_edit' => item.last_edit,
+            'otp_key'   => @mpw.get_otp_key(item.id),
+            'password'  => @mpw.get_password(item.id),
+            'url'       => item.url,
+            'user'      => item.user
           }
         )
       end
@@ -599,12 +597,10 @@ module MPW
 
       Import.send(format, file).each_value do |row|
         item = Item.new(
+          comment:  row['comment'],
           group:    row['group'],
-          host:     row['host'],
-          protocol: row['protocol'],
-          user:     row['user'],
-          port:     row['port'],
-          comment:  row['comment']
+          url:      row['url'],
+          user:     row['user']
         )
 
         next if item.empty?

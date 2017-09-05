@@ -1,16 +1,12 @@
 ---
-# <%= I18n.t('form.add_item.host') %>
-host: <%= options[:host] %>
+# <%= I18n.t('form.add_item.url') %>
+url: <%= options[:url] %>
 # <%= I18n.t('form.add_item.login') %>
 user: <%= options[:user] %>
 # <%= I18n.t('form.add_item.group') %>
-group: <%= options[:group] %>
-# <%= I18n.t('form.add_item.protocol') %>
-protocol: <%= options[:protocol] %><% unless password %>
+group: <%= options[:group] %><% unless password %>
 # <%= I18n.t('form.add_item.password') %>
 password:<% end %>
-# <%= I18n.t('form.add_item.port') %>
-port: <%= options[:port] %>
 # <%= I18n.t('form.add_item.comment') %>
 comment: <%= options[:comment] %>
 # <%= I18n.t('form.add_item.otp_key') %>

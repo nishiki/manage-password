@@ -37,18 +37,12 @@ module MPW
           end
 
         data[id] = {
+          'comment'  => comment,
           'group'    => row['group'],
-          'host'     => row['url'],
-          'user'     => row['user'],
           'password' => row['password'],
-          'comment'  => comment
+          'url'      => row['url'],
+          'user'     => row['user']
         }
-
-        if row['url'] =~ %r{^((?<protocol>[a-z]+)://)?(?<host>[a-zA-Z0-9_.-]+)(:(?<port>[0-9]{1,5}))?$}
-          data[id]['protocol'] = Regexp.last_match(:protocol)
-          data[id]['port']     = Regexp.last_match(:port)
-          data[id]['host']     = Regexp.last_match(:host)
-        end
       end
 
       data

@@ -1,4 +1,5 @@
 add:
+  url: 'https://example.com:8080'
   group: 'Bank'
   host: 'example.com'
   protocol: 'https'
@@ -9,6 +10,7 @@ add:
 
 import:
   id: 'TEST-ID-XXXXX'
+  url: 'https://gogole.com:8081/toto'
   group: 'Cloud'
   host: 'gogole.com'
   protocol: 'https'
@@ -19,6 +21,7 @@ import:
   created: 1386752948
 
 update:
+  url: 'ssh://example2.com:2222'
   group: 'Assurance'
   host: 'example2.com'
   protocol: 'ssh'

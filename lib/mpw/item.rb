@@ -17,25 +17,27 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require 'i18n'
+require 'uri'
 
 module MPW
   class Item
-    attr_accessor :id
+    attr_accessor :created
+    attr_accessor :comment
     attr_accessor :group
     attr_accessor :host
-    attr_accessor :protocol
-    attr_accessor :user
-    attr_accessor :port
+    attr_accessor :id
     attr_accessor :otp
-    attr_accessor :comment
+    attr_accessor :port
+    attr_accessor :protocol
     attr_accessor :last_edit
-    attr_accessor :created
+    attr_accessor :url
+    attr_accessor :user
 
     # @param options [Hash] the option :host is required
     def initialize(**options)
       @host = ''
 
-      if !options.key?(:id) || options[:id].to_s.empty? || !options.key?(:created) || options[:created].to_s.empty?
+      if !options[:id] || !options[:created]
         @id = generate_id
         @created = Time.now.to_i
       else
@@ -51,43 +53,38 @@ module MPW
     # Update the item
     # @param options [Hash]
     def update(**options)
-      unless options[:host] || options[:comment]
+      unless options[:url] || options[:comment]
         raise I18n.t('error.update.host_and_comment_empty')
       end
 
-      @group     = options[:group]      if options.key?(:group)
-      @host      = options[:host]       if options.key?(:host) && !options[:host].nil?
-      @protocol  = options[:protocol]   if options.key?(:protocol)
-      @user      = options[:user]       if options.key?(:user)
-      @port      = options[:port].to_i  if options.key?(:port) && !options[:port].to_s.empty?
-      @otp       = options[:otp]        if options.key?(:otp)
-      @comment   = options[:comment]    if options.key?(:comment)
-      @last_edit = Time.now.to_i        unless options.key?(:no_update_last_edit)
+      if options[:url]
+        uri       = URI(options[:url])
+        @host     = uri.host   || options[:url]
+        @port     = uri.port   || nil
+        @protocol = uri.scheme || nil
+        @url      = options[:url]
+      end
+
+      @comment   = options[:comment] if options.key?(:comment)
+      @group     = options[:group]   if options.key?(:group)
+      @last_edit = Time.now.to_i     unless options.key?(:no_update_last_edit)
+      @otp       = options[:otp]     if options.key?(:otp)
+      @user      = options[:user]    if options.key?(:user)
     end
 
     # Delete all data
     def delete
       @id        = nil
-      @group     = nil
-      @host      = nil
-      @protocol  = nil
-      @user      = nil
-      @port      = nil
-      @otp       = nil
       @comment   = nil
       @created   = nil
+      @group     = nil
+      @host      = nil
       @last_edit = nil
-    end
-
-    # Return data on url format
-    # @return [String] an url
-    def url
-      url = ''
-      url += "#{@protocol}://" if @protocol
-      url += @host if @host
-      url += ":#{@port}" if @port
-
-      url
+      @otp       = nil
+      @port      = nil
+      @protocol  = nil
+      @url       = nil
+      @user      = nil
     end
 
     def empty?

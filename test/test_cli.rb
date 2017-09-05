@@ -29,9 +29,7 @@ class TestConfig < Test::Unit::TestCase
 
     output = %x(
       echo #{@password} | mpw add \
-      --host #{data['host']} \
-      --port #{data['port']} \
-      --protocol #{data['protocol']} \
+      --url #{data['url']} \
       --user #{data['user']} \
       --comment '#{data['comment']}' \
       --group #{data['group']} \
@@ -73,9 +71,7 @@ class TestConfig < Test::Unit::TestCase
     output = %x(
       echo #{@password} | mpw update \
       -p #{@fixtures['add']['host']} \
-      --host #{data['host']} \
-      --port #{data['port']} \
-      --protocol #{data['protocol']} \
+      --url #{data['url']} \
       --user #{data['user']} \
       --comment '#{data['comment']}' \
       --new-group #{data['group']}
@@ -117,20 +113,22 @@ class TestConfig < Test::Unit::TestCase
       error = true
 
       YAML.load_file(file_export).each_value do |export|
-        next if import['host'] != export['host']
+        next if import['url'] != export['url']
 
         %w[user group password protocol port otp_key comment].each do |key|
           assert_equal(import[key].to_s, export[key].to_s)
         end
 
         error = false
+        break
       end
+
       assert(!error)
     end
   end
 
   def test_06_copy
-    data = YAML.load_file('./test/files/fixtures-import.yml')[1]
+    data = YAML.load_file('./test/files/fixtures-import.yml')[2]
 
     output = %x(
       echo "#{@password}\np\nq" | mpw copy \

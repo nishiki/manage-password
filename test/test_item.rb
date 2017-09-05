@@ -23,10 +23,8 @@ class TestItem < Test::Unit::TestCase
   def test_01_add
     data = {
       group:    @fixtures['add']['group'],
-      host:     @fixtures['add']['host'],
-      protocol: @fixtures['add']['protocol'],
       user:     @fixtures['add']['user'],
-      port:     @fixtures['add']['port'],
+      url:      @fixtures['add']['url'],
       comment:  @fixtures['add']['comment']
     }
 
@@ -35,6 +33,7 @@ class TestItem < Test::Unit::TestCase
     assert(!item.nil?)
     assert(!item.empty?)
 
+    assert_equal(@fixtures['add']['url'],       item.url)
     assert_equal(@fixtures['add']['group'],     item.group)
     assert_equal(@fixtures['add']['host'],      item.host)
     assert_equal(@fixtures['add']['protocol'],  item.protocol)
@@ -47,10 +46,8 @@ class TestItem < Test::Unit::TestCase
     data = {
       id:       @fixtures['import']['id'],
       group:    @fixtures['import']['group'],
-      host:     @fixtures['import']['host'],
-      protocol: @fixtures['import']['protocol'],
       user:     @fixtures['import']['user'],
-      port:     @fixtures['import']['port'],
+      url:      @fixtures['import']['url'],
       comment:  @fixtures['import']['comment'],
       created:  @fixtures['import']['created']
     }
@@ -61,6 +58,7 @@ class TestItem < Test::Unit::TestCase
     assert(!item.empty?)
 
     assert_equal(@fixtures['import']['id'],        item.id)
+    assert_equal(@fixtures['import']['url'],       item.url)
     assert_equal(@fixtures['import']['group'],     item.group)
     assert_equal(@fixtures['import']['host'],      item.host)
     assert_equal(@fixtures['import']['protocol'],  item.protocol)
@@ -73,10 +71,8 @@ class TestItem < Test::Unit::TestCase
   def test_03_update
     data = {
       group:    @fixtures['add']['group'],
-      host:     @fixtures['add']['host'],
-      protocol: @fixtures['add']['protocol'],
       user:     @fixtures['add']['user'],
-      port:     @fixtures['add']['port'],
+      url:      @fixtures['add']['url'],
       comment:  @fixtures['add']['comment']
     }
 
@@ -90,10 +86,8 @@ class TestItem < Test::Unit::TestCase
 
     data = {
       group:    @fixtures['update']['group'],
-      host:     @fixtures['update']['host'],
-      protocol: @fixtures['update']['protocol'],
       user:     @fixtures['update']['user'],
-      port:     @fixtures['update']['port'],
+      url:      @fixtures['update']['url'],
       comment:  @fixtures['update']['comment']
     }
 
@@ -102,6 +96,7 @@ class TestItem < Test::Unit::TestCase
 
     assert(!item.empty?)
 
+    assert_equal(@fixtures['update']['url'],       item.url)
     assert_equal(@fixtures['update']['group'],     item.group)
     assert_equal(@fixtures['update']['host'],      item.host)
     assert_equal(@fixtures['update']['protocol'],  item.protocol)
@@ -116,10 +111,8 @@ class TestItem < Test::Unit::TestCase
   def test_05_update_one_element
     data = {
       group:    @fixtures['add']['group'],
-      host:     @fixtures['add']['host'],
-      protocol: @fixtures['add']['protocol'],
       user:     @fixtures['add']['user'],
-      port:     @fixtures['add']['port'],
+      url:      @fixtures['add']['url'],
       comment:  @fixtures['add']['comment']
     }
 
@@ -131,8 +124,9 @@ class TestItem < Test::Unit::TestCase
     last_edit = item.last_edit
 
     sleep(1)
-    assert(item.update(comment: @fixtures['update']['comment']))
+    item.update(comment: @fixtures['update']['comment'])
 
+    assert_equal(@fixtures['add']['url'],        item.url)
     assert_equal(@fixtures['add']['group'],      item.group)
     assert_equal(@fixtures['add']['host'],       item.host)
     assert_equal(@fixtures['add']['protocol'],   item.protocol)
@@ -146,10 +140,8 @@ class TestItem < Test::Unit::TestCase
   def test_05_delete
     data = {
       group:    @fixtures['add']['group'],
-      host:     @fixtures['add']['host'],
-      protocol: @fixtures['add']['protocol'],
       user:     @fixtures['add']['user'],
-      port:     @fixtures['add']['port'],
+      url:      @fixtures['add']['url'],
       comment:  @fixtures['add']['comment']
     }
 
@@ -163,6 +155,7 @@ class TestItem < Test::Unit::TestCase
     assert(item.empty?)
 
     assert_equal(nil, item.id)
+    assert_equal(nil, item.url)
     assert_equal(nil, item.group)
     assert_equal(nil, item.host)
     assert_equal(nil, item.protocol)

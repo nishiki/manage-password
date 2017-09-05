@@ -84,10 +84,8 @@ module MPW
             Item.new(
               id:        d['id'],
               group:     d['group'],
-              host:      d['host'],
-              protocol:  d['protocol'],
               user:      d['user'],
-              port:      d['port'],
+              url:       d['url'],
               otp:       @otp_keys.key?(d['id']),
               comment:   d['comment'],
               last_edit: d['last_edit'],
@@ -114,10 +112,8 @@ module MPW
           item.id => {
             'id'        => item.id,
             'group'     => item.group,
-            'host'      => item.host,
-            'protocol'  => item.protocol,
             'user'      => item.user,
-            'port'      => item.port,
+            'url'       => item.url,
             'comment'   => item.comment,
             'last_edit' => item.last_edit,
             'created'   => item.created,
