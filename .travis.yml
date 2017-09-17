@@ -6,6 +6,8 @@ rvm:
   - 2.2.7
   - 2.1.10
 install:
+  - sudo cp -a /dev/urandom /dev/random
+  - sudo apt-get purge -y gnupg-agent gnupg2
   - bundle install
   - echo 9999 > VERSION
   - gem build mpw.gemspec
