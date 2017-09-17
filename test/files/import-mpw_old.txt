@@ -1,0 +1,35 @@
+---
+1:
+  host: fric.com
+  user: 12345
+  group: Bank
+  password: secret
+  protocol: http
+  port:
+  otp_key: 
+  comment: Fric money money 
+  last_edit: 1487623641
+  created: 1485729356
+2:
+  host: server.com
+  user: sercret2
+  group:
+  password:
+  protocol:
+  port: 4222
+  otp_key: 
+  comment: My little server
+  last_edit: 1487623641
+  created: 1485729356
+3:
+  host: fric.com
+  user: username
+  group: Cloud
+  password:
+  protocol: ssh
+  port: 4333
+  otp_key: 
+  comment: bastion
+  last_edit: 1487623641
+  created: 1485729356
+
