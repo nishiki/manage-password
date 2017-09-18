@@ -1,0 +1,32 @@
+#!/bin/bash
+
+ruby_version=${1:-2.4.2}
+
+if ! rvm use ruby-${ruby_version} &>/dev/null ; then
+  echo "The ruby version '${ruby_version}' doesn't exist!"
+  echo "Available versions are:"
+  rvm list rubies strings | cut -d '-' -f2
+  exit 2
+fi
+
+echo '# ---------------------------------'
+echo "# Use ruby version: ${ruby_version}"
+echo '# ---------------------------------'
+
+cp -r /mpw ~/mpw
+cd ~/mpw
+gem install bundler --no-ri --no-rdoc
+bundle install
+gem build mpw.gemspec
+gem install mpw-$(cat VERSION).gem
+cp -a /dev/urandom /dev/random
+
+rubocop
+ruby ./test/init.rb
+ruby ./test/test_config.rb
+ruby ./test/test_item.rb
+ruby ./test/test_mpw.rb
+ruby ./test/test_translate.rb
+ruby ./test/init.rb
+ruby ./test/test_cli.rb
+ruby ./test/test_import.rb
