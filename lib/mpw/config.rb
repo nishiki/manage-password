@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 # MPW is a software to crypt and manage your passwords
 # Copyright (C) 2017  Adrien Waksberg <mpw@yae.im>
 #
@@ -39,9 +38,9 @@ module MPW
     def initialize(config_file = nil)
       @config_file = config_file
       @config_dir  =
-        if /darwin/ =~ RUBY_PLATFORM
+        if RUBY_PLATFORM =~ /darwin/
           "#{Dir.home}/Library/Preferences/mpw"
-        elsif /cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM
+        elsif RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/
           "#{Dir.home}/AppData/Local/mpw"
         else
           "#{Dir.home}/.config/mpw"
@@ -94,7 +93,7 @@ module MPW
       File.open(@config_file, 'w') do |file|
         file << config.to_yaml
       end
-    rescue => e
+    rescue e
       raise "#{I18n.t('error.config.write')}\n#{e}"
     end
 
@@ -122,7 +121,7 @@ module MPW
 
       ctx = GPGME::Ctx.new
       ctx.genkey(param, nil, nil)
-    rescue => e
+    rescue e
       raise "#{I18n.t('error.config.genkey_gpg.exception')}\n#{e}"
     end
 
@@ -141,7 +140,7 @@ module MPW
       raise if @gpg_key.empty? || @wallet_dir.empty?
 
       I18n.locale = @lang.to_sym
-    rescue => e
+    rescue e
       raise "#{I18n.t('error.config.load')}\n#{e}"
     end
 

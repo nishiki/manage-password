@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 require 'mpw/mpw'
 require 'mpw/item'
 require 'test/unit'

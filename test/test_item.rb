@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 require 'mpw/item'
 require 'test/unit'
 require 'yaml'

@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 require 'mpw/config'
 require 'test/unit'
 require 'locale'

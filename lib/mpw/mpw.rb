@@ -1,4 +1,3 @@
-#!/usr/bin/ruby
 # MPW is a software to crypt and manage your passwords
 # Copyright (C) 2017  Adrien Waksberg <mpw@yae.im>
 #
@@ -89,14 +88,14 @@ module MPW
               otp:       @otp_keys.key?(d['id']),
               comment:   d['comment'],
               last_edit: d['last_edit'],
-              created:   d['created'],
+              created:   d['created']
             )
           )
         end
       end
 
       add_key(@key) unless @keys.key?(@key)
-    rescue => e
+    rescue e
       raise "#{I18n.t('error.mpw_file.read_data')}\n#{e}"
     end
 
@@ -116,7 +115,7 @@ module MPW
             'url'       => item.url,
             'comment'   => item.comment,
             'last_edit' => item.last_edit,
-            'created'   => item.created,
+            'created'   => item.created
           }
         )
       end
@@ -147,7 +146,7 @@ module MPW
       end
 
       File.rename(tmp_file, @wallet_file)
-    rescue => e
+    rescue e
       File.unlink(tmp_file) if File.exist?(tmp_file)
 
       raise "#{I18n.t('error.mpw_file.write_data')}\n#{e}"
@@ -324,7 +323,7 @@ module MPW
       crypto
         .decrypt(data, password)
         .read.force_encoding('utf-8')
-    rescue => e
+    rescue e
       raise "#{I18n.t('error.gpg_file.decrypt')}\n#{e}"
     end
 
@@ -342,7 +341,7 @@ module MPW
       end
 
       crypto.encrypt(data, recipients: recipients).read
-    rescue => e
+    rescue e
       raise "#{I18n.t('error.gpg_file.encrypt')}\n#{e}"
     end
   end

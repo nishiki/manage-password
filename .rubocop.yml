@@ -6,116 +6,33 @@ AllCops:
     - Vagrantfile
   TargetRubyVersion: 2.3
 
-Style/AccessorMethodName:
+Naming/AccessorMethodName:
   Enabled: false
-Style/NumericLiteralPrefix:
+
+Lint/RescueWithoutErrorClass:
   Enabled: false
-Style/TrailingCommaInArguments:
-  Enabled: false
-Style/TrailingCommaInLiteral:
-  Enabled: false
-Style/FrozenStringLiteralComment:
-  Enabled: false
-Metrics/ParameterLists:
-  Max: 5
-  CountKeywordArgs: false
-Style/MutableConstant:
-  Enabled: false
+
 Metrics/LineLength:
   Max: 120
-Metrics/AbcSize:
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
   Enabled: false
 Metrics/MethodLength:
   Enabled: false
 Metrics/BlockLength:
   Enabled: false
-Metrics/CyclomaticComplexity:
-  Enabled: false
-Metrics/PerceivedComplexity:
-  Enabled: false
 Metrics/ClassLength:
   Enabled: false
-Style/SpaceInsideHashLiteralBraces:
-  Enabled: false
-Style/AsciiComments:
-  Enabled: true
-Style/Documentation:
-  Enabled: false
-Style/SignalException:
-  Enabled: false
-Style/OptionHash:
-  Enabled: true
-Style/SymbolArray:
-  Enabled: true
-Performance/Casecmp:
-  Enabled: false
-Style/DoubleNegation:
-  Enabled: false
-Style/Alias:
-  EnforcedStyle: prefer_alias_method
-Style/MultilineMethodCallIndentation:
-  EnforcedStyle: indented
-Style/RaiseArgs:
-  EnforcedStyle: exploded
-Style/SpaceInLambdaLiteral:
-  Enabled: false
-Lint/UnneededSplatExpansion:
+Metrics/AbcSize:
   Enabled: false
 
-
-# Generated configuration
-Style/HashSyntax:
-  Enabled: true
-  EnforcedStyle: ruby19
-  UseHashRocketsWithSymbolValues: false
-Style/MethodDefParentheses:
-  Enabled: true
-  EnforcedStyle: require_parentheses
-Style/MultilineAssignmentLayout:
-  Enabled: true
-  EnforcedStyle: new_line
-Style/IndentationConsistency:
-  Enabled: true
-  EnforcedStyle: normal
-Style/AlignParameters:
-  Enabled: true
-  EnforcedStyle: with_fixed_indentation
-Style/BlockDelimiters:
-  Enabled: true
-  EnforcedStyle: line_count_based
-Style/AndOr:
-  Enabled: true
-Style/DotPosition:
-  Enabled: true
-  EnforcedStyle: leading
-Style/EmptyLinesAroundClassBody:
-  Enabled: true
-  EnforcedStyle: no_empty_lines
-Style/EmptyLinesAroundModuleBody:
-  Enabled: true
-  EnforcedStyle: no_empty_lines
-Style/NumericPredicate:
-  Enabled: true
-  EnforcedStyle: comparison
-Style/EvenOdd:
+Style/NumericLiteralPrefix:
   Enabled: false
-Style/CollectionMethods:
-  Enabled: true
-  PreferredMethods:
-    collect: map
-    collect!: map!
-    inject: reduce
-    detect: find
-    find_all: select
-Style/EmptyLinesAroundAccessModifier:
-  Enabled: true
+Style/FrozenStringLiteralComment:
+  Enabled: false
 Style/CommandLiteral:
   Enabled: true
   EnforcedStyle: percent_x
-Style/StringLiterals:
-  Enabled: true
-  EnforcedStyle: single_quotes
-Style/SpaceInsideBlockBraces:
-  EnforcedStyle: space
-Style/VariableNumber:
-  EnforcedStyle: snake_case
+Style/Documentation:
+  Enabled: false

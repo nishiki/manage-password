@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 require 'yaml'
 require 'test/unit'
 
