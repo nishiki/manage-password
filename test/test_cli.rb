@@ -17,7 +17,11 @@ class TestConfig < Test::Unit::TestCase
   end
 
   def test_00_init_config
-    output = %x(echo "#{@password}\n#{@password}" | mpw config --init #{@gpg_key})
+    output = %x(
+      echo "#{@password}\n#{@password}" | mpw config \
+      --init #{@gpg_key} \
+      2>/dev/null
+    )
     assert_match(I18n.t('form.setup_config.valid'), output)
     assert_match(I18n.t('form.setup_gpg_key.valid'), output)
   end
@@ -31,13 +35,12 @@ class TestConfig < Test::Unit::TestCase
       --user #{data['user']} \
       --comment '#{data['comment']}' \
       --group #{data['group']} \
-      --random
+      --random \
+      2>/dev/null
     )
-    puts output
     assert_match(I18n.t('form.add_item.valid'), output)
 
-    output = %x(echo #{@password} | mpw list)
-    puts output
+    output = %x(echo #{@password} | mpw list 2>/dev/null)
     assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
     assert_match(data['user'], output)
     assert_match(data['comment'], output)
@@ -47,19 +50,19 @@ class TestConfig < Test::Unit::TestCase
   def test_02_search
     data = @fixtures['add']
 
-    output = %x(echo #{@password} | mpw list --group #{data['group']})
+    output = %x(echo #{@password} | mpw list --group #{data['group']} 2>/dev/null)
     assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
 
-    output = %x(echo #{@password} | mpw list --pattern #{data['host']})
+    output = %x(echo #{@password} | mpw list --pattern #{data['host']} 2>/dev/null)
     assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
 
-    output = %x(echo #{@password} | mpw list --pattern #{data['comment']})
+    output = %x(echo #{@password} | mpw list --pattern #{data['comment']} 2>/dev/null)
     assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
 
-    output = %x(echo #{@password} | mpw list --group R1Pmfbp626TFpjlr)
+    output = %x(echo #{@password} | mpw list --group R1Pmfbp626TFpjlr 2>/dev/null)
     assert_match(I18n.t('display.nothing'), output)
 
-    output = %x(echo #{@password} | mpw list --pattern h1IfnKqamaGM9oEX)
+    output = %x(echo #{@password} | mpw list --pattern h1IfnKqamaGM9oEX 2>/dev/null)
     assert_match(I18n.t('display.nothing'), output)
   end
 
@@ -72,13 +75,12 @@ class TestConfig < Test::Unit::TestCase
       --url #{data['url']} \
       --user #{data['user']} \
       --comment '#{data['comment']}' \
-      --new-group #{data['group']}
+      --new-group #{data['group']} \
+      2>/dev/null
     )
-    puts output
     assert_match(I18n.t('form.update_item.valid'), output)
 
-    output = %x(echo #{@password} | mpw list)
-    puts output
+    output = %x(echo #{@password} | mpw list 2>/dev/null)
     assert_match(%r{#{data['protocol']}://.+#{data['host']}.+:#{data['port']}}, output)
     assert_match(data['user'], output)
     assert_match(data['comment'], output)
@@ -86,12 +88,14 @@ class TestConfig < Test::Unit::TestCase
   end
 
   def test_04_delete_item
-    output = %x(echo "#{@password}\ny" | mpw delete -p #{@fixtures['update']['host']})
-    puts output
+    output = %x(
+      echo "#{@password}\ny" | mpw delete \
+      -p #{@fixtures['update']['host']} \
+      2>/dev/null
+    )
     assert_match(I18n.t('form.delete_item.valid'), output)
 
-    output = %x(echo #{@password} | mpw list)
-    puts output
+    output = %x(echo #{@password} | mpw list 2>/dev/null)
     assert_match(I18n.t('display.nothing'), output)
   end
 
@@ -99,10 +103,10 @@ class TestConfig < Test::Unit::TestCase
     file_import = './test/files/fixtures-import.yml'
     file_export = '/tmp/test-mpw.yml'
 
-    output = %x(echo #{@password} | mpw import --file #{file_import})
+    output = %x(echo #{@password} | mpw import --file #{file_import} 2>/dev/null)
     assert_match(I18n.t('form.import.valid', file: file_import), output)
 
-    output = %x(echo #{@password} | mpw export --file #{file_export})
+    output = %x(echo #{@password} | mpw export --file #{file_export} 2>/dev/null)
     assert_match(I18n.t('form.export.valid', file: file_export), output)
     assert(File.exist?(file_export))
     assert_equal(YAML.load_file(file_export).length, 2)
@@ -131,56 +135,46 @@ class TestConfig < Test::Unit::TestCase
     output = %x(
       echo "#{@password}\np\nq" | mpw copy \
       --disable-clipboard \
-      -p #{data['host']}
+      -p #{data['host']} \
+      2>/dev/null
     )
-    puts output
     assert_match(data['password'], output)
   end
 
   def test_07_setup_wallet
     gpg_key = 'test2@example.com'
 
-    output = %x(echo #{@password} | mpw wallet --add-gpg-key #{gpg_key})
-    puts output
+    output = %x(echo #{@password} | mpw wallet --add-gpg-key #{gpg_key} 2>/dev/null)
     assert_match(I18n.t('form.add_key.valid'), output)
 
-    output = %x(echo #{@password} | mpw wallet --list-keys)
-    puts output
+    output = %x(echo #{@password} | mpw wallet --list-keys 2>/dev/null)
     assert_match("| #{@gpg_key}", output)
     assert_match("| #{gpg_key}", output)
 
-    output = %x(echo #{@password} | mpw wallet --delete-gpg-key #{gpg_key})
-    puts output
+    output = %x(echo #{@password} | mpw wallet --delete-gpg-key #{gpg_key} 2>/dev/null)
     assert_match(I18n.t('form.delete_key.valid'), output)
 
-    output = %x(echo #{@password} | mpw wallet --list-keys)
-    puts output
+    output = %x(echo #{@password} | mpw wallet --list-keys 2>/dev/null)
     assert_match("| #{@gpg_key}", output)
     assert_no_match(/\| #{gpg_key}/, output)
 
     output = %x(mpw wallet)
-    puts output
     assert_match('| default', output)
 
     output = %x(mpw wallet --path '.')
-    puts output
     assert_match(I18n.t('form.set_wallet_path.valid'), output)
 
     output = %x(mpw config)
-    puts output
     assert_match(%r{path_wallet_default.+\| #{Dir.pwd}/default.mpw}, output)
     assert(File.exist?("#{Dir.pwd}/default.mpw"))
 
     output = %x(mpw wallet)
-    puts output
     assert_match('default', output)
 
     output = %x(mpw wallet --default-path)
-    puts output
     assert_match(I18n.t('form.set_wallet_path.valid'), output)
 
     output = %x(mpw config)
-    puts output
     assert_no_match(/path_wallet_default/, output)
   end
 
@@ -203,11 +197,9 @@ class TestConfig < Test::Unit::TestCase
       --wallet-dir #{wallet_dir} \
       --default-wallet #{wallet}
     )
-    puts output
     assert_match(I18n.t('form.set_config.valid'), output)
 
     output = %x(mpw config)
-    puts output
     assert_match(/gpg_key.+\| #{gpg_key}/, output)
     assert_match(/gpg_exe.+\| #{gpg_exe}/, output)
     assert_match(/pinmode.+\| true/, output)
@@ -227,11 +219,9 @@ class TestConfig < Test::Unit::TestCase
       --numeric \
       --disable-pinmode
     )
-    puts output
     assert_match(I18n.t('form.set_config.valid'), output)
 
     output = %x(mpw config)
-    puts output
     assert_match(/gpg_key.+\| #{@gpg_key}/, output)
     assert_match(/pinmode.+\| false/, output)
     %w[numeric alpha special].each do |k|
