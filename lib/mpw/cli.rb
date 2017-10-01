@@ -373,7 +373,8 @@ module MPW
 
     # List all wallets
     def list_wallet
-      wallets = []
+      wallets = @config.wallet_paths.keys
+
       Dir.glob("#{@config.wallet_dir}/*.mpw").each do |f|
         wallet = File.basename(f, '.mpw')
         wallet += ' *'.green if wallet == @config.default_wallet
