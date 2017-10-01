@@ -1,17 +1,16 @@
 language: ruby
 dist: precise
 rvm:
-  - 2.4.1
-  - 2.3.4
-  - 2.2.7
+  - 2.4.2
+  - 2.3.5
+  - 2.2.8
   - 2.1.10
 install:
   - sudo cp -a /dev/urandom /dev/random
   - sudo apt-get purge -y gnupg-agent gnupg2
   - bundle install
-  - echo 9999 > VERSION
   - gem build mpw.gemspec
-  - gem install mpw-9999.gem
+  - gem install mpw-$(cat VERSION).gem
 script:
   - rubocop
   - ruby ./test/init.rb
