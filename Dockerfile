@@ -10,10 +10,6 @@ RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A170311380
 RUN curl -sSL https://get.rvm.io | bash -s stable
 RUN echo 'source "/usr/local/rvm/scripts/rvm"' >> /etc/bash.bashrc
 
-run apt install -y patch bzip2 gawk g++ gcc make libc6-dev patch zlib1g-dev libyaml-dev libsqlite3-dev \
-                   sqlite3 autoconf libgmp-dev libgdbm-dev libncurses5-dev automake libtool bison \
-                   pkg-config libffi-dev libgmp-dev libreadline-dev libssl-dev
-
 RUN /bin/bash -l -c "rvm install 2.4.2"
 RUN /bin/bash -l -c "rvm install 2.3.5"
 RUN /bin/bash -l -c "rvm install 2.2.8"
