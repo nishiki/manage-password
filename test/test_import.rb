@@ -29,15 +29,12 @@ class TestImport < Test::Unit::TestCase
       assert_match(I18n.t('form.import.valid'), output)
 
       output = %x(echo #{@password} | mpw list --group Bank --wallet #{format})
-      puts output
       assert_match(%r{http://.*fric\.com.*12345.*Fric money money}, output)
 
       output = %x(echo #{@password} | mpw list --group Cloud --wallet #{format})
-      puts output
       assert_match(%r{ssh://.*fric\.com.*:4333.*username.*bastion}, output)
 
       output = %x(echo #{@password} | mpw list --wallet #{format})
-      puts output
       assert_match(/server\.com.*My little server/, output)
     end
   end
