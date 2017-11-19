@@ -14,28 +14,66 @@ class TestImport < Test::Unit::TestCase
     @password = 'password'
   end
 
-  def test_00_import
-    Dir['./test/files/import-*.txt'].each do |file|
-      format = File.basename(file, '.txt').partition('-').last
+  def test_00_import_mpw_old
+    file = './test/files/import-mpw_old.txt'
+    format = 'mpw_old'
 
-      puts format
+    output = %x(
+        mpw import \
+        --file #{file} \
+        --format #{format} \
+        --wallet #{format}
+      )
+    assert_match(I18n.t('form.import.valid'), output)
 
-      output = %x(
-          mpw import \
-          --file #{file} \
-          --format #{format} \
-          --wallet #{format}
-        )
-      assert_match(I18n.t('form.import.valid'), output)
+    output = %x(echo #{@password} | mpw list --group Bank --wallet #{format})
+    assert_match(%r{http://.*fric\.com.*12345.*Fric money money}, output)
 
-      output = %x(echo #{@password} | mpw list --group Bank --wallet #{format})
-      assert_match(%r{http://.*fric\.com.*12345.*Fric money money}, output)
+    output = %x(echo #{@password} | mpw list --group Cloud --wallet #{format})
+    assert_match(%r{ssh://.*fric\.com.*:4333.*username.*bastion}, output)
 
-      output = %x(echo #{@password} | mpw list --group Cloud --wallet #{format})
-      assert_match(%r{ssh://.*fric\.com.*:4333.*username.*bastion}, output)
+    output = %x(echo #{@password} | mpw list --wallet #{format})
+    assert_match(/server\.com.*My little server/, output)
+  end
 
-      output = %x(echo #{@password} | mpw list --wallet #{format})
-      assert_match(/server\.com.*My little server/, output)
-    end
+  def test_01_import_gorilla
+    file = './test/files/import-gorilla.txt'
+    format = 'gorilla'
+
+    output = %x(
+        mpw import \
+        --file #{file} \
+        --format #{format} \
+        --wallet #{format}
+      )
+    assert_match(I18n.t('form.import.valid'), output)
+
+    output = %x(echo #{@password} | mpw list --group Bank --wallet #{format})
+    assert_match(%r{http://.*fric\.com.*12345.*Fric money money}, output)
+
+    output = %x(echo #{@password} | mpw list --group Cloud --wallet #{format})
+    assert_match(%r{ssh://.*fric\.com.*:4333.*username.*bastion}, output)
+
+    output = %x(echo #{@password} | mpw list --wallet #{format})
+    assert_match(/server\.com.*My little server/, output)
+  end
+
+  def test_02_import_keepass
+    file = './test/files/import-keepass.txt'
+    format = 'keepass'
+
+    output = %x(
+        mpw import \
+        --file #{file} \
+        --format #{format} \
+        --wallet #{format}
+      )
+    assert_match(I18n.t('form.import.valid'), output)
+
+    output = %x(echo #{@password} | mpw list --group 'Racine/Cloud' --wallet #{format})
+    assert_match(/localhost\.local.*wesh.*GAFAM/, output)
+
+    output = %x(echo #{@password} | mpw list --wallet #{format})
+    assert_match(%r{http://.*bank\.com.*123456.*Bank My little bank}, output)
   end
 end
