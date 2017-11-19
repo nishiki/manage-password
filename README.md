@@ -169,12 +169,8 @@ Don't run the tests on your local machine, you risk to lost your datas.
 ### Test on local machine with docker
 
   * install [docker](https://docs.docker.com/engine/installation/)
-  * build the container
-```
-docker build -t mpw/debian:stretch -f Dockerfile .
-```
   * run the tests
 
 ```
-docker run -v $(pwd):/mpw:ro -it mpw/debian:stretch /bin/bash -l /mpw/.docker-test
+docker run -v $(pwd):/mpw:ro -it nishiki/ruby:stretch /bin/bash -l /mpw/.docker-test
 ```
