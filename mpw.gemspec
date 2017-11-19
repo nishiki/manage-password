@@ -18,11 +18,11 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.1'
 
-  spec.add_dependency 'i18n',      '~> 0.7', '>= 0.7.0'
-  spec.add_dependency 'gpgme',     '~> 2.0', '>= 2.0.12'
+  spec.add_dependency 'i18n',      '~> 0.9', '>= 0.9.1'
+  spec.add_dependency 'gpgme',     '~> 2.0', '>= 2.0.14'
   spec.add_dependency 'highline',  '~> 1.7', '>= 1.7.8'
   spec.add_dependency 'locale',    '~> 2.1', '>= 2.1.2'
   spec.add_dependency 'colorize',  '~> 0.8', '>= 0.8.1'
   spec.add_dependency 'clipboard', '~> 1.1', '>= 1.1.1'
-  spec.add_dependency 'rotp',      '~> 3.1', '>= 3.1.0'
+  spec.add_dependency 'rotp',      '~> 3.3', '>= 3.3.0'
 end
