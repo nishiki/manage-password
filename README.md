@@ -1,7 +1,7 @@
 # MPW: Manage your passwords!
 [![Version](https://img.shields.io/badge/latest_version-4.2.2-green.svg)](https://github.com/nishiki/manage-password/releases)
 [![Build Status](https://travis-ci.org/nishiki/manage-password.svg?branch=master)](https://travis-ci.org/nishiki/manage-password)
-[![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)](https://github.com/nishiki/manage-password/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/nishiki/manage-password/blob/master/LICENSE)
 
 mpw is a little software which stores your passwords in [GnuPG](http://www.gnupg.org/) encrypted files.
 
@@ -33,7 +33,6 @@ Add your first item:
 ```
 mpw add --host assurance.com --port 443 --user user_2132 --protocol https --random
 mpw add --host fric.com --user 230403 --otp-code 23434113 --protocol https --comment 'I love my bank' --random
-
 ```
 
 And list your items:
@@ -173,4 +172,24 @@ Don't run the tests on your local machine, you risk to lost your datas.
 
 ```
 docker run -v $(pwd):/mpw:ro -it nishiki/ruby:stretch /bin/bash -l /mpw/.docker-test
+```
+
+## License
+
+```
+* Author:: Adrien Waksberg <mpw@yae.im>
+
+Copyright (c) 2013-2017 Adrien Waksberg
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
