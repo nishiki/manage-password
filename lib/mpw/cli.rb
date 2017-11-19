@@ -38,7 +38,7 @@ module MPW
       @config.setup(options)
 
       puts I18n.t('form.set_config.valid').to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #15: #{e}".red
       exit 2
     end
@@ -49,7 +49,7 @@ module MPW
       @config.set_wallet_path(path, @wallet)
 
       puts I18n.t('form.set_wallet_path.valid').to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #19: #{e}".red
       exit 2
     end
@@ -66,7 +66,7 @@ module MPW
       load_config
 
       puts I18n.t('form.setup_config.valid').to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #8: #{e}".red
       exit 2
     end
@@ -88,7 +88,7 @@ module MPW
       @config.setup_gpg_key(@password, gpg_key)
 
       puts I18n.t('form.setup_gpg_key.valid').to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #8: #{e}".red
       exit 2
     end
@@ -118,7 +118,7 @@ module MPW
     # Load config
     def load_config
       @config.load_config
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #10: #{e}".red
       exit 2
     end
@@ -139,7 +139,7 @@ module MPW
           @mpw.read_data
         end
       end
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #11: #{e}".red
       exit 2
     end
@@ -416,7 +416,7 @@ module MPW
       @mpw.write_data
 
       puts I18n.t('form.add_key.valid').to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #13: #{e}".red
     end
 
@@ -427,7 +427,7 @@ module MPW
       @mpw.write_data
 
       puts I18n.t('form.delete_key.valid').to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #15: #{e}".red
     end
 
@@ -478,7 +478,7 @@ module MPW
       @mpw.write_data
 
       puts I18n.t('form.add_item.valid').to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #13: #{e}".red
     end
 
@@ -506,7 +506,7 @@ module MPW
 
         puts I18n.t('form.update_item.valid').to_s.green
       end
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #14: #{e}".red
     end
 
@@ -530,7 +530,7 @@ module MPW
 
         puts I18n.t('form.delete_item.valid').to_s.green
       end
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #16: #{e}".red
     end
 
@@ -548,7 +548,7 @@ module MPW
         item = get_item(items)
         clipboard(item, clipboard)
       end
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #14: #{e}".red
     end
 
@@ -578,7 +578,7 @@ module MPW
       File.open(file, 'w') { |f| f << data.to_yaml }
 
       puts I18n.t('form.export.valid', file: file).to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #17: #{e}".red
     end
 
@@ -613,7 +613,7 @@ module MPW
       @mpw.write_data
 
       puts I18n.t('form.import.valid').to_s.green
-    rescue e
+    rescue => e
       puts "#{I18n.t('display.error')} #18: #{e}".red
     end
   end
