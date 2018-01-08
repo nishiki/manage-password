@@ -18,7 +18,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'rubygems/package'
 require 'gpgme'
 require 'i18n'
 require 'yaml'
@@ -32,51 +31,38 @@ module MPW
     # @param gpg_pass [String] password of the gpg key
     # @param gpg_exe [String] path of the gpg executable
     # @param pinmode [Boolean] enable the gpg pinmode
-    def initialize(key, wallet_file, gpg_pass = nil, gpg_exe = nil, pinmode = false)
+    def initialize(key, wallet_path, gpg_pass = nil, gpg_exe = nil, pinmode = false)
       @key         = key
       @gpg_pass    = gpg_pass
       @gpg_exe     = gpg_exe
-      @wallet_file = wallet_file
       @pinmode     = pinmode
+      @wallet_path = wallet_path
+      @data        = []
+      @keys        = {}
+      @passwords   = {}
+      @otp_keys    = {}
 
       GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg") unless @gpg_exe.to_s.empty?
+
+      Dir.mkdir(@wallet_path) unless Dir.exist?(@wallet_path)
+      %w[passwords otp_keys keys].each do |folder|
+        Dir.mkdir("#{@wallet_path}/#{folder}") unless Dir.exist?("#{@wallet_path}/#{folder}")
+      end
     end
 
     # Read mpw file
     def read_data
-      @data      = []
-      @keys      = {}
-      @passwords = {}
-      @otp_keys  = {}
+      return unless Dir.exist?(@wallet_path)
 
-      data       = nil
+      meta_file = "#{@wallet_path}/meta.gpg"
+      data      = File.exist?(meta_file) ? decrypt(File.read(meta_file)) : nil
 
-      return unless File.exist?(@wallet_file)
+      Dir["#{@wallet_path}/keys/*.pub"].each do |file|
+        key        = File.basename(file, '.pub')
+        @keys[key] = File.read(file)
 
-      Gem::Package::TarReader.new(File.open(@wallet_file)) do |tar|
-        tar.each do |f|
-          case f.full_name
-          when 'wallet/meta.gpg'
-            data = decrypt(f.read)
-
-          when %r{^wallet/keys/(?<key>.+)\.pub$}
-            key = Regexp.last_match('key')
-
-            if GPGME::Key.find(:public, key).empty?
-              GPGME::Key.import(f.read, armor: true)
-            end
-
-            @keys[key] = f.read
-
-          when %r{^wallet/passwords/(?<id>[a-zA-Z0-9]+)\.gpg$}
-            @passwords[Regexp.last_match('id')] = f.read
-
-          when %r{^wallet/otp_keys/(?<id>[a-zA-Z0-9]+)\.gpg$}
-            @otp_keys[Regexp.last_match('id')] = f.read
-
-          else
-            next
-          end
+        if GPGME::Key.find(:public, key).empty?
+          GPGME::Key.import(@keys[key], armor: true)
         end
       end
 
@@ -88,7 +74,7 @@ module MPW
               group:     d['group'],
               user:      d['user'],
               url:       d['url'],
-              otp:       @otp_keys.key?(d['id']),
+              otp:       File.exist?("#{@wallet_path}/otp_keys/#{d['id']}.gpg"),
               comment:   d['comment'],
               last_edit: d['last_edit'],
               created:   d['created']
@@ -104,8 +90,7 @@ module MPW
 
     # Encrypt all data in tarball
     def write_data
-      data     = {}
-      tmp_file = "#{@wallet_file}.tmp"
+      data = {}
 
       @data.each do |item|
         next if item.empty?
@@ -123,41 +108,25 @@ module MPW
         )
       end
 
-      Gem::Package::TarWriter.new(File.open(tmp_file, 'w+')) do |tar|
-        data_encrypt = encrypt(data.to_yaml)
-        tar.add_file_simple('wallet/meta.gpg', 0400, data_encrypt.length) do |io|
-          io.write(data_encrypt)
-        end
-
-        @passwords.each do |id, password|
-          tar.add_file_simple("wallet/passwords/#{id}.gpg", 0400, password.length) do |io|
-            io.write(password)
-          end
-        end
-
-        @otp_keys.each do |id, key|
-          tar.add_file_simple("wallet/otp_keys/#{id}.gpg", 0400, key.length) do |io|
-            io.write(key)
-          end
-        end
-
-        @keys.each do |id, key|
-          tar.add_file_simple("wallet/keys/#{id}.pub", 0400, key.length) do |io|
-            io.write(key)
-          end
-        end
+      File.open("#{@wallet_path}/meta.gpg", 'w') do |file|
+        file.chmod(0400)
+        file << encrypt(data.to_yaml)
       end
 
-      File.rename(tmp_file, @wallet_file)
+      %w[passwords otp_keys].each do |folder|
+        Dir["#{@wallet_path}/#{folder}/*.gpg"].each do |file|
+          File.unlink(file) unless data.key?(File.basename(file, '.gpg'))
+        end
+      end
     rescue => e
-      File.unlink(tmp_file) if File.exist?(tmp_file)
-
       raise "#{I18n.t('error.mpw_file.write_data')}\n#{e}"
     end
 
     # Get a password
     # @param id [String] the item id
     def get_password(id)
+      @passwords[id] = File.read("#{@wallet_path}/passwords/#{id}.gpg") unless @passwords[id]
+
       password = decrypt(@passwords[id])
 
       if /^\$[a-zA-Z0-9]{4,9}::(?<password>.+)$/ =~ password
@@ -171,10 +140,13 @@ module MPW
     # @param id [String] the item id
     # @param password [String] the new password
     def set_password(id, password)
-      salt     = MPW.password(length: Random.rand(4..9))
-      password = "$#{salt}::#{password}"
+      salt           = MPW.password(length: Random.rand(4..9))
+      @passwords[id] = encrypt("$#{salt}::#{password}")
 
-      @passwords[id] = encrypt(password)
+      File.open("#{@wallet_path}/passwords/#{id}.gpg", 'w') do |file|
+        file.chmod(0400)
+        file << @passwords[id]
+      end
     end
 
     # Return the list of all gpg keys
@@ -197,6 +169,11 @@ module MPW
       raise I18n.t('error.export_key') if data.to_s.empty?
 
       @keys[key] = data
+      File.open("#{@wallet_path}/keys/#{key}.pub", 'w') do |file|
+        file.chmod(0400)
+        file << data
+      end
+
       @passwords.each_key { |id| set_password(id, get_password(id)) }
       @otp_keys.each_key { |id| set_otp_key(id, get_otp_key(id)) }
     end
@@ -204,6 +181,8 @@ module MPW
     # Delete a public key
     # @param key [String] public key to delete
     def delete_key(key)
+      File.unlink("#{@wallet_path}/keys/#{key}.pub")
+
       @keys.delete(key)
       @passwords.each_key { |id| set_password(id, get_password(id)) }
       @otp_keys.each_key { |id| set_otp_key(id, get_otp_key(id)) }
@@ -257,20 +236,33 @@ module MPW
     # @param id [String] the item id
     # @param key [String] the new key
     def set_otp_key(id, key)
-      @otp_keys[id] = encrypt(key.to_s) unless key.to_s.empty?
+      return if key.to_s.empty?
+
+      @otp_keys[id] = encrypt(key.to_s)
+
+      File.open("#{@wallet_path}/otp_keys/#{id}.gpg", 'w') do |file|
+        file.chmod(0400)
+        file << @otp_keys[id]
+      end
     end
 
     # Get an opt key
     # @param id [String] the item id
     def get_otp_key(id)
-      @otp_keys.key?(id) ? decrypt(@otp_keys[id]) : nil
+      otp_file = "#{@wallet_path}/otp_keys/#{id}.gpg"
+      File.exist?(otp_file) ? decrypt(File.read(otp_file)) : nil
     end
 
     # Get an otp code
     # @param id [String] the item id
     # @return [String] an otp code
     def get_otp_code(id)
-      @otp_keys.key?(id) ? ROTP::TOTP.new(decrypt(@otp_keys[id])).now : 0
+      otp_file = "#{@wallet_path}/otp_keys/#{id}.gpg"
+
+      return 0 unless File.exist?(otp_file)
+
+      @otp_keys[id] = File.read(otp_file) unless @otp_keys[id]
+      ROTP::TOTP.new(decrypt(@otp_keys[id])).now
     end
 
     # Get remaining time before expire otp code

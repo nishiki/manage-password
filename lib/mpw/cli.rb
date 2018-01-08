@@ -132,12 +132,12 @@ module MPW
         @mpw.read_data
       else
         begin
-          @mpw = MPW.new(@config.gpg_key, @wallet_file, nil, @config.gpg_exe, @config.pinmode)
+          @mpw = MPW.new(@config.gpg_key, @wallet_path, nil, @config.gpg_exe, @config.pinmode)
 
           @mpw.read_data
         rescue
           @password = ask(I18n.t('display.gpg_password')) { |q| q.echo = false }
-          @mpw      = MPW.new(@config.gpg_key, @wallet_file, @password, @config.gpg_exe, @config.pinmode)
+          @mpw      = MPW.new(@config.gpg_key, @wallet_path, @password, @config.gpg_exe, @config.pinmode)
 
           @mpw.read_data
         end
@@ -378,8 +378,10 @@ module MPW
     def list_wallet
       wallets = @config.wallet_paths.keys
 
-      Dir.glob("#{@config.wallet_dir}/*.mpw").each do |f|
-        wallet = File.basename(f, '.mpw')
+      Dir.glob("#{@config.wallet_dir}/*").each do |path|
+        next unless File.directory?(path)
+
+        wallet = File.basename(path)
         wallet += ' *'.green if wallet == @config.default_wallet
         wallets << wallet
       end
@@ -392,9 +394,10 @@ module MPW
     def get_wallet(wallet = nil)
       @wallet =
         if wallet.to_s.empty?
-          wallets = Dir.glob("#{@config.wallet_dir}/*.mpw")
+          wallets = Dir.glob("#{@config.wallet_dir}/*").select { |path| File.directory?(path) }
+
           if wallets.length == 1
-            File.basename(wallets[0], '.mpw')
+            File.basename(wallets.first)
           elsif !@config.default_wallet.to_s.empty?
             @config.default_wallet
           else
@@ -404,11 +407,11 @@ module MPW
           wallet
         end
 
-      @wallet_file =
+      @wallet_path =
         if @config.wallet_paths.key?(@wallet)
-          "#{@config.wallet_paths[@wallet]}/#{@wallet}.mpw"
+          "#{@config.wallet_paths[@wallet]}/#{@wallet}"
         else
-          "#{@config.wallet_dir}/#{@wallet}.mpw"
+          "#{@config.wallet_dir}/#{@wallet}"
         end
     end
 
