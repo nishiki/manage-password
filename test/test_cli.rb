@@ -160,22 +160,6 @@ class TestConfig < Test::Unit::TestCase
 
     output = %x(mpw wallet)
     assert_match('| default', output)
-
-    output = %x(mpw wallet --path '.')
-    assert_match(I18n.t('form.set_wallet_path.valid'), output)
-
-    output = %x(mpw config)
-    assert_match(%r{path_wallet_default.+\| #{Dir.pwd}/default.mpw}, output)
-    assert(File.exist?("#{Dir.pwd}/default.mpw"))
-
-    output = %x(mpw wallet)
-    assert_match('default', output)
-
-    output = %x(mpw wallet --default-path)
-    assert_match(I18n.t('form.set_wallet_path.valid'), output)
-
-    output = %x(mpw config)
-    assert_no_match(/path_wallet_default/, output)
   end
 
   def test_08_setup_config

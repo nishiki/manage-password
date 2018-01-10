@@ -46,17 +46,6 @@ module MPW
       exit 2
     end
 
-    # Change the wallet path
-    # @param path [String] new path
-    def set_wallet_path(path)
-      @config.set_wallet_path(path, @wallet)
-
-      puts I18n.t('form.set_wallet_path.valid').to_s.green
-    rescue => e
-      puts "#{I18n.t('display.error')} #19: #{e}".red
-      exit 2
-    end
-
     # Create a new config file
     # @param options [Hash]
     def setup(options)
@@ -112,8 +101,7 @@ module MPW
         'gpg_exe'        => @config.gpg_exe
       }
 
-      @config.wallet_paths.each { |k, v| config["path_wallet_#{k}"] = "#{v}/#{k}.mpw" }
-      @config.password.each     { |k, v| config["password_#{k}"] = v }
+      @config.password.each { |k, v| config["password_#{k}"] = v }
 
       table_list('config', config)
     end
@@ -376,7 +364,7 @@ module MPW
 
     # List all wallets
     def list_wallet
-      wallets = @config.wallet_paths.keys
+      wallets = []
 
       Dir.glob("#{@config.wallet_dir}/*").each do |path|
         next unless File.directory?(path)
@@ -407,12 +395,7 @@ module MPW
           wallet
         end
 
-      @wallet_path =
-        if @config.wallet_paths.key?(@wallet)
-          "#{@config.wallet_paths[@wallet]}/#{@wallet}"
-        else
-          "#{@config.wallet_dir}/#{@wallet}"
-        end
+      @wallet_path = "#{@config.wallet_dir}/#{@wallet}"
     end
 
     # Add a new public key

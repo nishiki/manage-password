@@ -32,7 +32,6 @@ module MPW
     attr_accessor :config_dir
     attr_accessor :default_wallet
     attr_accessor :wallet_dir
-    attr_accessor :wallet_paths
     attr_accessor :gpg_exe
     attr_accessor :password
     attr_accessor :pinmode
@@ -156,35 +155,6 @@ module MPW
       end
 
       false
-    end
-
-    # Change the path of one wallet
-    # @param path [String]new directory path
-    # @param wallet [String] wallet name
-    def set_wallet_path(path, wallet)
-      path = @wallet_dir if path == 'default'
-      path = File.absolute_path(path)
-
-      return if path == @wallet_dir && File.exist?("#{@wallet_dir}/#{wallet}.mpw")
-      return if path == @wallet_paths[wallet]
-
-      old_wallet_file =
-        if @wallet_paths.key?(wallet)
-          "#{@wallet_paths[wallet]}/#{wallet}.mpw"
-        else
-          "#{@wallet_dir}/#{wallet}.mpw"
-        end
-
-      FileUtils.mkdir_p(path) unless Dir.exist?(path)
-      FileUtils.mv(old_wallet_file, "#{path}/#{wallet}.mpw") if File.exist?(old_wallet_file)
-
-      if path == @wallet_dir
-        @wallet_paths.delete(wallet)
-      else
-        @wallet_paths[wallet] = path
-      end
-
-      setup
     end
   end
 end

@@ -55,14 +55,6 @@ OptionParser.new do |opts|
     options[:list_keys] = true
   end
 
-  opts.on('-p', '--path PATH', I18n.t('option.path')) do |path|
-    options[:path] = path
-  end
-
-  opts.on('-P', '--default-path', I18n.t('option.default_path')) do
-    options[:path] = 'default'
-  end
-
   opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
     options[:wallet] = wallet
   end
@@ -73,10 +65,7 @@ cli    = MPW::Cli.new(config)
 
 cli.load_config
 
-if options.key?(:path)
-  cli.get_wallet(options[:wallet])
-  cli.set_wallet_path(options[:path])
-elsif options.key?(:list_keys) || options.key?(:gpg_key)
+if options.key?(:list_keys) || options.key?(:gpg_key)
   cli.get_wallet(options[:wallet])
   cli.decrypt
 

@@ -46,7 +46,6 @@ fr:
     config: "Spécifie le fichier de configuration à utiliser"
     comment: "Spécifie un commentaire"
     clipboard: "Désactive la fonction presse papier"
-    default_path: "Déplace le portefeuille dans le dossier par défaut"
     default_wallet: "Spécifie le porte-feuille à utiliser par défaut"
     delete_gpg_key: "Supprime le partage le portefeuille avec une autre clé GPG"
     disable_alpha: "Désactive l'utilisation des lettres dans la génération d'un mot de passe"
@@ -73,7 +72,6 @@ fr:
     new_group: "Spécifie le groupe de l'item"
     numeric: "Utilise des chiffre dans la génération d'un mot de passe"
     otp_code: "Spécifie un code OTP"
-    path: "Déplace le portefeuille dans un nouveau dossier"
     pattern: "Motif de donnée à chercher"
     pinmode: "Active le mode pinentry (valable avec gpg >= 2.1)"
     random_password: "Génére un mot de passe aléatoire"
@@ -134,8 +132,6 @@ fr:
       not_valid: "Aucune donnée à importer!"
     set_config:
       valid: "Le fichier de configuration a bien été modifié!"
-    set_wallet_path:
-      valid: "Le portefeuille a bien été déplacé!"
     setup_config:
       title: "Création d'un nouveau fichier de configuration"
       lang: "Choisissez votre langue (en, fr, ...) [défaut=%{lang}]: "
