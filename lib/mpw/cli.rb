@@ -35,6 +35,18 @@ module MPW
       @config = config
     end
 
+    # Init a wallet folder
+    # @param remote_uri [String] the uri of the remote git repository
+    def init_wallet(remote_uri)
+      @mpw = MPW.new(@config.gpg_key, @wallet_path, nil, @config.gpg_exe, @config.pinmode)
+      @mpw.init_wallet(remote_uri)
+
+      puts I18n.t('form.init_wallet.valid').to_s.green
+    rescue => e
+      puts "#{I18n.t('display.error')} #20: #{e}".red
+      exit 2
+    end
+
     # Change a parameter int the config after init
     # @param options [Hash] param to change
     def set_config(options)
@@ -42,7 +54,7 @@ module MPW
 
       puts I18n.t('form.set_config.valid').to_s.green
     rescue => e
-      puts "#{I18n.t('display.error')} #15: #{e}".red
+      puts "#{I18n.t('display.error')} #19: #{e}".red
       exit 2
     end
 

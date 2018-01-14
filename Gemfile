@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 gem 'clipboard', '~> 1.1', '>= 1.1.1'
 gem 'colorize',  '~> 0.8', '>= 0.8.1'
+gem 'git',       '~> 1.3', '>= 1.3.0'
 gem 'gpgme',     '~> 2.0', '>= 2.0.14'
 gem 'highline',  '~> 1.7', '>= 1.7.8'
 gem 'i18n',      '~> 0.9', '>= 0.9.1'

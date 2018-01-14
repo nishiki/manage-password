@@ -47,12 +47,20 @@ OptionParser.new do |opts|
     exit 0
   end
 
+  opts.on('-i', '--init', I18n.t('option.init_wallet')) do
+    options[:init] = true
+  end
+
   opts.on('-l', '--list', I18n.t('option.list')) do
     options[:list] = true
   end
 
   opts.on('-L', '--list-keys', I18n.t('option.list_keys')) do
     options[:list_keys] = true
+  end
+
+  opts.on('-r', '--remote URI', I18n.t('option.remote_uri')) do |uri|
+    options[:remote] = uri
   end
 
   opts.on('-w', '--wallet NAME', I18n.t('option.wallet')) do |wallet|
@@ -65,7 +73,10 @@ cli    = MPW::Cli.new(config)
 
 cli.load_config
 
-if options.key?(:list_keys) || options.key?(:gpg_key)
+if options[:init]
+  cli.get_wallet(options[:wallet])
+  cli.init_wallet(options[:remote])
+elsif options.key?(:list_keys) || options.key?(:gpg_key)
   cli.get_wallet(options[:wallet])
   cli.decrypt
 

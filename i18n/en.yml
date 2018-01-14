@@ -17,6 +17,7 @@ en:
     gpg_file: 
       decrypt: "Can't decrypt file!"
       encrypt: "Can't encrypt the GPG file!"
+    init_wallet: "Can't initialize the wallet!"
     mpw_file: 
       read_data: "Can't read the MPW file!"
       write_data: "Can't write the MPW file!"
@@ -63,6 +64,7 @@ en:
     group: "Search the items with specified group"
     help: "Show this help message"
     init: "Initialize mpw"
+    init_wallet: "Initialize a new wallet"
     import: "Import item from an yaml file"
     key: "Define the key name"
     lang: "Set the software language"
@@ -75,6 +77,7 @@ en:
     pattern: "Given search pattern"
     pinmode: "Enable pinentry mode (available with gpg >= 2.1)"
     random_password: "Generate a random password"
+    remote_uri: "Set remote GIT repository URL"
     setup: "Create a new configuration file" 
     setup_wallet: "Create a new configuration file for a wallet"
     special_chars: "Use special char to create a password"
@@ -130,6 +133,8 @@ en:
       format_unknown: "The import format '%{file_format} is unknown!"
       valid: "The import is successful!"
       not_valid: "No data to import!"
+    init_wallet:
+      valid: "The wallet has been initialized!"
     set_config:
       valid: "The config file has been edited!"
     setup_config:

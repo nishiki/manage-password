@@ -24,6 +24,13 @@ class TestConfig < Test::Unit::TestCase
     )
     assert_match(I18n.t('form.setup_config.valid'), output)
     assert_match(I18n.t('form.setup_gpg_key.valid'), output)
+
+    output = %x(
+      mpw wallet \
+      --init \
+      2>/dev/null
+    )
+    assert_match(I18n.t('form.init_wallet.valid'), output)
   end
 
   def test_01_add_item

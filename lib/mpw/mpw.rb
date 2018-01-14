@@ -19,6 +19,7 @@
 # under the License.
 
 require 'gpgme'
+require 'git'
 require 'i18n'
 require 'yaml'
 require 'rotp'
@@ -37,17 +38,30 @@ module MPW
       @gpg_exe     = gpg_exe
       @pinmode     = pinmode
       @wallet_path = wallet_path
+      @wallet_name = File.basename(@wallet_path)
+      @git         = Git.open(@wallet_path) if Dir.exist?(@wallet_path)
       @data        = []
       @keys        = {}
       @passwords   = {}
       @otp_keys    = {}
 
       GPGME::Engine.set_info(GPGME::PROTOCOL_OpenPGP, @gpg_exe, "#{Dir.home}/.gnupg") unless @gpg_exe.to_s.empty?
+    end
 
+    # Init a wallet folder
+    # @param remote_uri [String] the uri of the remote git repository
+    def init_wallet(remote_uri)
       Dir.mkdir(@wallet_path) unless Dir.exist?(@wallet_path)
       %w[passwords otp_keys keys].each do |folder|
         Dir.mkdir("#{@wallet_path}/#{folder}") unless Dir.exist?("#{@wallet_path}/#{folder}")
       end
+
+      @git = remote_uri ? Git.clone(remote_uri, @wallet_name, path: @wallet_path) : Git.init(@wallet_path)
+      @git.config('user.name', @key.split('@').first)
+      @git.config('user.email', @key)
+      @git.commit('init wallet', allow_empty: true) unless remote_uri
+    rescue => e
+      raise "#{I18n.t('error.init_wallet')}\n#{e}"
     end
 
     # Read mpw file
@@ -118,6 +132,9 @@ module MPW
           File.unlink(file) unless data.key?(File.basename(file, '.gpg'))
         end
       end
+
+      @git.add
+      @git.commit('wallet updated')
     rescue => e
       raise "#{I18n.t('error.mpw_file.write_data')}\n#{e}"
     end

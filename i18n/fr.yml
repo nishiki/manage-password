@@ -17,6 +17,7 @@ fr:
     gpg_file: 
       decrypt: "Impossible de déchiffrer le fichier GPG!"
       encrypt: "Impossible de chiffrer le fichier GPG!"
+    init_wallet: "Impossible d'initialiser le porte-feuille!"
     mpw_file: 
       read_data: "Impossible de lire le fichier MPW!"
       write_data: "Impossible d'écrire le fichier MPW!"
@@ -64,6 +65,7 @@ fr:
     help: "Affiche ce message d'aide"
     import: "Importe des éléments depuis un fichier yaml"
     init: "Initialise mpw"
+    init_wallet: "Initialise un nouveau porte-feuille"
     key: "Spécifie le nom d'une clé"
     lang: "Spécifie la langue du logiciel (ex: fr)"
     length: "Taille du mot de passe"
@@ -75,6 +77,7 @@ fr:
     pattern: "Motif de donnée à chercher"
     pinmode: "Active le mode pinentry (valable avec gpg >= 2.1)"
     random_password: "Génére un mot de passe aléatoire"
+    remote_uri: "Spécifie l'url d'un dépôt git distant"
     setup: "Création d'un nouveau fichier de configuration"
     setup_wallet: "Création d'un nouveau fichier de configuration pour un portefeuille"
     special_chars: "Utilise des charactères speciaux dans la génération d'un mot de passe"
@@ -130,6 +133,8 @@ fr:
       format_unknown: "Le format d'import '%{file_format}' est inconnu!"
       valid: "L'import est un succès!"
       not_valid: "Aucune donnée à importer!"
+    init_wallet:
+      valid: "Le porte-feuille a bien été initialisé!"
     set_config:
       valid: "Le fichier de configuration a bien été modifié!"
     setup_config:
